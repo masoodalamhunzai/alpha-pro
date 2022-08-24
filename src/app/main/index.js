@@ -1,0 +1,12 @@
+export { default as Home } from "./Home/Home";
+export { default as UserManagment } from "./UserManagment/UserManagment";
+export { default as ItemAnalysis } from "./ItemAnalysis/ItemAnalysis";
+export { default as AuthorSiteSettings } from "./AuthorSiteSettings/AuthorSiteSettings";
+export { default as ItemBankDetails } from "./Insight/ItemBankDetails/ItemBankDetails";
+export { default as SessionDetails } from "./Insight/SessionDetails/SessionDetails";
+export { default as Consumers } from "./Configuration/Consumers/Consumers";
+export { default as CustomQuestions } from "./Configuration/CustomQuestions/CustomQuestions";
+export { default as ItemBanks } from "./Configuration/ItemBanks/ItemBanks";
+export { default as Settings } from "./Settings/Settings";
+export { default as MyAccount } from "./MyAccount/MyAccount";
+export { default as Logout } from "./Logout/Logout";
