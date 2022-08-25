@@ -1,11 +1,12 @@
-import { Redirect } from 'react-router-dom';
-import FuseUtils from '@fuse/utils';
+import { Redirect } from "react-router-dom";
+import FuseUtils from "@fuse/utils";
 // import ExampleConfig from 'app/main/example/ExampleConfig';
-import RouteConfigs from 'app/main/RouteConfigs';
-import FuseLoading from '@fuse/core/FuseLoading';
-import Error404Page from 'app/main/404/Error404Page';
+import RouteConfigs from "app/main/RouteConfigs";
+import FuseLoading from "@fuse/core/FuseLoading";
+import Error404Page from "app/main/404/Error404Page";
+import LoginConfig from "app/main/login/LoginConfig";
 
-const routeConfigs = [RouteConfigs];
+const routeConfigs = [RouteConfigs, LoginConfig];
 
 const routes = [
   // if you want to make whole app auth protected by default change defaultAuth for example:
@@ -14,16 +15,16 @@ const routes = [
   ...FuseUtils.generateRoutesFromConfigs(routeConfigs, null),
   {
     exact: true,
-    path: '/',
-    component: () => <Redirect to="/example" />,
+    path: "/",
+    component: () => <Redirect to="/login" />,
   },
   {
-    path: '/loading',
+    path: "/loading",
     exact: true,
     component: () => <FuseLoading />,
   },
   {
-    path: '/404',
+    path: "/404",
     component: () => <Error404Page />,
   },
   {
