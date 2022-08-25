@@ -10,3 +10,4 @@ export { default as ItemBanks } from "./Configuration/ItemBanks/ItemBanks";
 export { default as Settings } from "./Settings/Settings";
 export { default as MyAccount } from "./MyAccount/MyAccount";
 export { default as Logout } from "./Logout/Logout";
+export { default as CreateUser } from "./UserManagment/CreateUser/CreateUser";

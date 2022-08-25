@@ -2,6 +2,7 @@ import i18next from "i18next";
 import {
   Home,
   UserManagment,
+  CreateUser,
   ItemAnalysis,
   AuthorSiteSettings,
   SessionDetails,
@@ -36,6 +37,10 @@ const RouteConfigs = {
     {
       path: "/user-managment",
       component: UserManagment,
+    },
+    {
+      path: "/user-managment/create-user",
+      component: CreateUser,
     },
     {
       path: "/item-analysis",
