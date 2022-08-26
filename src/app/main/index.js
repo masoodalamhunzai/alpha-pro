@@ -1,4 +1,6 @@
 export { default as Home } from "./Home/Home";
+export { default as OrganizationManagement } from "./OrganizationManagement/OrganizationManagement";
+export { default as ManageOrganization } from "./OrganizationManagement/ManageOrganization";
 export { default as UserManagment } from "./UserManagment/UserManagment";
 export { default as ItemAnalysis } from "./ItemAnalysis/ItemAnalysis";
 export { default as AuthorSiteSettings } from "./AuthorSiteSettings/AuthorSiteSettings";

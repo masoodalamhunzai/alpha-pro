@@ -14,14 +14,14 @@ import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
 import Input from '@material-ui/core/Input';
 import Paper from '@material-ui/core/Paper';
-import UsersList from './UsersList';
+import OrganizationsList from './OrganizationsList';
 import { useHistory } from "react-router";
 
 const useStyles = makeStyles({
   layoutRoot: {},
 });
 
-const  UserManagment = () => {
+const  OrganizationManagement = () => {
   const location = useLocation();
   const history = useHistory();
   const pageTitle = location.pathname.split("/").filter((x) => x)[0].split('-').join(' ');
@@ -132,8 +132,8 @@ const  UserManagment = () => {
           </div>
           <div className="flex items-center justify-end -mx-4 mt-24 md:mt-0">
                 
-                <Button variant="contained" color="secondary" aria-label="Send Message"  /* onClick={() => redirectTo("/manage-organization")} */>
-                  Create User
+                <Button variant="contained" color="secondary" aria-label="Send Message"  onClick={() => redirectTo("/manage-organization")}>
+                  Create Organization
                 </Button>
               </div>
 
@@ -141,7 +141,7 @@ const  UserManagment = () => {
 
 {/*end*/}
 
-          <UsersList page={page}
+          <OrganizationsList page={page}
               setPage={setPage}
               />
         </div>
@@ -150,4 +150,4 @@ const  UserManagment = () => {
   );
 }
 
-export default UserManagment;
+export default OrganizationManagement;

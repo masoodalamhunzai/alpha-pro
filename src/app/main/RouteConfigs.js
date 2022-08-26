@@ -1,6 +1,8 @@
 import i18next from "i18next";
 import {
   Home,
+  OrganizationManagement,
+  ManageOrganization,
   UserManagment,
   ItemAnalysis,
   AuthorSiteSettings,
@@ -34,11 +36,15 @@ const RouteConfigs = {
       component: Home,
     },
     {
-      path: "/user-managment",
-      component: UserManagment,
+      path: "/organization-management",
+      component: OrganizationManagement,
     },
     {
-      path: "/user-managment/create-user",
+      path: "/manage-organization",
+      component: ManageOrganization,
+    },
+    {
+      path: "/user-managment",
       component: UserManagment,
     },
     {
