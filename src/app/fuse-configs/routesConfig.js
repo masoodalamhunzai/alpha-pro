@@ -1,9 +1,10 @@
-import { Redirect } from 'react-router-dom';
-import FuseUtils from '@fuse/utils';
+import { Redirect } from "react-router-dom";
+import FuseUtils from "@fuse/utils";
 // import ExampleConfig from 'app/main/example/ExampleConfig';
-import RouteConfigs from 'app/main/RouteConfigs';
-import FuseLoading from '@fuse/core/FuseLoading';
-import Error404Page from 'app/main/404/Error404Page';
+import RouteConfigs from "app/main/RouteConfigs";
+import FuseLoading from "@fuse/core/FuseLoading";
+import Error404Page from "app/main/404/Error404Page";
+import { CreateUser } from "app/main";
 
 const routeConfigs = [RouteConfigs];
 
@@ -14,16 +15,20 @@ const routes = [
   ...FuseUtils.generateRoutesFromConfigs(routeConfigs, null),
   {
     exact: true,
-    path: '/',
+    path: "/",
     component: () => <Redirect to="/example" />,
   },
   {
-    path: '/loading',
+    path: "/loading",
     exact: true,
     component: () => <FuseLoading />,
   },
   {
-    path: '/404',
+    path: "/user-management/create-user",
+    component: () => <CreateUser />,
+  },
+  {
+    path: "/404",
     component: () => <Error404Page />,
   },
   {

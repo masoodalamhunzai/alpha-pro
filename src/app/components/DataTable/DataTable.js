@@ -190,7 +190,7 @@ export default function DataTable() {
             inputProps={{ "aria-label": "search" }}
           />
         </Search>
-        <Link to="/create-user">
+        <Link to="/user-management/create-user">
           <Button
             variant="contained"
             size="medium"
