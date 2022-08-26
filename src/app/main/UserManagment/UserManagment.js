@@ -5,17 +5,21 @@ import Typography from "@mui/material/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { useStateValue } from "app/services/state/State";
 import { actions } from "app/services/state/Reducer";
-import { useLocation} from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
-import {DataTable} from '../../components'
+import { DataTable } from "../../components";
 
 const useStyles = makeStyles({
   layoutRoot: {},
 });
 
-const  UserManagment = () => {
+const UserManagment = () => {
   const location = useLocation();
-  const pageTitle = location.pathname.split("/").filter((x) => x)[0].split('-').join(' ');
+  const pageTitle = location.pathname
+    .split("/")
+    .filter((x) => x)[0]
+    .split("-")
+    .join(" ");
   const classes = useStyles();
   const [{ news }, dispatch] = useStateValue();
   const [count, setCount] = useState(0);
@@ -41,8 +45,17 @@ const  UserManagment = () => {
       header={
         <div className="p-24">
           <Breadcrumb />
-          <Typography variant="h3" gutterBottom sx={{color:'#000',fontWeight:700,mt:2,textTransform:'capitalize'}}>
-             {pageTitle}
+          <Typography
+            variant="h3"
+            gutterBottom
+            sx={{
+              color: "#000",
+              fontWeight: 700,
+              mt: 2,
+              textTransform: "capitalize",
+            }}
+          >
+            {pageTitle}
           </Typography>
         </div>
       }
@@ -53,6 +66,6 @@ const  UserManagment = () => {
       }
     />
   );
-}
+};
 
 export default UserManagment;
