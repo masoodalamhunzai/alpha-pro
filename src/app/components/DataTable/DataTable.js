@@ -5,6 +5,7 @@ import { styled, alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Icon from "@material-ui/core/Icon";
+import IconButton from "@material-ui/core/IconButton";
 import InputBase from "@mui/material/InputBase";
 
 const columns = [
@@ -40,6 +41,46 @@ const rows = [
   { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
 ];
 
+const Search = styled("div")(({ theme }) => ({
+  position: "relative",
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  "&:hover": {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  marginRight: theme.spacing(2),
+  marginLeft: 0,
+  width: "100%",
+  [theme.breakpoints.up("sm")]: {
+    marginLeft: theme.spacing(3),
+    width: "auto",
+  },
+}));
+
+const SearchIconWrapper = styled("div")(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: "inherit",
+  "& .MuiInputBase-input": {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: "20ch",
+    },
+  },
+}));
+
 export default function DataTable() {
   return (
     <>
@@ -49,11 +90,20 @@ export default function DataTable() {
           justifyContent: "end",
           alignItems: "center",
           padding: "20px 20px 40px 0px",
+          "& .MuiInputBase-root": {
+            width: "300px",
+            fontSize: "17px",
+            color: "black",
+            borderRadius: "25px",
+            padding: "0px 10px",
+          },
         }}
       >
         <Search>
           <SearchIconWrapper>
-            <Icon>search</Icon>
+            <IconButton>
+              <Icon>search</Icon>
+            </IconButton>
           </SearchIconWrapper>
           <StyledInputBase
             sx={{ height: "100%", width: "100%" }}
@@ -66,7 +116,7 @@ export default function DataTable() {
             variant="contained"
             size="medium"
             sx={{
-              width: "15%",
+              width: "100%",
               padding: "10px",
               fontSize: "13px",
               borderRadius: "25px",

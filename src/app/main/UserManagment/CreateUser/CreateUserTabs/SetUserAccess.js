@@ -43,7 +43,9 @@ function SetUserAccess() {
                   <p className="text-sm text-gray-600">
                     Select item bank(s) access*
                   </p>
-                  <a>Learn about permission group</a>
+                  <span className="underline text-blue-600">
+                    Learn about permission group
+                  </span>
                 </div>
                 <FormGroup sx={{ display: "flex" }}>
                   <FormControlLabel
@@ -60,7 +62,9 @@ function SetUserAccess() {
                   <p className="text-sm text-gray-600">
                     Set default user roles for all item banks*
                   </p>
-                  <a>Learn more about Aurthor Site user roles</a>
+                  <span className="underline text-blue-600">
+                    Learn more about Aurthor Site user roles
+                  </span>
                 </div>
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                   <FormGroup>
@@ -101,7 +105,9 @@ function SetUserAccess() {
               <CardContent sx={{ width: "100%" }}>
                 <div className="flex justify-between my-5">
                   <p className="text-sm text-gray-600">Set user roles*</p>
-                  <a>Learn more about user roles</a>
+                  <span className="underline text-blue-600">
+                    Learn more about user roles
+                  </span>
                 </div>
                 <FormGroup sx={{ display: "inline-block" }}>
                   <FormControlLabel

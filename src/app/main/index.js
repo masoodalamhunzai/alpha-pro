@@ -1,5 +1,6 @@
 export { default as Home } from "./Home/Home";
 export { default as UserManagment } from "./UserManagment/UserManagment";
+export { default as CreateUser } from "./UserManagment/CreateUser/CreateUser";
 export { default as ItemAnalysis } from "./ItemAnalysis/ItemAnalysis";
 export { default as AuthorSiteSettings } from "./AuthorSiteSettings/AuthorSiteSettings";
 export { default as ItemBankDetails } from "./Insight/ItemBankDetails/ItemBankDetails";

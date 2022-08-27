@@ -50,11 +50,11 @@ function a11yProps(index) {
 
 export default function CreateUser() {
   const location = useLocation();
-  const pageTitle = location.pathname
-    .split("/")
-    .filter((x) => x)[0]
-    .split("-")
-    .join(" ");
+  // const pageTitle = location.pathname
+  //   .split("/")
+  //   .filter((x) => x)[0]
+  //   .split("-")
+  //   .join(" ");
   const classes = useStyles();
 
   const [value, setValue] = React.useState(0);
@@ -80,7 +80,7 @@ export default function CreateUser() {
               textTransform: "capitalize",
             }}
           >
-            {pageTitle}
+            Create User
           </Typography>
         </div>
       }
