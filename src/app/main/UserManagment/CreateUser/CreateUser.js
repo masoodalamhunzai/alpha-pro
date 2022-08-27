@@ -4,6 +4,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import { useLocation } from "react-router-dom";
+import { useHistory } from "react-router";
 import Box from "@mui/material/Box";
 import FusePageSimple from "@fuse/core/FusePageSimple";
 import { makeStyles } from "@material-ui/core/styles";
@@ -50,11 +51,12 @@ function a11yProps(index) {
 
 export default function CreateUser() {
   const location = useLocation();
-  // const pageTitle = location.pathname
-  //   .split("/")
-  //   .filter((x) => x)[0]
-  //   .split("-")
-  //   .join(" ");
+  const history = useHistory();
+  const pageTitle = location.pathname
+    .split("/")
+    .filter((x) => x)[0]
+    .split("-")
+    .join(" ");
   const classes = useStyles();
 
   const [value, setValue] = React.useState(0);
@@ -80,7 +82,7 @@ export default function CreateUser() {
               textTransform: "capitalize",
             }}
           >
-            Create User
+            {pageTitle}
           </Typography>
         </div>
       }

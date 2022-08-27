@@ -8,4 +8,5 @@ export const initialState = {
     des: 'This Description is stored in Global State',
   },
   user: null,
+  defaultPageSize: 10,
 };
