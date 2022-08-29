@@ -200,6 +200,15 @@ function OrganizationsList({ page, setPage, loading, setLoading,fetchOrganizatio
       <div className={classes.root}>
         {rows && (
           <DataGrid
+          sx={{
+            '& .MuiDataGrid-columnHeaderTitle':{
+              fontSize:'14px',
+              fontWeight:'600',
+            },
+            '& .MuiDataGrid-cell':{
+              fontSize:'12px'
+            }
+          }}
             rows={rows}
             page={page}
             hideFooter

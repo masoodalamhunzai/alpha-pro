@@ -1,5 +1,6 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
+import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -7,22 +8,55 @@ import CssBaseline from "@mui/material/CssBaseline";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 
+const useStyles = makeStyles({
+  root: {
+    fontSize:'1rem',
+    '&.MuiContainer-root':{
+      maxWidth:'55%',
+      margin:0
+    },
+    '& .MuiInputBase-input':{
+      backgroundColor: "#fff",
+    },
+    '& .MuiButton-root':{
+      fontWeight:'700',
+    borderRadius:'1.6rem',
+    margin:'2rem 0',
+    padding:'1rem 2rem',
+    fontSize:'1rem',
+    },
+    '& .MuiFormControlLabel-label':{
+      fontSize:'1rem',
+      margin: '1rem 0'
+    }
+  },
+  continueBtn: {
+    '&.MuiButton-root':{
+      backgroundColor: "#3287FB",
+    }
+  },
+  cancelBtn: {
+    '&.MuiButton-root':{
+      backgroundColor: "#ACACAC",
+    }
+  },
+});
+
 function CreateUserTab() {
+  const classes = useStyles();
   return (
-    <div>
       <Container
+      classes={{
+        root: classes.root,
+      }}
         component="main"
         maxWidth="xs"
-        sx={{
-          backgroundColor: "#F5F5F5",
-        }}
-        className="shadow-md"
+        className="shadow-md rounded-md"
       >
-        ,
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 2,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -43,9 +77,6 @@ function CreateUserTab() {
               name="email"
               autoComplete="email"
               autoFocus
-              sx={{
-                backgroundColor: "#fff",
-              }}
             />
             <TextField
               margin="normal"
@@ -56,9 +87,6 @@ function CreateUserTab() {
               type="text"
               id="name"
               autoComplete="current-password"
-              sx={{
-                backgroundColor: "#fff",
-              }}
             />
             <TextField
               margin="normal"
@@ -69,9 +97,6 @@ function CreateUserTab() {
               type="text"
               id="name"
               autoComplete="current-password"
-              sx={{
-                backgroundColor: "#fff",
-              }}
             />
             <TextField
               margin="normal"
@@ -82,9 +107,6 @@ function CreateUserTab() {
               type="number"
               id="name"
               autoComplete="current-password"
-              sx={{
-                backgroundColor: "#fff",
-              }}
             />
             <TextField
               margin="normal"
@@ -95,9 +117,6 @@ function CreateUserTab() {
               type="text"
               id="organization"
               autoComplete="current-organization"
-              sx={{
-                backgroundColor: "#fff",
-              }}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -112,31 +131,16 @@ function CreateUserTab() {
             >
               <Button
                 type="submit"
-                // fullWidth
                 variant="contained"
-                sx={{
-                  mt: 3,
-                  mb: 2,
-                  borderRadius: "20px",
-                  backgroundColor: "#3287FB",
-                }}
-                className="rounded-xl"
+                className={classes.continueBtn}
               >
-                {" "}
+                 
                 continue
               </Button>
               <Button
                 type="continue"
-                // fullWidth
                 variant="contained"
-                sx={{
-                  mt: 3,
-                  mb: 2,
-                  borderRadius: "20px",
-                  backgroundColor: "#ACACAC",
-                  fontWeight: "700",
-                }}
-                className="rounded-xl"
+                className={classes.cancelBtn}
               >
                 cancel
               </Button>
@@ -144,7 +148,6 @@ function CreateUserTab() {
           </Box>
         </Box>
       </Container>
-    </div>
   );
 }
 
