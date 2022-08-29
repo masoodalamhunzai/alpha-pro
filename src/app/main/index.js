@@ -2,7 +2,7 @@ export { default as Home } from "./Home/Home";
 export { default as OrganizationManagement } from "./OrganizationManagement/OrganizationManagement";
 export { default as ManageOrganization } from "./OrganizationManagement/ManageOrganization";
 export { default as UserManagment } from "./UserManagment/UserManagment";
-export { default as CreateUser } from "./UserManagment/CreateUser/CreateUser";
+export { default as CreateUser } from "./UserManagment/CreateUserTabs/tabs";
 export { default as ItemAnalysis } from "./ItemAnalysis/ItemAnalysis";
 export { default as AuthorSiteSettings } from "./AuthorSiteSettings/AuthorSiteSettings";
 export { default as ItemBankDetails } from "./Insight/ItemBankDetails/ItemBankDetails";
