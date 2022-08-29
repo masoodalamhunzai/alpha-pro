@@ -1,13 +1,14 @@
-import * as React from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import Typography from "@mui/material/Typography";
 import Checkbox from "@mui/material/Checkbox";
 
-function CreateUserTab() {
+function EditUser() {
   return (
     <div>
       <Container
@@ -21,12 +22,12 @@ function CreateUserTab() {
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
           }}
         >
+          <Typography variant="h4">Edit User Form</Typography>
           <Box
             component="form"
             // onSubmit={handleSubmit}
@@ -147,4 +148,4 @@ function CreateUserTab() {
   );
 }
 
-export default CreateUserTab;
+export default EditUser;

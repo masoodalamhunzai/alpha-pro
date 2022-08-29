@@ -8,7 +8,6 @@ import { actions } from "app/services/state/Reducer";
 import { useLocation } from "react-router-dom";
 import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
 import { DataTable } from "../../components";
-
 import { ThemeProvider, useTheme } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
@@ -212,7 +211,6 @@ const UserManagment = () => {
               </Button>
             </div>
           </div>
-
           {/*end*/}
 
           <UsersList page={page} setPage={setPage} />

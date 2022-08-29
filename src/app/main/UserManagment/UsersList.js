@@ -24,13 +24,15 @@ import {
   settings as s,
   states,
 } from "app/services/Settings";
-
 import FuseLoading from "@fuse/core/FuseLoading";
 import { actions } from "app/services/state/Reducer";
 import { useSnackbar } from "notistack";
 import swal from "sweetalert";
 import moment from "moment";
 import { CustomToolbar } from "../../components";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+import EditUser from "./EditUser";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -76,6 +78,15 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "bold",
     fontSize: 16,
   },
+  modalStyle: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    background: "white",
+    padding: "10px",
+    textAlign: "center",
+  },
 }));
 
 function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
@@ -86,10 +97,12 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
   const [userId, setUserId] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [{ user, patients, defaultPageSize }, dispatch] = useStateValue();
-  const [open, setOpen] = useState(false);
   //const { payload: patientsList, pagination } = patients;
   const [usersList, setUsersList] = useState([]);
   const [pagination, setPagination] = useState([]);
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   async function onArchiveUser(Id) {
     swal({
@@ -123,9 +136,9 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
 
   async function handleRestoreUser(Id) {}
 
-  const showUserDetail = (id) => {};
+  // const showUserDetail = (id) => {};
 
-  async function handleEditUser(Id) {}
+  // async function handleEditUser(Id) {}
 
   const handleChangePage = async (event, newPage) => {};
 
@@ -146,20 +159,19 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
       width: 160,
       renderCell: (params) => (
         <>
-          <Tooltip title="View">
+          {/* <Tooltip title="View">
             <VisibilityRoundedIcon
               className={classes.icon}
               onClick={() => showUserDetail(params.id)}
             />
-          </Tooltip>
+          </Tooltip> */}
           <Tooltip title="Edit">
             <EditIcon
               style={{ marginLeft: 5 }}
               className={classes.icon}
-              onClick={() => handleEditUser(params.id)}
+              onClick={handleOpen}
             />
           </Tooltip>
-
           <Tooltip title="Archive">
             <DeleteIcon
               className={classes.icon}
@@ -250,6 +262,16 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
   return (
     <>
       <div className={classes.root}>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box className={classes.modalStyle}>
+            <EditUser />
+          </Box>
+        </Modal>
         {rows && (
           <DataGrid
             rows={rows}
