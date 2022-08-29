@@ -15,22 +15,6 @@ import CreateUser from "./CreateUser/CreateUser";
 
 const useStyles = makeStyles({
   layoutRoot: {},
-  tabs: {
-    "& .MuiTab-root": {
-      fontSize: "12px",
-      fontWeight: "bold",
-      textTransfrom: "lowercase !important",
-      letterSpacing: "0px",
-    },
-    "& .MuiButtonBase-root": {
-      fontSize: "12px",
-      fontWeight: "bold",
-      textTransfrom: "capitalize !important",
-      letterSpacing: "0px",
-    },
-    
-    
-  },
 });
 const AntTabs = styled(Tabs)({
   borderBottom: '1px solid #e8e8e8',
@@ -42,12 +26,13 @@ const AntTabs = styled(Tabs)({
 const AntTab = styled((props) => <Tab disableRipple {...props} />)(({ theme }) => ({
   textTransform: 'none',
   minWidth: 0,
+  fontSize: '1.5rem',
+  fontWeight:600,
   [theme.breakpoints.up('sm')]: {
     minWidth: 0,
   },
-  fontWeight: theme.typography.fontWeightRegular,
   marginRight: theme.spacing(1),
-  color: 'rgba(0, 0, 0, 0.85)',
+  color: '#1f8b1f',
   fontFamily: [
     '-apple-system',
     'BlinkMacSystemFont',
@@ -61,7 +46,8 @@ const AntTab = styled((props) => <Tab disableRipple {...props} />)(({ theme }) =
     '"Segoe UI Symbol"',
   ].join(','),
   '&:hover': {
-    color: '#40a9ff',
+    color: '#0e9f0e',
+    fontWeight:600,
     opacity: 1,
   },
   '&.Mui-selected': {
