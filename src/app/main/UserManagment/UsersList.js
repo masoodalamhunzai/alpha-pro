@@ -2,18 +2,10 @@
 /* eslint-disable react/jsx-no-bind */
 import { memo, useState, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  TablePagination,
-  Tooltip,
-  Avatar,
-  Button,
-  Typography,
-} from "@material-ui/core";
+import { TablePagination, Tooltip } from "@material-ui/core";
 import {
   DeleteSweep as DeleteIcon,
   BorderColor as EditIcon,
-  RefreshOutlined as RestoreIcon,
-  VisibilityRounded as VisibilityRoundedIcon,
 } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
@@ -24,19 +16,22 @@ import {
   settings as s,
   states,
 } from "app/services/Settings";
-
 import FuseLoading from "@fuse/core/FuseLoading";
-import { actions } from "app/services/state/Reducer";
+// import { actions } from "app/services/state/Reducer";
 import { useSnackbar } from "notistack";
 import swal from "sweetalert";
-import moment from "moment";
+// import moment from "moment";
 import { CustomToolbar } from "../../components";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+import EditUser from "./EditUser";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     padding: 20,
   },
+
   icon: {
     color: "grey",
     cursor: "pointer",
@@ -76,6 +71,15 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "bold",
     fontSize: 16,
   },
+  modalStyle: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    background: "white",
+    padding: "10px",
+    textAlign: "center",
+  },
 }));
 
 function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
@@ -86,10 +90,12 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
   const [userId, setUserId] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [{ user, patients, defaultPageSize }, dispatch] = useStateValue();
-  const [open, setOpen] = useState(false);
   //const { payload: patientsList, pagination } = patients;
   const [usersList, setUsersList] = useState([]);
   const [pagination, setPagination] = useState([]);
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   async function onArchiveUser(Id) {
     swal({
@@ -123,9 +129,9 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
 
   async function handleRestoreUser(Id) {}
 
-  const showUserDetail = (id) => {};
+  // const showUserDetail = (id) => {};
 
-  async function handleEditUser(Id) {}
+  // async function handleEditUser(Id) {}
 
   const handleChangePage = async (event, newPage) => {};
 
@@ -137,7 +143,8 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
     { field: "contactperson", headerName: "Contact Person", width: 150 },
     { field: "email", headerName: "Email", width: 150 },
     { field: "phonenumber", headerName: "Phone Number", width: 150 },
-    { field: "address", headerName: "Address", width: 150 },
+    { field: "organization", headerName: "Organization", width: 150 },
+    { field: "status", headerName: "Status", width: 150 },
     {
       field: "action",
       headerName: "Action",
@@ -146,20 +153,13 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
       width: 160,
       renderCell: (params) => (
         <>
-          <Tooltip title="View">
-            <VisibilityRoundedIcon
-              className={classes.icon}
-              onClick={() => showUserDetail(params.id)}
-            />
-          </Tooltip>
           <Tooltip title="Edit">
             <EditIcon
               style={{ marginLeft: 5 }}
               className={classes.icon}
-              onClick={() => handleEditUser(params.id)}
+              onClick={handleOpen}
             />
           </Tooltip>
-
           <Tooltip title="Archive">
             <DeleteIcon
               className={classes.icon}
@@ -179,7 +179,8 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
       contactperson: "Jon",
       email: "35@gmail.com",
       phonenumber: "123123",
-      address: "test address",
+      organization: "eAlpha",
+      status: "Active",
     },
     {
       id: 2,
@@ -187,7 +188,8 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
       contactperson: "Jon",
       email: "35@gmail.com",
       phonenumber: "143123",
-      address: "test address",
+      organization: "eAlpha",
+      status: "Inactive",
     },
     {
       id: 3,
@@ -195,7 +197,8 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
       contactperson: "Jon",
       email: "35@gmail.com",
       phonenumber: "153123",
-      address: "test address",
+      organization: "eAlpha",
+      status: "Active",
     },
     {
       id: 4,
@@ -203,7 +206,8 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
       contactperson: "Jon",
       email: "35@gmail.com",
       phonenumber: "163123",
-      address: "test address",
+      organization: "eAlpha",
+      status: "Inactive",
     },
     {
       id: 5,
@@ -211,7 +215,8 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
       contactperson: "Jon",
       email: "35@gmail.com",
       phonenumber: "173123",
-      address: "test address",
+      organization: "eAlpha",
+      status: "Inactive",
     },
     {
       id: 6,
@@ -219,7 +224,8 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
       contactperson: "Jon",
       email: "35@gmail.com",
       phonenumber: "183123",
-      address: "test address",
+      organization: "eAlpha",
+      status: "Active",
     },
     {
       id: 7,
@@ -227,7 +233,8 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
       contactperson: "Jon",
       email: "35@gmail.com",
       phonenumber: "193123",
-      address: "test address",
+      organization: "eAlpha",
+      status: "Inactive",
     },
     {
       id: 8,
@@ -235,32 +242,44 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
       contactperson: "Jon",
       email: "35@gmail.com",
       phonenumber: "103123",
-      address: "test address",
+      organization: "eAlpha",
+      status: "Inactive",
     },
     {
-      id: 8,
+      id: 9,
       name: "Snow",
       contactperson: "Jon",
       email: "35@gmail.com",
       phonenumber: "153123",
-      address: "test address",
+      organization: "eAlpha",
+      status: "Active",
     },
   ];
 
   return (
     <>
       <div className={classes.root}>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box className={classes.modalStyle}>
+            <EditUser />
+          </Box>
+        </Modal>
         {rows && (
           <DataGrid
-          sx={{
-            '& .MuiDataGrid-columnHeaderTitle':{
-              fontSize:'14px',
-              fontWeight:'600',
-            },
-            '& .MuiDataGrid-cell':{
-              fontSize:'12px'
-            }
-          }}
+            sx={{
+              "& .MuiDataGrid-columnHeaderTitle": {
+                fontSize: "14px",
+                fontWeight: "600",
+              },
+              "& .MuiDataGrid-cell": {
+                fontSize: "14px",
+              },
+            }}
             rows={rows}
             page={page}
             hideFooter

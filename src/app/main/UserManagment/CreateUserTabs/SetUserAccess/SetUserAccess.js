@@ -18,6 +18,7 @@ function SetUserAccess() {
           "& .MuiFormControlLabel-label": {
             fontSize: "12px",
             fontWeight: "bold",
+            color: "#20292F",
           },
         }}
       >
@@ -40,10 +41,10 @@ function SetUserAccess() {
             >
               <CardContent sx={{ width: "100%" }}>
                 <div className="flex justify-between my-5">
-                  <p className="text-sm text-gray-600">
+                  <p className="text-xs font-semibold text-gray-500">
                     Select item bank(s) access*
                   </p>
-                  <span className="underline text-blue-600">
+                  <span className="underline text-blue-600 whitespace-nowrap">
                     Learn about permission group
                   </span>
                 </div>
@@ -59,10 +60,10 @@ function SetUserAccess() {
                   />
                 </FormGroup>
                 <div className="flex justify-between my-5">
-                  <p className="text-sm text-gray-600">
+                  <p className="text-xs font-semibold text-gray-500">
                     Set default user roles for all item banks*
                   </p>
-                  <span className="underline text-blue-600">
+                  <span className="underline text-blue-600 whitespace-nowrap">
                     Learn more about Aurthor Site user roles
                   </span>
                 </div>
@@ -104,8 +105,10 @@ function SetUserAccess() {
             >
               <CardContent sx={{ width: "100%" }}>
                 <div className="flex justify-between my-5">
-                  <p className="text-sm text-gray-600">Set user roles*</p>
-                  <span className="underline text-blue-600">
+                  <p className="text-xs font-semibold text-gray-500">
+                    Set user roles*
+                  </p>
+                  <span className="underline text-blue-600 whitespace-nowrap">
                     Learn more about user roles
                   </span>
                 </div>
@@ -119,7 +122,9 @@ function SetUserAccess() {
                   <FormControlLabel control={<Checkbox />} label="Admin" />
                 </FormGroup>
                 <div className="flex justify-between my-5">
-                  <p className="text-sm text-gray-600">Management roles</p>
+                  <p className="text-xs font-semibold text-gray-500">
+                    Management roles
+                  </p>
                 </div>
                 <FormGroup sx={{ display: "inline-block" }}>
                   <FormControlLabel
@@ -136,14 +141,18 @@ function SetUserAccess() {
                   />
                 </FormGroup>
                 <div className="flex justify-between my-5">
-                  <p className="text-sm text-gray-600">Insight roles</p>
+                  <p className="text-xs font-semibold text-gray-500">
+                    Insight roles
+                  </p>
                 </div>
                 <FormControlLabel
                   control={<Checkbox />}
                   label="Insight Access"
                 />
                 <div className="flex justify-between my-5">
-                  <p className="text-sm text-gray-600">Insight roles</p>
+                  <p className="text-xs font-semibold text-gray-500">
+                    Insight roles
+                  </p>
                 </div>
                 <FormControlLabel
                   control={<Checkbox />}
@@ -156,7 +165,7 @@ function SetUserAccess() {
         <Typography
           sx={{
             fontSize: "13px",
-            margin: "10px 10px 10px 20px",
+            margin: "30px 10px 30px 20px",
             color: "gray",
           }}
         >

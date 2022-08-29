@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import DemoContent from "@fuse/core/DemoContent";
+// import DemoContent from "@fuse/core/DemoContent";
 import FusePageSimple from "@fuse/core/FusePageSimple";
 import Typography from "@mui/material/Typography";
 import { makeStyles } from "@material-ui/core/styles";
@@ -7,8 +7,7 @@ import { useStateValue } from "app/services/state/State";
 import { actions } from "app/services/state/Reducer";
 import { useLocation } from "react-router-dom";
 import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
-import { DataTable } from "../../components";
-
+// import { DataTable } from "../../components";
 import { ThemeProvider, useTheme } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
@@ -53,99 +52,99 @@ const UserManagment = () => {
     }
   };
 
-  const columns = [
-    { field: "id", headerName: "ID", width: 70 },
-    { field: "name", headerName: "Name", width: 70 },
-    { field: "contactperson", headerName: "Contact Person", width: 130 },
-    { field: "email", headerName: "Email", width: 130 },
-    {
-      field: "phonenumber",
-      headerName: "Phone Number",
-      width: 90,
-    },
-    {
-      field: "address",
-      headerName: "Address",
-      description: "",
-      sortable: false,
-      width: 160,
-    },
-  ];
+  // const columns = [
+  //   { field: "id", headerName: "ID", width: 70 },
+  //   { field: "name", headerName: "Name", width: 70 },
+  //   { field: "contactperson", headerName: "Contact Person", width: 130 },
+  //   { field: "email", headerName: "Email", width: 130 },
+  //   {
+  //     field: "phonenumber",
+  //     headerName: "Phone Number",
+  //     width: 90,
+  //   },
+  //   {
+  //     field: "address",
+  //     headerName: "Address",
+  //     description: "",
+  //     sortable: false,
+  //     width: 160,
+  //   },
+  // ];
 
-  const rows = [
-    {
-      id: 1,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "123123",
-      address: "test address",
-    },
-    {
-      id: 2,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "123123",
-      address: "test address",
-    },
-    {
-      id: 3,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "123123",
-      address: "test address",
-    },
-    {
-      id: 4,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "123123",
-      address: "test address",
-    },
-    {
-      id: 5,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "123123",
-      address: "test address",
-    },
-    {
-      id: 6,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "123123",
-      address: "test address",
-    },
-    {
-      id: 7,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "123123",
-      address: "test address",
-    },
-    {
-      id: 8,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "123123",
-      address: "test address",
-    },
-    {
-      id: 8,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "123123",
-      address: "test address",
-    },
-  ];
+  // const rows = [
+  //   {
+  //     id: 1,
+  //     name: "Snow",
+  //     contactperson: "Jon",
+  //     email: "35@gmail.com",
+  //     phonenumber: "123123",
+  //     address: "test address",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Snow",
+  //     contactperson: "Jon",
+  //     email: "35@gmail.com",
+  //     phonenumber: "123123",
+  //     address: "test address",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Snow",
+  //     contactperson: "Jon",
+  //     email: "35@gmail.com",
+  //     phonenumber: "123123",
+  //     address: "test address",
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Snow",
+  //     contactperson: "Jon",
+  //     email: "35@gmail.com",
+  //     phonenumber: "123123",
+  //     address: "test address",
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "Snow",
+  //     contactperson: "Jon",
+  //     email: "35@gmail.com",
+  //     phonenumber: "123123",
+  //     address: "test address",
+  //   },
+  //   {
+  //     id: 6,
+  //     name: "Snow",
+  //     contactperson: "Jon",
+  //     email: "35@gmail.com",
+  //     phonenumber: "123123",
+  //     address: "test address",
+  //   },
+  //   {
+  //     id: 7,
+  //     name: "Snow",
+  //     contactperson: "Jon",
+  //     email: "35@gmail.com",
+  //     phonenumber: "123123",
+  //     address: "test address",
+  //   },
+  //   {
+  //     id: 8,
+  //     name: "Snow",
+  //     contactperson: "Jon",
+  //     email: "35@gmail.com",
+  //     phonenumber: "123123",
+  //     address: "test address",
+  //   },
+  //   {
+  //     id: 8,
+  //     name: "Snow",
+  //     contactperson: "Jon",
+  //     email: "35@gmail.com",
+  //     phonenumber: "123123",
+  //     address: "test address",
+  //   },
+  // ];
 
   /* useEffect(() => {
     setCount(1);
@@ -212,7 +211,6 @@ const UserManagment = () => {
               </Button>
             </div>
           </div>
-
           {/*end*/}
 
           <UsersList page={page} setPage={setPage} />

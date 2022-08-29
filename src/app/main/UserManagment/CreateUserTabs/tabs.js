@@ -8,7 +8,7 @@ import { useHistory } from "react-router";
 import Box from "@mui/material/Box";
 import FusePageSimple from "@fuse/core/FusePageSimple";
 import { makeStyles } from "@material-ui/core/styles";
-import { styled } from '@mui/material/styles';
+import { styled } from "@mui/material/styles";
 import Breadcrumb from "../../../fuse-layouts/shared-components/Breadcrumbs";
 import SetUserAccess from "./SetUserAccess/SetUserAccess";
 import CreateUser from "./CreateUser/CreateUser";
@@ -17,47 +17,49 @@ const useStyles = makeStyles({
   layoutRoot: {},
 });
 const AntTabs = styled(Tabs)({
-  borderBottom: '1px solid #e8e8e8',
-  '& .MuiTabs-indicator': {
-    backgroundColor: '#1890ff',
+  borderBottom: "1px solid #e8e8e8",
+  "& .MuiTabs-indicator": {
+    backgroundColor: "#1890ff",
   },
 });
 
-const AntTab = styled((props) => <Tab disableRipple {...props} />)(({ theme }) => ({
-  textTransform: 'none',
-  minWidth: 0,
-  fontSize: '1.5rem',
-  fontWeight:600,
-  [theme.breakpoints.up('sm')]: {
+const AntTab = styled((props) => <Tab disableRipple {...props} />)(
+  ({ theme }) => ({
+    textTransform: "none",
     minWidth: 0,
-  },
-  marginRight: theme.spacing(1),
-  color: '#1f8b1f',
-  fontFamily: [
-    '-apple-system',
-    'BlinkMacSystemFont',
-    '"Segoe UI"',
-    'Roboto',
-    '"Helvetica Neue"',
-    'Arial',
-    'sans-serif',
-    '"Apple Color Emoji"',
-    '"Segoe UI Emoji"',
-    '"Segoe UI Symbol"',
-  ].join(','),
-  '&:hover': {
-    color: '#0e9f0e',
-    fontWeight:600,
-    opacity: 1,
-  },
-  '&.Mui-selected': {
-    color: '#1890ff',
-    fontWeight: theme.typography.fontWeightMedium,
-  },
-  '&.Mui-focusVisible': {
-    backgroundColor: '#d1eaff',
-  },
-}));
+    fontSize: "1.5rem",
+    fontWeight: 600,
+    [theme.breakpoints.up("sm")]: {
+      minWidth: 0,
+    },
+    marginRight: theme.spacing(1),
+    color: "#1f8b1f",
+    fontFamily: [
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(","),
+    "&:hover": {
+      color: "#0e9f0e",
+      fontWeight: 600,
+      opacity: 1,
+    },
+    "&.Mui-selected": {
+      color: "#1890ff",
+      fontWeight: theme.typography.fontWeightMedium,
+    },
+    "&.Mui-focusVisible": {
+      backgroundColor: "#d1eaff",
+    },
+  })
+);
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -69,11 +71,7 @@ function TabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          {children}
-        </Box>
-      )}
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   );
 }
@@ -101,7 +99,7 @@ const CreateUserTabs = () => {
     .join(" ");
   const classes = useStyles();
 
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(2);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -124,7 +122,8 @@ const CreateUserTabs = () => {
               textTransform: "capitalize",
             }}
           >
-            {pageTitle}
+            {/* {pageTitle} */}
+            Create User
           </Typography>
         </div>
       }
@@ -138,7 +137,11 @@ const CreateUserTabs = () => {
                 onChange={handleChange}
                 aria-label="basic tabs example"
               >
-                <AntTab  className={classes.tabs} label="Add User Details" {...a11yProps(0)} />
+                <AntTab
+                  className={classes.tabs}
+                  label="Add User Details"
+                  {...a11yProps(0)}
+                />
                 <AntTab label="Select User Sites" {...a11yProps(1)} />
                 <AntTab label="Set User Access" {...a11yProps(2)} />
                 <AntTab label="Create User" {...a11yProps(3)} />

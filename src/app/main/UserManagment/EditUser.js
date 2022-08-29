@@ -12,12 +12,12 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import Typography from "@mui/material/Typography";
 
 const useStyles = makeStyles({
   root: {
     fontSize: "1rem",
     "&.MuiContainer-root": {
-      maxWidth: "55%",
       margin: 0,
     },
     "& .MuiInputBase-input": {
@@ -73,6 +73,7 @@ function CreateUserTab() {
           alignItems: "center",
         }}
       >
+        <Typography variant="h4">Edit User Form</Typography>
         <Box
           component="form"
           // onSubmit={handleSubmit}
