@@ -64,9 +64,10 @@ const useStyles = makeStyles({
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      width: '100%'
+      width: '100%',
 
     },
+
   }
 });
 
@@ -190,7 +191,7 @@ function CreateUserTab() {
           </Typography>
           <Box className="flex items-center mb-24">
             <AccountCircleIcon />
-            <Box sx={{ height: '7rem' }} className="border-slate-700 border-2 border-solid w-1/4 bg-white flex items-center justify-center ml-32">
+            <Box aria-label="upload picture" component="label" sx={{ height: '7rem' }} className="cursor-pointer border-slate-700 border-2 border-solid w-1/4 bg-white flex items-center justify-center ml-32">
               <input hidden accept="image/*" type="file" />
               <Icon color="action" className="text-gray-600 mr-8">upload</Icon>
             </Box>
