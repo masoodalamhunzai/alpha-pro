@@ -12,6 +12,7 @@ import { styled } from "@mui/material/styles";
 import Breadcrumb from "../../../fuse-layouts/shared-components/Breadcrumbs";
 import SetUserAccess from "./SetUserAccess/SetUserAccess";
 import CreateUser from "./CreateUser/CreateUser";
+import AddUserDetails from "./AddUserDetails/AddUserDetails";
 
 const useStyles = makeStyles({
   layoutRoot: {},
@@ -149,7 +150,7 @@ const CreateUserTabs = () => {
               </AntTabs>
             </Box>
             <TabPanel value={value} index={0}>
-              Item One
+              <AddUserDetails />
             </TabPanel>
             <TabPanel value={value} index={1}>
               Item Two

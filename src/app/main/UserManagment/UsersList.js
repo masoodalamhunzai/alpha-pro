@@ -9,7 +9,6 @@ import {
 } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
-//import { DataGrid } from '@material-ui/data-grid';
 import { useStateValue } from "app/services/state/State";
 import {
   dataGridPageSizes,
@@ -21,10 +20,10 @@ import FuseLoading from "@fuse/core/FuseLoading";
 import { useSnackbar } from "notistack";
 import swal from "sweetalert";
 // import moment from "moment";
-import { CustomToolbar } from "../../components";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import EditUser from "./EditUser";
+import { CustomToolbar } from "../../components";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -111,7 +110,7 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
     });
   }
 
-  async function handleArchiveUser(Id) {}
+  async function handleArchiveUser(Id) { }
 
   async function onRestoreUser(Id) {
     swal({
@@ -127,15 +126,15 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
     });
   }
 
-  async function handleRestoreUser(Id) {}
+  async function handleRestoreUser(Id) { }
 
   // const showUserDetail = (id) => {};
 
   // async function handleEditUser(Id) {}
 
-  const handleChangePage = async (event, newPage) => {};
+  const handleChangePage = async (event, newPage) => { };
 
-  function handleChangeRowsPerPage(event) {}
+  function handleChangeRowsPerPage(event) { }
 
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
@@ -144,11 +143,12 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
     { field: "email", headerName: "Email/username", width: 150 },
     { field: "phonenumber", headerName: "Mobile Phone", width: 150 },
     { field: "organization", headerName: "Organization", width: 150 },
-    { field: "status", headerName: "Status", width: 150 ,
-    renderCell: (params) => (
-      <> <span style={{color:params.row.status==='inActive'?'red':'green'}}>{params.row.status}</span></>
-    )
-  },
+    {
+      field: "status", headerName: "Status", width: 150,
+      renderCell: (params) => (
+        <> <span style={{ color: params.row.status === 'inActive' ? 'red' : 'green' }}>{params.row.status}</span></>
+      )
+    },
     {
       field: "action",
       headerName: "Action",
@@ -162,7 +162,7 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
               style={{ marginLeft: 5 }}
               className={classes.icon}
               onClick={handleOpen}
-              
+
             />
           </Tooltip>
           <Tooltip title="Archive">
@@ -271,7 +271,7 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
           aria-describedby="modal-modal-description"
         >
           <Box className={classes.modalStyle}>
-            <EditUser setOpen={setOpen}/>
+            <EditUser setOpen={setOpen} />
           </Box>
         </Modal>
         {rows && (
