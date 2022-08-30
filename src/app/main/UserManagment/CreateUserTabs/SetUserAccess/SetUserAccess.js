@@ -1,6 +1,7 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
+import Icon from '@material-ui/core/Icon';
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
@@ -22,6 +23,7 @@ function SetUserAccess() {
           },
         }}
       >
+
         <Typography
           variant="h5"
           sx={{ margin: "10px 5px", fontWeight: "bold" }}
@@ -34,17 +36,27 @@ function SetUserAccess() {
               sx={{
                 minWidth: 300,
                 minHeight: 300,
+                height: '100%',
                 display: "flex",
-                alignItems: "center",
+                alignItems: "start",
                 justifyContent: "center",
+                flexDirection: 'column',
               }}
             >
+              <Typography
+                variant="button"
+                display="block"
+                sx={{ px: 2, py: 0.5, fontWeight: 700 }}
+              >
+                <img className="logo-icon w-full h-full" src="assets/images/logos/logo.png" alt="logo" />
+              </Typography>
+
               <CardContent sx={{ width: "100%" }}>
                 <div className="flex justify-between my-5">
-                  <p className="text-xs font-semibold text-gray-500">
+                  <p style={{ fontSize: '11px' }} className="font-semibold text-gray-500">
                     Select item bank(s) access*
                   </p>
-                  <span className="underline text-blue-600 whitespace-nowrap">
+                  <span style={{ fontSize: '10px' }} className="underline text-blue-600 whitespace-nowrap">
                     Learn about permission group
                   </span>
                 </div>
@@ -60,10 +72,10 @@ function SetUserAccess() {
                   />
                 </FormGroup>
                 <div className="flex justify-between my-5">
-                  <p className="text-xs font-semibold text-gray-500">
+                  <p style={{ fontSize: '11px' }} className="font-semibold text-gray-500">
                     Set default user roles for all item banks*
                   </p>
-                  <span className="underline text-blue-600 whitespace-nowrap">
+                  <span style={{ fontSize: '10px' }} className="underline text-blue-600 whitespace-nowrap">
                     Learn more about Aurthor Site user roles
                   </span>
                 </div>
@@ -98,17 +110,26 @@ function SetUserAccess() {
               sx={{
                 minWidth: 300,
                 minHeight: 300,
+                height: '100%',
                 display: "flex",
-                alignItems: "center",
+                alignItems: "start",
                 justifyContent: "center",
+                flexDirection: 'column'
               }}
             >
+              <Typography
+                variant="button"
+                display="block"
+                sx={{ px: 2, py: 0.5, fontWeight: 700 }}
+              >
+                <img className="logo-icon w-full h-full" src="assets/images/logos/logo.png" alt="logo" />
+              </Typography>
               <CardContent sx={{ width: "100%" }}>
                 <div className="flex justify-between my-5">
-                  <p className="text-xs font-semibold text-gray-500">
+                  <p style={{ fontSize: '11px' }} className="font-semibold text-gray-500">
                     Set user roles*
                   </p>
-                  <span className="underline text-blue-600 whitespace-nowrap">
+                  <span style={{ fontSize: '10px' }} className="underline text-blue-600 whitespace-nowrap">
                     Learn more about user roles
                   </span>
                 </div>
@@ -122,7 +143,7 @@ function SetUserAccess() {
                   <FormControlLabel control={<Checkbox />} label="Admin" />
                 </FormGroup>
                 <div className="flex justify-between my-5">
-                  <p className="text-xs font-semibold text-gray-500">
+                  <p style={{ fontSize: '11px' }} className="font-semibold text-gray-500">
                     Management roles
                   </p>
                 </div>
@@ -141,7 +162,7 @@ function SetUserAccess() {
                   />
                 </FormGroup>
                 <div className="flex justify-between my-5">
-                  <p className="text-xs font-semibold text-gray-500">
+                  <p style={{ fontSize: '11px' }} className="font-semibold text-gray-500">
                     Insight roles
                   </p>
                 </div>
@@ -150,7 +171,7 @@ function SetUserAccess() {
                   label="Insight Access"
                 />
                 <div className="flex justify-between my-5">
-                  <p className="text-xs font-semibold text-gray-500">
+                  <p style={{ fontSize: '11px' }} className="font-semibold text-gray-500">
                     Insight roles
                   </p>
                 </div>
@@ -167,9 +188,11 @@ function SetUserAccess() {
             fontSize: "13px",
             margin: "30px 10px 30px 20px",
             color: "gray",
+            display: 'flex',
+            alignItems: 'center'
           }}
         >
-          The new user newuser@gmail.com will be sent an email with a set
+          <Icon color="action" style={{ color: '#0078d2', margin: '0 0.8rem' }}>infoicon</Icon>The new user newuser@gmail.com will be sent an email with a set
           password link that will expire in 7 days.
         </Typography>
         <div className="flex justify-between my-5">

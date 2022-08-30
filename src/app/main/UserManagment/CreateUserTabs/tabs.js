@@ -34,6 +34,7 @@ const AntTab = styled((props) => <Tab disableRipple {...props} />)(
     },
     marginRight: theme.spacing(1),
     color: "#1f8b1f",
+    letterSpacing: 0,
     fontFamily: [
       "-apple-system",
       "BlinkMacSystemFont",

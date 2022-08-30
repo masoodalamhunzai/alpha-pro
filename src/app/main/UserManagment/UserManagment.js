@@ -13,8 +13,8 @@ import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
 import Input from "@material-ui/core/Input";
 import Paper from "@material-ui/core/Paper";
-import UsersList from "./UsersList";
 import { useHistory } from "react-router";
+import UsersList from "./UsersList";
 
 const useStyles = makeStyles({
   layoutRoot: {},
@@ -52,99 +52,6 @@ const UserManagment = () => {
     }
   };
 
-  // const columns = [
-  //   { field: "id", headerName: "ID", width: 70 },
-  //   { field: "name", headerName: "Name", width: 70 },
-  //   { field: "contactperson", headerName: "Contact Person", width: 130 },
-  //   { field: "email", headerName: "Email", width: 130 },
-  //   {
-  //     field: "phonenumber",
-  //     headerName: "Phone Number",
-  //     width: 90,
-  //   },
-  //   {
-  //     field: "address",
-  //     headerName: "Address",
-  //     description: "",
-  //     sortable: false,
-  //     width: 160,
-  //   },
-  // ];
-
-  // const rows = [
-  //   {
-  //     id: 1,
-  //     name: "Snow",
-  //     contactperson: "Jon",
-  //     email: "35@gmail.com",
-  //     phonenumber: "123123",
-  //     address: "test address",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Snow",
-  //     contactperson: "Jon",
-  //     email: "35@gmail.com",
-  //     phonenumber: "123123",
-  //     address: "test address",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Snow",
-  //     contactperson: "Jon",
-  //     email: "35@gmail.com",
-  //     phonenumber: "123123",
-  //     address: "test address",
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Snow",
-  //     contactperson: "Jon",
-  //     email: "35@gmail.com",
-  //     phonenumber: "123123",
-  //     address: "test address",
-  //   },
-  //   {
-  //     id: 5,
-  //     name: "Snow",
-  //     contactperson: "Jon",
-  //     email: "35@gmail.com",
-  //     phonenumber: "123123",
-  //     address: "test address",
-  //   },
-  //   {
-  //     id: 6,
-  //     name: "Snow",
-  //     contactperson: "Jon",
-  //     email: "35@gmail.com",
-  //     phonenumber: "123123",
-  //     address: "test address",
-  //   },
-  //   {
-  //     id: 7,
-  //     name: "Snow",
-  //     contactperson: "Jon",
-  //     email: "35@gmail.com",
-  //     phonenumber: "123123",
-  //     address: "test address",
-  //   },
-  //   {
-  //     id: 8,
-  //     name: "Snow",
-  //     contactperson: "Jon",
-  //     email: "35@gmail.com",
-  //     phonenumber: "123123",
-  //     address: "test address",
-  //   },
-  //   {
-  //     id: 8,
-  //     name: "Snow",
-  //     contactperson: "Jon",
-  //     email: "35@gmail.com",
-  //     phonenumber: "123123",
-  //     address: "test address",
-  //   },
-  // ];
 
   /* useEffect(() => {
     setCount(1);
@@ -182,7 +89,7 @@ const UserManagment = () => {
           <div className="flex flex-wrap flex-1 items-center justify-between p-12 md:p-24">
             <div className="flex flex-col w-full sm:w-auto"></div>
 
-            <div className="flex flex-1 items-center justify-center w-full sm:w-auto sm:px-12">
+            <div className="flex flex-1 items-center justify-end w-full sm:w-auto sm:px-12 mx-4">
               <ThemeProvider theme={theme}>
                 <Paper className="flex items-center min-w-full sm:min-w-0 w-full max-w-512 px-12 py-4 rounded-16 shdaow">
                   <Icon color="action">search</Icon>

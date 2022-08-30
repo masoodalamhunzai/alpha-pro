@@ -22,6 +22,7 @@ const useStyles = makeStyles({
     },
     "& .MuiInputBase-input": {
       backgroundColor: "#fff",
+      textAlign: 'start'
     },
     "& .MuiButton-root": {
       fontWeight: "700",
@@ -31,9 +32,12 @@ const useStyles = makeStyles({
       fontSize: "1rem",
     },
     "& .MuiFormControlLabel-label": {
-      fontSize: "1rem",
+      fontSize: "1.2rem",
       margin: "1rem 0",
     },
+    '& .MuiFormControl-root': {
+      margin: '1rem 0',
+    }
   },
   continueBtn: {
     "&.MuiButton-root": {
@@ -53,6 +57,10 @@ function CreateUserTab() {
   const handleChange = (event) => {
     setOrganization(event.target.value);
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+  }
 
   const classes = useStyles();
   return (
@@ -75,7 +83,7 @@ function CreateUserTab() {
       >
         <Box
           component="form"
-          // onSubmit={handleSubmit}
+          onSubmit={handleSubmit}
           noValidate
           sx={{ mt: 1 }}
         >
@@ -118,16 +126,6 @@ function CreateUserTab() {
             type="number"
             id="name"
             autoComplete="current-password"
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="organization"
-            label="organization"
-            type="text"
-            id="organization"
-            autoComplete="current-organization"
           />
           <FormControl fullWidth>
             <InputLabel id="organization-dropdown">Organization</InputLabel>

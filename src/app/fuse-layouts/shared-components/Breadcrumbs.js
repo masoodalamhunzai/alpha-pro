@@ -1,7 +1,7 @@
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
-import { useLocation ,useHistory} from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 
 import Stack from "@mui/material/Stack";
 
@@ -9,7 +9,7 @@ const Breadcrumb = () => {
   const location = useLocation();
   const history = useHistory();
   const pathname = location.pathname.split("/").filter((x) => x)[0].split('-').join(' ');
-
+  // console.log(location.pathname.split("/").filter((x, i) => x[i]).join('/'))
   const handleNavigate = (event) => {
     event.preventDefault();
     history.push("/");

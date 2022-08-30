@@ -139,12 +139,16 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
 
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
-    { field: "name", headerName: "Name", width: 150 },
-    { field: "contactperson", headerName: "Contact Person", width: 150 },
-    { field: "email", headerName: "Email", width: 150 },
-    { field: "phonenumber", headerName: "Phone Number", width: 150 },
+    { field: "firstName", headerName: "First Name", width: 150 },
+    { field: "lastName", headerName: "Last Name", width: 150 },
+    { field: "email", headerName: "Email/username", width: 150 },
+    { field: "phonenumber", headerName: "Mobile Phone", width: 150 },
     { field: "organization", headerName: "Organization", width: 150 },
-    { field: "status", headerName: "Status", width: 150 },
+    { field: "status", headerName: "Status", width: 150 ,
+    renderCell: (params) => (
+      <> <span style={{color:params.row.status==='inActive'?'red':'green'}}>{params.row.status}</span></>
+    )
+  },
     {
       field: "action",
       headerName: "Action",
@@ -158,6 +162,7 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
               style={{ marginLeft: 5 }}
               className={classes.icon}
               onClick={handleOpen}
+              
             />
           </Tooltip>
           <Tooltip title="Archive">
@@ -175,8 +180,8 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
   const rows = [
     {
       id: 1,
-      name: "Snow",
-      contactperson: "Jon",
+      firstName: "Snow",
+      lastName: "Leo",
       email: "35@gmail.com",
       phonenumber: "123123",
       organization: "eAlpha",
@@ -184,17 +189,17 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
     },
     {
       id: 2,
-      name: "Snow",
-      contactperson: "Jon",
+      firstName: "Snow",
+      lastName: "Leo",
       email: "35@gmail.com",
       phonenumber: "143123",
       organization: "eAlpha",
-      status: "Inactive",
+      status: "inActive",
     },
     {
       id: 3,
-      name: "Snow",
-      contactperson: "Jon",
+      firstName: "Snow",
+      lastName: "Leo",
       email: "35@gmail.com",
       phonenumber: "153123",
       organization: "eAlpha",
@@ -202,26 +207,26 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
     },
     {
       id: 4,
-      name: "Snow",
-      contactperson: "Jon",
+      firstName: "Snow",
+      lastName: "Leo",
       email: "35@gmail.com",
       phonenumber: "163123",
       organization: "eAlpha",
-      status: "Inactive",
+      status: "inActive",
     },
     {
       id: 5,
-      name: "Snow",
-      contactperson: "Jon",
+      firstName: "Snow",
+      lastName: "Leo",
       email: "35@gmail.com",
       phonenumber: "173123",
       organization: "eAlpha",
-      status: "Inactive",
+      status: "inActive",
     },
     {
       id: 6,
-      name: "Snow",
-      contactperson: "Jon",
+      firstName: "Snow",
+      lastName: "Leo",
       email: "35@gmail.com",
       phonenumber: "183123",
       organization: "eAlpha",
@@ -229,26 +234,26 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
     },
     {
       id: 7,
-      name: "Snow",
-      contactperson: "Jon",
+      firstName: "Snow",
+      lastName: "Leo",
       email: "35@gmail.com",
       phonenumber: "193123",
       organization: "eAlpha",
-      status: "Inactive",
+      status: "inActive",
     },
     {
       id: 8,
-      name: "Snow",
-      contactperson: "Jon",
+      firstName: "Snow",
+      lastName: "Leo",
       email: "35@gmail.com",
       phonenumber: "103123",
       organization: "eAlpha",
-      status: "Inactive",
+      status: "inActive",
     },
     {
       id: 9,
-      name: "Snow",
-      contactperson: "Jon",
+      firstName: "Snow",
+      lastName: "Leo",
       email: "35@gmail.com",
       phonenumber: "153123",
       organization: "eAlpha",
@@ -266,7 +271,7 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
           aria-describedby="modal-modal-description"
         >
           <Box className={classes.modalStyle}>
-            <EditUser />
+            <EditUser setOpen={setOpen}/>
           </Box>
         </Modal>
         {rows && (
