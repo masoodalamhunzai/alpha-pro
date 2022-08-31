@@ -138,13 +138,13 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
 
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
-    { field: "firstName", headerName: "First Name", width: 150 },
-    { field: "lastName", headerName: "Last Name", width: 150 },
-    { field: "email", headerName: "Email/username", width: 150 },
-    { field: "phonenumber", headerName: "Mobile Phone", width: 150 },
-    { field: "organization", headerName: "Organization", width: 150 },
+    { field: "firstName", headerName: "First Name", flex: 1 },
+    { field: "lastName", headerName: "Last Name", flex: 1 },
+    { field: "email", headerName: "Email/username", flex: 1 },
+    { field: "phonenumber", headerName: "Mobile Phone", flex: 1 },
+    { field: "organization", headerName: "Organization", flex: 1 },
     {
-      field: "status", headerName: "Status", width: 150,
+      field: "status", headerName: "Status", flex: 1,
       renderCell: (params) => (
         <> <span style={{ color: params.row.status === 'inActive' ? 'red' : 'green' }}>{params.row.status}</span></>
       )

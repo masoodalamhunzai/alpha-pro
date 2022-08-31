@@ -13,6 +13,7 @@ import Breadcrumb from "../../../fuse-layouts/shared-components/Breadcrumbs";
 import SetUserAccess from "./SetUserAccess/SetUserAccess";
 import CreateUser from "./CreateUser/CreateUser";
 import AddUserDetails from "./AddUserDetails/AddUserDetails";
+import SelectUserSite from "./SelectUserSite/SelectUserSite";
 
 const useStyles = makeStyles({
   layoutRoot: {},
@@ -62,7 +63,7 @@ const AntTab = styled((props) => <Tab disableRipple {...props} />)(
     },
   })
 );
-function TabPanel(props) {
+const TabPanel = (props) => {
   const { children, value, index, ...other } = props;
 
   return (
@@ -153,7 +154,7 @@ const CreateUserTabs = () => {
               <AddUserDetails />
             </TabPanel>
             <TabPanel value={value} index={1}>
-              Item Two
+              <SelectUserSite />
             </TabPanel>
             <TabPanel value={value} index={2}>
               <SetUserAccess />

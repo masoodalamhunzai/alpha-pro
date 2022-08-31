@@ -5,10 +5,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppContext from 'app/AppContext';
 import SettingsPanel from 'app/fuse-layouts/shared-components/SettingsPanel';
 import clsx from 'clsx';
-import { memo, useContext } from 'react';
+import { memo, useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
-import FooterLayout1 from './components/FooterLayout1';
+import { useStateValue } from 'app/services/state/State';
+import { actions } from 'app/services/state/Reducer';
 import LeftSideLayout1 from './components/LeftSideLayout1';
 import NavbarWrapperLayout1 from './components/NavbarWrapperLayout1';
 import RightSideLayout1 from './components/RightSideLayout1';
@@ -37,6 +38,20 @@ function Layout1(props) {
   const appContext = useContext(AppContext);
   const { routes } = appContext;
   const classes = useStyles({ ...props, config });
+  const [{ user }, dispatch] = useStateValue();
+
+  const setUser = () => {
+    const localStorageUser = localStorage.getItem('user');
+    const localUser = JSON.parse(localStorageUser);
+    dispatch({
+      type: actions.SET_USER,
+      payload: localUser,
+    });
+  };
+
+  useEffect(() => {
+    setUser();
+  }, []);
 
   return (
     <div id="fuse-layout" className={clsx(classes.root, config.mode, 'w-full flex')}>
@@ -49,7 +64,7 @@ function Layout1(props) {
           {config.toolbar.display && (
             <ToolbarLayout1 className={config.toolbar.style === 'fixed' && 'sticky top-0'} />
           )}
- 
+
           <div className="sticky top-0 z-99">
             <SettingsPanel />
           </div>

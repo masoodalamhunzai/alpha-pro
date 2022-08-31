@@ -25,10 +25,9 @@ const useStyles = makeStyles({
       textAlign: 'start'
     },
     "& .MuiButton-root": {
-      fontWeight: "700",
-      borderRadius: "1.6rem",
-      padding: "1rem 2rem",
-      fontSize: "1rem",
+      letterSpacing: 0,
+      textTransform: 'capitalize',
+      fontSize: "14px", borderRadius: "25px", padding: "2px 25px"
     },
     "& .MuiFormControlLabel-label": {
       fontSize: "1.2rem",
@@ -50,7 +49,7 @@ const useStyles = makeStyles({
   },
 });
 
-function CreateUserTab({ setOpen }) {
+const CreateUserTab = ({ setOpen }) => {
   const [organization, setOrganization] = useState("");
 
   const handleChange = (e) => {

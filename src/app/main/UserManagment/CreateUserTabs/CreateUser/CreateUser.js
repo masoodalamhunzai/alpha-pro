@@ -7,8 +7,6 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -16,7 +14,6 @@ import Select from "@mui/material/Select";
 import {
   LocalPhone as LocalPhoneIcon,
   AccountBalance as AccountBalanceIcon,
-  Upload as UploadIcon,
   AccountCircle as AccountCircleIcon,
 } from '@material-ui/icons';
 import IconButton from '@mui/material/IconButton';
@@ -34,11 +31,9 @@ const useStyles = makeStyles({
       textAlign: 'start'
     },
     "& .MuiButton-root": {
-      fontWeight: "700",
-      borderRadius: "1.6rem",
-      margin: "2rem 0",
-      padding: "1rem 2rem",
-      fontSize: "1rem",
+      letterSpacing: 0,
+      textTransform: 'capitalize',
+      fontSize: "14px", borderRadius: "25px", padding: "2px 25px"
     },
     "& .MuiFormControlLabel-label": {
       fontSize: "1.2rem",
@@ -64,13 +59,13 @@ const useStyles = makeStyles({
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      width: '100%'
+      width: '100%',
 
     },
   }
 });
 
-function CreateUserTab() {
+const CreateUserTab = () => {
   const [organization, setOrganization] = useState("");
 
   const handleChange = (event) => {
@@ -190,17 +185,13 @@ function CreateUserTab() {
           </Typography>
           <Box className="flex items-center mb-24">
             <AccountCircleIcon />
-            <Box sx={{ height: '7rem' }} className="border-slate-700 border-2 border-solid w-1/4 bg-white flex items-center justify-center ml-32">
+            <Box aria-label="upload picture" component="label" sx={{ height: '7rem' }} className="cursor-pointer border-slate-700 border-2 border-solid w-1/4 bg-white flex items-center justify-center ml-32">
               <input hidden accept="image/*" type="file" />
               <Icon color="action" className="text-gray-600 mr-8">upload</Icon>
             </Box>
           </Box>
           <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
+            className="flex items-center justify-between mx-40"
           >
             <Button
               type="submit"

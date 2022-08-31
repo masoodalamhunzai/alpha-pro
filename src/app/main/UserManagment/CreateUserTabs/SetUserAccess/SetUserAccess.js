@@ -1,5 +1,6 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
+import { makeStyles } from "@material-ui/core/styles";
 import Box from "@mui/material/Box";
 import Icon from '@material-ui/core/Icon';
 import Card from "@mui/material/Card";
@@ -10,7 +11,21 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 
-function SetUserAccess() {
+
+const useStyles = makeStyles({
+  root: {
+    fontSize: "1rem",
+  },
+  createBtn: {
+    "&.MuiButton-root": {
+      letterSpacing: 0,
+      textTransform: 'capitalize',
+    },
+  }
+});
+
+const SetUserAccess = () => {
+  const classes = useStyles();
   return (
     <div>
       <Box
@@ -21,6 +36,9 @@ function SetUserAccess() {
             fontWeight: "bold",
             color: "#20292F",
           },
+        }}
+        classes={{
+          root: classes.root,
         }}
       >
 
@@ -46,9 +64,11 @@ function SetUserAccess() {
               <Typography
                 variant="button"
                 display="block"
-                sx={{ px: 2, py: 0.5, fontWeight: 700 }}
+                sx={{
+                  px: 2, py: 0.5, fontWeight: 700, width: '250px'
+                }}
               >
-                <img className="logo-icon w-full h-full" src="assets/images/logos/logo.png" alt="logo" />
+                <img className="logo-icon w-full h-full" src="assets/images/eAlpha_03.png" alt="logo" />
               </Typography>
 
               <CardContent sx={{ width: "100%" }}>
@@ -120,9 +140,9 @@ function SetUserAccess() {
               <Typography
                 variant="button"
                 display="block"
-                sx={{ px: 2, py: 0.5, fontWeight: 700 }}
+                sx={{ px: 2, py: 0.5, fontWeight: 700, mt: 2, width: '250px' }}
               >
-                <img className="logo-icon w-full h-full" src="assets/images/logos/logo.png" alt="logo" />
+                <img className="logo-icon w-full h-full" src="assets/images/eAlpha_05.png" alt="logo" />
               </Typography>
               <CardContent sx={{ width: "100%" }}>
                 <div className="flex justify-between my-5">
@@ -200,10 +220,12 @@ function SetUserAccess() {
             sx={{ fontSize: "14px", borderRadius: "25px", padding: "2px 25px" }}
             variant="contained"
             size="medium"
+            className={classes.createBtn}
           >
             Create User
           </Button>
           <Button
+            className={classes.createBtn}
             sx={{
               fontSize: "14px",
               borderRadius: "25px",
@@ -220,7 +242,7 @@ function SetUserAccess() {
           </Button>
         </div>
       </Box>
-    </div>
+    </div >
   );
 }
 

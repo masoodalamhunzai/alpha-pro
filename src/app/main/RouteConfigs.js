@@ -83,10 +83,10 @@ const RouteConfigs = {
       path: "/settings",
       component: Settings,
     },
-    {
+    /* {
       path: "/logout",
       component: Logout,
-    },
+    }, */
   ],
 };
 

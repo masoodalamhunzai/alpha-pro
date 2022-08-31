@@ -6,8 +6,9 @@ import FuseLoading from "@fuse/core/FuseLoading";
 import Error404Page from "app/main/404/Error404Page";
 import LoginConfig from "app/main/login/LoginConfig";
 import { CreateUser } from "app/main";
+import LogoutConfig from "app/main/Logout/LogoutConfig";
 
-const routeConfigs = [RouteConfigs, LoginConfig];
+const routeConfigs = [RouteConfigs, LoginConfig, LogoutConfig];
 
 const routes = [
   // if you want to make whole app auth protected by default change defaultAuth for example:
