@@ -1,60 +1,49 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import { Divider } from "@material-ui/core";
-import Icon from "@material-ui/core/Icon";
-import IconButton from "@material-ui/core/IconButton";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import * as yup from "yup";
-import _ from "@lodash";
-import { login } from "app/services/api/ApiManager";
-import { useStateValue } from "app/services/state/State";
-import { Link, Redirect } from "react-router-dom";
+import { yupResolver } from '@hookform/resolvers/yup';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import _ from '@lodash';
+import { login } from 'app/services/api/ApiManager';
+import { useStateValue } from 'app/services/state/State';
+import { Link } from 'react-router-dom';
+import { actions } from 'app/services/state/Reducer';
 
-/* import {
+import {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
-} from "app/services/authService/accountActions"; */
-//import authService from "app/services/authService/authService";
-import { useSnackbar } from "notistack";
-import { useHistory } from "react-router";
+} from 'app/services/authService/accountActions';
+import authService from 'app/services/authService/authService';
+import { useSnackbar } from 'notistack';
+import { useHistory } from 'react-router';
 
 /**
  * Form Validation Schema
  */
 const schema = yup.object().shape({
-  username: yup
-    .string()
-    .email("Invalid email address")
-    .required("You must enter email"),
+  username: yup.string().email('Invalid email address').required('You must enter email'),
   password: yup
     .string()
-    .required("Please enter your password.")
-    .min(4, "Password is too short - should be 4 chars minimum."),
+    .required('Please enter your password.')
+    .min(4, 'Password is too short - should be 4 chars minimum.'),
 });
 
 const defaultValues = {
-  username: "",
-  password: "",
+  username: '',
+  password: '',
 };
 
 function JWTLoginTab(props) {
   const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
   const [{ user }, dispatch] = useStateValue();
-  const {
-    control,
-    setValue,
-    formState,
-    handleSubmit,
-    reset,
-    trigger,
-    setError,
-  } = useForm({
-    mode: "onChange",
+  const { control, setValue, formState, handleSubmit, reset, trigger, setError } = useForm({
+    mode: 'onChange',
     defaultValues,
     resolver: yupResolver(schema),
   });
@@ -64,43 +53,53 @@ function JWTLoginTab(props) {
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    setValue("username", "", { shouldDirty: true, shouldValidate: true });
-    setValue("password", "", { shouldDirty: true, shouldValidate: true });
+    setValue('username', '', { shouldDirty: true, shouldValidate: true });
+    setValue('password', '', { shouldDirty: true, shouldValidate: true });
   }, [reset, setValue, trigger]);
 
   async function onSubmit(model) {
     try {
-      // dispatch({ type: LOGIN_REQUEST });
-      const res = await login(model);
+      dispatch({ type: LOGIN_REQUEST });
+      const res = await login({
+        email: model.username,
+        password: model.password,
+      });
       if (
+        res &&
+        res.status == 200 &&
         res.data &&
-        res.data.result &&
-        res.data.result.user &&
-        res.data.result.user.id
+        res.data.status &&
+        res.data.status == 'success' &&
+        res.data.token
       ) {
         const loggedInUser = {
-          ...res.data.result.user,
-          userDetail: res.data.result.userDetail || null,
+          user: res.data.user,
           role:
-            res.data.result.role &&
-            res.data.result.role.length > 0 &&
-            res.data.result.role[0],
-          token: res.data.result.token || "",
+            res.data.user &&
+            res.data.user.roles &&
+            res.data.user.roles != [] &&
+            res.data.user.roles[0].name,
+          token: res.data.token || '',
+          organization: res.data.organization || null,
         };
-        //authService.setUser(loggedInUser);
-        //authService.setSession(res.data.result.token);
+        authService.setUser(loggedInUser);
+        authService.setSession(res.data.token);
         dispatch({
-          // type: LOGIN_SUCCESS,
+          type: LOGIN_SUCCESS,
           payload: { user: loggedInUser },
+        });
+        dispatch({
+          type: actions.SET_USER,
+          payload: loggedInUser,
         });
         if (
           loggedInUser &&
           loggedInUser.role &&
-          loggedInUser.role.toLowerCase() === "superadmin"
+          loggedInUser.role.toLowerCase() === 'super-admin'
         ) {
-          history.push("/practices");
+          history.push('/home');
         } else {
-          history.push("/monitors");
+          history.push('/home');
         }
       } else if (
         (res && res.data && res.data.message) ||
@@ -108,35 +107,30 @@ function JWTLoginTab(props) {
           res.data.responseException.exceptionMessage &&
           res.data.responseException.exceptionMessage.message)
       ) {
-        enqueueSnackbar(
-          res.data.message ||
-            res.data.responseException.exceptionMessage.message,
-          {
-            variant: "error",
-          }
-        );
-        //dispatch({ type: LOGIN_FAILURE });
-      } else {
-        enqueueSnackbar("Either username or password is incorrect", {
-          variant: "error",
+        enqueueSnackbar(res.data.message || res.data.responseException.exceptionMessage.message, {
+          variant: 'error',
         });
-        //dispatch({ type: LOGIN_FAILURE });
+        dispatch({ type: LOGIN_FAILURE });
+      } else {
+        enqueueSnackbar('Either username or password is incorrect', {
+          variant: 'error',
+        });
+        dispatch({ type: LOGIN_FAILURE });
       }
     } catch (error) {
-      const message =
-        (error.response && error.response.data.message) ||
-        "Something went wrong";
+      console.log(error, 'Error is here');
+      const message = (error.response && error.response.data.message) || 'Something went wrong';
       enqueueSnackbar(message, {
-        variant: "error",
+        variant: 'error',
       });
     }
   }
 
   return (
     <div className="w-full">
-      <span style={{ fontWeight: "bold", fontSize: "150%" }}>Sign in</span>
+      <span style={{ fontWeight: 'bold', fontSize: '150%' }}>Sign in</span>
       <form
-        style={{ marginTop: "10px" }}
+        style={{ marginTop: '10px' }}
         className="flex flex-col justify-center w-full"
         onSubmit={handleSubmit(onSubmit)}
       >
@@ -180,13 +174,13 @@ function JWTLoginTab(props) {
               helperText={errors?.password?.message}
               variant="outlined"
               InputProps={{
-                className: "pr-2",
-                type: showPassword ? "text" : "password",
+                className: 'pr-2',
+                type: showPassword ? 'text' : 'password',
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton onClick={() => setShowPassword(!showPassword)}>
                       <Icon className="text-20" color="action">
-                        {showPassword ? "visibility" : "visibility_off"}
+                        {showPassword ? 'visibility' : 'visibility_off'}
                       </Icon>
                     </IconButton>
                   </InputAdornment>
@@ -210,8 +204,8 @@ function JWTLoginTab(props) {
           </div>
         </div>
 
-        {/* <Button
-          style={{ backgroundColor: "#0099ff" }}
+        <Button
+          style={{ backgroundColor: '#0099ff' }}
           type="submit"
           variant="contained"
           color="primary"
@@ -221,8 +215,8 @@ function JWTLoginTab(props) {
           value="legacy"
         >
           Sign In
-        </Button> */}
-        <Button
+        </Button>
+        {/* <Button
           style={{ backgroundColor: "#0099ff" }}
           type="button"
           onClick={(e) => {
@@ -234,7 +228,7 @@ function JWTLoginTab(props) {
           className="w-full mx-auto mt-16"
         >
           Sign In
-        </Button>
+        </Button> */}
       </form>
       {/* <div class="divider pt-5">Or continue with</div> */}
       {/* <div className="flex justify-between">

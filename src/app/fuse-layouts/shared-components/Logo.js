@@ -27,11 +27,8 @@ function Logo() {
   const classes = useStyles();
 
   return (
-    <div className={clsx(classes.root, 'flex items-center')}>
-      <img className="logo-icon w-52 h-52" src="assets/images/logos/fuse.svg" alt="logo" />
-      <Typography className="text-16 leading-none mx-4 font-medium logo-text " color="inherit">
-        e<span className="uppercase">Alpha</span>
-      </Typography>
+    <div className={clsx(classes.root, 'flex items-center w-8/12 mt-4')}>
+      <img className="logo-icon w-full h-full" src="assets/images/eAlpha_03.png" alt="logo" />
       {/* <div className={clsx(classes.reactBadge, 'react-badge flex items-center py-4 px-8 rounded')}>
         <img
           className="react-logo"

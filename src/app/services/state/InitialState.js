@@ -7,6 +7,6 @@ export const initialState = {
     header: 'This is Header Stored in Global State',
     des: 'This Description is stored in Global State',
   },
-  user: null,
+  user: {},
   defaultPageSize: 10,
 };

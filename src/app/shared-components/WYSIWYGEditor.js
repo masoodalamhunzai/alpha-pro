@@ -19,7 +19,7 @@ const useStyles = makeStyles({
   wrapper: {},
   editor: {
     padding: '8px 12px',
-    height: `${256}px!important`,
+    height: `${156}px!important`,
   },
 });
 
@@ -45,6 +45,9 @@ const WYSIWYGEditor = forwardRef((props, ref) => {
         wrapperClassName={classes.wrapper}
         editorClassName={classes.editor}
         onEditorStateChange={onEditorStateChange}
+        toolbarOnFocus
+        placeholder="Compose Question"
+        ariaLabel="Compose Question"
       />
     </div>
   );

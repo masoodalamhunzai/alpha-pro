@@ -1,5 +1,5 @@
-import axios, { get } from 'axios';
-import { settings as s } from 'app/services/Settings';
+import axios, { get } from "axios";
+import { settings as s } from "app/services/Settings";
 
 const getUrl = (ep) => `${s.baseUrl}${ep}`;
 
@@ -7,9 +7,9 @@ export const getData = async (relativeUrl, user) => {
   const url = getUrl(relativeUrl);
   const options = {
     headers: {
-      // Authorization: `Bearer ${user.token}`,
-      'Content-Type': 'application/json-patch+json',
-      Accept: '*/*',
+      Authorization: `Bearer ${user.token}`,
+      "Content-Type": "application/json-patch+json",
+      Accept: "*/*",
     },
   };
   try {
@@ -26,8 +26,8 @@ export const getDataAnonymously = async (relativeUrl) => {
   const url = getUrl(relativeUrl);
   const options = {
     headers: {
-      'Content-Type': 'application/json-patch+json',
-      Accept: '*/*',
+      "Content-Type": "application/json-patch+json",
+      Accept: "*/*",
     },
   };
   try {
@@ -41,15 +41,15 @@ export const getDataAnonymously = async (relativeUrl) => {
   }
 };
 
-export const postData = async (relativeUrl, data) => {
+export const postData = async (relativeUrl,user, data) => {
   const url = getUrl(relativeUrl);
   const config = {
-    method: 'post',
+    method: "post",
     url,
     headers: {
-      // Authorization: `Bearer ${user.token}`,
-      'Content-Type': 'application/json',
-      Accept: '*/*',
+      Authorization: `Bearer ${user.token}`,
+      "Content-Type": "application/json",
+      Accept: "*/*",
     },
     data,
   };
@@ -67,12 +67,12 @@ export const postData = async (relativeUrl, data) => {
 export const postFormData = async (relativeUrl, user, data) => {
   const url = getUrl(relativeUrl);
   const config = {
-    method: 'post',
+    method: "post",
     url,
     headers: {
       Authorization: `Bearer ${user.token}`,
-      'Content-Type': 'multipart/form-data',
-      Accept: '*/*',
+      "Content-Type": "multipart/form-data",
+      Accept: "*/*",
     },
     data,
   };
@@ -90,11 +90,12 @@ export const postFormData = async (relativeUrl, user, data) => {
 export const postDataAnonymously = async (relativeUrl, data) => {
   const url = getUrl(relativeUrl);
   const config = {
-    method: 'post',
+    method: "post",
     url,
     headers: {
-      'Content-Type': 'application/json-patch+json',
-      Accept: '*/*',
+      //'Content-Type': 'application/json-patch+json',
+      "Content-Type": "application/json",
+      Accept: "*/*",
     },
     data,
   };
@@ -112,12 +113,12 @@ export const postDataAnonymously = async (relativeUrl, data) => {
 export const resetPassword = async (relativeUrl, user, data) => {
   const url = getUrl(relativeUrl);
   const config = {
-    method: 'post',
+    method: "post",
     url,
     headers: {
       Authorization: `Bearer ${user.token}`,
-      'Content-Type': 'application/json-patch+json',
-      Accept: '*/*',
+      "Content-Type": "application/json-patch+json",
+      Accept: "*/*",
     },
     data,
   };
@@ -135,12 +136,12 @@ export const resetPassword = async (relativeUrl, user, data) => {
 export const postFile = async (relativeUrl, user, data) => {
   const url = getUrl(relativeUrl);
   const config = {
-    method: 'post',
+    method: "post",
     url,
     headers: {
       Authorization: `Bearer ${user.token}`,
-      'Content-Type': 'application/json-patch+json',
-      Accept: '*/*',
+      "Content-Type": "application/json-patch+json",
+      Accept: "*/*",
     },
     data,
   };
@@ -158,11 +159,11 @@ export const postFile = async (relativeUrl, user, data) => {
 export const putData = async (relativeUrl, user, data) => {
   const url = getUrl(relativeUrl);
   const config = {
-    method: 'put',
+    method: "put",
     url,
     headers: {
       // Authorization: `Bearer ${user.token}`,
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     data: JSON.stringify({ ...data }),
   };
@@ -181,12 +182,12 @@ export const putFormData = async (relativeUrl, user, data) => {
   const url = getUrl(relativeUrl);
 
   const config = {
-    method: 'put',
+    method: "put",
     url,
     headers: {
       Authorization: `Bearer ${user.token}`,
-      'Content-Type': 'multipart/form-data',
-      Accept: '*/*',
+      "Content-Type": "multipart/form-data",
+      Accept: "*/*",
     },
     data,
   };
@@ -206,8 +207,8 @@ export const deleteData = async (relativeUrl) => {
   const options = {
     headers: {
       // Authorization: `Bearer ${user.token}`,
-      'Content-Type': 'application/json-patch+json',
-      Accept: '*/*',
+      "Content-Type": "application/json-patch+json",
+      Accept: "*/*",
     },
   };
 

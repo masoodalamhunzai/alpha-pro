@@ -196,11 +196,7 @@ function AddUserDetailsTab() {
                         </Box>
                     </Box>
                     <Box
-                        sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                        }}
+                        className="flex items-center justify-between mx-40"
                     >
                         <Button
                             type="submit"

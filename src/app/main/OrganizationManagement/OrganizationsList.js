@@ -1,32 +1,26 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react/jsx-no-bind */
-import { memo, useState, useRef } from 'react';
+import { memo, useState, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  TablePagination,
-  Tooltip,
-  Avatar,
-  Button,
-  Typography,
-} from '@material-ui/core';
+import { TablePagination, Tooltip } from '@material-ui/core';
 import {
   DeleteSweep as DeleteIcon,
   BorderColor as EditIcon,
-  RefreshOutlined as RestoreIcon,
   VisibilityRounded as VisibilityRoundedIcon,
 } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
-//import { DataGrid } from '@material-ui/data-grid';
+// import { DataGrid } from '@material-ui/data-grid';
 import { useStateValue } from 'app/services/state/State';
-import { dataGridPageSizes, settings as s, states } from 'app/services/Settings';
+import { dataGridPageSizes } from 'app/services/Settings';
 
 import FuseLoading from '@fuse/core/FuseLoading';
 import { actions } from 'app/services/state/Reducer';
 import { useSnackbar } from 'notistack';
 import swal from 'sweetalert';
-import moment from 'moment';
-import {CustomToolbar} from '../../components'
+import { getOrganizations } from 'app/services/api/ApiManager';
+import { CustomToolbar } from '../../components';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -74,18 +68,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function OrganizationsList({ page, setPage, loading, setLoading,fetchOrganizations }) {
+
+function OrganizationsList({
+  page,
+  setPage,
+  loading,
+  setLoading,
+  fetchOrganizations,
+}) {
+
   const classes = useStyles();
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
   const anchorRef = useRef(null);
   const [organizationId, setOrganizationId] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [{ user, patients, defaultPageSize }, dispatch] = useStateValue();
+  const [{ user, organization, patients, defaultPageSize }, dispatch] = useStateValue();
   const [open, setOpen] = useState(false);
-  //const { payload: organizationsListList, pagination } = organizations;
+  // const { payload: organizationsListList, pagination } = organizations;
   const [pagination, setPagination] = useState([]);
-
 
   async function onArchiveOrganization(Id) {
     swal({
@@ -101,9 +102,7 @@ function OrganizationsList({ page, setPage, loading, setLoading,fetchOrganizatio
     });
   }
 
-  async function handleArchiveOrganization(Id) {
-
-  }
+  async function handleArchiveOrganization(Id) { }
 
   async function onRestoreOrganization(Id) {
     swal({
@@ -119,26 +118,30 @@ function OrganizationsList({ page, setPage, loading, setLoading,fetchOrganizatio
     });
   }
 
-  async function handleRestoreOrganization(Id) {
+  async function handleRestoreOrganization(Id) { }
 
-  }
+  const showOrganizationDetail = (id) => { };
 
-  const showOrganizationDetail = (id) => {
- 
+
+  async function handleEditOrganization(Id) { }
+
+  const handleChangePage = async (event, newPage) => { };
+
+  function handleChangeRowsPerPage(event) { }
+
+  const loadOrganizations = async () => {
+    const res = await getOrganizations(user);
+
+    if (res && res.status == 200 && res.data && res.data.length > 0) {
+      dispatch({
+        type: actions.SET_ORGANIZATION,
+        payload: res.data,
+      });
+    }
   };
-
-  async function handleEditOrganization(Id) {
-
-  }
-
-  const handleChangePage = async (event, newPage) => {
-
-  };
-
-  function handleChangeRowsPerPage(event) {
-  }
-
-
+  useEffect(() => {
+    loadOrganizations();
+  }, []);
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'name', headerName: 'Name', width: 150 },
@@ -153,69 +156,150 @@ function OrganizationsList({ page, setPage, loading, setLoading,fetchOrganizatio
       sortable: false,
       width: 160,
       renderCell: (params) => (
-        
-            <>
-              <Tooltip title="View">
-                <VisibilityRoundedIcon
-                  className={classes.icon}
-                  onClick={() => showOrganizationDetail(params.id)}
-                />
-              </Tooltip>
-              <Tooltip title="Edit">
-                <EditIcon
-                  style={{ marginLeft: 5 }}
-                  className={classes.icon}
-                  onClick={() => handleEditOrganization(params.id)}
-                />
-              </Tooltip>
-             
-                <Tooltip title="Archive">
-                  <DeleteIcon
-                    className={classes.icon}
-                    style={{ marginLeft: 5 }}
-                    onClick={() => onArchiveOrganization(params.id)}
-                  />
-                </Tooltip>
-             
-            </>
-            
+
+        <>
+          <Tooltip title="View">
+            <VisibilityRoundedIcon
+              className={classes.icon}
+              onClick={() => showOrganizationDetail(params.id)}
+            />
+          </Tooltip>
+          <Tooltip title="Edit">
+            <EditIcon
+              style={{ marginLeft: 5 }}
+              className={classes.icon}
+              onClick={() => handleEditOrganization(params.id)}
+            />
+          </Tooltip>
+
+          <Tooltip title="Archive">
+            <DeleteIcon
+              className={classes.icon}
+              style={{ marginLeft: 5 }}
+              onClick={() => onArchiveOrganization(params.id)}
+            />
+          </Tooltip>
+
+        </>
       ),
     },
   ];
 
-    const rows = [
-    {id:1, name: 'Snow', contactperson: 'Jon', email: '35@gmail.com',phonenumber:'123123',address:'test address' },
-    {id:2, name: 'Snow', contactperson: 'Jon', email: '35@gmail.com',phonenumber:'143123',address:'test address' },
-    {id:3, name: 'Snow', contactperson: 'Jon', email: '35@gmail.com',phonenumber:'153123',address:'test address' },
-    {id:4, name: 'Snow', contactperson: 'Jon', email: '35@gmail.com',phonenumber:'163123',address:'test address' },
-    {id:5, name: 'Snow', contactperson: 'Jon', email: '35@gmail.com',phonenumber:'173123',address:'test address' },
-    {id:6, name: 'Snow', contactperson: 'Jon', email: '35@gmail.com',phonenumber:'183123',address:'test address' },
-    {id:7, name: 'Snow', contactperson: 'Jon', email: '35@gmail.com',phonenumber:'193123',address:'test address' },
-    {id:8, name: 'Snow', contactperson: 'Jon', email: '35@gmail.com',phonenumber:'103123',address:'test address' },
-    {id:8, name: 'Snow', contactperson: 'Jon', email: '35@gmail.com',phonenumber:'153123',address:'test address' },
+  const rows =
+    organization &&
+    organization.map((org) => {
+      return {
+        id: org.id,
+        name: org.name,
+        contactperson: org.contactFullName,
+        email: org.contactEmail,
+        phonenumber: org.contactNumber,
+        address: org.description,
+      };
+    }); /*  [
+    {
+      id: 1,
+      name: "Snow",
+      contactperson: "Jon",
+      email: "35@gmail.com",
+      phonenumber: "123123",
+      address: "test address",
+    },
+    {
+      id: 2,
+      name: "Snow",
+      contactperson: "Jon",
+      email: "35@gmail.com",
+      phonenumber: "143123",
+      address: "test address",
+    },
+    {
+      id: 3,
+      name: "Snow",
+      contactperson: "Jon",
+      email: "35@gmail.com",
+      phonenumber: "153123",
+      address: "test address",
+    },
+    {
+      id: 4,
+      name: "Snow",
+      contactperson: "Jon",
+      email: "35@gmail.com",
+      phonenumber: "163123",
+      address: "test address",
+    },
+    {
+      id: 5,
+      name: "Snow",
+      contactperson: "Jon",
+      email: "35@gmail.com",
+      phonenumber: "173123",
+      address: "test address",
+    },
+    {
+      id: 6,
+      name: "Snow",
+      contactperson: "Jon",
+      email: "35@gmail.com",
+      phonenumber: "183123",
+      address: "test address",
+    },
+    {
+      id: 7,
+      name: "Snow",
+      contactperson: "Jon",
+      email: "35@gmail.com",
+      phonenumber: "193123",
+      address: "test address",
+    },
+    {
+      id: 8,
+      name: "Snow",
+      contactperson: "Jon",
+      email: "35@gmail.com",
+      phonenumber: "103123",
+      address: "test address",
+    },
+    {
+      id: 9,
+      name: "Snow",
+      contactperson: "Jon",
+      email: "35@gmail.com",
+      phonenumber: "153123",
+      address: "test address",
+    },
+>>>>>>> 160c28ed35c48271205b77ee68e1751cb5ad5fcd
   ];
-
+ */
   return (
     <>
+      {/*  <button
+        onClick={() => {
+          loadOrganizations();
+        }}
+      >
+        Load Organizations
+      </button> */}
       <div className={classes.root}>
         {rows && (
           <DataGrid
-          sx={{
-            '& .MuiDataGrid-columnHeaderTitle':{
-              fontSize:'14px',
-              fontWeight:'600',
-            },
-            '& .MuiDataGrid-cell':{
-              fontSize:'12px'
-            }
-          }}
+            sx={{
+              '& .MuiDataGrid-columnHeaderTitle': {
+                fontSize: '14px',
+                fontWeight: '600',
+              },
+              '& .MuiDataGrid-cell': {
+                fontSize: '12px'
+              }
+            }}
             rows={rows}
             page={page}
             hideFooter
             columns={columns}
             components={{
-                Toolbar: () => <CustomToolbar />
-              }}
+              Toolbar: () => <CustomToolbar />,
+            }}
             hideFooterRowCount
             hideFooterPagination
             style={{ height: '70vh' }}
@@ -243,7 +327,6 @@ function OrganizationsList({ page, setPage, loading, setLoading,fetchOrganizatio
           </div>
         )}
       </div>
-    
     </>
   );
 }

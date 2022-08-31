@@ -1,11 +1,11 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable max-len */
 import { settings as s } from 'app/services/Settings';
-import { getData, postData, getDataAnonymously } from './ApiCalls';
+import { getData, postData, getDataAnonymously, postDataAnonymously } from './ApiCalls';
 
-export const login = async () => {
+export const login = async (data) => {
   try {
-    const response = await getData(`${s.login}`);
+    const response = await postDataAnonymously(`${s.getToken}`, data);
     return response;
   } catch (err) {
     return null;
@@ -15,6 +15,23 @@ export const login = async () => {
 export const getAllOrganizations = async () => {
   try {
     const response = await getDataAnonymously(`${s.organization.getAllOrganizations}`);
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getOrganizations = async (user) => {
+  try {
+    const response = await getData(`${s.organization.getOrganizations}`, user);
+    return response;
+  } catch (err) {
+    return null;
+  }
+};
+export const AddOrganization = async (data, user) => {
+  try {
+    const response = await postData(`${s.organization.addOrganizations}`, user, data);
     return response;
   } catch (error) {
     return null;

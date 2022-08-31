@@ -7,8 +7,6 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -16,7 +14,6 @@ import Select from "@mui/material/Select";
 import {
   LocalPhone as LocalPhoneIcon,
   AccountBalance as AccountBalanceIcon,
-  Upload as UploadIcon,
   AccountCircle as AccountCircleIcon,
 } from '@material-ui/icons';
 import IconButton from '@mui/material/IconButton';
@@ -34,11 +31,9 @@ const useStyles = makeStyles({
       textAlign: 'start'
     },
     "& .MuiButton-root": {
-      fontWeight: "700",
-      borderRadius: "1.6rem",
-      margin: "2rem 0",
-      padding: "1rem 2rem",
-      fontSize: "1rem",
+      letterSpacing: 0,
+      textTransform: 'capitalize',
+      fontSize: "14px", borderRadius: "25px", padding: "2px 25px"
     },
     "& .MuiFormControlLabel-label": {
       fontSize: "1.2rem",
@@ -67,11 +62,10 @@ const useStyles = makeStyles({
       width: '100%',
 
     },
-
   }
 });
 
-function CreateUserTab() {
+const CreateUserTab = () => {
   const [organization, setOrganization] = useState("");
 
   const handleChange = (event) => {
@@ -197,11 +191,7 @@ function CreateUserTab() {
             </Box>
           </Box>
           <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
+            className="flex items-center justify-between mx-40"
           >
             <Button
               type="submit"
