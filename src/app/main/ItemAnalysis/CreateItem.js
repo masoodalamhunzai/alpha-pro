@@ -1,31 +1,31 @@
-import { useState } from 'react';
-import FusePageSimple from '@fuse/core/FusePageSimple';
-import Typography from '@mui/material/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import { useStateValue } from 'app/services/state/State';
-import { actions } from 'app/services/state/Reducer';
-import { useHistory, useLocation } from 'react-router-dom';
-import WYSIWYGEditor from 'app/shared-components/WYSIWYGEditor';
-import Icon from '@material-ui/core/Icon';
-import Button from '@material-ui/core/Button';
-import { saveQuestion } from 'app/services/api/ApiManager';
-import swal from 'sweetalert';
+import { useState } from "react";
+import FusePageSimple from "@fuse/core/FusePageSimple";
+import Typography from "@mui/material/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+import { useStateValue } from "app/services/state/State";
+import { actions } from "app/services/state/Reducer";
+import { useHistory, useLocation } from "react-router-dom";
+import WYSIWYGEditor from "app/shared-components/WYSIWYGEditor";
+import Icon from "@material-ui/core/Icon";
+import Button from "@material-ui/core/Button";
+import { saveQuestion } from "app/services/api/ApiManager";
+import swal from "sweetalert";
 
 // import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
-import Paper from '@mui/material/Paper';
-import { Controller, useForm } from 'react-hook-form';
-import _ from '@lodash';
-import Breadcrumb from '../../fuse-layouts/shared-components/Breadcrumbs';
+import Paper from "@mui/material/Paper";
+import { Controller, useForm } from "react-hook-form";
+import _ from "@lodash";
+import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
 // import * as yup from 'yup';
 // import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
-import DraggableItem from './DraggableItem';
-import ItemConfiguration from './ItemConfiguration';
+import DraggableItem from "./DraggableItem";
+import ItemConfiguration from "./ItemConfiguration";
 
 const useStyles = makeStyles({
   layoutRoot: {},
 });
 
-const defaultValues = { name: '', email: '', subject: '', message: '' };
+const defaultValues = { name: "", email: "", subject: "", message: "" };
 /* const schema = yup.object().shape({
   name: yup.string().required('You must enter a name'),
   subject: yup.string().required('You must enter a subject'),
@@ -37,25 +37,25 @@ const CreateItem = () => {
   const location = useLocation();
   const history = useHistory();
   const pageTitle = location.pathname
-    .split('/')
+    .split("/")
     .filter((x) => x)[0]
-    .split('-')
-    .join(' ');
+    .split("-")
+    .join(" ");
   const classes = useStyles();
   const [{ news, user }, dispatch] = useStateValue();
   const [count, setCount] = useState(0);
-  const [editorContent, setEditorContent] = useState('');
+  const [editorContent, setEditorContent] = useState("");
   const [multipleChoices, setMultipleChoices] = useState([]);
 
   const setNews = async () => {
     dispatch({
       type: actions.SET_NEWS,
-      payload: { header: 'new header text', des: 'new description text' },
+      payload: { header: "new header text", des: "new description text" },
     });
   };
 
   const { control, handleSubmit, watch, formState } = useForm({
-    mode: 'onChange',
+    mode: "onChange",
     defaultValues,
     // resolver: yupResolver(schema),
   });
@@ -73,43 +73,43 @@ const CreateItem = () => {
       const finalItemObject = {
         description: editorContent,
         options: multipleChoices,
-        itemId: '1eff4c49-fcb1-432e-83c8-c5a0023ee5e0',
-        questionType: 'simple-mcqs',
+        itemId: "1eff4c49-fcb1-432e-83c8-c5a0023ee5e0",
+        questionType: "simple-mcqs",
       };
-      if (editorContent === '' || editorContent === '<p></p>\n') {
+      if (editorContent === "" || editorContent === "<p></p>\n") {
         swal({
-          title: 'Error!',
-          text: 'Question Description is Required!',
-          icon: 'error',
-          button: 'Ok!',
+          title: "Error!",
+          text: "Question Description is Required!",
+          icon: "error",
+          button: "Ok!",
         });
       }
       if (multipleChoices === [] || multipleChoices.length === 0) {
         swal({
-          title: 'Error!',
-          text: 'Multiple Choice Options are Required!',
-          icon: 'error',
-          button: 'Ok!',
+          title: "Error!",
+          text: "Multiple Choice Options are Required!",
+          icon: "error",
+          button: "Ok!",
         });
       } else {
-        console.log('final item object ', finalItemObject);
+        console.log("final item object ", finalItemObject);
         const res = await saveQuestion(
           finalItemObject,
-          '1eff4c49-fcb1-432e-83c8-c5a0023ee5e0',
+          "1eff4c49-fcb1-432e-83c8-c5a0023ee5e0",
           user
         );
 
-        if (res && res.data && res.data.status === 'success') {
+        if (res && res.data && res.data.status === "success") {
           swal({
-            title: 'Good job!',
-            text: 'Question Saved Successfully!',
-            icon: 'success',
-            button: 'Ok!',
+            title: "Good job!",
+            text: "Question Saved Successfully!",
+            icon: "success",
+            button: "Ok!",
           }).then((value) => {
-            setEditorContent('');
+            setEditorContent("");
             setMultipleChoices([]);
-            console.log('saved successfully');
-            redirectTo('/all-items');
+            console.log("saved successfully");
+            redirectTo("/all-items");
           });
         }
       }
@@ -127,7 +127,7 @@ const CreateItem = () => {
     const option = {
       id: `item-${index + 1}`,
       position: index,
-      title: '',
+      title: "",
       isCorrect: false,
       isAlternate: false,
     };
@@ -135,10 +135,10 @@ const CreateItem = () => {
     choices = multipleChoices;
     choices.push(option);
     setMultipleChoices(choices);
-    console.log('onNewOptionAdded ItemAnalysis option ', option);
-    console.log('onNewOptionAdded ItemAnalysis choices ', choices);
+    console.log("onNewOptionAdded ItemAnalysis option ", option);
+    console.log("onNewOptionAdded ItemAnalysis choices ", choices);
   }
-  console.log('value in ItemAnalysis ', editorContent);
+  console.log("value in ItemAnalysis ", editorContent);
 
   return (
     <FusePageSimple
@@ -152,10 +152,10 @@ const CreateItem = () => {
             variant="h3"
             gutterBottom
             sx={{
-              color: '#000',
+              color: "#000",
               fontWeight: 700,
               mt: 2,
-              textTransform: 'capitalize',
+              textTransform: "capitalize",
             }}
           >
             {"Create New Question"}
@@ -164,7 +164,7 @@ const CreateItem = () => {
             variant="contained"
             color="primary"
             size="small"
-            style={{ float: 'right' }}
+            style={{ float: "right" }}
             aria-label="Save Draft"
             onClick={() => onSaveQuestion()}
             // startIcon={<AddIcon />}
@@ -177,12 +177,12 @@ const CreateItem = () => {
         /*  <div className="p-24"> */
         <>
           <div className="flex flex-col items-center p-24 sm:p-40 container">
-            {/* <div className="flex flex-col w-full max-w-4xl">
+            <div className="flex flex-col w-full max-w-4xl">
               <Paper
                 style={{
-                  paddingTop: '0px',
-                  paddingLeft: '0px',
-                  paddingRight: '0px',
+                  paddingTop: "0px",
+                  paddingLeft: "0px",
+                  paddingRight: "0px",
                 }}
                 className="border border-blue border-2 mt-32 sm:mt-48 p-24 pb-28 sm:p-40 sm:pb-28 rounded-2xl border-blue-600"
               >
@@ -190,8 +190,8 @@ const CreateItem = () => {
                   <Icon
                     className="p-3 bg bg-blue bg-blue-600"
                     style={{
-                      padding: '2px 24px 24px 4px',
-                      color: 'white',
+                      padding: "2px 24px 24px 4px",
+                      color: "white",
                     }}
                     size="small"
                   >
@@ -200,12 +200,14 @@ const CreateItem = () => {
                 </div>
                 <form className="px-0 sm:px-24 ">
                   <div className="mb-24 flex justify-between flex-wrap wrap">
-                    <h2 className="pose-h2 font-bold tracking-tight">Multiple choice - standard</h2>
+                    <h2 className="pose-h2 font-bold tracking-tight">
+                      Multiple choice - standard
+                    </h2>
                     <div>
                       <button className="border border-gray border-gray-300 bg-white hover:bg-gray-100 text-gray-800 text-white font-bold py-2 px-6 rounded-full mx-4">
                         <Icon
                           style={{
-                            fontSize: '10px',
+                            fontSize: "10px",
                           }}
                           size="small"
                         >
@@ -231,7 +233,10 @@ const CreateItem = () => {
                     <Controller
                       className="mt-8 mb-16"
                       render={({ field }) => (
-                        <WYSIWYGEditor setEditorContent={setEditorContent} {...field} />
+                        <WYSIWYGEditor
+                          setEditorContent={setEditorContent}
+                          {...field}
+                        />
                       )}
                       name="message"
                       control={control}
@@ -241,7 +246,7 @@ const CreateItem = () => {
                       variant="h6"
                       gutterBottom
                       sx={{
-                        color: 'gray',
+                        color: "gray",
                         fontWeight: 700,
                         mt: 2,
                       }}
@@ -256,16 +261,15 @@ const CreateItem = () => {
                     />
                   </div>
                 </form>
-
               </Paper>
-            </div> */}
+            </div>
 
             {/* this is for cofiguraton component */}
 
-            <div className="flex flex-col w-full max-w-4xl" style={{width:'30%'}}>
+            {/* <div className="flex flex-col w-full max-w-4xl" style={{width:'30%'}}>
 
               <ItemConfiguration />
-            </div>
+            </div> */}
 
             {/* this is for configuration component */}
           </div>

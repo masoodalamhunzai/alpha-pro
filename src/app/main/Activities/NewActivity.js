@@ -55,7 +55,8 @@ const NewActivity = () => {
               textTransform: "capitalize",
             }}
           >
-            {pageTitle}
+            Create New Assessment
+            {/* {pageTitle} */}
           </Typography>
         </div>
       }
