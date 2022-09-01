@@ -4,8 +4,19 @@ import {
   OrganizationManagement,
   ManageOrganization,
   UserManagment,
+  Items,
   ItemAnalysis,
+  CreateItem,
+  ItemsBulkUpdate,
   AuthorSiteSettings,
+  Activities,
+  NewActivity,
+  Grade,
+  Subject,
+  TagHierarchies,
+  TagTypes,
+  BaseTemplates,
+  ActivitiesBulkUpdates,
   SessionDetails,
   ItemBankDetails,
   Consumers,
@@ -48,9 +59,18 @@ const RouteConfigs = {
       component: UserManagment,
     },
     {
+      path: "/create-item",
+      component: CreateItem,
+    },
+    {
+      path: "/all-items",
+      component: Items,
+    },
+    {
       path: "/item-analysis",
       component: ItemAnalysis,
     },
+
     {
       path: "/author-site-settings",
       component: AuthorSiteSettings,
@@ -68,9 +88,49 @@ const RouteConfigs = {
       component: ItemBanks,
     },
     {
+      path: "/item-bulk-update",
+      component: ItemsBulkUpdate,
+    },
+
+    {
+      path: "/grade",
+      component: Grade,
+    },
+    {
+      path: "/subject",
+      component: Subject,
+    },
+    {
+      path: "/tag-hierarchies",
+      component: TagHierarchies,
+    },
+    {
+      path: "/tag-types",
+      component: TagTypes,
+    },
+
+    {
       path: "/consumers",
       component: Consumers,
     },
+
+    {
+      path: "/all-activities",
+      component: Activities,
+    },
+    {
+      path: "/new-activity",
+      component: NewActivity,
+    },
+    {
+      path: "/base-templates",
+      component: BaseTemplates,
+    },
+    {
+      path: "/activities-bulk-updates",
+      component: ActivitiesBulkUpdates,
+    },
+
     {
       path: "/custom-questions",
       component: CustomQuestions,

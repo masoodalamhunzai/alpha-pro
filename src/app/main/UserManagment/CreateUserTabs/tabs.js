@@ -102,7 +102,7 @@ const CreateUserTabs = () => {
     .join(" ");
   const classes = useStyles();
 
-  const [value, setValue] = React.useState(2);
+  const [value, setValue] = React.useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -145,15 +145,15 @@ const CreateUserTabs = () => {
                   label="Add User Details"
                   {...a11yProps(0)}
                 />
-                <AntTab label="Select User Sites" {...a11yProps(1)} />
+                {/* <AntTab label="Select User Sites" {...a11yProps(1)} />
                 <AntTab label="Set User Access" {...a11yProps(2)} />
-                <AntTab label="Create User" {...a11yProps(3)} />
+                <AntTab label="Create User" {...a11yProps(3)} />*/}
               </AntTabs>
             </Box>
             <TabPanel value={value} index={0}>
               <AddUserDetails />
             </TabPanel>
-            <TabPanel value={value} index={1}>
+            {/* <TabPanel value={value} index={1}>
               <SelectUserSite />
             </TabPanel>
             <TabPanel value={value} index={2}>
@@ -161,7 +161,7 @@ const CreateUserTabs = () => {
             </TabPanel>
             <TabPanel value={value} index={3}>
               <CreateUser />
-            </TabPanel>
+            </TabPanel> */}
           </Box>
         </div>
       }

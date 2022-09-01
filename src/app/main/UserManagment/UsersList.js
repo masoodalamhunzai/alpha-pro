@@ -16,6 +16,8 @@ import {
   states,
 } from "app/services/Settings";
 import FuseLoading from "@fuse/core/FuseLoading";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Typography from "@mui/material/Typography";
 // import { actions } from "app/services/state/Reducer";
 import { useSnackbar } from "notistack";
 import swal from "sweetalert";
@@ -24,9 +26,14 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import EditUser from "./EditUser";
 import { CustomToolbar } from "../../components";
+import {
+  getOrganizationUsers,
+  getOrganizations,
+} from "app/services/api/ApiManager";
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    fontSize: "1rem",
     backgroundColor: theme.palette.background.paper,
     padding: 20,
   },
@@ -81,15 +88,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
+function UsersList({ page, loading, organizationUsers }) {
   const classes = useStyles();
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
   const anchorRef = useRef(null);
   const [userId, setUserId] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [{ user, patients, defaultPageSize }, dispatch] = useStateValue();
-  //const { payload: patientsList, pagination } = patients;
+  const [{ user, patients, defaultPageSize, organization }, dispatch] =
+    useStateValue();
   const [usersList, setUsersList] = useState([]);
   const [pagination, setPagination] = useState([]);
   const [open, setOpen] = useState(false);
@@ -110,7 +117,7 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
     });
   }
 
-  async function handleArchiveUser(Id) { }
+  async function handleArchiveUser(Id) {}
 
   async function onRestoreUser(Id) {
     swal({
@@ -125,16 +132,15 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
       }
     });
   }
-
-  async function handleRestoreUser(Id) { }
+  async function handleRestoreUser(Id) {}
 
   // const showUserDetail = (id) => {};
 
   // async function handleEditUser(Id) {}
 
-  const handleChangePage = async (event, newPage) => { };
+  const handleChangePage = async (event, newPage) => {};
 
-  function handleChangeRowsPerPage(event) { }
+  function handleChangeRowsPerPage(event) {}
 
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
@@ -144,10 +150,21 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
     { field: "phonenumber", headerName: "Mobile Phone", flex: 1 },
     { field: "organization", headerName: "Organization", flex: 1 },
     {
-      field: "status", headerName: "Status", flex: 1,
+      field: "status",
+      headerName: "Status",
+      flex: 1,
       renderCell: (params) => (
-        <> <span style={{ color: params.row.status === 'inActive' ? 'red' : 'green' }}>{params.row.status}</span></>
-      )
+        <>
+          {" "}
+          <span
+            style={{
+              color: params.row.status === "inActive" ? "red" : "green",
+            }}
+          >
+            {params.row.status}
+          </span>
+        </>
+      ),
     },
     {
       field: "action",
@@ -162,7 +179,6 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
               style={{ marginLeft: 5 }}
               className={classes.icon}
               onClick={handleOpen}
-
             />
           </Tooltip>
           <Tooltip title="Archive">
@@ -177,89 +193,17 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
     },
   ];
 
-  const rows = [
-    {
-      id: 1,
-      firstName: "Snow",
-      lastName: "Leo",
-      email: "35@gmail.com",
-      phonenumber: "123123",
-      organization: "eAlpha",
-      status: "Active",
-    },
-    {
-      id: 2,
-      firstName: "Snow",
-      lastName: "Leo",
-      email: "35@gmail.com",
-      phonenumber: "143123",
-      organization: "eAlpha",
-      status: "inActive",
-    },
-    {
-      id: 3,
-      firstName: "Snow",
-      lastName: "Leo",
-      email: "35@gmail.com",
-      phonenumber: "153123",
-      organization: "eAlpha",
-      status: "Active",
-    },
-    {
-      id: 4,
-      firstName: "Snow",
-      lastName: "Leo",
-      email: "35@gmail.com",
-      phonenumber: "163123",
-      organization: "eAlpha",
-      status: "inActive",
-    },
-    {
-      id: 5,
-      firstName: "Snow",
-      lastName: "Leo",
-      email: "35@gmail.com",
-      phonenumber: "173123",
-      organization: "eAlpha",
-      status: "inActive",
-    },
-    {
-      id: 6,
-      firstName: "Snow",
-      lastName: "Leo",
-      email: "35@gmail.com",
-      phonenumber: "183123",
-      organization: "eAlpha",
-      status: "Active",
-    },
-    {
-      id: 7,
-      firstName: "Snow",
-      lastName: "Leo",
-      email: "35@gmail.com",
-      phonenumber: "193123",
-      organization: "eAlpha",
-      status: "inActive",
-    },
-    {
-      id: 8,
-      firstName: "Snow",
-      lastName: "Leo",
-      email: "35@gmail.com",
-      phonenumber: "103123",
-      organization: "eAlpha",
-      status: "inActive",
-    },
-    {
-      id: 9,
-      firstName: "Snow",
-      lastName: "Leo",
-      email: "35@gmail.com",
-      phonenumber: "153123",
-      organization: "eAlpha",
-      status: "Active",
-    },
-  ];
+  const rows = organizationUsers?.map((user) => {
+    return {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phonenumber: "",
+      organization: "",
+      status: "",
+    };
+  });
 
   return (
     <>
@@ -274,7 +218,23 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
             <EditUser setOpen={setOpen} />
           </Box>
         </Modal>
-        {rows && (
+        {loading && (
+          <div className="flex justify-center flex-col items-center py-12">
+            <Typography
+              variant="body1"
+              gutterBottom
+              color="textSecondary"
+              align="center"
+            >
+              Loading...
+            </Typography>
+            <CircularProgress
+              className="w-192 sm:w-320 max-w-full rounded-2"
+              color="secondary"
+            />
+          </div>
+        )}
+        {rows ? (
           <DataGrid
             sx={{
               "& .MuiDataGrid-columnHeaderTitle": {
@@ -300,6 +260,8 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
             rowCount={10 /* pagination.totalItemsCount */}
             rowsPerPageOptions={dataGridPageSizes}
           />
+        ) : (
+          ""
         )}
         <TablePagination
           page={page}
@@ -313,11 +275,6 @@ function UsersList({ page, setPage, loading, setLoading, fetchUsers }) {
           nextIconButtonProps={{ "aria-label": "Next Page" }}
           backIconButtonProps={{ "aria-label": "Previous Page" }}
         />
-        {loading && (
-          <div className={classes.progress} align="center">
-            <FuseLoading />
-          </div>
-        )}
       </div>
     </>
   );
