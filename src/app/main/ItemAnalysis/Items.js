@@ -170,7 +170,8 @@ const Items = () => {
               textTransform: "capitalize",
             }}
           >
-            {pageTitle}
+            All Questions
+            {/* {pageTitle} */}
           </Typography>
 
           <Button
@@ -182,7 +183,7 @@ const Items = () => {
             onClick={() => redirectTo("/create-item")}
             startIcon={<AddIcon />}
           >
-            Create Item
+            Create Question
           </Button>
         </div>
       }
@@ -198,7 +199,7 @@ const Items = () => {
                 <Paper className="flex items-center min-w-full sm:min-w-0 w-full max-w-512 px-12 py-4 mx-12 rounded-16 shdaow">
                   <Icon color="action">search</Icon>
                   <Input
-                    placeholder="Search by Reference"
+                    placeholder="Search by Name"
                     className="flex flex-1 px-8"
                     disableUnderline
                     fullWidth

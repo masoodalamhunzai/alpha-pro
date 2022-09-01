@@ -55,7 +55,8 @@ const Activities = () => {
               textTransform: "capitalize",
             }}
           >
-            {pageTitle}
+            All Assessments
+            {/* {pageTitle} */}
           </Typography>
         </div>
       }
