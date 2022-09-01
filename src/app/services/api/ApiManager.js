@@ -161,3 +161,15 @@ export const createOrganizationUser = async (id, user, data) => {
     return null;
   }
 };
+export const searchOrganizationUser = async (id, user, data) => {
+  try {
+    const response = await getData(
+      `${s.organizationUsers.getOrganizationUser(id)}`,
+      user,
+      data
+    );
+    return response;
+  } catch (err) {
+    return null;
+  }
+};

@@ -89,8 +89,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function UsersList({ page, loading, organizationUsers }) {
-  const classes = useStyles();
   const history = useHistory();
+  const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const anchorRef = useRef(null);
   const [userId, setUserId] = useState(0);
@@ -116,6 +116,14 @@ function UsersList({ page, loading, organizationUsers }) {
       }
     });
   }
+
+  const redirectTo = async (goTo) => {
+    try {
+      history.push(goTo);
+    } catch (err) {
+      // console.log(err);
+    }
+  };
 
   async function handleArchiveUser(Id) {}
 
@@ -174,11 +182,12 @@ function UsersList({ page, loading, organizationUsers }) {
       width: 160,
       renderCell: (params) => (
         <>
+          {console.log(params, "params")}
           <Tooltip title="Edit">
             <EditIcon
               style={{ marginLeft: 5 }}
               className={classes.icon}
-              onClick={handleOpen}
+              onClick={() => redirectTo("/user-management/edit-user")}
             />
           </Tooltip>
           <Tooltip title="Archive">
