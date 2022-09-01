@@ -1,14 +1,15 @@
-import FuseAuthorization from '@fuse/core/FuseAuthorization';
-import FuseLayout from '@fuse/core/FuseLayout';
-import FuseTheme from '@fuse/core/FuseTheme';
-import history from '@history';
-import { Router } from 'react-router-dom';
-import { SnackbarProvider } from 'notistack';
-import { reducer } from 'app/services/state/Reducer';
-import { StateProvider } from 'app/services/state/State';
-import { initialState } from 'app/services/state/InitialState';
-import withAppProviders from './withAppProviders';
-import { Auth } from './auth';
+import FuseAuthorization from "@fuse/core/FuseAuthorization";
+import FuseLayout from "@fuse/core/FuseLayout";
+import FuseTheme from "@fuse/core/FuseTheme";
+import history from "@history";
+import { Router } from "react-router-dom";
+import { SnackbarProvider } from "notistack";
+import { reducer } from "app/services/state/Reducer";
+import { StateProvider } from "app/services/state/State";
+import { initialState } from "app/services/state/InitialState";
+import withAppProviders from "./withAppProviders";
+import { Auth } from "./auth";
+import "styles/custome.css";
 // import axios from 'axios';
 
 /**
@@ -28,11 +29,12 @@ const App = () => {
               <SnackbarProvider
                 maxSnack={5}
                 anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right',
+                  vertical: "bottom",
+                  horizontal: "right",
                 }}
                 classes={{
-                  containerRoot: 'bottom-0 right-0 mb-52 md:mb-68 mr-8 lg:mr-80 z-99',
+                  containerRoot:
+                    "bottom-0 right-0 mb-52 md:mb-68 mr-8 lg:mr-80 z-99",
                 }}
               >
                 <FuseLayout />

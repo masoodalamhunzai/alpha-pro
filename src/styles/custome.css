@@ -21,3 +21,23 @@
 .divider:not(:empty)::after {
   margin-left: 0.25em;
 }
+
+.ph-no-field .react-tel-input input {
+  width: 100% !important;
+  height: 52px;
+}
+
+.badge {
+  width: 100%;
+  padding: 2px 6px;
+  border: 1px solid rgb(83, 90, 97);
+  border-radius: 5px !important;
+  color: white;
+  margin: 3px 0px;
+}
+.badge-gray {
+  background-color: rgb(83, 90, 97);
+}
+.color-white {
+  color: white;
+}

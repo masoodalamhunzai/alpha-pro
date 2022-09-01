@@ -41,7 +41,7 @@ export const getDataAnonymously = async (relativeUrl) => {
   }
 };
 
-export const postData = async (relativeUrl,user, data) => {
+export const postData = async (relativeUrl, user, data) => {
   const url = getUrl(relativeUrl);
   const config = {
     method: "post",
@@ -53,7 +53,6 @@ export const postData = async (relativeUrl,user, data) => {
     },
     data,
   };
-
   try {
     const response = await axios(config)
       .then((res) => res)

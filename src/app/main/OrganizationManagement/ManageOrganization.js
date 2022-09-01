@@ -2,12 +2,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/jsx-no-bind */
 
-import { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import FusePageSimple from '@fuse/core/FusePageSimple';
-import Typography from '@mui/material/Typography';
-import swal from 'sweetalert';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import FusePageSimple from "@fuse/core/FusePageSimple";
+import Typography from "@mui/material/Typography";
+import swal from "sweetalert";
+import { useHistory, useLocation } from "react-router-dom";
 import {
   DialogActions,
   DialogContent,
@@ -16,23 +16,27 @@ import {
   TextField,
   FormControlLabel,
   Switch,
-} from '@material-ui/core';
+} from "@material-ui/core";
 // import { PlusCircle as PlusCircleIcon } from 'react-feather';
 /* import {
   CloudUpload as CloudUploadIcon,
   Cancel as CancelIcon,
   CalendarToday as DateIcon,
 } from '@material-ui/icons'; */
-import { AddOrganization } from 'app/services/api/ApiManager';
-import { useStateValue } from 'app/services/state/State';
+import { AddOrganization } from "app/services/api/ApiManager";
+import { useStateValue } from "app/services/state/State";
 // import * as Yup from 'yup';
-import { states } from 'app/services/Settings';
+import { states, countries, countriesState } from "app/services/Settings";
 
-import { Formik } from 'formik';
-import { useSnackbar } from 'notistack';
-import { Autocomplete } from '@material-ui/lab';
+import { Formik } from "formik";
+import { useSnackbar } from "notistack";
+import { Autocomplete } from "@material-ui/lab";
 // import AddProviderDialog from 'app/main/providers/CreateProviderDialog';
-import Breadcrumb from '../../fuse-layouts/shared-components/Breadcrumbs';
+import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
+import PhoneInput from "react-phone-input-2";
+//import "react-phone-input-2/lib/style.css";
+
+import "react-phone-input-2/lib/material.css";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,44 +49,44 @@ const useStyles = makeStyles((theme) => ({
     border: `1px solid ${theme.palette.background.default}`,
   },
   uploadIcon: {
-    color: '#01619b',
-    cursor: 'pointer',
+    color: "#01619b",
+    cursor: "pointer",
   },
   icon: {
-    color: 'white',
-    cursor: 'pointer',
-    float: 'right',
+    color: "white",
+    cursor: "pointer",
+    float: "right",
   },
   row: {
-    display: 'flex',
+    display: "flex",
     marginBottom: 10,
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   buttonsContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-evenly",
   },
   button: {
     background: theme.palette.primary.main,
-    color: '#fff',
+    color: "#fff",
     marginLeft: 5,
   },
   dialogHeader: {
     height: 150,
     backgroundColor: theme.palette.primary.main,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
   },
   dialogTitle: {
-    color: '#fff',
-    backgroundColor: '#01619b',
+    color: "#fff",
+    backgroundColor: "#01619b",
   },
   name: {
-    color: '#fff',
+    color: "#fff",
     marginTop: 10,
     fontSize: 16,
   },
@@ -90,19 +94,19 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1,
   },
   buttonGrey: {
-    background: 'grey',
-    color: '#fff',
+    background: "grey",
+    color: "#fff",
     marginLeft: 5,
   },
   activeText: {
-    color: 'green',
+    color: "green",
   },
   inActiveText: {
-    color: 'red',
+    color: "red",
   },
   plusButton: {
-    alignSelf: 'center',
-    marginLeft: '-10px',
+    alignSelf: "center",
+    marginLeft: "-10px",
   },
 }));
 
@@ -110,16 +114,26 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
   const location = useLocation();
   const history = useHistory();
   const pageTitle = location.pathname
-    .split('/')
+    .split("/")
     .filter((x) => x)[0]
-    .split('-')
-    .join(' ');
+    .split("-")
+    .join(" ");
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(true);
   const [organization, setOrganization] = useState(null);
   const [serviceProviderDialog, setServiceProviderDialog] = useState(false);
   const [{ user }, dispatch] = useStateValue();
+  const [statesArray, setStatesArray] = useState([]);
+  const [countriesArray, setCountriesArray] = useState([]);
+
+  useEffect(() => {
+    var temp = [];
+    countriesState.map((cnt) => {
+      temp.push({ name: cnt.country, code: cnt.alpha2Code });
+    });
+    setCountriesArray(temp);
+  }, []);
 
   const redirectTo = async (goTo) => {
     try {
@@ -140,13 +154,13 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
             <Breadcrumb />
             <Typography
               variant="h3"
-              style={{ color: '#000' }}
+              style={{ color: "#000" }}
               gutterBottom
               sx={{
-                color: '#000',
+                color: "#000",
                 fontWeight: 700,
                 mt: 2,
-                textTransform: 'capitalize',
+                textTransform: "capitalize",
               }}
             >
               Manage Organization
@@ -156,38 +170,41 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
         content={
           <Formik
             initialValues={{
-              name: (organization && organization.name) || '',
-              contactperson: (organization && organization.contactperson) || '',
-              email: (organization && organization.email) || '',
-              phonenumber: (organization && organization.phonenumber) || '',
-              address: (organization && organization.address) || '',
-              city: (organization && organization.city) || '',
-              state: (organization && organization.state) || '',
-              country: (organization && organization.country) || '',
-              website: (organization && organization.website) || '',
+              name: (organization && organization.name) || "",
+              contactperson: (organization && organization.contactperson) || "",
+              email: (organization && organization.email) || "",
+              phonenumber: (organization && organization.phonenumber) || "",
+              address: (organization && organization.address) || "",
+              city: (organization && organization.city) || "",
+              state: (organization && organization.state) || "",
+              country: (organization && organization.country) || "",
+              website: (organization && organization.website) || "",
               isActive: (organization && organization.isActive) || false,
             }}
-            onSubmit={async (values, { resetForm, setErrors, setStatus, setSubmitting }) => {
+            onSubmit={async (
+              values,
+              { resetForm, setErrors, setStatus, setSubmitting }
+            ) => {
               try {
                 const orgReq = {
                   name: values.name.trim(),
-                  description: 'This is test organization 1',
+                  description: "This is test organization 1",
                   contactFullName: values.contactperson.trim(),
-                  contactDesignation: 'Developer',
+                  contactDesignation: "Developer",
                   contactNumber: values.phonenumber.trim(),
                   contactEmail: values.email.trim(),
                 };
 
                 const res = await AddOrganization(orgReq, user);
 
-                if (res && res.data && res.data.status === 'success') {
+                if (res && res.data && res.data.status === "success") {
                   swal({
-                    title: 'Good job!',
-                    text: 'Organization Saved Successfully!',
-                    icon: 'success',
-                    button: 'Ok!',
+                    title: "Good job!",
+                    text: "Organization Saved Successfully!",
+                    icon: "success",
+                    button: "Ok!",
                   }).then((value) => {
-                    redirectTo('/organization-management');
+                    redirectTo("/organization-management");
                   });
                 }
 
@@ -221,7 +238,7 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
             }) => (
               <form onSubmit={handleSubmit}>
                 <DialogContent>
-                  <Grid container spacing={2} style={{ display: 'flex' }}>
+                  <Grid container spacing={2} style={{ display: "flex" }}>
                     <Grid item lg={6} md={6} sm={6}>
                       <TextField
                         error={Boolean(touched.name && errors.name)}
@@ -235,14 +252,18 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                         required
                         value={values.name}
                         variant="outlined"
-                        style={{ background: '#fff' }}
+                        style={{ background: "#fff" }}
                       />
                     </Grid>
                     <Grid item lg={6} md={6} sm={6}>
                       <TextField
-                        error={Boolean(touched.contactperson && errors.contactperson)}
+                        error={Boolean(
+                          touched.contactperson && errors.contactperson
+                        )}
                         fullWidth
-                        helperText={touched.contactperson && errors.contactperson}
+                        helperText={
+                          touched.contactperson && errors.contactperson
+                        }
                         label="Contact Person"
                         name="contactperson"
                         color="secondary"
@@ -251,7 +272,7 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                         required
                         value={values.contactperson}
                         variant="outlined"
-                        style={{ background: '#fff' }}
+                        style={{ background: "#fff" }}
                       />
                     </Grid>
                     <Grid item lg={6} md={6} sm={6}>
@@ -267,12 +288,14 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                         value={values.email}
                         variant="outlined"
                         type="email"
-                        style={{ background: '#fff' }}
+                        style={{ background: "#fff" }}
                       />
                     </Grid>
-                    <Grid item lg={6} md={6} sm={6}>
+                    {/* <Grid item lg={6} md={6} sm={6}>
                       <TextField
-                        error={Boolean(touched.phonenumber && errors.phonenumber)}
+                        error={Boolean(
+                          touched.phonenumber && errors.phonenumber
+                        )}
                         fullWidth
                         helperText={touched.phonenumber && errors.phonenumber}
                         label="Phone Number"
@@ -282,7 +305,22 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                         onChange={handleChange}
                         value={values.phonenumber}
                         variant="outlined"
-                        style={{ background: '#fff' }}
+                        style={{ background: "#fff" }}
+                      />
+                    </Grid> */}
+                    <Grid item lg={6} md={6} sm={6} className="ph-no-field">
+                      <PhoneInput
+                        style={{ width: "100%", background: "#fff" }}
+                        country={"us"}
+                        inputProps={{
+                          name: "phone",
+                          required: true,
+                          autoFocus: true,
+                        }}
+                        placeholder="Phone Number"
+                        name="phonenumber"
+                        onChange={handleChange}
+                        value={values.phonenumber}
                       />
                     </Grid>
 
@@ -316,7 +354,7 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                           )}
                         />
                       </Grid> */}
-                    <Grid item lg={12} md={12} sm={12}>
+                    {/* <Grid item lg={12} md={12} sm={12}>
                       <TextField
                         error={Boolean(touched.address && errors.address)}
                         fullWidth
@@ -331,78 +369,36 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                         style={{ background: '#fff' }}
                         required
                       />
-                    </Grid>
+                    </Grid> */}
 
                     <Grid item lg={6} md={6} sm={6}>
-                      <TextField
-                        error={Boolean(touched.city && errors.city)}
-                        fullWidth
-                        helperText={touched.city && errors.city}
-                        label="City"
-                        name="city"
-                        color="secondary"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.city}
-                        variant="outlined"
-                        style={{ background: '#fff' }}
-                        required
-                      />
-                    </Grid>
-                    <Grid item lg={6} md={6} sm={6}>
                       <Autocomplete
                         freeSolo
                         multiple={false}
-                        options={states || []}
-                        getOptionLabel={(o) => o.name || ''}
+                        options={countriesArray || []}
+                        getOptionLabel={(o) => o.name || ""}
                         value={
-                          (states &&
-                            states.length > 0 &&
-                            states.find((s) => s.code === values.state)) ||
-                          ''
+                          (countriesArray &&
+                            countriesArray.length > 0 &&
+                            countriesArray.find(
+                              (s) => s.code === values.country
+                            )) ||
+                          ""
                         }
                         onChange={(event, newValue) => {
                           if (newValue && newValue.code) {
-                            setFieldValue('state', newValue.code);
+                            setFieldValue("country", newValue.code);
+                            setFieldValue("state", "");
+                            console.log(newValue);
+                            console.log(
+                              countriesState.map((s) => {
+                                if (s.alpha2Code === newValue.code) {
+                                  setStatesArray(s.states);
+                                }
+                              })
+                            );
                           } else {
-                            setFieldValue('state', '');
-                          }
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            placeholder="Select State"
-                            error={Boolean(touched.state && errors.state)}
-                            fullWidth
-                            helperText={touched.state && errors.state}
-                            label="Select State"
-                            name="state"
-                            color="secondary"
-                            onBlur={handleBlur}
-                            variant="outlined"
-                            style={{ background: '#fff' }}
-                            required
-                          />
-                        )}
-                      />
-                    </Grid>
-                    <Grid item lg={6} md={6} sm={6}>
-                      <Autocomplete
-                        freeSolo
-                        multiple={false}
-                        options={states || []}
-                        getOptionLabel={(o) => o.name || ''}
-                        value={
-                          (states &&
-                            states.length > 0 &&
-                            states.find((s) => s.code === values.state)) ||
-                          ''
-                        }
-                        onChange={(event, newValue) => {
-                          if (newValue && newValue.code) {
-                            setFieldValue('country', newValue.code);
-                          } else {
-                            setFieldValue('country', '');
+                            setFieldValue("country", "");
                           }
                         }}
                         renderInput={(params) => (
@@ -418,12 +414,102 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                             onBlur={handleBlur}
                             variant="outlined"
                             required
-                            style={{ background: '#fff' }}
+                            style={{ background: "#fff" }}
+                          />
+                        )}
+                      />
+                    </Grid>
+                    {/* <Grid item lg={6} md={6} sm={6}>
+                      <Autocomplete
+                        freeSolo
+                        multiple={false}
+                        options={states || []}
+                        getOptionLabel={(o) => o.name || ""}
+                        value={
+                          (states &&
+                            states.length > 0 &&
+                            states.find((s) => s.code === values.state)) ||
+                          ""
+                        }
+                        onChange={(event, newValue) => {
+                          if (newValue && newValue.code) {
+                            setFieldValue("state", newValue.code);
+                          } else {
+                            setFieldValue("state", "");
+                          }
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            placeholder="Select State"
+                            error={Boolean(touched.state && errors.state)}
+                            fullWidth
+                            helperText={touched.state && errors.state}
+                            label="Select State"
+                            name="state"
+                            color="secondary"
+                            onBlur={handleBlur}
+                            variant="outlined"
+                            style={{ background: "#fff" }}
+                            required
+                          />
+                        )}
+                      />
+                    </Grid> */}
+
+                    <Grid item lg={6} md={6} sm={6}>
+                      <Autocomplete
+                        freeSolo
+                        multiple={false}
+                        options={statesArray || []}
+                        value={
+                          (statesArray &&
+                            statesArray.length > 0 &&
+                            states.find((s) => s === values.state)) ||
+                          ""
+                        }
+                        onChange={(event, newValue) => {
+                          if (newValue && newValue) {
+                            setFieldValue("state", newValue);
+                          } else {
+                            setFieldValue("state", "");
+                          }
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            placeholder="Select State"
+                            error={Boolean(touched.state && errors.state)}
+                            fullWidth
+                            helperText={touched.state && errors.state}
+                            label="Select State"
+                            name="state"
+                            color="secondary"
+                            onBlur={handleBlur}
+                            variant="outlined"
+                            style={{ background: "#fff" }}
+                            required
                           />
                         )}
                       />
                     </Grid>
 
+                    <Grid item lg={6} md={6} sm={6}>
+                      <TextField
+                        error={Boolean(touched.city && errors.city)}
+                        fullWidth
+                        helperText={touched.city && errors.city}
+                        label="City"
+                        name="city"
+                        color="secondary"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.city}
+                        variant="outlined"
+                        style={{ background: "#fff" }}
+                        required
+                      />
+                    </Grid>
                     <Grid item lg={6} md={6} sm={6}>
                       <TextField
                         error={Boolean(touched.website && errors.website)}
@@ -437,30 +523,46 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                         // required
                         value={values.website}
                         variant="outlined"
-                        style={{ background: '#fff' }}
+                        style={{ background: "#fff" }}
                       />
                     </Grid>
 
-                    <Grid item lg={6} md={6} sm={6} align="left" style={{ marginLeft: '1%' }}>
+                    <Grid
+                      item
+                      lg={6}
+                      md={6}
+                      sm={6}
+                      align="left"
+                      style={{ marginLeft: "1%" }}
+                    >
                       <Typography>Status</Typography>
                       <FormControlLabel
                         control={
                           <Switch
                             checked={values.isActive}
-                            onChange={(_, v) => setFieldValue('isActive', v)}
+                            onChange={(_, v) => setFieldValue("isActive", v)}
                           />
                         }
                         classes={{
-                          label: values.isActive ? classes.activeText : classes.inActiveText,
+                          label: values.isActive
+                            ? classes.activeText
+                            : classes.inActiveText,
                         }}
-                        label={values.isActive ? 'Active' : 'InActive'}
+                        label={values.isActive ? "Active" : "InActive"}
                       />
                     </Grid>
                   </Grid>
                 </DialogContent>
                 <DialogActions>
                   <Grid container>
-                    <Grid item lg={12} md={12} sm={12} align="right" style={{ marginRight: '2%' }}>
+                    <Grid
+                      item
+                      lg={12}
+                      md={12}
+                      sm={12}
+                      align="right"
+                      style={{ marginRight: "2%" }}
+                    >
                       <Button
                         type="submit"
                         color="secondary"
@@ -474,7 +576,7 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                         className={classes.buttonGrey}
                         variant="contained"
                         color="secondary"
-                        onClick={() => redirectTo('/organization-management')}
+                        onClick={() => redirectTo("/organization-management")}
                       >
                         <Typography>Cancel</Typography>
                       </Button>
