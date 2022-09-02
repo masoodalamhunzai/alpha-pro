@@ -26,10 +26,6 @@ const routes = [
     exact: true,
     component: () => <FuseLoading />,
   },
-  // {
-  //   path: "/user-management/create-user",
-  //   component: () => <CreateUser />,
-  // },
   {
     path: "/404",
     component: () => <Error404Page />,

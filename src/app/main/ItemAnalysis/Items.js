@@ -180,7 +180,7 @@ const Items = () => {
             size="small"
             style={{ float: "right" }}
             aria-label="Send Message"
-            onClick={() => redirectTo("/create-item")}
+            onClick={() => redirectTo("/create-new-question")}
             startIcon={<AddIcon />}
           >
             Create Question

@@ -59,11 +59,11 @@ const RouteConfigs = {
       component: UserManagment,
     },
     {
-      path: "/create-item",
+      path: "/create-new-question",
       component: CreateItem,
     },
     {
-      path: "/all-items",
+      path: "/all-questions",
       component: Items,
     },
     {
@@ -88,7 +88,7 @@ const RouteConfigs = {
       component: ItemBanks,
     },
     {
-      path: "/item-bulk-update",
+      path: "/question-bulk-update",
       component: ItemsBulkUpdate,
     },
 
@@ -115,11 +115,11 @@ const RouteConfigs = {
     },
 
     {
-      path: "/all-activities",
+      path: "/all-assessments",
       component: Activities,
     },
     {
-      path: "/new-activity",
+      path: "/new-assessment",
       component: NewActivity,
     },
     {
@@ -127,7 +127,7 @@ const RouteConfigs = {
       component: BaseTemplates,
     },
     {
-      path: "/activities-bulk-updates",
+      path: "/assessments-bulk-updates",
       component: ActivitiesBulkUpdates,
     },
 

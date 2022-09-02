@@ -5,7 +5,6 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
-import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -27,12 +26,12 @@ import {
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/material.css";
 import { useStateValue } from "app/services/state/State";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import { truncate } from "lodash";
 
 const useStyles = makeStyles({
   root: {
-    fontSize: "1rem",
+    fontSize: "1.6rem",
     "&.MuiContainer-root": {
       maxWidth: "100%",
       margin: 0,
@@ -52,19 +51,42 @@ const useStyles = makeStyles({
       fontSize: "1.2rem",
       margin: "1rem 0",
     },
+    "& .Mui-focused": {
+      fontSize: "1.6rem !important",
+    },
     "& .MuiFormControl-root": {
       margin: "1rem 0",
+    },
+    "& .MuiInputLabel-root": {
+      fontSize: "1.4rem",
+      left: "-4px",
+      top: "-5px",
+    },
+    "& .MuiOutlinedInput-input:focus": {
+      height: "14px",
     },
     "& .react-tel-input": {
       width: "90%",
       border: "1px solid #b0b8c3",
       borderRadius: "5px",
+      "&:focus": {
+        border: "1px solid #1976d2",
+        boxShadow: "0 0 0 1px #1976d2",
+      },
+      "&:hover": {
+        border: "1px solid #1976d2",
+        boxShadow: "0 0 0 1px #1976d2",
+      },
     },
     "& .react-tel-input .form-control": {
       padding: "1rem",
       width: "88%",
       marginLeft: "12%",
       border: "none",
+      "&:focus": {
+        border: "none",
+        boxShadow: "none",
+      },
     },
     "& .MuiAlert-root": {
       width: "50%",
@@ -94,27 +116,33 @@ const useStyles = makeStyles({
 });
 
 function AddUserDetailsTab() {
+  const history = useHistory();
+  const location = useLocation();
   const [{ user, organization, roles }, dispatch] = useStateValue();
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [error, setError] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const { editData } = location?.state ? location?.state : "";
+  const USER_ROLE_CLIENT_ADMIN = "client-admin";
+  const USER_ROLE_SUPER_ADMIN = "super-admin";
+
   const [formData, setFormData] = useState({
-    email: "",
-    firstName: "",
-    lastName: "",
-    phone: "",
-    organizations: "",
+    email: editData?.email.length > 0 ? editData?.email : "",
+    firstName: editData?.firstName.length > 0 ? editData?.firstName : "",
+    lastName: editData?.lastName.length > 0 ? editData?.lastName : "",
+    phone: editData?.phonenumber.length > 0 ? editData?.phonenumber : "",
+    organizations:
+      editData?.organization.length > 0 ? editData?.organization : "",
     password: "",
     confirmPassword: "",
     userRoles: "",
+    status: editData?.status.length > 0 ? editData?.status : "",
     // photo: null,
   });
-  const history = useHistory();
-
   const handleChange = (e) => {
-    const value = e.target.value;
-    const name = e.target.name;
+    const { value } = e.target;
+    const { name } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
@@ -131,6 +159,7 @@ function AddUserDetailsTab() {
     userRoles,
     password,
     confirmPassword,
+    status,
   } = formData;
 
   const validation = () => {
@@ -139,7 +168,7 @@ function AddUserDetailsTab() {
     const errorEmail = regex.test(email);
     if (email === "") {
       setError(true);
-      return setErrorMessage("fields required");
+      return setErrorMessage("email required");
     }
     if (!errorEmail) {
       setError(true);
@@ -147,19 +176,19 @@ function AddUserDetailsTab() {
     }
     if (firstName === "") {
       setError(true);
-      return setErrorMessage("fields required");
+      return setErrorMessage("firstName required");
     }
     if (lastName === "") {
       setError(true);
-      return setErrorMessage("fields required");
+      return setErrorMessage("lastName required");
     }
     if (password === "") {
       setError(true);
-      return setErrorMessage("fields required");
+      return setErrorMessage("password required");
     }
     if (confirmPassword === "") {
       setError(true);
-      return setErrorMessage("fields required");
+      return setErrorMessage("confirmPassword required");
     }
     if (confirmPassword !== password) {
       setError(true);
@@ -167,32 +196,19 @@ function AddUserDetailsTab() {
     }
     if (phone === "") {
       setError(true);
-      return setErrorMessage("fields required");
+      return setErrorMessage("phone required");
     }
-    if (organizations === "") {
+    if (organizations === "" && user?.role === USER_ROLE_SUPER_ADMIN) {
       setError(true);
-      return setErrorMessage("fields required");
+      return setErrorMessage("organizations required");
     }
-    if (userRoles === "") {
+    if (userRoles === "" && user?.role === USER_ROLE_SUPER_ADMIN) {
       setError(true);
-      return setErrorMessage("fields required");
+      return setErrorMessage("userRoles required");
     }
     return true;
   };
 
-  const HandleFormReset = () => {
-    return setFormData({
-      ...formData,
-      email: "",
-      firstName: "",
-      lastName: "",
-      phone: "",
-      organizations: "",
-      password: "",
-      confirmPassword: "",
-      userRoles: "",
-    });
-  };
   const handleSubmit = (e) => {
     e.preventDefault();
     const payload = {
@@ -207,13 +223,18 @@ function AddUserDetailsTab() {
         },
       ],
     };
+    if (user && user.role && user?.role === USER_ROLE_CLIENT_ADMIN) {
+      const { id } = user?.organization;
+      createOrganizationUser(id, user, payload);
+    }
     if (validation()) {
       const res = createOrganizationUser(organizations, user, payload);
+
       setIsFormSubmitted(true);
-      HandleFormReset();
       setTimeout(() => {
         setIsFormSubmitted(false);
       }, 3000);
+      redirectTo("/user-managment");
     } else {
       setTimeout(() => {
         setError(false);
@@ -231,8 +252,7 @@ function AddUserDetailsTab() {
     }
   };
   const handleRole = () => {
-    const role = roles?.filter((role) => role?.name === "super-admin");
-    if (role && role?.length > 0) {
+    if (user && user.role && user.role === USER_ROLE_SUPER_ADMIN) {
       setIsSuperAdmin(true);
     }
   };
@@ -260,7 +280,11 @@ function AddUserDetailsTab() {
       className="shadow-md rounded-md"
     >
       {error && <Alert severity="error">{errorMessage}</Alert>}
-      {isFormSubmitted && <Alert severity="success">successfully login</Alert>}
+      {isFormSubmitted && (
+        <Alert severity="success">
+          {editData ? "successfully Updated" : "successfully Created"}
+        </Alert>
+      )}
       <Box
         sx={{
           marginTop: 2,
@@ -277,11 +301,42 @@ function AddUserDetailsTab() {
         >
           <Box className={classes.formInput}>
             <Icon color="action" className="text-gray-600 mr-8">
+              assignment
+            </Icon>
+            <TextField
+              margin="normal"
+              fullWidth
+              name="firstName"
+              label="First Name"
+              type="text"
+              id="name"
+              onChange={handleChange}
+              defaultValue={firstName}
+              autoComplete="current-password"
+            />
+          </Box>
+          <Box className={classes.formInput}>
+            <Icon color="action" className="text-gray-600 mr-8">
+              assignment
+            </Icon>
+            <TextField
+              margin="normal"
+              fullWidth
+              name="lastName"
+              label="Last Name"
+              type="text"
+              id="name"
+              onChange={handleChange}
+              defaultValue={lastName}
+              autoComplete="current-password"
+            />
+          </Box>
+          <Box className={classes.formInput}>
+            <Icon color="action" className="text-gray-600 mr-8">
               email
             </Icon>
             <TextField
               margin="normal"
-              required
               fullWidth
               id="email"
               label="Email Address"
@@ -290,67 +345,7 @@ function AddUserDetailsTab() {
               autoComplete="email"
               autoFocus
               onChange={handleChange}
-            />
-          </Box>
-          <Box className={classes.formInput}>
-            <Icon color="action" className="text-gray-600 mr-8">
-              assignment
-            </Icon>
-            <TextField
-              error={false}
-              margin="normal"
-              required
-              fullWidth
-              name="firstName"
-              label="first Name"
-              type="text"
-              id="name"
-              onChange={handleChange}
-              autoComplete="current-password"
-            />
-          </Box>
-          <Box className={classes.formInput}>
-            <Icon color="action" className="text-gray-600 mr-8">
-              assignment
-            </Icon>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="lastName"
-              label="Last Name"
-              type="text"
-              id="name"
-              onChange={handleChange}
-              autoComplete="current-password"
-            />
-          </Box>
-          <Box className={classes.formInput}>
-            <PasswordIcon className="text-gray-600 mr-10" />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="password"
-              type="password"
-              id="password"
-              onChange={handleChange}
-              autoComplete="current-password"
-            />
-          </Box>
-          <Box className={classes.formInput}>
-            <PasswordIcon className="text-gray-600 mr-10" />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="confirmPassword"
-              label="confirmPassword"
-              type="password"
-              id="confirmPassword"
-              onChange={handleChange}
-              autoComplete="current-password"
+              defaultValue={email}
             />
           </Box>
           <Box className={classes.formInput}>
@@ -366,9 +361,53 @@ function AddUserDetailsTab() {
               placeholder="Phone Number"
               name="phone"
               onChange={handleChangePhone}
+              defaultValue={phone}
             />
           </Box>
-
+          <Box className={classes.formInput}>
+            <PasswordIcon className="text-gray-600 mr-16" />
+            <TextField
+              margin="normal"
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              onChange={handleChange}
+              autoComplete="current-password"
+            />
+          </Box>
+          <Box className={classes.formInput}>
+            <PasswordIcon className="text-gray-600 mr-16" />
+            <TextField
+              margin="normal"
+              fullWidth
+              name="confirmPassword"
+              label="Confirm Password"
+              type="password"
+              id="confirmPassword"
+              onChange={handleChange}
+              autoComplete="current-password"
+            />
+          </Box>
+          <Box className={classes.formInput}>
+            <AccountBalanceIcon className="text-gray-600 mr-8" />
+            <FormControl fullWidth>
+              <InputLabel id="status-dropdown">Select status</InputLabel>
+              <Select
+                labelId="status-dropdown"
+                id="statusDropdown"
+                value={status}
+                label="status"
+                name="status"
+                onChange={handleChange}
+                // defaultValue={}
+              >
+                <MenuItem value="active">Active</MenuItem>
+                <MenuItem value="inactive">InActive</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
           {isSuperAdmin && (
             <>
               <Box className={classes.formInput}>
@@ -383,8 +422,8 @@ function AddUserDetailsTab() {
                     value={organizations}
                     label="organizations"
                     name="organizations"
-                    required
                     onChange={handleChange}
+                    // defaultValue={}
                   >
                     {organization?.map((org) => (
                       <MenuItem value={org?.id} key={org?.id}>
@@ -397,14 +436,14 @@ function AddUserDetailsTab() {
               <Box className={classes.formInput}>
                 <AccountBalanceIcon className="text-gray-600 mr-8" />
                 <FormControl fullWidth>
-                  <InputLabel id="role-dropdown">Select Roles</InputLabel>
+                  <InputLabel id="role-dropdown">Select Role</InputLabel>
+
                   <Select
                     labelId="role-dropdown"
                     id="roleDropdown"
-                    value={userRoles}
+                    defaultValue={userRoles}
                     label="role"
                     name="userRoles"
-                    required
                     onChange={handleChange}
                   >
                     {roles?.map(

@@ -21,7 +21,6 @@ import swal from "sweetalert";
 import { getOrganizations } from "app/services/api/ApiManager";
 import { CustomToolbar } from "../../components";
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
@@ -83,6 +82,8 @@ function OrganizationsList({
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [{ user, organization, patients, defaultPageSize }, dispatch] =
     useStateValue();
+  const [rowCount, setRowCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
   const [open, setOpen] = useState(false);
   // const { payload: organizationsListList, pagination } = organizations;
   const [pagination, setPagination] = useState([]);
@@ -101,7 +102,7 @@ function OrganizationsList({
     });
   }
 
-  async function handleArchiveOrganization(Id) { }
+  async function handleArchiveOrganization(Id) {}
 
   async function onRestoreOrganization(Id) {
     swal({
@@ -117,16 +118,17 @@ function OrganizationsList({
     });
   }
 
-  async function handleRestoreOrganization(Id) { }
+  async function handleRestoreOrganization(Id) {}
 
-  const showOrganizationDetail = (id) => { };
+  const showOrganizationDetail = (id) => {};
 
+  async function handleEditOrganization(Id) {}
 
-  async function handleEditOrganization(Id) { }
+  const handleChangePage = async (event, newPage) => {};
 
-  const handleChangePage = async (event, newPage) => { };
-
-  function handleChangeRowsPerPage(event) { }
+  function handleChangeRowsPerPage(event) {
+    setPage(page + 1);
+  }
 
   const loadOrganizations = async () => {
     const res = await getOrganizations(user);
@@ -153,7 +155,6 @@ function OrganizationsList({
       sortable: false,
       flex: 0.3,
       renderCell: (params) => (
-
         <>
           <Tooltip title="View">
             <VisibilityRoundedIcon
@@ -176,7 +177,6 @@ function OrganizationsList({
               onClick={() => onArchiveOrganization(params.id)}
             />
           </Tooltip>
-
         </>
       ),
     },
@@ -193,82 +193,11 @@ function OrganizationsList({
         phonenumber: org.contactNumber,
         address: org.description,
       };
-    }); /*  [
-    {
-      id: 1,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "123123",
-      address: "test address",
-    },
-    {
-      id: 2,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "143123",
-      address: "test address",
-    },
-    {
-      id: 3,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "153123",
-      address: "test address",
-    },
-    {
-      id: 4,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "163123",
-      address: "test address",
-    },
-    {
-      id: 5,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "173123",
-      address: "test address",
-    },
-    {
-      id: 6,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "183123",
-      address: "test address",
-    },
-    {
-      id: 7,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "193123",
-      address: "test address",
-    },
-    {
-      id: 8,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "103123",
-      address: "test address",
-    },
-    {
-      id: 9,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "153123",
-      address: "test address",
-    },
->>>>>>> 160c28ed35c48271205b77ee68e1751cb5ad5fcd
-  ];
- */
+    });
+
+  useEffect(() => {
+    setRowCount(rows !== null ? rows.length : 0);
+  }, [rows]);
   return (
     <>
       {/*  <button
@@ -282,16 +211,22 @@ function OrganizationsList({
         {rows && (
           <DataGrid
             sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                border: "none",
+              },
               "& .MuiDataGrid-columnHeaderTitle": {
                 fontSize: "14px",
                 fontWeight: "600",
+                color: "#189AF5",
+                border: "none",
               },
               "& .MuiDataGrid-cell": {
                 fontSize: "12px",
+                border: "none",
               },
             }}
             rows={rows}
-            page={page}
+            page={currentPage}
             hideFooter
             columns={columns}
             components={{
@@ -299,7 +234,7 @@ function OrganizationsList({
             }}
             hideFooterRowCount
             hideFooterPagination
-            style={{ height: "70vh" }}
+            style={{ height: "70vh", border: "none", boxSizing: "unset" }}
             pageSize={defaultPageSize}
             hideFooterSelectedRowCount
             rowCount={10 /* pagination.totalItemsCount */}
@@ -307,11 +242,15 @@ function OrganizationsList({
           />
         )}
         <TablePagination
-          page={page}
+          page={currentPage}
           component="div"
           rowsPerPage={defaultPageSize}
-          onPageChange={handleChangePage}
-          count={100 /* pagination.totalItemsCount */}
+          onPageChange={(e, newValue) => {
+            setCurrentPage(newValue);
+            console.log("current event", e);
+            console.log("current value", newValue); /* handleChangePage */
+          }}
+          count={rowCount /* pagination.totalItemsCount */}
           className="flex-shrink-0 border-t-1"
           rowsPerPageOptions={dataGridPageSizes}
           onRowsPerPageChange={handleChangeRowsPerPage}

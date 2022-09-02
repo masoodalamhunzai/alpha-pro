@@ -7,7 +7,7 @@ import {
   DeleteSweep as DeleteIcon,
   BorderColor as EditIcon,
 } from "@material-ui/icons";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import { useStateValue } from "app/services/state/State";
 import {
@@ -116,7 +116,6 @@ function UsersList({ page, loading, organizationUsers }) {
       }
     });
   }
-
   const redirectTo = async (goTo) => {
     try {
       history.push(goTo);
@@ -182,13 +181,19 @@ function UsersList({ page, loading, organizationUsers }) {
       width: 160,
       renderCell: (params) => (
         <>
-          {console.log(params, "params")}
           <Tooltip title="Edit">
-            <EditIcon
-              style={{ marginLeft: 5 }}
-              className={classes.icon}
-              onClick={() => redirectTo("/user-management/edit-user")}
-            />
+            <Link
+              to={{
+                pathname: "/user-management/edit-user",
+                state: { editData: params?.row },
+              }}
+            >
+              <EditIcon
+                style={{ marginLeft: 5 }}
+                className={classes.icon}
+                // onClick={() => redirectTo("/user-management/edit-user")}
+              />
+            </Link>
           </Tooltip>
           <Tooltip title="Archive">
             <DeleteIcon
@@ -246,12 +251,18 @@ function UsersList({ page, loading, organizationUsers }) {
         {rows ? (
           <DataGrid
             sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                border: "none",
+              },
               "& .MuiDataGrid-columnHeaderTitle": {
                 fontSize: "14px",
                 fontWeight: "600",
+                color: "#189AF5",
+                border: "none",
               },
               "& .MuiDataGrid-cell": {
-                fontSize: "14px",
+                fontSize: "12px",
+                border: "none",
               },
             }}
             rows={rows}
@@ -263,7 +274,7 @@ function UsersList({ page, loading, organizationUsers }) {
             }}
             hideFooterRowCount
             hideFooterPagination
-            style={{ height: "70vh" }}
+            style={{ height: "70vh", border: "none", boxSizing: "unset" }}
             pageSize={defaultPageSize}
             hideFooterSelectedRowCount
             rowCount={10 /* pagination.totalItemsCount */}

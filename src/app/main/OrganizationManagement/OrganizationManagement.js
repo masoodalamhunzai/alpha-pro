@@ -12,6 +12,7 @@ import Input from "@material-ui/core/Input";
 import Paper from "@material-ui/core/Paper";
 import { useHistory } from "react-router";
 import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
+import { searchOrganizations } from "app/services/api/ApiManager";
 import OrganizationsList from "./OrganizationsList";
 
 const useStyles = makeStyles({
@@ -47,6 +48,18 @@ const OrganizationManagement = () => {
       history.push(goTo);
     } catch (err) {
       // console.log(err);
+    }
+  };
+  const handleSearchOrganizations = async () => {
+    if (searchText?.length === 0) {
+      return false;
+    }
+    const res = await searchOrganizations(searchText, user);
+    if (res && res.status === 200 && res.data) {
+      dispatch({
+        type: actions.SET_SEARCH_ORGANIZATION,
+        payload: res.data,
+      });
     }
   };
 
@@ -187,7 +200,7 @@ const OrganizationManagement = () => {
         <div className="p-24">
           {/* start */}
 
-          <div className="flex flex-wrap flex-1 items-center justify-between p-12 md:p-24">
+          <div className="flex flex-wrap flex-1 items-center justify-between mb-10 p-8">
             <div className="flex flex-col w-full sm:w-auto" />
 
             <div className="flex flex-1 items-center justify-end w-full sm:w-auto sm:px-12">
@@ -213,6 +226,7 @@ const OrganizationManagement = () => {
                 variant="contained"
                 color="secondary"
                 aria-label="Send Message"
+                onClick={handleSearchOrganizations}
               >
                 Search
               </Button>

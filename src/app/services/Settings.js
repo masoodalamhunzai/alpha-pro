@@ -15,6 +15,7 @@ export const settings = {
   items: {
     getItems: "/api/items",
     saveQuestion: "/api/items/",
+    addItems:"/api/items"
   },
   sector: {
     addSector: "/api/AddSector",
@@ -26,6 +27,12 @@ export const settings = {
   organizationUsers: {
     getOrganizationUser: (orgId) => `/api/organizations/${orgId}/users`,
     createOrganizationUser: (orgId) => `/api/organizations/${orgId}/users`,
+  },
+  search: {
+    searchOrganizationUsers: (orgId, searchTerm) =>
+      `/api/organizations/${orgId}/users/${searchTerm}`,
+    searchOrganizations: (searchTerm) =>
+      `/api/organizations/search/${searchTerm}`,
   },
   roles: "/api/roles",
 };

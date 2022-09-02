@@ -8,11 +8,16 @@ import Stack from "@mui/material/Stack";
 const Breadcrumb = () => {
   const location = useLocation();
   const history = useHistory();
-  const pathname = location.pathname.split("/").filter((x) => x)[0].split('-').join(' ');
-  // console.log(location.pathname.split("/").filter((x, i) => x[i]).join('/'))
+  const pathname = location.pathname
+    .split("/")
+    .filter((x) => x)
+    .pop()
+    .split("-")
+    .join(" ");
+  const linkPath = location.pathname.split("/").filter((x) => x);
   const handleNavigate = (event) => {
     event.preventDefault();
-    history.push("/");
+    history.push("/home");
   };
 
   const breadcrumbs = [
@@ -20,11 +25,22 @@ const Breadcrumb = () => {
       underline="hover"
       key="2"
       color="inherit"
-      href="/"
+      href="/home"
       onClick={handleNavigate}
     >
       Home
     </Link>,
+    linkPath.length > 1 && (
+      <Link
+        underline="hover"
+        key="2"
+        color="inherit"
+        href={`/${linkPath[0]}`}
+        onClick={handleNavigate}
+      >
+        {linkPath[0]}
+      </Link>
+    ),
     <Typography key="3" color="text.primary">
       {pathname}
     </Typography>,

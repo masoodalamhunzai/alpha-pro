@@ -64,7 +64,6 @@ function SimpleFullWidthSample() {
       }
       content={
         <div className="p-24">
-          <h4>Home Page Content</h4>
           <br />
           {/* <DemoContent /> */}
           <HomeContent />

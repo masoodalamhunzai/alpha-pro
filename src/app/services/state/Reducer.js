@@ -13,6 +13,8 @@ export const actions = {
   SET_ITEMS: "SET_ITEMS",
   SET_ROLES: "SET_ROLES",
   SET_ORGANIZATION_USERS: "SET_ORGANIZATION_USERS",
+  SET_SEARCH_ORGANIZATION: "SET_SEARCH_ORGANIZATION",
+  SET_SEARCH_ORGANIZATION_USERS: "SET_SEARCH_ORGANIZATION_USERS",
 };
 
 export const reducer = (state, action) => {
@@ -74,6 +76,16 @@ export const reducer = (state, action) => {
       return {
         ...state,
         roles: action.payload,
+      };
+    case actions.SET_SEARCH_ORGANIZATION:
+      return {
+        ...state,
+        organization: action.payload,
+      };
+    case actions.SET_SEARCH_ORGANIZATION_USERS:
+      return {
+        ...state,
+        organizationUsers: action.payload,
       };
     default:
       return state;
