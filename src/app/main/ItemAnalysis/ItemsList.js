@@ -322,12 +322,18 @@ function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
         {rows && (
           <DataGrid
             sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                border: "none",
+              },
               "& .MuiDataGrid-columnHeaderTitle": {
                 fontSize: "14px",
                 fontWeight: "600",
+                color: "#189AF5",
+                border: "none",
               },
               "& .MuiDataGrid-cell": {
                 fontSize: "12px",
+                border: "none",
               },
             }}
             rowHeight={"auto"}
@@ -340,7 +346,7 @@ function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
             }}
             hideFooterRowCount
             hideFooterPagination
-            style={{ height: "70vh" }}
+            style={{ height: "70vh", border: "none", boxSizing: "unset" }}
             pageSize={defaultPageSize}
             hideFooterSelectedRowCount
             rowCount={10 /* pagination.totalItemsCount */}

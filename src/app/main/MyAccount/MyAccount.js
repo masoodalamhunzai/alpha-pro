@@ -7,6 +7,7 @@ import { useStateValue } from "app/services/state/State";
 import { actions } from "app/services/state/Reducer";
 import { useLocation } from "react-router-dom";
 import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
+import Tabs from './Tabs/tabs';
 import Error500 from "app/shared-components/Error500";
 
 const useStyles = makeStyles({
@@ -17,7 +18,8 @@ const MyAccount = () => {
   const location = useLocation();
   const pageTitle = location.pathname
     .split("/")
-    .filter((x) => x)[0]
+    .filter((x) => x)
+    .pop()
     .split("-")
     .join(" ");
   const classes = useStyles();
@@ -61,8 +63,9 @@ const MyAccount = () => {
       }
       content={
         <div className="p-24">
-          {/* <h4>Content</h4> */}
-          <Error500 />
+          <>
+          <Tabs />
+          </>
         </div>
       }
     />

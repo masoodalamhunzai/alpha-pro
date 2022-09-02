@@ -7,7 +7,7 @@ import {
   DeleteSweep as DeleteIcon,
   BorderColor as EditIcon,
 } from "@material-ui/icons";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import { useStateValue } from "app/services/state/State";
 import {
@@ -89,8 +89,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function UsersList({ page, loading, organizationUsers }) {
-  const classes = useStyles();
   const history = useHistory();
+  const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const anchorRef = useRef(null);
   const [userId, setUserId] = useState(0);
@@ -116,6 +116,13 @@ function UsersList({ page, loading, organizationUsers }) {
       }
     });
   }
+  const redirectTo = async (goTo) => {
+    try {
+      history.push(goTo);
+    } catch (err) {
+      // console.log(err);
+    }
+  };
 
   async function handleArchiveUser(Id) {}
 
@@ -175,11 +182,18 @@ function UsersList({ page, loading, organizationUsers }) {
       renderCell: (params) => (
         <>
           <Tooltip title="Edit">
-            <EditIcon
-              style={{ marginLeft: 5 }}
-              className={classes.icon}
-              onClick={handleOpen}
-            />
+            <Link
+              to={{
+                pathname: "/user-management/edit-user",
+                state: { editData: params?.row },
+              }}
+            >
+              <EditIcon
+                style={{ marginLeft: 5 }}
+                className={classes.icon}
+                // onClick={() => redirectTo("/user-management/edit-user")}
+              />
+            </Link>
           </Tooltip>
           <Tooltip title="Archive">
             <DeleteIcon
@@ -237,12 +251,18 @@ function UsersList({ page, loading, organizationUsers }) {
         {rows ? (
           <DataGrid
             sx={{
+              "& .MuiDataGrid-columnHeaders": {
+                border: "none",
+              },
               "& .MuiDataGrid-columnHeaderTitle": {
                 fontSize: "14px",
                 fontWeight: "600",
+                color: "#189AF5",
+                border: "none",
               },
               "& .MuiDataGrid-cell": {
-                fontSize: "14px",
+                fontSize: "12px",
+                border: "none",
               },
             }}
             rows={rows}
@@ -254,7 +274,7 @@ function UsersList({ page, loading, organizationUsers }) {
             }}
             hideFooterRowCount
             hideFooterPagination
-            style={{ height: "70vh" }}
+            style={{ height: "70vh", border: "none", boxSizing: "unset" }}
             pageSize={defaultPageSize}
             hideFooterSelectedRowCount
             rowCount={10 /* pagination.totalItemsCount */}

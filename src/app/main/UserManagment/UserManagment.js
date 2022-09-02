@@ -19,6 +19,7 @@ import Paper from "@material-ui/core/Paper";
 import {
   getOrganizationUsers,
   getOrganizations,
+  searchOrganizationUser,
 } from "app/services/api/ApiManager";
 import { useHistory } from "react-router";
 import UsersList from "./UsersList";
@@ -26,6 +27,7 @@ import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
 
 const useStyles = makeStyles({
   layoutRoot: {
+    fontSize: "1.5rem",
     "& .MuiFormControlLabel-label": {
       fontSize: "1.2rem",
       margin: "1rem 0",
@@ -33,6 +35,11 @@ const useStyles = makeStyles({
     "& .MuiInputBase-input": {
       backgroundColor: "#fff",
       textAlign: "start",
+    },
+    "& .MuiInputLabel-root": {
+      fontSize: "1.4rem",
+      left: "-4px",
+      top: "-5px",
     },
   },
 });
@@ -45,9 +52,11 @@ const UserManagment = () => {
   const history = useHistory();
   const pageTitle = location.pathname
     .split("/")
-    .filter((x) => x)[0]
+    .filter((x) => x)
+    .pop()
     .split("-")
     .join(" ");
+
   const classes = useStyles();
   const [organizationSelected, setOrganizationSelected] = useState("");
   const [count, setCount] = useState(0);
@@ -55,6 +64,8 @@ const UserManagment = () => {
   const [searchText, setSearchText] = useState("");
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
+  const USER_ROLE_SUPER_ADMIN = "super-admin";
+  const USER_ROLE_CLIENT_ADMIN = "client-admin";
 
   function handleSearch(event) {
     setSearchText(event.target.value);
@@ -80,8 +91,38 @@ const UserManagment = () => {
   const handleGetOrganizationUsers = async (id) => {
     const res = await getOrganizationUsers(id, user);
     if (res && res.status === 200 && res.data) {
+      setLoading(false);
       dispatch({
         type: actions.SET_ORGANIZATION_USERS,
+        payload: res.data,
+      });
+    }
+  };
+  const handleGetClientAdminOrgUsers = async () => {
+    if (user && user.role && user?.role === USER_ROLE_CLIENT_ADMIN) {
+      const { id } = user.organization;
+      await handleGetOrganizationUsers(id);
+    }
+  };
+  const handleSearchOrganizationUsers = async () => {
+    if (searchText?.length === 0) {
+      return false;
+    }
+    let res = null;
+    let userRole = user && user.role && user?.role;
+    if (userRole === USER_ROLE_SUPER_ADMIN) {
+      res = await searchOrganizationUser(
+        organizationSelected,
+        user,
+        searchText
+      );
+    } else if (userRole !== USER_ROLE_SUPER_ADMIN) {
+      const { id } = user?.organization;
+      res = await searchOrganizationUser(id, user, searchText);
+    }
+    if (res && res.status === 200 && res.data) {
+      dispatch({
+        type: actions.SET_SEARCH_ORGANIZATION_USERS,
         payload: res.data,
       });
     }
@@ -89,7 +130,7 @@ const UserManagment = () => {
 
   const loadOrganizations = async () => {
     const res = await getOrganizations(user);
-    if (res && res.status == 200 && res.data && res.data.length > 0) {
+    if (res && res.status === 200 && res.data && res.data.length > 0) {
       setLoading(false);
       dispatch({
         type: actions.SET_ORGANIZATION,
@@ -97,9 +138,15 @@ const UserManagment = () => {
       });
     }
   };
+
   useEffect(() => {
     loadOrganizations();
   }, []);
+
+  useEffect(() => {
+    handleGetClientAdminOrgUsers();
+  }, []);
+
   return (
     <FusePageSimple
       classes={{
@@ -136,27 +183,28 @@ const UserManagment = () => {
         <div className="p-24">
           {/*start*/}
           <div className="flex flex-wrap flex-1 items-center justify-between mb-10 p-8">
-            <div className="flex flex-1 w-full sm:w-auto ">
-              <FormControl sx={{ width: "60%" }} size="small">
-                <InputLabel id="organization-dropdown">
-                  Select Organization
-                </InputLabel>
-                <Select
-                  labelId="organization-dropdown"
-                  id="organizationDropdown"
-                  value={organizationSelected}
-                  label="organization"
-                  onChange={handleChange}
-                >
-                  {organization?.map((org) => (
-                    <MenuItem value={org?.id} key={org?.id}>
-                      {org?.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-
+            {user && user.role && user.role === USER_ROLE_SUPER_ADMIN && (
+              <div className="flex flex-1 w-full sm:w-auto ">
+                <FormControl sx={{ width: "60%" }} size="small">
+                  <InputLabel id="organization-dropdown">
+                    Select Organization
+                  </InputLabel>
+                  <Select
+                    labelId="organization-dropdown"
+                    id="organizationDropdown"
+                    value={organizationSelected}
+                    label="organization"
+                    onChange={handleChange}
+                  >
+                    {organization?.map((org) => (
+                      <MenuItem value={org?.id} key={org?.id}>
+                        {org?.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+            )}
             <div className="flex flex-1 items-center justify-end w-full sm:w-auto sm:px-6 mx-4">
               <ThemeProvider theme={theme}>
                 <Paper className="flex items-center min-w-full sm:min-w-0 w-full max-w-512 px-12 py-4 rounded-16 shdaow">
@@ -175,11 +223,13 @@ const UserManagment = () => {
                 </Paper>
               </ThemeProvider>
             </div>
+
             <div className="flex items-center justify-end -mx-4 md:mt-0">
               <Button
                 variant="contained"
                 color="secondary"
                 aria-label="Send Message"
+                onClick={handleSearchOrganizationUsers}
               >
                 Search
               </Button>

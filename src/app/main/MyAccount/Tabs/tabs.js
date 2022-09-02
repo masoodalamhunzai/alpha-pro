@@ -10,10 +10,8 @@ import FusePageSimple from "@fuse/core/FusePageSimple";
 import { makeStyles } from "@material-ui/core/styles";
 import { styled } from "@mui/material/styles";
 import Breadcrumb from "../../../fuse-layouts/shared-components/Breadcrumbs";
-import SetUserAccess from "./SetUserAccess/SetUserAccess";
-import CreateUser from "./CreateUser/CreateUser";
-import AddUserDetails from "./AddUserDetails/AddUserDetails";
-import SelectUserSite from "./SelectUserSite/SelectUserSite";
+import AccountSettings from "./AccountSettings/AccountSettings";
+import Profile from "./Profile/Profile";
 
 const useStyles = makeStyles({
   layoutRoot: {},
@@ -92,7 +90,7 @@ function a11yProps(index) {
   };
 }
 
-const CreateUserTabs = () => {
+const MyAccountTabs = () => {
   const location = useLocation();
   const history = useHistory();
   const pageTitle = location.pathname
@@ -113,23 +111,7 @@ const CreateUserTabs = () => {
       classes={{
         root: classes.layoutRoot,
       }}
-      header={
-        <div className="p-24">
-          <Breadcrumb />
-          <Typography
-            variant="h3"
-            gutterBottom
-            sx={{
-              color: "#000",
-              fontWeight: 700,
-              mt: 2,
-              textTransform: "capitalize",
-            }}
-          >
-            {pageTitle}
-          </Typography>
-        </div>
-      }
+       
       content={
         <div className="p-24">
           <Box sx={{ width: "100%" }}>
@@ -140,32 +122,24 @@ const CreateUserTabs = () => {
                 onChange={handleChange}
                 aria-label="basic tabs example"
               >
+                <AntTab label="Profile" {...a11yProps(0)} />
                 <AntTab
                   className={classes.tabs}
-                  label="Add User Details"
-                  {...a11yProps(0)}
+                  label="Account Settings"
+                  {...a11yProps(1)}
                 />
-                {/* <AntTab label="Select User Sites" {...a11yProps(1)} />
-                <AntTab label="Set User Access" {...a11yProps(2)} />
-                <AntTab label="Create User" {...a11yProps(3)} />*/}
               </AntTabs>
             </Box>
             <TabPanel value={value} index={0}>
-              <AddUserDetails />
+              <Profile />
             </TabPanel>
-            {/* <TabPanel value={value} index={1}>
-              <SelectUserSite />
+            <TabPanel value={value} index={1}>
+              <AccountSettings />
             </TabPanel>
-            <TabPanel value={value} index={2}>
-              <SetUserAccess />
-            </TabPanel>
-            <TabPanel value={value} index={3}>
-              <CreateUser />
-            </TabPanel> */}
           </Box>
         </div>
       }
     />
   );
 };
-export default CreateUserTabs;
+export default MyAccountTabs;

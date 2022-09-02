@@ -187,6 +187,7 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
             ) => {
               try {
                 const orgReq = {
+                  id: "",
                   name: values.name.trim(),
                   description: "This is test organization 1",
                   contactFullName: values.contactperson.trim(),
@@ -313,13 +314,13 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                         style={{ width: "100%", background: "#fff" }}
                         country={"us"}
                         inputProps={{
-                          name: "phone",
+                          name: "phonenumber",
                           required: true,
                           autoFocus: true,
                         }}
                         placeholder="Phone Number"
                         name="phonenumber"
-                        onChange={handleChange}
+                        onChange={(e) => setFieldValue("phonenumber", e)}
                         value={values.phonenumber}
                       />
                     </Grid>

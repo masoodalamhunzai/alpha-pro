@@ -22,20 +22,22 @@ const useStyles = makeStyles({
     },
     "& .MuiInputBase-input": {
       backgroundColor: "#fff",
-      textAlign: 'start'
+      textAlign: "start",
     },
     "& .MuiButton-root": {
       letterSpacing: 0,
-      textTransform: 'capitalize',
-      fontSize: "14px", borderRadius: "25px", padding: "2px 25px"
+      textTransform: "capitalize",
+      fontSize: "14px",
+      borderRadius: "25px",
+      padding: "2px 25px",
     },
     "& .MuiFormControlLabel-label": {
       fontSize: "1.2rem",
       margin: "1rem 0",
     },
-    '& .MuiFormControl-root': {
-      margin: '1rem 0'
-    }
+    "& .MuiFormControl-root": {
+      margin: "1rem 0",
+    },
   },
   continueBtn: {
     "&.MuiButton-root": {
@@ -88,12 +90,7 @@ const CreateUserTab = ({ setOpen }) => {
         }}
       >
         <Typography variant="h4">Edit User Form</Typography>
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          noValidate
-          sx={{ mt: 1 }}
-        >
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
@@ -153,7 +150,7 @@ const CreateUserTab = ({ setOpen }) => {
               display: "flex",
               justifyContent: "start",
               alignItems: "center",
-              my: 2
+              my: 2,
             }}
           >
             <FormControlLabel
@@ -166,7 +163,7 @@ const CreateUserTab = ({ setOpen }) => {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              mb: 2
+              mb: 2,
             }}
           >
             <Button
@@ -190,6 +187,6 @@ const CreateUserTab = ({ setOpen }) => {
       </Box>
     </Container>
   );
-}
+};
 
 export default CreateUserTab;

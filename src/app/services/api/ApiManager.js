@@ -59,6 +59,20 @@ export const getItems = async (user) => {
   }
 };
 
+export const saveItem = async (data, user) => {
+  try {
+    const response = await postData(
+      `${s.items.addItems}`,
+      user,
+      data
+    );
+
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+
 export const saveQuestion = async (data, id, user) => {
   try {
     const response = await postData(
@@ -155,6 +169,28 @@ export const createOrganizationUser = async (id, user, data) => {
       `${s.organizationUsers.createOrganizationUser(id)}`,
       user,
       data
+    );
+    return response;
+  } catch (err) {
+    return null;
+  }
+};
+export const searchOrganizationUser = async (id, user, searchTerm) => {
+  try {
+    const response = await getData(
+      `${s.search.searchOrganizationUsers(id, searchTerm)}`,
+      user
+    );
+    return response;
+  } catch (err) {
+    return null;
+  }
+};
+export const searchOrganizations = async (searchTerm, user) => {
+  try {
+    const response = await getData(
+      `${s.search.searchOrganizations(searchTerm)}`,
+      user
     );
     return response;
   } catch (err) {

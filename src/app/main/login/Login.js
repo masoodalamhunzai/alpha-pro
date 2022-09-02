@@ -1,14 +1,14 @@
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import clsx from "clsx";
-import { motion } from "framer-motion";
-import { useState } from "react";
-import { useHistory } from "react-router";
-import { Link } from "react-router-dom";
 //import moment from "moment";
 import JWTLoginTab from "./tabs/JWTLoginTab";
+import { Link } from "react-router-dom";
+import Typography from "@material-ui/core/Typography";
+import clsx from "clsx";
+import { makeStyles } from "@material-ui/core/styles";
+import { motion } from "framer-motion";
+import { useHistory } from "react-router";
+import { useState } from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,12 +18,12 @@ const useStyles = makeStyles((theme) => ({
   leftSection: {},
   rightSection: {
     backgroundImage: "url('assets/images/books.jpg')",
-    
+
     background: `#01619b`,
     color: theme.palette.primary.contrastText,
   },
   logo: {
-    height: 40,
+    // height: 40,
     width: 150,
   },
 }));

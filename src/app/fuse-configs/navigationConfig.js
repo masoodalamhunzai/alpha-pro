@@ -70,7 +70,7 @@ const navigationConfig = [
         translate: "All Questions",
         type: "item",
         icon: "dvr",
-        url: "/all-items",
+        url: "/all-questions",
       },
       {
         id: "createnewitem",
@@ -78,7 +78,7 @@ const navigationConfig = [
         translate: "Create New Question",
         type: "item",
         icon: "subtitlesrounded",
-        url: "/create-item",
+        url: "/create-new-question",
       },
       {
         id: "itembulkupdates",
@@ -86,7 +86,7 @@ const navigationConfig = [
         translate: "Bulk Updates",
         type: "item",
         icon: "subtitlesrounded",
-        url: "item-bulk-update",
+        url: "question-bulk-update",
       },
     ],
   },
@@ -103,7 +103,7 @@ const navigationConfig = [
         translate: "All Assessment",
         type: "item",
         icon: "dvr",
-        url: "/all-activities",
+        url: "/all-assessments",
       },
       {
         id: "newactivity",
@@ -111,7 +111,7 @@ const navigationConfig = [
         translate: "New Assessment",
         type: "item",
         icon: "subtitlesrounded",
-        url: "/new-activity",
+        url: "/new-assessment",
       },
       {
         id: "basetemplates",
@@ -127,7 +127,7 @@ const navigationConfig = [
         translate: "Bulk Updates",
         type: "item",
         icon: "subtitlesrounded",
-        url: "/activities-bulk-updates",
+        url: "/assessments-bulk-updates",
       },
     ],
   },
