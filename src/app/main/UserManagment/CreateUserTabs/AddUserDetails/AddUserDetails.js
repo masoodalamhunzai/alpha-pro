@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { makeStyles } from "@material-ui/core/styles";
+import { Checkbox, FormControlLabel, FormGroup } from "@material-ui/core";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -459,7 +460,20 @@ function AddUserDetailsTab() {
               </Box>
             </>
           )}
-
+          <Box className={classes.formInput}>
+            <FormControl fullWidth>
+              <div style={{ display: "flex" }} className="pl-24 ml-4">
+                <FormControlLabel
+                  control={<Checkbox />}
+                  label="Publishing Dev"
+                />
+                <FormControlLabel
+                  control={<Checkbox />}
+                  label="Publishing Prod"
+                />
+              </div>
+            </FormControl>
+          </Box>
           <Box className="flex items-center justify-end mx-40 w-full">
             <Button
               type="submit"
