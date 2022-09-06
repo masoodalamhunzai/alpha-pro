@@ -92,6 +92,8 @@ function SubjectList({ page, loading }) {
     {
       field: "status",
       headerName: "Status",
+      headerAlign: "center",
+      align: "center",
 
       renderCell: (params) => (
         <>
@@ -144,7 +146,7 @@ function SubjectList({ page, loading }) {
               <EditIcon
                 style={{ marginLeft: 5 }}
                 className={classes.icon}
-                // onClick={() => redirectTo("/user-management/edit-user")}
+                onClick={() => redirectTo("/grade/edit-grade")}
               />
             </Link>
           </Tooltip>

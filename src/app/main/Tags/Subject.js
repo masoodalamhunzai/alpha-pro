@@ -99,7 +99,7 @@ const Grade = () => {
             style={{ float: "right" }}
             color="secondary"
             aria-label="Send Message"
-            onClick={() => redirectTo("/user-management/create-user")}
+            onClick={() => redirectTo("/create-subject")}
             startIcon={<AddIcon />}
           >
             Create New

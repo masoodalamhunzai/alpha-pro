@@ -15,6 +15,8 @@ export { default as NewActivity } from "./Activities/NewActivity";
 export { default as BaseTemplates } from "./Activities/BaseTemplates";
 export { default as ActivitiesBulkUpdates } from "./Activities/ActivitiesBulkUpdates";
 export { default as Grade } from "./Tags/Grade";
+export { default as CreateNewGrade } from "./Tags/CreateNew/NewGrade/NewGrade";
+export { default as CreateNewSubject } from "./Tags/CreateNew/NewSubject/NewSubject";
 export { default as Subject } from "./Tags/Subject";
 export { default as TagHierarchies } from "./Tags/TagHierarchies";
 export { default as TagTypes } from "./Tags/TagTypes";

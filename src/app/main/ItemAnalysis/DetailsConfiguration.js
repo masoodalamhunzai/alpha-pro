@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import { Button } from '@material-ui/core';
+import { useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
+import { Button } from "@material-ui/core";
+import { primaryBlueColor } from "app/services/Settings";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,44 +18,44 @@ const useStyles = makeStyles((theme) => ({
     border: `1px solid ${theme.palette.background.default}`,
   },
   uploadIcon: {
-    color: '#01619b',
-    cursor: 'pointer',
+    color: "#01619b",
+    cursor: "pointer",
   },
   icon: {
-    color: 'white',
-    cursor: 'pointer',
-    float: 'right',
+    color: "white",
+    cursor: "pointer",
+    float: "right",
   },
   row: {
-    display: 'flex',
+    display: "flex",
     marginBottom: 10,
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   buttonsContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-evenly",
   },
   button: {
     background: theme.palette.primary.main,
-    color: '#fff',
+    color: "#fff",
     marginLeft: 5,
   },
   dialogHeader: {
     height: 150,
     backgroundColor: theme.palette.primary.main,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
   },
   dialogTitle: {
-    color: '#fff',
-    backgroundColor: '#01619b',
+    color: "#fff",
+    backgroundColor: "#01619b",
   },
   name: {
-    color: '#fff',
+    color: "#fff",
     marginTop: 10,
     fontSize: 16,
   },
@@ -62,39 +63,44 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1,
   },
   buttonGrey: {
-    background: 'grey',
-    color: '#fff',
+    background: "grey",
+    color: "#fff",
     marginLeft: 5,
   },
   buttonSelected: {
-    background: 'lightblue',
-    color: '#fff',
+    background: "lightblue",
+    color: "#fff",
     marginLeft: 5,
   },
   activeText: {
-    color: 'green',
+    color: "green",
   },
   inActiveText: {
-    color: 'red',
+    color: "red",
+  },
+  btnSelected: {
+    backgroundColor: primaryBlueColor,
+    color: "#fff",
+    marginLeft: 5,
   },
   plusButton: {
-    alignSelf: 'center',
-    marginLeft: '-10px',
+    alignSelf: "center",
+    marginLeft: "-10px",
   },
 }));
 
 const scoringTypesList = [
   {
     value: 1,
-    label: 'Dichotomous',
+    label: "Dichotomous",
   },
   {
     value: 2,
-    label: 'Yes',
+    label: "Yes",
   },
   {
     value: 3,
-    label: 'No',
+    label: "No",
   },
 ];
 
@@ -113,20 +119,20 @@ function DetailsConfiguration(props) {
   };
 
   const handleStatusButtonClick = (val) => {
-   // console.log('props.statusButtonDetails ', val);
-   // props.setStatusButtonDetails(val);
+    // console.log('props.statusButtonDetails ', val);
+    // props.setStatusButtonDetails(val);
   };
 
   return (
     <>
-      <div className="space-y-32 flex" style={{ width: '100%' }}>
+      <div className="space-y-32 flex" style={{ width: "100%" }}>
         <Box sx={{ flexGrow: 1 }}>
           <TextField
             className="mx-6"
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
             inputProps={{
               style: {
-                backgroundColor: 'white',
+                backgroundColor: "white",
               },
             }}
             size="large"
@@ -141,9 +147,9 @@ function DetailsConfiguration(props) {
           <Typography
             gutterBottom
             sx={{
-              color: 'gray',
+              color: "gray",
               fontWeight: 720,
-              padding: '2%',
+              padding: "2%",
             }}
           >
             The unique identifying code for an item
@@ -153,7 +159,7 @@ function DetailsConfiguration(props) {
             variant="h6"
             gutterBottom
             sx={{
-              color: 'gray',
+              color: "gray",
               fontWeight: 700,
               mt: 2,
             }}
@@ -161,26 +167,63 @@ function DetailsConfiguration(props) {
             Status
           </Typography>
           <div>
-            <Button className={classes.buttonGrey} variant="contained" color="secondary">
+            <Button
+              className={
+                props.statusButtonDetails == "Published"
+                  ? classes.btnSelected
+                  : classes.buttonGrey
+              }
+              onClick={() => {
+                props.setStatusButtonDetails("Published");
+              }}
+              variant="contained"
+              color="secondary"
+            >
               <Typography>Published</Typography>
             </Button>
-            <Button className={classes.buttonGrey} variant="contained" color="secondary">
+            <Button
+              className={
+                props.statusButtonDetails == "Unpublished"
+                  ? classes.btnSelected
+                  : classes.buttonGrey
+              }
+              onClick={() => {
+                props.setStatusButtonDetails("Unpublished");
+              }}
+              variant="contained"
+              color="secondary"
+            >
               <Typography>Unpublished</Typography>
             </Button>
-            <Button className={classes.buttonGrey} variant="contained" color="secondary">
+            <Button
+              className={
+                props.statusButtonDetails == "Archive"
+                  ? classes.btnSelected
+                  : classes.buttonGrey
+              }
+              onClick={() => {
+                props.setStatusButtonDetails("Archive");
+              }}
+              variant="contained"
+              color="secondary"
+            >
               <Typography>Archive</Typography>
             </Button>
           </div>
 
           <TextField
-            style={{ backgroundColor: 'white', width: '100%', marginTop: '7%' }}
+            style={{ backgroundColor: "white", width: "100%", marginTop: "7%" }}
             id="outlined-select-currency"
             select
             label="Scoring Type"
             // value={answer}
-            value={scoringType}
+            value={props.scoringType}
             onChange={(e) => {
-              handleChange(e);
+              console.log(
+                "score type",
+                e.target.value + " vs" + props.scoringType
+              );
+              props.setScoringType(e.target.value);
             }}
             // helperText="Correct Ans"
           >
@@ -192,7 +235,7 @@ function DetailsConfiguration(props) {
           </TextField>
           <TextField
             focused
-            style={{ backgroundColor: 'white', width: '100%', marginTop: '7%' }}
+            style={{ backgroundColor: "white", width: "100%", marginTop: "7%" }}
             multiline
             rows={3}
             className="mx-6"
@@ -213,9 +256,9 @@ function DetailsConfiguration(props) {
           <Typography
             gutterBottom
             sx={{
-              color: 'gray',
+              color: "gray",
               fontWeight: 720,
-              padding: '2%',
+              padding: "2%",
             }}
           >
             Describe the item for other authors
@@ -224,7 +267,7 @@ function DetailsConfiguration(props) {
             variant="h6"
             gutterBottom
             sx={{
-              color: 'gray',
+              color: "gray",
               fontWeight: 700,
               mt: 2,
             }}
@@ -233,23 +276,60 @@ function DetailsConfiguration(props) {
           </Typography>
 
           <div>
-            <Button className={classes.buttonGrey} variant="contained" color="secondary">
+            <Button
+              className={
+                props.difficultyButtonDetails == "Easy"
+                  ? classes.btnSelected
+                  : classes.buttonGrey
+              }
+              onClick={() => {
+                props.setDifficultyButtonDetails("Easy");
+              }}
+              variant="contained"
+              color="secondary"
+            >
               <Typography>Easy</Typography>
             </Button>
-            <Button className={classes.buttonGrey} variant="contained" color="secondary">
+            <Button
+              className={
+                props.difficultyButtonDetails == "Medium"
+                  ? classes.btnSelected
+                  : classes.buttonGrey
+              }
+              onClick={() => {
+                props.setDifficultyButtonDetails("Medium");
+              }}
+              variant="contained"
+              color="secondary"
+            >
               <Typography>Medium</Typography>
             </Button>
-            <Button className={classes.buttonGrey} variant="contained" color="secondary">
+            <Button
+              className={
+                props.difficultyButtonDetails == "Hard"
+                  ? classes.btnSelected
+                  : classes.buttonGrey
+              }
+              onClick={() => {
+                props.setDifficultyButtonDetails("Hard");
+              }}
+              variant="contained"
+              color="secondary"
+            >
               <Typography>Hard</Typography>
             </Button>
           </div>
 
           <TextField
             focused
-            style={{ backgroundColor: 'white', width: '100%', marginTop: '7%' }}
+            style={{ backgroundColor: "white", width: "100%", marginTop: "7%" }}
             multiline
             rows={3}
             className="mx-6"
+            value={props.contentSource}
+            onChange={(e) => {
+              props.setContentSource(e.target.value);
+            }}
             /*  inputProps={{
                                 style: {
                                   backgroundColor: "white",
@@ -265,9 +345,9 @@ function DetailsConfiguration(props) {
           <Typography
             gutterBottom
             sx={{
-              color: 'gray',
+              color: "gray",
               fontWeight: 720,
-              padding: '2%',
+              padding: "2%",
             }}
           >
             Capture the source of the item content
@@ -275,10 +355,14 @@ function DetailsConfiguration(props) {
 
           <TextField
             focused
-            style={{ backgroundColor: 'white', width: '100%', marginTop: '3%' }}
+            style={{ backgroundColor: "white", width: "100%", marginTop: "3%" }}
             multiline
             rows={3}
             className="mx-6"
+            value={props.contentNotes}
+            onChange={(e) => {
+              props.setContentNotes(e.target.value);
+            }}
             /*  inputProps={{
                                 style: {
                                   backgroundColor: "white",
@@ -294,9 +378,9 @@ function DetailsConfiguration(props) {
           <Typography
             gutterBottom
             sx={{
-              color: 'gray',
+              color: "gray",
               fontWeight: 720,
-              padding: '2%',
+              padding: "2%",
             }}
           >
             Makes notes against the item
@@ -304,10 +388,14 @@ function DetailsConfiguration(props) {
 
           <TextField
             focused
-            style={{ backgroundColor: 'white', width: '100%', marginTop: '3%' }}
+            style={{ backgroundColor: "white", width: "100%", marginTop: "3%" }}
             multiline
             rows={3}
             className="mx-6"
+            value={props.contentAcknowledgements}
+            onChange={(e) => {
+              props.setContentAcknowledgements(e.target.value);
+            }}
             /*  inputProps={{
                                 style: {
                                   backgroundColor: "white",
@@ -322,9 +410,9 @@ function DetailsConfiguration(props) {
           <Typography
             gutterBottom
             sx={{
-              color: 'gray',
+              color: "gray",
               fontWeight: 720,
-              padding: '2%',
+              padding: "2%",
             }}
           >
             Acknowledgements to contributors of the item content

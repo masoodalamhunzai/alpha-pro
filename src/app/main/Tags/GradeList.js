@@ -92,6 +92,8 @@ function GradeList({ page, loading }) {
     {
       field: "status",
       headerName: "Status",
+      headerAlign: "center",
+      align: "center",
 
       renderCell: (params) => (
         <>

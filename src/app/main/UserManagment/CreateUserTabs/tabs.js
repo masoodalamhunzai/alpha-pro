@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -13,7 +13,7 @@ import Breadcrumb from "../../../fuse-layouts/shared-components/Breadcrumbs";
 import SetUserAccess from "./SetUserAccess/SetUserAccess";
 import CreateUser from "./CreateUser/CreateUser";
 import AddUserDetails from "./AddUserDetails/AddUserDetails";
-import SelectUserSite from "./SelectUserSite/SelectUserSite";
+import Permissions from "./Permissions/Permissions";
 
 const useStyles = makeStyles({
   layoutRoot: {},
@@ -103,11 +103,129 @@ const CreateUserTabs = () => {
     .join(" ");
   const classes = useStyles();
 
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+  const USER_ROLE_CLIENT_ADMIN = "client-admin";
+  const USER_ROLE_SUPER_ADMIN = "super-admin";
+  const [error, setError] = useState(false);
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const { editData } = location?.state ? location?.state : "";
 
+  const [formData, setFormData] = useState({
+    email: editData?.email.length > 0 ? editData?.email : "",
+    firstName: editData?.firstName.length > 0 ? editData?.firstName : "",
+    lastName: editData?.lastName.length > 0 ? editData?.lastName : "",
+    phone: editData?.phonenumber.length > 0 ? editData?.phonenumber : "",
+    organizations:
+      editData?.organization.length > 0 ? editData?.organization : "",
+    password: "",
+    confirmPassword: "",
+    userRoles: "",
+    status: editData?.status.length > 0 ? editData?.status : "",
+    // photo: null,
+  });
+
+  const handleChangeInputs = (e) => {
+    const { value } = e.target;
+    const { name } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+  const handleChangePhone = (value) => {
+    setFormData({ ...formData, phone: value });
+  };
+  const {
+    email,
+    firstName,
+    lastName,
+    phone,
+    organizations,
+    userRoles,
+    password,
+    confirmPassword,
+    status,
+  } = formData;
+
+  const validation = () => {
+    const regex =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const errorEmail = regex.test(email);
+    if (email === "") {
+      setError(true);
+      return setErrorMessage("email required");
+    }
+    if (!errorEmail) {
+      setError(true);
+      return setErrorMessage("Invalid email address");
+    }
+    if (firstName === "") {
+      setError(true);
+      return setErrorMessage("firstName required");
+    }
+    if (lastName === "") {
+      setError(true);
+      return setErrorMessage("lastName required");
+    }
+    if (password === "") {
+      setError(true);
+      return setErrorMessage("password required");
+    }
+    if (confirmPassword === "") {
+      setError(true);
+      return setErrorMessage("confirmPassword required");
+    }
+    if (confirmPassword !== password) {
+      setError(true);
+      return setErrorMessage("Password doesn't match");
+    }
+    if (phone === "") {
+      setError(true);
+      return setErrorMessage("phone required");
+    }
+    if (organizations === "" && user?.role === USER_ROLE_SUPER_ADMIN) {
+      setError(true);
+      return setErrorMessage("organizations required");
+    }
+    if (userRoles === "" && user?.role === USER_ROLE_SUPER_ADMIN) {
+      setError(true);
+      return setErrorMessage("userRoles required");
+    }
+    return true;
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const payload = {
+      email,
+      firstName,
+      lastName,
+      password,
+      phone,
+      roles: [
+        {
+          name: userRoles,
+        },
+      ],
+    };
+    if (user && user.role && user?.role === USER_ROLE_CLIENT_ADMIN) {
+      const { id } = user?.organization;
+      createOrganizationUser(id, user, payload);
+    }
+    if (validation()) {
+      const res = createOrganizationUser(organizations, user, payload);
+
+      setIsFormSubmitted(true);
+      setTimeout(() => {
+        setIsFormSubmitted(false);
+      }, 3000);
+      redirectTo("/user-managment");
+    } else {
+      setTimeout(() => {
+        setError(false);
+      }, 3000);
+    }
+  };
   return (
     <FusePageSimple
       classes={{
@@ -145,21 +263,25 @@ const CreateUserTabs = () => {
                   label="Add User Details"
                   {...a11yProps(0)}
                 />
-                {/* <AntTab label="Select User Sites" {...a11yProps(1)} />
                 <AntTab label="Set User Access" {...a11yProps(2)} />
-                <AntTab label="Create User" {...a11yProps(3)} />*/}
+                <AntTab label="Select User Sites" {...a11yProps(1)} />
+                {/* <AntTab label="Create User" {...a11yProps(3)} />*/}
               </AntTabs>
             </Box>
             <TabPanel value={value} index={0}>
-              <AddUserDetails />
-            </TabPanel>
-            {/* <TabPanel value={value} index={1}>
-              <SelectUserSite />
+              <AddUserDetails
+                formData={formData}
+                handleChangeInputs={handleChangeInputs}
+                handleChangePhone={handleChangePhone}
+              />
             </TabPanel>
             <TabPanel value={value} index={2}>
               <SetUserAccess />
             </TabPanel>
-            <TabPanel value={value} index={3}>
+            <TabPanel value={value} index={1}>
+              <Permissions />
+            </TabPanel>
+            {/*  <TabPanel value={value} index={3}>
               <CreateUser />
             </TabPanel> */}
           </Box>
