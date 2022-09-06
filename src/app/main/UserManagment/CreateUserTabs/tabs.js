@@ -10,8 +10,7 @@ import FusePageSimple from "@fuse/core/FusePageSimple";
 import { makeStyles } from "@material-ui/core/styles";
 import { styled } from "@mui/material/styles";
 import Breadcrumb from "../../../fuse-layouts/shared-components/Breadcrumbs";
-import SetUserAccess from "./SetUserAccess/SetUserAccess";
-import CreateUser from "./CreateUser/CreateUser";
+import Button from "@mui/material/Button";
 import AddUserDetails from "./AddUserDetails/AddUserDetails";
 import Permissions from "./Permissions/Permissions";
 
@@ -61,6 +60,30 @@ const AntTab = styled((props) => <Tab disableRipple {...props} />)(
     "&.Mui-focusVisible": {
       backgroundColor: "#d1eaff",
     },
+    continueBtn: {
+      "&.MuiButton-root": {
+        backgroundColor: "#3287FB",
+        margin: "0 1rem",
+      },
+    },
+    cancelBtn: {
+      "&.MuiButton-root": {
+        backgroundColor: "#ACACAC",
+      },
+    },
+    createBtn: {
+      "&.MuiButton-root": {
+        letterSpacing: 0,
+        textTransform: "capitalize",
+      },
+    },
+    "& .MuiButton-root": {
+      fontWeight: "700",
+      borderRadius: "1.6rem",
+      margin: "2rem 0",
+      padding: "1rem 2rem",
+      fontSize: "1rem",
+    },
   })
 );
 const TabPanel = (props) => {
@@ -103,9 +126,9 @@ const CreateUserTabs = () => {
     .join(" ");
   const classes = useStyles();
 
-  const [value, setValue] = useState(0);
+  const [tabValue, setTabValue] = useState(0);
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    setTabValue(newValue);
   };
   const USER_ROLE_CLIENT_ADMIN = "client-admin";
   const USER_ROLE_SUPER_ADMIN = "super-admin";
@@ -113,6 +136,7 @@ const CreateUserTabs = () => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const { editData } = location?.state ? location?.state : "";
+  const [labelCheckBox, setLabelCheckBox] = useState(null);
 
   const [formData, setFormData] = useState({
     email: editData?.email.length > 0 ? editData?.email : "",
@@ -125,13 +149,33 @@ const CreateUserTabs = () => {
     confirmPassword: "",
     userRoles: "",
     status: editData?.status.length > 0 ? editData?.status : "",
-    // photo: null,
+    alphaProd: false,
+    alphaDev: false,
+    bulkUpdateManager: false,
+    activityManager: false,
+    tagManager: false,
+    tagHierarchyManager: false,
+    users: false,
+    accessEditProfile: false,
+    admin: false,
+    user: false,
+    managementAdmin: false,
+    userManager: false,
+    systemAdmin: false,
+    insightAccess: false,
+    aurthorSiteSettingManager: false,
   });
 
   const handleChangeInputs = (e) => {
     const { value } = e.target;
     const { name } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { checked } = e.target;
+    console.log(value, "e.target", name, checked);
+    if (checked) {
+      setFormData({ ...formData, [name]: checked });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
   const handleChangePhone = (value) => {
     setFormData({ ...formData, phone: value });
@@ -146,6 +190,21 @@ const CreateUserTabs = () => {
     password,
     confirmPassword,
     status,
+    alphaProd,
+    alphaDev,
+    bulkUpdateManager,
+    activityManager,
+    tagManager,
+    tagHierarchyManager,
+    users,
+    accessEditProfile,
+    admin,
+    user,
+    managementAdmin,
+    userManager,
+    systemAdmin,
+    insightAccess,
+    aurthorSiteSettingManager,
   } = formData;
 
   const validation = () => {
@@ -254,36 +313,99 @@ const CreateUserTabs = () => {
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <AntTabs
                 className={classes.tabs}
-                value={value}
+                value={tabValue}
                 onChange={handleChange}
-                aria-label="basic tabs example"
+                aria-label="create-user-tabs"
               >
                 <AntTab
                   className={classes.tabs}
                   label="Add User Details"
                   {...a11yProps(0)}
                 />
-                <AntTab label="Set User Access" {...a11yProps(2)} />
-                <AntTab label="Select User Sites" {...a11yProps(1)} />
+                <AntTab label="Permissions" {...a11yProps(1)} />
                 {/* <AntTab label="Create User" {...a11yProps(3)} />*/}
               </AntTabs>
             </Box>
-            <TabPanel value={value} index={0}>
+            <TabPanel value={tabValue} index={0}>
               <AddUserDetails
                 formData={formData}
                 handleChangeInputs={handleChangeInputs}
                 handleChangePhone={handleChangePhone}
               />
             </TabPanel>
-            <TabPanel value={value} index={2}>
-              <SetUserAccess />
+            <TabPanel value={tabValue} index={1}>
+              <Permissions
+                formData={formData}
+                handleChangeInputs={handleChangeInputs}
+                handleChangePhone={handleChangePhone}
+              />
             </TabPanel>
-            <TabPanel value={value} index={1}>
-              <Permissions />
-            </TabPanel>
-            {/*  <TabPanel value={value} index={3}>
-              <CreateUser />
-            </TabPanel> */}
+            {tabValue === 1 ? (
+              <div className="flex justify-between my-5">
+                <Button
+                  sx={{
+                    fontSize: "14px",
+                    borderRadius: "25px",
+                    padding: "2px 25px",
+                  }}
+                  variant="contained"
+                  size="medium"
+                  className={classes.createBtn}
+                >
+                  Create User
+                </Button>
+                <Button
+                  className={classes.createBtn}
+                  onClick={() => redirectTo("/user-managment")}
+                  sx={{
+                    fontSize: "14px",
+                    borderRadius: "25px",
+                    padding: "2px 25px",
+                    backgroundColor: "gray",
+                    "&:hover": {
+                      backgroundColor: "black",
+                    },
+                  }}
+                  variant="contained"
+                  size="medium"
+                >
+                  Cancel
+                </Button>
+              </div>
+            ) : (
+              <div className="flex justify-between my-5">
+                <Button
+                  sx={{
+                    fontSize: "14px",
+                    borderRadius: "25px",
+                    padding: "2px 25px",
+                  }}
+                  variant="contained"
+                  size="medium"
+                  onClick={() => setTabValue(tabValue + 1)}
+                  className={classes.createBtn}
+                >
+                  Next
+                </Button>
+                <Button
+                  className={classes.createBtn}
+                  onClick={() => redirectTo("/user-managment")}
+                  sx={{
+                    fontSize: "14px",
+                    borderRadius: "25px",
+                    padding: "2px 25px",
+                    backgroundColor: "gray",
+                    "&:hover": {
+                      backgroundColor: "black",
+                    },
+                  }}
+                  variant="contained"
+                  size="medium"
+                >
+                  Cancel
+                </Button>
+              </div>
+            )}
           </Box>
         </div>
       }
