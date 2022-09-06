@@ -100,6 +100,7 @@ const Grade = () => {
             color="secondary"
             aria-label="Send Message"
             startIcon={<AddIcon />}
+            onClick={() => redirectTo("/create-grade")}
           >
             Create New
           </Button>

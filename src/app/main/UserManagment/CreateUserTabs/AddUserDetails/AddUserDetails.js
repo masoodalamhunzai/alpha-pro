@@ -116,40 +116,45 @@ const useStyles = makeStyles({
   },
 });
 
-function AddUserDetailsTab() {
+function AddUserDetailsTab({
+  handleChangeInputs,
+  handleChangePhone,
+  formData,
+}) {
   const history = useHistory();
   const location = useLocation();
   const [{ user, organization, roles }, dispatch] = useStateValue();
-  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
-  const [error, setError] = useState(false);
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const { editData } = location?.state ? location?.state : "";
   const USER_ROLE_CLIENT_ADMIN = "client-admin";
   const USER_ROLE_SUPER_ADMIN = "super-admin";
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [error, setError] = useState(false);
+  // const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  // const { editData } = location?.state ? location?.state : "";
 
-  const [formData, setFormData] = useState({
-    email: editData?.email.length > 0 ? editData?.email : "",
-    firstName: editData?.firstName.length > 0 ? editData?.firstName : "",
-    lastName: editData?.lastName.length > 0 ? editData?.lastName : "",
-    phone: editData?.phonenumber.length > 0 ? editData?.phonenumber : "",
-    organizations:
-      editData?.organization.length > 0 ? editData?.organization : "",
-    password: "",
-    confirmPassword: "",
-    userRoles: "",
-    status: editData?.status.length > 0 ? editData?.status : "",
-    // photo: null,
-  });
-  const handleChange = (e) => {
-    const { value } = e.target;
-    const { name } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  // const [formData, setFormData] = useState({
+  //   email: editData?.email.length > 0 ? editData?.email : "",
+  //   firstName: editData?.firstName.length > 0 ? editData?.firstName : "",
+  //   lastName: editData?.lastName.length > 0 ? editData?.lastName : "",
+  //   phone: editData?.phonenumber.length > 0 ? editData?.phonenumber : "",
+  //   organizations:
+  //     editData?.organization.length > 0 ? editData?.organization : "",
+  //   password: "",
+  //   confirmPassword: "",
+  //   userRoles: "",
+  //   status: editData?.status.length > 0 ? editData?.status : "",
+  //   // photo: null,
+  // });
 
-  const handleChangePhone = (value) => {
-    setFormData({ ...formData, phone: value });
-  };
+  // const handleChange = (e) => {
+  //   const { value } = e.target;
+  //   const { name } = e.target;
+  //   setFormData({ ...formData, [name]: value });
+  // };
+
+  // const handleChangePhone = (value) => {
+  //   setFormData({ ...formData, phone: value });
+  // };
 
   const {
     email,
@@ -163,85 +168,85 @@ function AddUserDetailsTab() {
     status,
   } = formData;
 
-  const validation = () => {
-    const regex =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    const errorEmail = regex.test(email);
-    if (email === "") {
-      setError(true);
-      return setErrorMessage("email required");
-    }
-    if (!errorEmail) {
-      setError(true);
-      return setErrorMessage("Invalid email address");
-    }
-    if (firstName === "") {
-      setError(true);
-      return setErrorMessage("firstName required");
-    }
-    if (lastName === "") {
-      setError(true);
-      return setErrorMessage("lastName required");
-    }
-    if (password === "") {
-      setError(true);
-      return setErrorMessage("password required");
-    }
-    if (confirmPassword === "") {
-      setError(true);
-      return setErrorMessage("confirmPassword required");
-    }
-    if (confirmPassword !== password) {
-      setError(true);
-      return setErrorMessage("Password doesn't match");
-    }
-    if (phone === "") {
-      setError(true);
-      return setErrorMessage("phone required");
-    }
-    if (organizations === "" && user?.role === USER_ROLE_SUPER_ADMIN) {
-      setError(true);
-      return setErrorMessage("organizations required");
-    }
-    if (userRoles === "" && user?.role === USER_ROLE_SUPER_ADMIN) {
-      setError(true);
-      return setErrorMessage("userRoles required");
-    }
-    return true;
-  };
+  // const validation = () => {
+  //   const regex =
+  //     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  //   const errorEmail = regex.test(email);
+  //   if (email === "") {
+  //     setError(true);
+  //     return setErrorMessage("email required");
+  //   }
+  //   if (!errorEmail) {
+  //     setError(true);
+  //     return setErrorMessage("Invalid email address");
+  //   }
+  //   if (firstName === "") {
+  //     setError(true);
+  //     return setErrorMessage("firstName required");
+  //   }
+  //   if (lastName === "") {
+  //     setError(true);
+  //     return setErrorMessage("lastName required");
+  //   }
+  //   if (password === "") {
+  //     setError(true);
+  //     return setErrorMessage("password required");
+  //   }
+  //   if (confirmPassword === "") {
+  //     setError(true);
+  //     return setErrorMessage("confirmPassword required");
+  //   }
+  //   if (confirmPassword !== password) {
+  //     setError(true);
+  //     return setErrorMessage("Password doesn't match");
+  //   }
+  //   if (phone === "") {
+  //     setError(true);
+  //     return setErrorMessage("phone required");
+  //   }
+  //   if (organizations === "" && user?.role === USER_ROLE_SUPER_ADMIN) {
+  //     setError(true);
+  //     return setErrorMessage("organizations required");
+  //   }
+  //   if (userRoles === "" && user?.role === USER_ROLE_SUPER_ADMIN) {
+  //     setError(true);
+  //     return setErrorMessage("userRoles required");
+  //   }
+  //   return true;
+  // };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const payload = {
-      email,
-      firstName,
-      lastName,
-      password,
-      phone,
-      roles: [
-        {
-          name: userRoles,
-        },
-      ],
-    };
-    if (user && user.role && user?.role === USER_ROLE_CLIENT_ADMIN) {
-      const { id } = user?.organization;
-      createOrganizationUser(id, user, payload);
-    }
-    if (validation()) {
-      const res = createOrganizationUser(organizations, user, payload);
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   const payload = {
+  //     email,
+  //     firstName,
+  //     lastName,
+  //     password,
+  //     phone,
+  //     roles: [
+  //       {
+  //         name: userRoles,
+  //       },
+  //     ],
+  //   };
+  //   if (user && user.role && user?.role === USER_ROLE_CLIENT_ADMIN) {
+  //     const { id } = user?.organization;
+  //     createOrganizationUser(id, user, payload);
+  //   }
+  //   if (validation()) {
+  //     const res = createOrganizationUser(organizations, user, payload);
 
-      setIsFormSubmitted(true);
-      setTimeout(() => {
-        setIsFormSubmitted(false);
-      }, 3000);
-      redirectTo("/user-managment");
-    } else {
-      setTimeout(() => {
-        setError(false);
-      }, 3000);
-    }
-  };
+  //     setIsFormSubmitted(true);
+  //     setTimeout(() => {
+  //       setIsFormSubmitted(false);
+  //     }, 3000);
+  //     redirectTo("/user-managment");
+  //   } else {
+  //     setTimeout(() => {
+  //       setError(false);
+  //     }, 3000);
+  //   }
+  // };
 
   const getAllUserRoles = async () => {
     const res = await getAllRoles(user);
@@ -281,11 +286,11 @@ function AddUserDetailsTab() {
       className="shadow-md rounded-md"
     >
       {error && <Alert severity="error">{errorMessage}</Alert>}
-      {isFormSubmitted && (
+      {/* {isFormSubmitted && (
         <Alert severity="success">
           {editData ? "successfully Updated" : "successfully Created"}
         </Alert>
-      )}
+      )} */}
       <Box
         sx={{
           marginTop: 2,
@@ -311,7 +316,7 @@ function AddUserDetailsTab() {
               label="First Name"
               type="text"
               id="name"
-              onChange={handleChange}
+              onChange={handleChangeInputs}
               defaultValue={firstName}
               autoComplete="current-password"
             />
@@ -327,7 +332,7 @@ function AddUserDetailsTab() {
               label="Last Name"
               type="text"
               id="name"
-              onChange={handleChange}
+              onChange={handleChangeInputs}
               defaultValue={lastName}
               autoComplete="current-password"
             />
@@ -345,7 +350,7 @@ function AddUserDetailsTab() {
               type="email"
               autoComplete="email"
               autoFocus
-              onChange={handleChange}
+              onChange={handleChangeInputs}
               defaultValue={email}
             />
           </Box>
@@ -374,7 +379,7 @@ function AddUserDetailsTab() {
               label="Password"
               type="password"
               id="password"
-              onChange={handleChange}
+              onChange={handleChangeInputs}
               autoComplete="current-password"
             />
           </Box>
@@ -387,7 +392,7 @@ function AddUserDetailsTab() {
               label="Confirm Password"
               type="password"
               id="confirmPassword"
-              onChange={handleChange}
+              onChange={handleChangeInputs}
               autoComplete="current-password"
             />
           </Box>
@@ -401,7 +406,7 @@ function AddUserDetailsTab() {
                 value={status}
                 label="status"
                 name="status"
-                onChange={handleChange}
+                onChange={handleChangeInputs}
                 // defaultValue={}
               >
                 <MenuItem value="active">Active</MenuItem>
@@ -423,7 +428,7 @@ function AddUserDetailsTab() {
                     value={organizations}
                     label="organizations"
                     name="organizations"
-                    onChange={handleChange}
+                    onChange={handleChangeInputs}
                     // defaultValue={}
                   >
                     {organization?.map((org) => (
@@ -445,7 +450,7 @@ function AddUserDetailsTab() {
                     defaultValue={userRoles}
                     label="role"
                     name="userRoles"
-                    onChange={handleChange}
+                    onChange={handleChangeInputs}
                   >
                     {roles?.map(
                       (role) =>
@@ -460,26 +465,11 @@ function AddUserDetailsTab() {
               </Box>
             </>
           )}
-          <Box className={classes.formInput}>
-            <FormControl fullWidth>
-              <div style={{ display: "flex" }} className="pl-24 ml-4">
-                <FormControlLabel
-                  control={<Checkbox />}
-                  label="Publishing Dev"
-                />
-                <FormControlLabel
-                  control={<Checkbox />}
-                  label="Publishing Prod"
-                />
-              </div>
-            </FormControl>
-          </Box>
-          <Box className="flex items-center justify-end mx-40 w-full">
+          {/* <Box className="flex items-center justify-end mx-40 w-full">
             <Button
               type="submit"
               variant="contained"
               className={classes.continueBtn}
-              onClick={handleSubmit}
             >
               Save
             </Button>
@@ -491,7 +481,7 @@ function AddUserDetailsTab() {
             >
               cancel
             </Button>
-          </Box>
+          </Box> */}
         </Box>
       </Box>
     </Container>

@@ -2,7 +2,7 @@ import React from "react";
 import Grid from "@mui/material/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@mui/material/Box";
-import Icon from '@material-ui/core/Icon';
+import Icon from "@material-ui/core/Icon";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
@@ -11,7 +11,6 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 
-
 const useStyles = makeStyles({
   root: {
     fontSize: "1rem",
@@ -19,9 +18,9 @@ const useStyles = makeStyles({
   createBtn: {
     "&.MuiButton-root": {
       letterSpacing: 0,
-      textTransform: 'capitalize',
+      textTransform: "capitalize",
     },
-  }
+  },
 });
 
 const SetUserAccess = () => {
@@ -41,7 +40,6 @@ const SetUserAccess = () => {
           root: classes.root,
         }}
       >
-
         <Typography
           variant="h5"
           sx={{ margin: "10px 5px", fontWeight: "bold" }}
@@ -54,29 +52,42 @@ const SetUserAccess = () => {
               sx={{
                 minWidth: 300,
                 minHeight: 300,
-                height: '100%',
+                height: "100%",
                 display: "flex",
                 alignItems: "start",
                 justifyContent: "center",
-                flexDirection: 'column',
+                flexDirection: "column",
               }}
             >
               <Typography
                 variant="button"
                 display="block"
                 sx={{
-                  px: 2, py: 0.5, fontWeight: 700, width: '250px'
+                  px: 2,
+                  py: 0.5,
+                  fontWeight: 700,
+                  width: "250px",
                 }}
               >
-                <img className="logo-icon w-full h-full" src="assets/images/eAlpha_03.png" alt="logo" />
+                <img
+                  className="logo-icon w-full h-full"
+                  src="assets/images/eAlpha_03.png"
+                  alt="logo"
+                />
               </Typography>
 
               <CardContent sx={{ width: "100%" }}>
                 <div className="flex justify-between my-5">
-                  <p style={{ fontSize: '11px' }} className="font-semibold text-gray-500">
+                  <p
+                    style={{ fontSize: "11px" }}
+                    className="font-semibold text-gray-500"
+                  >
                     Select item bank(s) access*
                   </p>
-                  <span style={{ fontSize: '10px' }} className="underline text-blue-600 whitespace-nowrap">
+                  <span
+                    style={{ fontSize: "10px" }}
+                    className="underline text-blue-600 whitespace-nowrap"
+                  >
                     Learn about permission group
                   </span>
                 </div>
@@ -85,17 +96,25 @@ const SetUserAccess = () => {
                     control={<Checkbox />}
                     label="Alpha Publishing Prod"
                     className="text-2xl"
+                    name="alphaProd"
                   />
                   <FormControlLabel
                     control={<Checkbox />}
                     label="Alpha Publishing Dev"
+                    name="alphaDev"
                   />
                 </FormGroup>
                 <div className="flex justify-between my-5">
-                  <p style={{ fontSize: '11px' }} className="font-semibold text-gray-500">
+                  <p
+                    style={{ fontSize: "11px" }}
+                    className="font-semibold text-gray-500"
+                  >
                     Set default user roles for all item banks*
                   </p>
-                  <span style={{ fontSize: '10px' }} className="underline text-blue-600 whitespace-nowrap">
+                  <span
+                    style={{ fontSize: "10px" }}
+                    className="underline text-blue-600 whitespace-nowrap"
+                  >
                     Learn more about Aurthor Site user roles
                   </span>
                 </div>
@@ -130,26 +149,36 @@ const SetUserAccess = () => {
               sx={{
                 minWidth: 300,
                 minHeight: 300,
-                height: '100%',
+                height: "100%",
                 display: "flex",
                 alignItems: "start",
                 justifyContent: "center",
-                flexDirection: 'column'
+                flexDirection: "column",
               }}
             >
               <Typography
                 variant="button"
                 display="block"
-                sx={{ px: 2, py: 0.5, fontWeight: 700, mt: 2, width: '250px' }}
+                sx={{ px: 2, py: 0.5, fontWeight: 700, mt: 2, width: "250px" }}
               >
-                <img className="logo-icon w-full h-full" src="assets/images/eAlpha_05.png" alt="logo" />
+                <img
+                  className="logo-icon w-full h-full"
+                  src="assets/images/eAlpha_05.png"
+                  alt="logo"
+                />
               </Typography>
               <CardContent sx={{ width: "100%" }}>
                 <div className="flex justify-between my-5">
-                  <p style={{ fontSize: '11px' }} className="font-semibold text-gray-500">
+                  <p
+                    style={{ fontSize: "11px" }}
+                    className="font-semibold text-gray-500"
+                  >
                     Set user roles*
                   </p>
-                  <span style={{ fontSize: '10px' }} className="underline text-blue-600 whitespace-nowrap">
+                  <span
+                    style={{ fontSize: "10px" }}
+                    className="underline text-blue-600 whitespace-nowrap"
+                  >
                     Learn more about user roles
                   </span>
                 </div>
@@ -163,7 +192,10 @@ const SetUserAccess = () => {
                   <FormControlLabel control={<Checkbox />} label="Admin" />
                 </FormGroup>
                 <div className="flex justify-between my-5">
-                  <p style={{ fontSize: '11px' }} className="font-semibold text-gray-500">
+                  <p
+                    style={{ fontSize: "11px" }}
+                    className="font-semibold text-gray-500"
+                  >
                     Management roles
                   </p>
                 </div>
@@ -182,7 +214,10 @@ const SetUserAccess = () => {
                   />
                 </FormGroup>
                 <div className="flex justify-between my-5">
-                  <p style={{ fontSize: '11px' }} className="font-semibold text-gray-500">
+                  <p
+                    style={{ fontSize: "11px" }}
+                    className="font-semibold text-gray-500"
+                  >
                     Insight roles
                   </p>
                 </div>
@@ -191,7 +226,10 @@ const SetUserAccess = () => {
                   label="Insight Access"
                 />
                 <div className="flex justify-between my-5">
-                  <p style={{ fontSize: '11px' }} className="font-semibold text-gray-500">
+                  <p
+                    style={{ fontSize: "11px" }}
+                    className="font-semibold text-gray-500"
+                  >
                     Insight roles
                   </p>
                 </div>
@@ -208,11 +246,14 @@ const SetUserAccess = () => {
             fontSize: "13px",
             margin: "30px 10px 30px 20px",
             color: "gray",
-            display: 'flex',
-            alignItems: 'center'
+            display: "flex",
+            alignItems: "center",
           }}
         >
-          <Icon color="action" style={{ color: '#0078d2', margin: '0 0.8rem' }}>infoicon</Icon>The new user newuser@gmail.com will be sent an email with a set
+          <Icon color="action" style={{ color: "#0078d2", margin: "0 0.8rem" }}>
+            infoicon
+          </Icon>
+          The new user newuser@gmail.com will be sent an email with a set
           password link that will expire in 7 days.
         </Typography>
         <div className="flex justify-between my-5">
@@ -242,8 +283,8 @@ const SetUserAccess = () => {
           </Button>
         </div>
       </Box>
-    </div >
+    </div>
   );
-}
+};
 
 export default SetUserAccess;

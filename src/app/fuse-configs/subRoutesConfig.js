@@ -1,4 +1,4 @@
-import { CreateUser } from "app/main";
+import { CreateUser, CreateNewGrade, CreateNewSubject } from "app/main";
 
 const subRoutesConfig = {
   routes: [
@@ -9,6 +9,14 @@ const subRoutesConfig = {
     {
       path: "/user-management/edit-user",
       component: () => <CreateUser />,
+    },
+    {
+      path: "/create-grade",
+      component: () => <CreateNewGrade />,
+    },
+    {
+      path: "/create-subject",
+      component: () => <CreateNewSubject />,
     },
   ],
 };
