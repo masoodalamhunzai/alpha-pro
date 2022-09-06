@@ -92,6 +92,8 @@ function SubjectList({ page, loading }) {
     {
       field: "status",
       headerName: "Status",
+      headerAlign: "center",
+      align: "center",
 
       renderCell: (params) => (
         <>
@@ -137,8 +139,7 @@ function SubjectList({ page, loading }) {
           <Tooltip title="Edit">
             <Link
             // to={{
-            //   pathname: "/user-management/edit-user",
-            //   state: { editData: params?.row },
+            //   pathname: "/subject/new-subject",
             // }}
             >
               <EditIcon
