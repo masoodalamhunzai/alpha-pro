@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { makeStyles } from "@material-ui/core/styles";
-import { Checkbox, FormControlLabel, FormGroup } from "@material-ui/core";
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
-import CssBaseline from "@mui/material/CssBaseline";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -19,16 +16,11 @@ import {
 } from "@material-ui/icons";
 import Icon from "@material-ui/core/Icon";
 import { actions } from "app/services/state/Reducer";
-import {
-  getAllRoles,
-  getOrganizations,
-  createOrganizationUser,
-} from "app/services/api/ApiManager";
+import { getAllRoles } from "app/services/api/ApiManager";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/material.css";
 import { useStateValue } from "app/services/state/State";
 import { useHistory, useLocation } from "react-router";
-import { truncate } from "lodash";
 
 const useStyles = makeStyles({
   root: {
@@ -41,13 +33,7 @@ const useStyles = makeStyles({
       backgroundColor: "#fff",
       textAlign: "start",
     },
-    "& .MuiButton-root": {
-      fontWeight: "700",
-      borderRadius: "1.6rem",
-      margin: "2rem 0",
-      padding: "1rem 2rem",
-      fontSize: "1rem",
-    },
+
     "& .MuiFormControlLabel-label": {
       fontSize: "1.2rem",
       margin: "1rem 0",
@@ -95,17 +81,7 @@ const useStyles = makeStyles({
       textTransform: "capitalize",
     },
   },
-  continueBtn: {
-    "&.MuiButton-root": {
-      backgroundColor: "#3287FB",
-      margin: "0 1rem",
-    },
-  },
-  cancelBtn: {
-    "&.MuiButton-root": {
-      backgroundColor: "#ACACAC",
-    },
-  },
+
   formInput: {
     "&.MuiBox-root": {
       display: "flex",
@@ -283,7 +259,7 @@ function AddUserDetailsTab({
       }}
       component="main"
       maxWidth="xs"
-      className="shadow-md rounded-md"
+      className="shadow rounded-md"
     >
       {error && <Alert severity="error">{errorMessage}</Alert>}
       {/* {isFormSubmitted && (
@@ -465,23 +441,6 @@ function AddUserDetailsTab({
               </Box>
             </>
           )}
-          {/* <Box className="flex items-center justify-end mx-40 w-full">
-            <Button
-              type="submit"
-              variant="contained"
-              className={classes.continueBtn}
-            >
-              Save
-            </Button>
-            <Button
-              type="continue"
-              variant="contained"
-              className={classes.cancelBtn}
-              onClick={() => redirectTo("/user-managment")}
-            >
-              cancel
-            </Button>
-          </Box> */}
         </Box>
       </Box>
     </Container>
