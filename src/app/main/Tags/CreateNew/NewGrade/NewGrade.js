@@ -1,5 +1,5 @@
-import * as React from "react";
-import { useState } from "react";
+import React from "react";
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@mui/material/TextField";
@@ -8,8 +8,9 @@ import Container from "@mui/material/Container";
 import FormControl from "@mui/material/FormControl";
 import CssBaseline from "@mui/material/CssBaseline";
 import { useStateValue } from "app/services/state/State";
-import Divider from "@mui/material/Divider";
+import { actions } from "app/services/state/Reducer";
 import Stack from "@mui/material/Stack";
+import { createUserGrade } from "app/services/api/ApiManager";
 
 const useStyles = makeStyles({
   root: {
@@ -65,14 +66,51 @@ const useStyles = makeStyles({
 
 const NewGrade = () => {
   const [{ user }, dispatch] = useStateValue();
-  const [grade, setGrade] = useState("");
+  const [error, setError] = useState(false);
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [gradeData, setGradeData] = useState({
+    grade: "",
+  });
+  const { grade } = gradeData;
 
-  const handleChange = (event) => {
-    setGrade(event.target.value);
+  const redirectTo = async (goTo) => {
+    try {
+      history.push(goTo);
+    } catch (err) {}
   };
 
-  const handleSubmit = (e) => {
+  const handleChangeInputs = (e) => {
+    setGradeData(e.target.value);
+  };
+  console.log(gradeData, "grade Data");
+
+  const validation = () => {
+    if (grade === "") {
+      setError(true);
+      return setErrorMessage("Grade Name required");
+    }
+    return true;
+  };
+
+  const handleGradeSubmit = (e) => {
     e.preventDefault();
+    const payload = {
+      grade: gradeData,
+    };
+    console.log(payload, "payload");
+    if (validation()) {
+      const res = createUserGrade(user, payload);
+      setIsFormSubmitted(true);
+      setTimeout(() => {
+        setIsFormSubmitted(false);
+      }, 3000);
+      redirectTo("/grade");
+    } else {
+      setTimeout(() => {
+        setError(false);
+      }, 3000);
+    }
   };
 
   const classes = useStyles();
@@ -95,7 +133,7 @@ const NewGrade = () => {
       >
         <Box
           component="form"
-          onSubmit={handleSubmit}
+          onSubmit={handleGradeSubmit}
           noValidate
           sx={{ my: 4, width: "100%" }}
         >
@@ -105,8 +143,10 @@ const NewGrade = () => {
               margin="normal"
               required
               fullWidth
+              onChange={handleChangeInputs}
               label="Grade"
               name="grade"
+              defaultValue={grade}
               autoComplete="grade"
               autoFocus
             />
@@ -133,13 +173,13 @@ const NewGrade = () => {
               </Button>
             </Stack>
           </Box>
-          <div class="h-0.5 w-ful text-slate-700 bg-slate-400 " />  
+          <div class="h-0.5 w-ful text-slate-700 bg-slate-400 " />
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
               gap: "0.5rem",
-              my:2
+              my: 2,
             }}
           >
             <Button

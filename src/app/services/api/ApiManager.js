@@ -61,11 +61,7 @@ export const getItems = async (user) => {
 
 export const saveItem = async (data, user) => {
   try {
-    const response = await postData(
-      `${s.items.addItems}`,
-      user,
-      data
-    );
+    const response = await postData(`${s.items.addItems}`, user, data);
 
     return response;
   } catch (error) {
@@ -158,6 +154,22 @@ export const getOrganizationUsers = async (orgId, user) => {
 export const getAllRoles = async (user) => {
   try {
     const response = await getData(`${s.roles}`, user);
+    return response;
+  } catch (err) {
+    return null;
+  }
+};
+export const getAllGrades = async (user) => {
+  try {
+    const response = await getData(`${s.grade}`, user);
+    return response;
+  } catch (err) {
+    return null;
+  }
+};
+export const createUserGrade = async (user, data) => {
+  try {
+    const response = await postData(`${s.grade}`, user, data);
     return response;
   } catch (err) {
     return null;

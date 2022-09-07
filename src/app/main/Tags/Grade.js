@@ -19,6 +19,7 @@ import Paper from "@material-ui/core/Paper";
 import { useHistory } from "react-router";
 import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
 import GradeList from "./GradeList";
+import { getAllGrades } from "app/services/api/ApiManager";
 
 const useStyles = makeStyles({
   layoutRoot: {
@@ -42,10 +43,8 @@ const useStyles = makeStyles({
   },
 });
 const Grade = () => {
-  const [
-    { user, patients, defaultPageSize, organization, organizationUsers },
-    dispatch,
-  ] = useStateValue();
+  const [{ user, patients, defaultPageSize, organization, grade }, dispatch] =
+    useStateValue();
   const location = useLocation();
   const history = useHistory();
   const pageTitle = location.pathname
@@ -55,6 +54,7 @@ const Grade = () => {
     .split("-")
     .join(" ");
 
+  const [loading, setLoading] = useState(true);
   const classes = useStyles();
   const [count, setCount] = useState(0);
   const theme = useTheme();
@@ -73,6 +73,20 @@ const Grade = () => {
       // console.log(err);
     }
   };
+  const handleGetGrade = async () => {
+    const res = await getAllGrades(user);
+    if (res && res.status === 200 && res.data) {
+      setLoading(false);
+      dispatch({
+        type: actions.SET_GRADE,
+        payload: res.data,
+      });
+    }
+  };
+
+  useEffect(() => {
+    handleGetGrade();
+  }, []);
 
   return (
     <FusePageSimple
@@ -151,7 +165,12 @@ const Grade = () => {
             </div>
           </div>
           {/*end*/}
-          <GradeList />
+          <GradeList
+            page={page}
+            setPage={setPage}
+            loading={loading}
+            grade={grade}
+          />
         </div>
       }
     />
