@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function GradeList({ page, loading }) {
+function GradeList({ page, loading, grade }) {
   const history = useHistory();
   const classes = useStyles();
   const anchorRef = useRef(null);
@@ -87,7 +87,7 @@ function GradeList({ page, loading }) {
   function handleChangeRowsPerPage(event) {}
 
   const columns = [
-    { field: "gradeName", headerName: "Grade Name", flex: 1 },
+    { field: "title", headerName: "Grade Name", flex: 1 },
     { field: "createdBy", headerName: "Created By" },
     {
       field: "status",
@@ -153,62 +153,71 @@ function GradeList({ page, loading }) {
     },
   ];
 
-  const rows = [
-    {
-      id: 1,
-      gradeName: "Class 8",
-      createdBy: "Ranjith Pattu",
-      status: "active",
-    },
-    {
-      id: 2,
-      gradeName: "Class 9",
-      createdBy: "Ranjith Pattu",
-      status: "inActive",
-    },
-    {
-      id: 3,
-      gradeName: "Class 8",
-      createdBy: "Ranjith Pattu",
-      status: "active",
-    },
-    {
-      id: 4,
-      gradeName: "Class 7",
-      createdBy: "Ranjith Pattu",
-      status: "active",
-    },
-    {
-      id: 5,
-      gradeName: "Class 9",
-      createdBy: "Ranjith Pattu",
-      status: "active",
-    },
-    {
-      id: 6,
-      gradeName: "Class 6",
-      createdBy: "Ranjith Pattu",
-      status: "active",
-    },
-    {
-      id: 7,
-      gradeName: "Class 9",
-      createdBy: "Ranjith Pattu",
-      status: "inActive",
-    },
-    {
-      id: 8,
-      gradeName: "Class 8",
-      createdBy: "Ranjith Pattu",
-      status: "inActive",
-    },
-    {
-      id: 9,
-      gradeName: "Class 7",
-      createdBy: "Ranjith Pattu",
-      status: "active",
-    },
-  ];
+  const rows = grade?.map((data) => {
+    return {
+      id: data.id,
+      title: data.title,
+      createdBy: data.createdBy,
+      status: "",
+    };
+  });
+
+  // const rows = [
+  //   {
+  //     id: 1,
+  //     gradeName: "Class 8",
+  //     createdBy: "Ranjith Pattu",
+  //     status: "active",
+  //   },
+  //   {
+  //     id: 2,
+  //     gradeName: "Class 9",
+  //     createdBy: "Ranjith Pattu",
+  //     status: "inActive",
+  //   },
+  //   {
+  //     id: 3,
+  //     gradeName: "Class 8",
+  //     createdBy: "Ranjith Pattu",
+  //     status: "active",
+  //   },
+  //   {
+  //     id: 4,
+  //     gradeName: "Class 7",
+  //     createdBy: "Ranjith Pattu",
+  //     status: "active",
+  //   },
+  //   {
+  //     id: 5,
+  //     gradeName: "Class 9",
+  //     createdBy: "Ranjith Pattu",
+  //     status: "active",
+  //   },
+  //   {
+  //     id: 6,
+  //     gradeName: "Class 6",
+  //     createdBy: "Ranjith Pattu",
+  //     status: "active",
+  //   },
+  //   {
+  //     id: 7,
+  //     gradeName: "Class 9",
+  //     createdBy: "Ranjith Pattu",
+  //     status: "inActive",
+  //   },
+  //   {
+  //     id: 8,
+  //     gradeName: "Class 8",
+  //     createdBy: "Ranjith Pattu",
+  //     status: "inActive",
+  //   },
+  //   {
+  //     id: 9,
+  //     gradeName: "Class 7",
+  //     createdBy: "Ranjith Pattu",
+  //     status: "active",
+  //   },
+  // ];
 
   return (
     <>
