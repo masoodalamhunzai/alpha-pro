@@ -10,12 +10,37 @@ import FusePageSimple from "@fuse/core/FusePageSimple";
 import { makeStyles } from "@material-ui/core/styles";
 import { styled } from "@mui/material/styles";
 import Breadcrumb from "../../../fuse-layouts/shared-components/Breadcrumbs";
+import { createOrganizationUser } from "app/services/api/ApiManager";
 import Button from "@mui/material/Button";
+import Alert from "@mui/material/Alert";
 import AddUserDetails from "./AddUserDetails/AddUserDetails";
 import Permissions from "./Permissions/Permissions";
+import { useStateValue } from "app/services/state/State";
 
 const useStyles = makeStyles({
-  layoutRoot: {},
+  layoutRoot: {
+    "& .MuiButton-root": {
+      fontWeight: "700",
+      borderRadius: "20px",
+      margin: "0 2rem ",
+      padding: "1rem 3rem",
+      fontSize: "1.3rem",
+      textTransform: "capitalize",
+    },
+  },
+  cancelBtn: {
+    "&.MuiButton-root": {
+      backgroundColor: "gray",
+      "&:hover": {
+        backgroundColor: "black",
+      },
+    },
+  },
+  createBtn: {
+    "& .MuiButton-root": {
+      fontSize: "1.3rem",
+    },
+  },
 });
 const AntTabs = styled(Tabs)({
   borderBottom: "1px solid #e8e8e8",
@@ -59,30 +84,6 @@ const AntTab = styled((props) => <Tab disableRipple {...props} />)(
     },
     "&.Mui-focusVisible": {
       backgroundColor: "#d1eaff",
-    },
-    continueBtn: {
-      "&.MuiButton-root": {
-        backgroundColor: "#3287FB",
-        margin: "0 1rem",
-      },
-    },
-    cancelBtn: {
-      "&.MuiButton-root": {
-        backgroundColor: "#ACACAC",
-      },
-    },
-    createBtn: {
-      "&.MuiButton-root": {
-        letterSpacing: 0,
-        textTransform: "capitalize",
-      },
-    },
-    "& .MuiButton-root": {
-      fontWeight: "700",
-      borderRadius: "1.6rem",
-      margin: "2rem 0",
-      padding: "1rem 2rem",
-      fontSize: "1rem",
     },
   })
 );
@@ -128,15 +129,17 @@ const CreateUserTabs = () => {
 
   const [tabValue, setTabValue] = useState(0);
   const handleChange = (event, newValue) => {
+    console.log(newValue, "newValue");
+
     setTabValue(newValue);
   };
+  const [{ user, organization, roles }, dispatch] = useStateValue();
   const USER_ROLE_CLIENT_ADMIN = "client-admin";
   const USER_ROLE_SUPER_ADMIN = "super-admin";
   const [error, setError] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const { editData } = location?.state ? location?.state : "";
-  const [labelCheckBox, setLabelCheckBox] = useState(null);
 
   const [formData, setFormData] = useState({
     email: editData?.email.length > 0 ? editData?.email : "",
@@ -155,10 +158,10 @@ const CreateUserTabs = () => {
     activityManager: false,
     tagManager: false,
     tagHierarchyManager: false,
-    users: false,
+    usersChkbox: false,
     accessEditProfile: false,
     admin: false,
-    user: false,
+    userChkbox: false,
     managementAdmin: false,
     userManager: false,
     systemAdmin: false,
@@ -170,7 +173,6 @@ const CreateUserTabs = () => {
     const { value } = e.target;
     const { name } = e.target;
     const { checked } = e.target;
-    console.log(value, "e.target", name, checked);
     if (checked) {
       setFormData({ ...formData, [name]: checked });
     } else {
@@ -190,22 +192,13 @@ const CreateUserTabs = () => {
     password,
     confirmPassword,
     status,
-    alphaProd,
-    alphaDev,
-    bulkUpdateManager,
-    activityManager,
-    tagManager,
-    tagHierarchyManager,
-    users,
-    accessEditProfile,
-    admin,
-    user,
-    managementAdmin,
-    userManager,
-    systemAdmin,
-    insightAccess,
-    aurthorSiteSettingManager,
   } = formData;
+
+  const redirectTo = async (goTo) => {
+    try {
+      history.push(goTo);
+    } catch (err) {}
+  };
 
   const validation = () => {
     const regex =
@@ -221,15 +214,15 @@ const CreateUserTabs = () => {
     }
     if (firstName === "") {
       setError(true);
-      return setErrorMessage("firstName required");
+      return setErrorMessage("First Name required");
     }
     if (lastName === "") {
       setError(true);
-      return setErrorMessage("lastName required");
+      return setErrorMessage("Last Name required");
     }
     if (password === "") {
       setError(true);
-      return setErrorMessage("password required");
+      return setErrorMessage("Password required");
     }
     if (confirmPassword === "") {
       setError(true);
@@ -241,15 +234,15 @@ const CreateUserTabs = () => {
     }
     if (phone === "") {
       setError(true);
-      return setErrorMessage("phone required");
+      return setErrorMessage("Phone required");
     }
     if (organizations === "" && user?.role === USER_ROLE_SUPER_ADMIN) {
       setError(true);
-      return setErrorMessage("organizations required");
+      return setErrorMessage("Organizations required");
     }
     if (userRoles === "" && user?.role === USER_ROLE_SUPER_ADMIN) {
       setError(true);
-      return setErrorMessage("userRoles required");
+      return setErrorMessage("user Roles required");
     }
     return true;
   };
@@ -285,6 +278,15 @@ const CreateUserTabs = () => {
       }, 3000);
     }
   };
+
+  const handleChangeTabs = () => {
+    if (tabValue < 1) {
+      setTabValue(tabValue + 1);
+    } else {
+      setTabValue(0);
+    }
+  };
+
   return (
     <FusePageSimple
       classes={{
@@ -326,6 +328,19 @@ const CreateUserTabs = () => {
                 {/* <AntTab label="Create User" {...a11yProps(3)} />*/}
               </AntTabs>
             </Box>
+            {error && (
+              <Alert
+                severity="error"
+                sx={{ fontSize: "1.3rem", margin: "1rem" }}
+              >
+                {errorMessage}
+              </Alert>
+            )}
+            {/* {isFormSubmitted && (
+        <Alert severity="success">
+          {editData ? "successfully Updated" : "successfully Created"}
+        </Alert>
+      )} */}
             <TabPanel value={tabValue} index={0}>
               <AddUserDetails
                 formData={formData}
@@ -340,72 +355,28 @@ const CreateUserTabs = () => {
                 handleChangePhone={handleChangePhone}
               />
             </TabPanel>
-            {tabValue === 1 ? (
-              <div className="flex justify-between my-5">
-                <Button
-                  sx={{
-                    fontSize: "14px",
-                    borderRadius: "25px",
-                    padding: "2px 25px",
-                  }}
-                  variant="contained"
-                  size="medium"
-                  className={classes.createBtn}
-                >
-                  Create User
-                </Button>
-                <Button
-                  className={classes.createBtn}
-                  onClick={() => redirectTo("/user-managment")}
-                  sx={{
-                    fontSize: "14px",
-                    borderRadius: "25px",
-                    padding: "2px 25px",
-                    backgroundColor: "gray",
-                    "&:hover": {
-                      backgroundColor: "black",
-                    },
-                  }}
-                  variant="contained"
-                  size="medium"
-                >
-                  Cancel
-                </Button>
-              </div>
-            ) : (
-              <div className="flex justify-between my-5">
-                <Button
-                  sx={{
-                    fontSize: "14px",
-                    borderRadius: "25px",
-                    padding: "2px 25px",
-                  }}
-                  variant="contained"
-                  size="medium"
-                  onClick={() => setTabValue(tabValue + 1)}
-                  className={classes.createBtn}
-                >
-                  Next
-                </Button>
-                <Button
-                  className={classes.createBtn}
-                  onClick={() => redirectTo("/user-managment")}
-                  sx={{
-                    fontSize: "14px",
-                    borderRadius: "25px",
-                    padding: "2px 25px",
-                    backgroundColor: "gray",
-                    "&:hover": {
-                      backgroundColor: "black",
-                    },
-                  }}
-                  variant="contained"
-                  size="medium"
-                >
-                  Cancel
-                </Button>
-              </div>
-            )}
+
+            <div className="flex justify-between my-5">
+              <Button
+                variant="contained"
+                size="medium"
+                onClick={(e) =>
+                  tabValue > 0 ? handleSubmit(e) : handleChangeTabs()
+                }
+                className={classes.createBtn}
+              >
+                {tabValue === 1 ? "Create user" : "Next"}
+              </Button>
+              <Button
+                className={classes.cancelBtn}
+                onClick={() => redirectTo("/user-managment")}
+                variant="contained"
+                size="medium"
+              >
+                Cancel
+              </Button>
+            </div>
+            {/* )} */}
           </Box>
         </div>
       }

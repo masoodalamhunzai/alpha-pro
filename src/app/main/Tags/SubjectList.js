@@ -139,7 +139,8 @@ function SubjectList({ page, loading }) {
           <Tooltip title="Edit">
             <Link
             // to={{
-            //   pathname: "/subject/new-subject",
+            //   pathname: "/user-management/edit-user",
+            //   state: { editData: params?.row },
             // }}
             >
               <EditIcon

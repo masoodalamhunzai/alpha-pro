@@ -88,12 +88,7 @@ function GradeList({ page, loading }) {
 
   const columns = [
     { field: "gradeName", headerName: "Grade Name", flex: 1 },
-    {
-      field: "createdBy",
-      headerName: "Created By",
-      headerAlign: "center",
-      align: "center",
-    },
+    { field: "createdBy", headerName: "Created By" },
     {
       field: "status",
       headerName: "Status",

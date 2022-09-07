@@ -57,6 +57,7 @@ const CreateItem = () => {
   const [contentNotes, setContentNotes] = useState("");
   const [contentAcknowledgements, setContentAcknowledgements] = useState("");
   const [selectedLayout, setSelectedLayout] = useState("");
+  const [tagsList, setTagsList] = useState([]);
 
   const setNews = async () => {
     dispatch({
@@ -270,6 +271,8 @@ const CreateItem = () => {
                 setContentAcknowledgements={setContentAcknowledgements}
                 selectedLayout={selectedLayout}
                 setSelectedLayout={setSelectedLayout}
+                tagsList={tagsList}
+                setTagsList={setTagsList}
               />
             </div>
 

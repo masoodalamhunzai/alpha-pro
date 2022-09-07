@@ -176,7 +176,10 @@ function ItemConfiguration(props) {
                     index={2}
                     style={{ height: "500px", overflow: "auto" }}
                   >
-                    <TagsConfiguration />
+                    <TagsConfiguration
+                      tagsList={props.tagsList}
+                            setTagsList={props.setTagsList}
+                    />
                   </TabPanel>
                 </Box>
               </div>

@@ -7,7 +7,6 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import Alert from "@mui/material/Alert";
 import PasswordIcon from "@mui/icons-material/Password";
 import {
   LocalPhone as LocalPhoneIcon,
@@ -20,7 +19,6 @@ import { getAllRoles } from "app/services/api/ApiManager";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/material.css";
 import { useStateValue } from "app/services/state/State";
-import { useHistory, useLocation } from "react-router";
 
 const useStyles = makeStyles({
   root: {
@@ -97,40 +95,9 @@ function AddUserDetailsTab({
   handleChangePhone,
   formData,
 }) {
-  const history = useHistory();
-  const location = useLocation();
   const [{ user, organization, roles }, dispatch] = useStateValue();
-  const USER_ROLE_CLIENT_ADMIN = "client-admin";
   const USER_ROLE_SUPER_ADMIN = "super-admin";
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
-  const [error, setError] = useState(false);
-  // const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  // const { editData } = location?.state ? location?.state : "";
-
-  // const [formData, setFormData] = useState({
-  //   email: editData?.email.length > 0 ? editData?.email : "",
-  //   firstName: editData?.firstName.length > 0 ? editData?.firstName : "",
-  //   lastName: editData?.lastName.length > 0 ? editData?.lastName : "",
-  //   phone: editData?.phonenumber.length > 0 ? editData?.phonenumber : "",
-  //   organizations:
-  //     editData?.organization.length > 0 ? editData?.organization : "",
-  //   password: "",
-  //   confirmPassword: "",
-  //   userRoles: "",
-  //   status: editData?.status.length > 0 ? editData?.status : "",
-  //   // photo: null,
-  // });
-
-  // const handleChange = (e) => {
-  //   const { value } = e.target;
-  //   const { name } = e.target;
-  //   setFormData({ ...formData, [name]: value });
-  // };
-
-  // const handleChangePhone = (value) => {
-  //   setFormData({ ...formData, phone: value });
-  // };
 
   const {
     email,
@@ -139,90 +106,8 @@ function AddUserDetailsTab({
     phone,
     organizations,
     userRoles,
-    password,
-    confirmPassword,
     status,
   } = formData;
-
-  // const validation = () => {
-  //   const regex =
-  //     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  //   const errorEmail = regex.test(email);
-  //   if (email === "") {
-  //     setError(true);
-  //     return setErrorMessage("email required");
-  //   }
-  //   if (!errorEmail) {
-  //     setError(true);
-  //     return setErrorMessage("Invalid email address");
-  //   }
-  //   if (firstName === "") {
-  //     setError(true);
-  //     return setErrorMessage("firstName required");
-  //   }
-  //   if (lastName === "") {
-  //     setError(true);
-  //     return setErrorMessage("lastName required");
-  //   }
-  //   if (password === "") {
-  //     setError(true);
-  //     return setErrorMessage("password required");
-  //   }
-  //   if (confirmPassword === "") {
-  //     setError(true);
-  //     return setErrorMessage("confirmPassword required");
-  //   }
-  //   if (confirmPassword !== password) {
-  //     setError(true);
-  //     return setErrorMessage("Password doesn't match");
-  //   }
-  //   if (phone === "") {
-  //     setError(true);
-  //     return setErrorMessage("phone required");
-  //   }
-  //   if (organizations === "" && user?.role === USER_ROLE_SUPER_ADMIN) {
-  //     setError(true);
-  //     return setErrorMessage("organizations required");
-  //   }
-  //   if (userRoles === "" && user?.role === USER_ROLE_SUPER_ADMIN) {
-  //     setError(true);
-  //     return setErrorMessage("userRoles required");
-  //   }
-  //   return true;
-  // };
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   const payload = {
-  //     email,
-  //     firstName,
-  //     lastName,
-  //     password,
-  //     phone,
-  //     roles: [
-  //       {
-  //         name: userRoles,
-  //       },
-  //     ],
-  //   };
-  //   if (user && user.role && user?.role === USER_ROLE_CLIENT_ADMIN) {
-  //     const { id } = user?.organization;
-  //     createOrganizationUser(id, user, payload);
-  //   }
-  //   if (validation()) {
-  //     const res = createOrganizationUser(organizations, user, payload);
-
-  //     setIsFormSubmitted(true);
-  //     setTimeout(() => {
-  //       setIsFormSubmitted(false);
-  //     }, 3000);
-  //     redirectTo("/user-managment");
-  //   } else {
-  //     setTimeout(() => {
-  //       setError(false);
-  //     }, 3000);
-  //   }
-  // };
 
   const getAllUserRoles = async () => {
     const res = await getAllRoles(user);
@@ -245,12 +130,6 @@ function AddUserDetailsTab({
     handleRole();
   }, [roles]);
 
-  const redirectTo = async (goTo) => {
-    try {
-      history.push(goTo);
-    } catch (err) {}
-  };
-
   const classes = useStyles();
   return (
     <Container
@@ -261,12 +140,6 @@ function AddUserDetailsTab({
       maxWidth="xs"
       className="shadow rounded-md"
     >
-      {error && <Alert severity="error">{errorMessage}</Alert>}
-      {/* {isFormSubmitted && (
-        <Alert severity="success">
-          {editData ? "successfully Updated" : "successfully Created"}
-        </Alert>
-      )} */}
       <Box
         sx={{
           marginTop: 2,

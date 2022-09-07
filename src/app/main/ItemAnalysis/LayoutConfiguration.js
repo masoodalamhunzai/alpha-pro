@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
   },
   selectedLayout: {
-    border: "1px solid " + primaryBlueColor,
+    border: "2px solid " + primaryBlueColor,
     cursor: "pointer",
   },
 }));
@@ -114,7 +114,7 @@ function LayoutConfiguration(props) {
                     alt="Image"
                   />
                 </div>
-                <text className="my-4">1/2</text>
+                <text className="my-4">50%-50%</text>
               </div>
             </div>
 
@@ -142,7 +142,7 @@ function LayoutConfiguration(props) {
                     src="assets/images/uicapture/TrueFalseIcon.png"
                     alt="Image"
                   />
-                  <text className="my-4">1/3</text>
+                  <text className="my-4">30%</text>
                 </div>
                 <div
                   style={{ width: "66%" }}
@@ -157,7 +157,7 @@ function LayoutConfiguration(props) {
                     src="assets/images/uicapture/TrueFalseIcon.png"
                     alt="Image"
                   />
-                  <text className="my-4">2/3</text>
+                  <text className="my-4">70%</text>
                 </div>
               </div>
             </div>
@@ -186,7 +186,7 @@ function LayoutConfiguration(props) {
                     src="assets/images/uicapture/TrueFalseIcon.png"
                     alt="Image"
                   />
-                  <text className="my-4">2/3</text>
+                  <text className="my-4">70%</text>
                 </div>
                 <div
                   style={{ width: "34%" }}
@@ -201,7 +201,7 @@ function LayoutConfiguration(props) {
                     src="assets/images/uicapture/TrueFalseIcon.png"
                     alt="Image"
                   />
-                  <text className="my-4">1/3</text>
+                  <text className="my-4">30%</text>
                 </div>
               </div>
             </div>
@@ -230,7 +230,7 @@ function LayoutConfiguration(props) {
                     src="assets/images/uicapture/TrueFalseIcon.png"
                     alt="Image"
                   />
-                  <text className="my-4">2/6</text>
+                  <text className="my-4">40%</text>
                 </div>
                 <div
                   style={{ width: "60%" }}
@@ -245,7 +245,7 @@ function LayoutConfiguration(props) {
                     src="assets/images/uicapture/TrueFalseIcon.png"
                     alt="Image"
                   />
-                  <text className="my-4">4/6</text>
+                  <text className="my-4">60%</text>
                 </div>
               </div>
             </div>
@@ -274,7 +274,7 @@ function LayoutConfiguration(props) {
                     src="assets/images/uicapture/TrueFalseIcon.png"
                     alt="Image"
                   />
-                  <text className="my-4">4/6</text>
+                  <text className="my-4">60%</text>
                 </div>
                 <div
                   style={{ width: "40%" }}
@@ -289,7 +289,7 @@ function LayoutConfiguration(props) {
                     src="assets/images/uicapture/TrueFalseIcon.png"
                     alt="Image"
                   />
-                  <text className="my-4">2/6</text>
+                  <text className="my-4">40%</text>
                 </div>
               </div>
             </div>

@@ -37,8 +37,10 @@ export const settings = {
   roles: "/api/roles",
 };
 
-export const primaryBlueColor = "#1299F7";
-export const primaryGrayColor = "#9B9C9D";
+export const primaryBlueColor = "#3287fa";
+export const primaryGrayColor = "#acacac";
+export const lightGrayColor = "#f1f1f1";
+export const darkGrayColor = "#818181";
 
 export const getAccessToken = () => localStorage.getItem("accessToken");
 export const removeAccessToken = () => localStorage.removeItem("accessToken");

@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import { Button } from "@material-ui/core";
-import { primaryBlueColor } from "app/services/Settings";
+import { primaryBlueColor, primaryGrayColor } from "app/services/Settings";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -66,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
     background: "grey",
     color: "#fff",
     marginLeft: 5,
+    "&:hover": { backgroundColor: primaryBlueColor },
   },
   buttonSelected: {
     background: "lightblue",
@@ -92,15 +93,15 @@ const useStyles = makeStyles((theme) => ({
 const scoringTypesList = [
   {
     value: 1,
-    label: "Dichotomous",
+    label: "Per Question",
   },
   {
     value: 2,
-    label: "Yes",
+    label: "Dichotomous",
   },
   {
     value: 3,
-    label: "No",
+    label: "Dependent (EBSR)",
   },
 ];
 
@@ -133,9 +134,10 @@ function DetailsConfiguration(props) {
             inputProps={{
               style: {
                 backgroundColor: "white",
+                fontSize: "13px",
               },
             }}
-            size="large"
+            size="small"
             required
             id="outlined-required"
             label="Name"
@@ -214,6 +216,13 @@ function DetailsConfiguration(props) {
           <TextField
             style={{ backgroundColor: "white", width: "100%", marginTop: "7%" }}
             id="outlined-select-currency"
+            size="small"
+            inputProps={{
+              style: {
+                backgroundColor: "white",
+                fontSize: "13px",
+              },
+            }}
             select
             label="Scoring Type"
             // value={answer}
@@ -245,6 +254,12 @@ function DetailsConfiguration(props) {
                                 },
                               }}  */
             size="large"
+            inputProps={{
+              style: {
+                backgroundColor: "white",
+                fontSize: "13px",
+              },
+            }}
             required
             id="outlined-required"
             label="Description"
