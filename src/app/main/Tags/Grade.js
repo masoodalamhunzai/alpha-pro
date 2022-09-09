@@ -43,8 +43,7 @@ const useStyles = makeStyles({
   },
 });
 const Grade = () => {
-  const [{ user, patients, defaultPageSize, organization, grade }, dispatch] =
-    useStateValue();
+  const [{ user, grade }, dispatch] = useStateValue();
   const location = useLocation();
   const history = useHistory();
   const pageTitle = location.pathname
@@ -56,16 +55,9 @@ const Grade = () => {
 
   const [loading, setLoading] = useState(true);
   const classes = useStyles();
-  const [count, setCount] = useState(0);
   const theme = useTheme();
   const [page, setPage] = useState(0);
 
-  const setNews = async () => {
-    dispatch({
-      type: actions.SET_NEWS,
-      payload: { header: "new header text", des: "new description text" },
-    });
-  };
   const redirectTo = async (goTo) => {
     try {
       history.push(goTo);

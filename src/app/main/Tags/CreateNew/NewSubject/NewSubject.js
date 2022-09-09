@@ -138,7 +138,6 @@ const NewSubject = () => {
               display="flex"
               className="w-full"
               justifyContent="center"
-              gap="2rem"
             >
               <Button variant="contained" sx={{ textTransform: "lowercase" }}>
                 published
@@ -151,13 +150,13 @@ const NewSubject = () => {
               </Button>
             </Stack>
           </Box>
-          <div class="h-0.5 w-ful text-slate-700 bg-slate-400 " />  
+          <div className="h-0.5 w-ful text-slate-700 bg-slate-400 " />
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
               gap: "0.5rem",
-              my:2
+              my: 2,
             }}
           >
             <Button

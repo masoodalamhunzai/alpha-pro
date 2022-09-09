@@ -1,6 +1,5 @@
 import 'styles/custome.css';
 
-import { Auth } from './auth';
 import FuseAuthorization from '@fuse/core/FuseAuthorization';
 import FuseLayout from '@fuse/core/FuseLayout';
 import FuseTheme from '@fuse/core/FuseTheme';
@@ -10,6 +9,7 @@ import { StateProvider } from 'app/services/state/State';
 import history from '@history';
 import { initialState } from 'app/services/state/InitialState';
 import { reducer } from 'app/services/state/Reducer';
+import { Auth } from './auth';
 import withAppProviders from './withAppProviders';
 
 // import axios from 'axios';

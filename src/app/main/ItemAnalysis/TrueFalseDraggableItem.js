@@ -6,6 +6,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { DeleteSweep as DeleteIcon } from "@material-ui/icons";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
+import { primaryBlueColor } from "app/services/Settings";
+import Switch from "app/shared-components/Switch";
 
 // fake data generator
 const getItems = (count) =>
@@ -60,7 +62,7 @@ const optionsList = [
   },
 ];
 
-function DraggableItem(props) {
+function TrueFalseDraggableItem(props) {
   // constructor(props) {
   // super(props);
   /* this.state = {
@@ -69,9 +71,10 @@ function DraggableItem(props) {
   // this.onDragEnd = this.onDragEnd.bind(this);
   // }
 
-  const [itemCount, setItemCount] = useState(0);
+  const [itemCount, setItemCount] = useState(2);
   const [items, setItem] = useState(props.multipleChoices); //  useState(getItems(itemCount));
   const [answer, setAnswer] = useState(3);
+  console.log("getItems(itemCount) ", getItems(1));
   const onDragEnd = (result) => {
     // dropped outside the list
     if (!result.destination) {
@@ -124,13 +127,16 @@ function DraggableItem(props) {
     const tempState = [...props.multipleChoices];
     const tempElement = { ...tempState[index] };
     props.setMultipleChoices(tempState.filter((x) => x.id !== tempElement.id));
-    setItemCount(itemCount - 1);
+    //setItemCount(itemCount - 1);
     setItem(getItems(itemCount - 1));
   };
   return (
     <>
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="droppable">
+        <Droppable
+          isDropDisabled={!props.trueFalseShuffleOption}
+          droppableId="droppable"
+        >
           {(provided, snapshot) => (
             <div
               {...provided.droppableProps}
@@ -166,6 +172,7 @@ function DraggableItem(props) {
                                   height: "5",
                                 },
                               }}
+                              value={item.title}
                               size="large"
                               required
                               id="outlined-required"
@@ -229,11 +236,26 @@ function DraggableItem(props) {
           )}
         </Droppable>
       </DragDropContext>
-      <Fab onClick={() => AddNewOption()} color="primary" aria-label="add">
-        <AddIcon />
-      </Fab>
+      <div className="flex items-center justify-between">
+        <Fab
+          onClick={() => AddNewOption()}
+          className="bg-blue"
+          aria-label="add"
+        >
+          <AddIcon />
+        </Fab>
+        <div className="flex justify-between items-center">
+          <label className="fs-14">Shuffle option</label>
+          <Switch
+            checked={props.trueFalseShuffleOption}
+            onChange={() =>
+              props.setTrueFalseShuffleOption(!props.trueFalseShuffleOption)
+            }
+          />
+        </div>
+      </div>
     </>
   );
 }
 
-export default DraggableItem;
+export default TrueFalseDraggableItem;

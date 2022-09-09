@@ -6,6 +6,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { DeleteSweep as DeleteIcon } from "@material-ui/icons";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
+import Switch from "app/shared-components/Switch";
+import { primaryBlueColor, lightGrayColor } from "app/services/Settings";
 
 // fake data generator
 const getItems = (count) =>
@@ -34,14 +36,14 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   margin: `0 0 ${0}px 0`,
 
   // change background colour if dragging
-  background: isDragging ? "lightgreen" : "white",
+  background: isDragging ? primaryBlueColor : "white",
 
   // styles we need to apply on draggables
   ...draggableStyle,
 });
 
 const getListStyle = (isDraggingOver) => ({
-  background: isDraggingOver ? "lightblue" : "white",
+  background: isDraggingOver ? lightGrayColor : "white",
   padding: grid,
   width: "100%", // 250
 });
@@ -60,18 +62,11 @@ const optionsList = [
   },
 ];
 
-function DraggableItem(props) {
-  // constructor(props) {
-  // super(props);
-  /* this.state = {
-      items: getItems(10)
-    }; */
-  // this.onDragEnd = this.onDragEnd.bind(this);
-  // }
-
-  const [itemCount, setItemCount] = useState(0);
+function ChoiceMatrixDraggableOption(props) {
+  const [itemCount, setItemCount] = useState(2);
   const [items, setItem] = useState(props.multipleChoices); //  useState(getItems(itemCount));
   const [answer, setAnswer] = useState(3);
+  console.log("getItems(itemCount) ", getItems(1));
   const onDragEnd = (result) => {
     // dropped outside the list
     if (!result.destination) {
@@ -124,7 +119,7 @@ function DraggableItem(props) {
     const tempState = [...props.multipleChoices];
     const tempElement = { ...tempState[index] };
     props.setMultipleChoices(tempState.filter((x) => x.id !== tempElement.id));
-    setItemCount(itemCount - 1);
+    //setItemCount(itemCount - 1);
     setItem(getItems(itemCount - 1));
   };
   return (
@@ -178,38 +173,6 @@ function DraggableItem(props) {
                           </div>
 
                           <div
-                            className=""
-                            style={{ width: "25%", margin: "0%" }}
-                          >
-                            <TextField
-                              style={{ width: "95%" }}
-                              id="outlined-select-currency"
-                              select
-                              label="Correct Ans"
-                              // value={answer}
-                              value={
-                                item.isCorrect == true
-                                  ? 1
-                                  : item.isAlternate == true
-                                  ? 2
-                                  : 3
-                              }
-                              onChange={(e) => {
-                                handleChange(e, index);
-                              }}
-                              // helperText="Correct Ans"
-                            >
-                              {optionsList.map((option) => (
-                                <MenuItem
-                                  key={option.value}
-                                  value={option.value}
-                                >
-                                  {option.label}
-                                </MenuItem>
-                              ))}
-                            </TextField>
-                          </div>
-                          <div
                             className="flex items-center align-center"
                             style={{ width: "auto", margin: "0% 0% 0%" }}
                             onClick={() => RemoveOption(index)}
@@ -229,11 +192,12 @@ function DraggableItem(props) {
           )}
         </Droppable>
       </DragDropContext>
-      <Fab onClick={() => AddNewOption()} color="primary" aria-label="add">
+
+      <Fab onClick={() => AddNewOption()} className="bg-blue" aria-label="add">
         <AddIcon />
       </Fab>
     </>
   );
 }
 
-export default DraggableItem;
+export default ChoiceMatrixDraggableOption;

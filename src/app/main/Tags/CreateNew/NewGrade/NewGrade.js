@@ -1,4 +1,3 @@
-import React from "react";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { makeStyles } from "@material-ui/core/styles";
@@ -6,7 +5,10 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import FormControl from "@mui/material/FormControl";
+import Alert from "@mui/material/Alert";
 import CssBaseline from "@mui/material/CssBaseline";
+import { useLocation } from "react-router-dom";
+import { useHistory } from "react-router";
 import { useStateValue } from "app/services/state/State";
 import { actions } from "app/services/state/Reducer";
 import Stack from "@mui/material/Stack";
@@ -65,14 +67,12 @@ const useStyles = makeStyles({
 });
 
 const NewGrade = () => {
+  const history = useHistory();
   const [{ user }, dispatch] = useStateValue();
   const [error, setError] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [gradeData, setGradeData] = useState({
-    grade: "",
-  });
-  const { grade } = gradeData;
+  const [grade, setGrade] = useState("");
 
   const redirectTo = async (goTo) => {
     try {
@@ -81,14 +81,14 @@ const NewGrade = () => {
   };
 
   const handleChangeInputs = (e) => {
-    setGradeData(e.target.value);
+    setGrade(e.target.value);
   };
-  console.log(gradeData, "grade Data");
 
   const validation = () => {
     if (grade === "") {
       setError(true);
-      return setErrorMessage("Grade Name required");
+      setErrorMessage("Grade required");
+      return false;
     }
     return true;
   };
@@ -96,7 +96,7 @@ const NewGrade = () => {
   const handleGradeSubmit = (e) => {
     e.preventDefault();
     const payload = {
-      grade: gradeData,
+      grade,
     };
     console.log(payload, "payload");
     if (validation()) {
@@ -123,6 +123,14 @@ const NewGrade = () => {
       maxWidth="xs"
     >
       <CssBaseline />
+      {error && (
+        <Alert
+          severity="error"
+          sx={{ fontSize: "1.3rem", width: "100%", m: 0 }}
+        >
+          {errorMessage}
+        </Alert>
+      )}
       <Box
         sx={{
           marginTop: 2,
@@ -131,12 +139,7 @@ const NewGrade = () => {
           alignItems: "center",
         }}
       >
-        <Box
-          component="form"
-          onSubmit={handleGradeSubmit}
-          noValidate
-          sx={{ my: 4, width: "100%" }}
-        >
+        <Box component="form" noValidate sx={{ my: 4, width: "100%" }}>
           <FormControl fullWidth>
             <TextField
               sx={{ width: "100%" }}
@@ -160,7 +163,6 @@ const NewGrade = () => {
               display="flex"
               className="w-full"
               justifyContent="center"
-              gap="2rem"
             >
               <Button variant="contained" sx={{ textTransform: "lowercase" }}>
                 published
@@ -173,7 +175,7 @@ const NewGrade = () => {
               </Button>
             </Stack>
           </Box>
-          <div class="h-0.5 w-ful text-slate-700 bg-slate-400 " />
+          <div className="h-0.5 w-ful text-slate-700 bg-slate-400 " />
           <Box
             sx={{
               display: "flex",
@@ -186,6 +188,7 @@ const NewGrade = () => {
               type="submit"
               variant="contained"
               className={classes.continueBtn}
+              onClick={handleGradeSubmit}
             >
               Create
             </Button>
@@ -193,6 +196,7 @@ const NewGrade = () => {
               type="cancel"
               variant="contained"
               className={classes.cancelBtn}
+              onClick={() => redirectTo("/grade")}
             >
               cancel
             </Button>

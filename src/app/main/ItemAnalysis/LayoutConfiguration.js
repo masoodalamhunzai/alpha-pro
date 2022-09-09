@@ -26,6 +26,7 @@ import Icon from "@material-ui/core/Icon";
 import Input from "@material-ui/core/Input";
 import Paper from "@material-ui/core/Paper";
 import { primaryBlueColor, primaryGrayColor } from "app/services/Settings";
+import Switch from "app/shared-components/Switch";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -68,6 +69,8 @@ function LayoutConfiguration(props) {
                 onClick={() => {
                   console.log("hello");
                   props.setSelectedLayout("1");
+                  props.setTabsInColumnOne(false);
+                  props.setTabsInColumnTwo(false);
                 }}
               >
                 <img
@@ -82,7 +85,7 @@ function LayoutConfiguration(props) {
             <div style={{ padding: "1% 2%", width: "50%" }}>
               <div
                 className={
-                  props.selectedLayout == "1/2"
+                  props.selectedLayout == "50%"
                     ? "flex flex-col items-center" +
                       " " +
                       classes.selectedLayout
@@ -92,7 +95,8 @@ function LayoutConfiguration(props) {
                 <div
                   className="flex"
                   onClick={() => {
-                    props.setSelectedLayout("1/2");
+                    props.setSelectedLayout("50%");
+                    props.setTabsInColumn(false);
                   }}
                 >
                   <img
@@ -121,12 +125,13 @@ function LayoutConfiguration(props) {
             <div style={{ padding: "1% 2%", width: "50%" }}>
               <div
                 className={
-                  props.selectedLayout == "1/3,2/3"
+                  props.selectedLayout == "30%,70%"
                     ? "flex" + " " + classes.selectedLayout
                     : "flex" + " " + classes.defaultLayout
                 }
                 onClick={() => {
-                  props.setSelectedLayout("1/3,2/3");
+                  props.setSelectedLayout("30%,70%");
+                  props.setTabsInColumn(false);
                 }}
               >
                 <div
@@ -165,12 +170,13 @@ function LayoutConfiguration(props) {
             <div style={{ padding: "1% 2%", width: "50%" }}>
               <div
                 className={
-                  props.selectedLayout == "2/3,1/3"
+                  props.selectedLayout == "70%,30%"
                     ? "flex" + " " + classes.selectedLayout
                     : "flex" + " " + classes.defaultLayout
                 }
                 onClick={() => {
-                  props.setSelectedLayout("2/3,1/3");
+                  props.setSelectedLayout("70%,30%");
+                  props.setTabsInColumn(false);
                 }}
               >
                 <div
@@ -209,12 +215,13 @@ function LayoutConfiguration(props) {
             <div style={{ padding: "1% 2%", width: "50%" }}>
               <div
                 className={
-                  props.selectedLayout == "2/6,4/6"
+                  props.selectedLayout == "40%,60%"
                     ? "flex" + " " + classes.selectedLayout
                     : "flex" + " " + classes.defaultLayout
                 }
                 onClick={() => {
-                  props.setSelectedLayout("2/6,4/6");
+                  props.setSelectedLayout("40%,60%");
+                  props.setTabsInColumn(false);
                 }}
               >
                 <div
@@ -253,12 +260,13 @@ function LayoutConfiguration(props) {
             <div style={{ padding: "1% 2%", width: "50%" }}>
               <div
                 className={
-                  props.selectedLayout == "4/6,2/6"
+                  props.selectedLayout == "60%,40%"
                     ? "flex" + " " + classes.selectedLayout
                     : "flex" + " " + classes.defaultLayout
                 }
                 onClick={() => {
-                  props.setSelectedLayout("4/6,2/6");
+                  props.setSelectedLayout("60%,40%");
+                  props.setTabsInColumn(false);
                 }}
               >
                 <div
@@ -291,6 +299,73 @@ function LayoutConfiguration(props) {
                   />
                   <text className="my-4">40%</text>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="divider"></div>
+          <div>
+            <div>
+              <label className="fs-16">
+                <b>Column Options</b>
+              </label>
+            </div>
+            <div>
+              {props.selectedLayout == "1" ? (
+                <div className="flex justify-between items-center">
+                  <label className="fs-14">Tabs in Column</label>
+                  <Switch
+                    checked={props.tabsInColumn}
+                    onChange={() => props.setTabsInColumn(!props.tabsInColumn)}
+                  />
+                </div>
+              ) : (
+                <>
+                  <div className="flex justify-between items-center">
+                    <label className="fs-14">Tabs in Column One</label>
+                    <Switch
+                      checked={props.tabsInColumnOne}
+                      onChange={() =>
+                        props.setTabsInColumnOne(!props.tabsInColumnOne)
+                      }
+                    />
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <label className="fs-14">Tabs in Column Two</label>
+                    <Switch
+                      checked={props.tabsInColumnTwo}
+                      onChange={() =>
+                        props.setTabsInColumnTwo(!props.tabsInColumnTwo)
+                      }
+                    />
+                  </div>
+                </>
+              )}
+              {/* <div className="flex justify-between items-center">
+                <label className="fs-14">Tabs in Column</label>
+                <Switch />
+              </div> */}
+
+              <div className="flex justify-between items-center">
+                <label className="fs-14">Vertical Divider</label>
+                <Switch
+                  checked={props.verticalDivider}
+                  onChange={() =>
+                    props.setVerticalDivider(!props.verticalDivider)
+                  }
+                />
+              </div>
+
+              <div className="flex justify-between items-center">
+                <label className="fs-14">Scrolling For Long Content</label>
+                <Switch
+                  checked={props.scrollingForLongContent}
+                  onChange={() =>
+                    props.setScrollingForLongContent(
+                      !props.scrollingForLongContent
+                    )
+                  }
+                />
               </div>
             </div>
           </div>

@@ -6,6 +6,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { DeleteSweep as DeleteIcon } from "@material-ui/icons";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
+import { Button } from "@material-ui/core";
+import { primaryBlueColor } from "app/services/Settings";
 
 // fake data generator
 const getItems = (count) =>
@@ -30,7 +32,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   userSelect: "none",
   /* padding: grid * 2,
   margin: `0 0 ${grid}px 0`, */
-  padding: grid * 1,
+  padding: "0px",
   margin: `0 0 ${0}px 0`,
 
   // change background colour if dragging
@@ -42,7 +44,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 
 const getListStyle = (isDraggingOver) => ({
   background: isDraggingOver ? "lightblue" : "white",
-  padding: grid,
+  padding: "0px",
   width: "100%", // 250
 });
 const optionsList = [
@@ -60,7 +62,7 @@ const optionsList = [
   },
 ];
 
-function DraggableItem(props) {
+function DraggableDistractor(props) {
   // constructor(props) {
   // super(props);
   /* this.state = {
@@ -72,6 +74,7 @@ function DraggableItem(props) {
   const [itemCount, setItemCount] = useState(0);
   const [items, setItem] = useState(props.multipleChoices); //  useState(getItems(itemCount));
   const [answer, setAnswer] = useState(3);
+  console.log("getItems(itemCount) ", getItems(1));
   const onDragEnd = (result) => {
     // dropped outside the list
     if (!result.destination) {
@@ -124,7 +127,7 @@ function DraggableItem(props) {
     const tempState = [...props.multipleChoices];
     const tempElement = { ...tempState[index] };
     props.setMultipleChoices(tempState.filter((x) => x.id !== tempElement.id));
-    setItemCount(itemCount - 1);
+    //setItemCount(itemCount - 1);
     setItem(getItems(itemCount - 1));
   };
   return (
@@ -150,6 +153,9 @@ function DraggableItem(props) {
                           provided.draggableProps.style
                         )}
                       >
+                        <div style={{ marginTop: "10px" }}>
+                          <label>{`Distractor ${index + 1}`}</label>
+                        </div>
                         <div className="space-y-32 flex">
                           <div
                             className="flex items-center align-center"
@@ -166,48 +172,13 @@ function DraggableItem(props) {
                                   height: "5",
                                 },
                               }}
-                              size="large"
+                              size="small"
                               required
                               id="outlined-required"
-                              label={`Choice ${index + 1}`}
-                              placeholder="Option Title"
                               onChange={(e) => {
                                 handleTitleChange(e, index);
                               }}
                             />
-                          </div>
-
-                          <div
-                            className=""
-                            style={{ width: "25%", margin: "0%" }}
-                          >
-                            <TextField
-                              style={{ width: "95%" }}
-                              id="outlined-select-currency"
-                              select
-                              label="Correct Ans"
-                              // value={answer}
-                              value={
-                                item.isCorrect == true
-                                  ? 1
-                                  : item.isAlternate == true
-                                  ? 2
-                                  : 3
-                              }
-                              onChange={(e) => {
-                                handleChange(e, index);
-                              }}
-                              // helperText="Correct Ans"
-                            >
-                              {optionsList.map((option) => (
-                                <MenuItem
-                                  key={option.value}
-                                  value={option.value}
-                                >
-                                  {option.label}
-                                </MenuItem>
-                              ))}
-                            </TextField>
                           </div>
                           <div
                             className="flex items-center align-center"
@@ -229,11 +200,19 @@ function DraggableItem(props) {
           )}
         </Droppable>
       </DragDropContext>
-      <Fab onClick={() => AddNewOption()} color="primary" aria-label="add">
-        <AddIcon />
-      </Fab>
+      <button
+        onClick={() => AddNewOption()}
+        style={{
+          backgroundColor: primaryBlueColor,
+          padding: "2px 5px",
+          color: "white",
+          marginTop: "10px",
+        }}
+      >
+        <AddIcon /> Add
+      </button>
     </>
   );
 }
 
-export default DraggableItem;
+export default DraggableDistractor;

@@ -1,21 +1,21 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-import Button from "@mui/material/Button";
-import MenuIcon from "@mui/icons-material/Menu";
-import AppsIcon from "@mui/icons-material/Apps";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import PropTypes from "prop-types";
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
+import MenuIcon from '@mui/icons-material/Menu';
+import AppsIcon from '@mui/icons-material/Apps';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import PropTypes from 'prop-types';
 
-import DetailsConfiguration from "./DetailsConfiguration";
-import LayoutConfiguration from "./LayoutConfiguration";
-import TagsConfiguration from "./TagsConfiguration";
-import QuestionConfiguration from "./QuestionConfiguration";
+import DetailsConfiguration from './DetailsConfiguration';
+import LayoutConfiguration from './LayoutConfiguration';
+import TagsConfiguration from './TagsConfiguration';
+import QuestionConfiguration from './QuestionConfiguration';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -29,7 +29,7 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box style={{ padding: "3%" }}>
+        <Box style={{ padding: '3%' }}>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -46,13 +46,13 @@ TabPanel.propTypes = {
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
   };
 }
 
 function ItemConfiguration(props) {
   const [value, setValue] = useState(0);
-  const [sectionTitle, setSectionTitle] = useState("Settings");
+  const [sectionTitle, setSectionTitle] = useState('Settings');
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -62,9 +62,9 @@ function ItemConfiguration(props) {
   };
   return (
     <>
-      <div className="space-y-32 flex" style={{ width: "100%" }}>
+      <div className="space-y-32 flex" style={{ width: '100%' }}>
         <Box sx={{ flexGrow: 1 }}>
-          <AppBar position="static" style={{ backgroundColor: "dimgray" }}>
+          <AppBar position="static" style={{ backgroundColor: 'dimgray' }}>
             <Toolbar>
               <IconButton
                 size="large"
@@ -73,7 +73,7 @@ function ItemConfiguration(props) {
                 aria-label="menu"
                 sx={{ mr: 2 }}
                 onClick={() => {
-                  handleSection("Settings");
+                  handleSection('Settings');
                 }}
               >
                 <MenuIcon />
@@ -82,7 +82,7 @@ function ItemConfiguration(props) {
                 variant="h6"
                 component="div"
                 sx={{ flexGrow: 1 }}
-                style={{ textAlign: "center" }}
+                style={{ textAlign: 'center' }}
               >
                 {sectionTitle}
               </Typography>
@@ -94,7 +94,7 @@ function ItemConfiguration(props) {
                 // onClick={handleMenu}
                 color="inherit"
                 onClick={() => {
-                  handleSection("Questions");
+                  handleSection('Questions');
                 }}
               >
                 <AppsIcon />
@@ -102,40 +102,24 @@ function ItemConfiguration(props) {
             </Toolbar>
           </AppBar>
           <div>
-            {sectionTitle == "Settings" ? (
+            {sectionTitle === 'Settings' ? (
               <div>
-                <Box sx={{ width: "100%", backgroundColor: "#ebebeb" }}>
-                  <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Box sx={{ width: '100%', backgroundColor: '#ebebeb' }}>
+                  <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs
                       value={value}
                       onChange={handleChange}
                       textColor="primary"
                       indicatorColor="primary"
                       aria-label="secondary tabs example"
-                      style={{ background: "#fff" }}
+                      style={{ background: '#fff' }}
                     >
-                      <Tab
-                        style={{ width: "33%" }}
-                        label="DETAILS"
-                        {...a11yProps(0)}
-                      />
-                      <Tab
-                        style={{ width: "33%" }}
-                        label="LAYOUT"
-                        {...a11yProps(1)}
-                      />
-                      <Tab
-                        style={{ width: "33%" }}
-                        label="TAGS"
-                        {...a11yProps(2)}
-                      />
+                      <Tab style={{ width: '33%' }} label="DETAILS" {...a11yProps(0)} />
+                      <Tab style={{ width: '33%' }} label="LAYOUT" {...a11yProps(1)} />
+                      <Tab style={{ width: '33%' }} label="TAGS" {...a11yProps(2)} />
                     </Tabs>
                   </Box>
-                  <TabPanel
-                    value={value}
-                    index={0}
-                    style={{ height: "500px", overflow: "auto" }}
-                  >
+                  <TabPanel value={value} index={0} style={{ height: '500px', overflow: 'auto' }}>
                     <div>
                       <DetailsConfiguration
                         setNameDetails={props.setNameDetails}
@@ -145,9 +129,7 @@ function ItemConfiguration(props) {
                         statusButtonDetails={props.statusButtonDetails}
                         setStatusButtonDetails={props.setStatusButtonDetails}
                         difficultyButtonDetails={props.difficultyButtonDetails}
-                        setDifficultyButtonDetails={
-                          props.setDifficultyButtonDetails
-                        }
+                        setDifficultyButtonDetails={props.setDifficultyButtonDetails}
                         scoringType={props.scoringType}
                         setScoringType={props.setScoringType}
                         contentSource={props.contentSource}
@@ -155,54 +137,51 @@ function ItemConfiguration(props) {
                         contentNotes={props.contentNotes}
                         setContentNotes={props.setContentNotes}
                         contentAcknowledgements={props.contentAcknowledgements}
-                        setContentAcknowledgements={
-                          props.setContentAcknowledgements
-                        }
+                        setContentAcknowledgements={props.setContentAcknowledgements}
                       />
                     </div>
                   </TabPanel>
-                  <TabPanel
-                    value={value}
-                    index={1}
-                    style={{ height: "500px", overflow: "auto" }}
-                  >
+                  <TabPanel value={value} index={1} style={{ height: '500px', overflow: 'auto' }}>
                     <LayoutConfiguration
                       selectedLayout={props.selectedLayout}
                       setSelectedLayout={props.setSelectedLayout}
+                      tabsInColumn={props.tabsInColumn}
+                      setTabsInColumn={props.setTabsInColumn}
+                      tabsInColumnOne={props.tabsInColumnOne}
+                      setTabsInColumnOne={props.setTabsInColumnOne}
+                      tabsInColumnTwo={props.tabsInColumnTwo}
+                      setTabsInColumnTwo={props.setTabsInColumnTwo}
+                      verticalDivider={props.verticalDivider}
+                      setVerticalDivider={props.setVerticalDivider}
+                      scrollingForLongContent={props.scrollingForLongContent}
+                      setScrollingForLongContent={props.setScrollingForLongContent}
                     />
                   </TabPanel>
-                  <TabPanel
-                    value={value}
-                    index={2}
-                    style={{ height: "500px", overflow: "auto" }}
-                  >
-                    <TagsConfiguration
-                      tagsList={props.tagsList}
-                            setTagsList={props.setTagsList}
-                    />
+                  <TabPanel value={value} index={2} style={{ height: '500px', overflow: 'auto' }}>
+                    <TagsConfiguration tagsList={props.tagsList} setTagsList={props.setTagsList} />
                   </TabPanel>
                 </Box>
               </div>
             ) : (
               <div>
                 <Box
-                  sx={{ width: "100%", backgroundColor: "#ebebeb" }}
-                  style={{ height: "700px", overflow: "auto" }}
+                  sx={{ width: '100%', backgroundColor: '#ebebeb' }}
+                  style={{ height: '570px', overflow: 'auto' }}
                 >
-                  <QuestionConfiguration />
+                  <QuestionConfiguration handleComponentDragDrop={props.handleComponentDragDrop} />
                 </Box>
               </div>
             )}
           </div>
-          <Box sx={{ "& button": { m: 1 } }}>
+          <Box sx={{ '& button': { m: 1 } }}>
             <div className="flex">
               <Button
                 style={{
-                  width: "50%",
-                  height: "45px",
-                  borderRadius: "0px",
-                  backgroundColor: "gray",
-                  margin: "0px",
+                  width: '50%',
+                  height: '45px',
+                  borderRadius: '0px',
+                  backgroundColor: 'gray',
+                  margin: '0px',
                 }}
                 variant="contained"
                 size="large"
@@ -211,10 +190,10 @@ function ItemConfiguration(props) {
               </Button>
               <Button
                 style={{
-                  width: "50%",
-                  height: "45px",
-                  borderRadius: "0px",
-                  margin: "0px",
+                  width: '50%',
+                  height: '45px',
+                  borderRadius: '0px',
+                  margin: '0px',
                 }}
                 variant="contained"
                 size="large"

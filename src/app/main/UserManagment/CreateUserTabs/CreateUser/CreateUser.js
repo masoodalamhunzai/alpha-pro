@@ -15,9 +15,8 @@ import {
   LocalPhone as LocalPhoneIcon,
   AccountBalance as AccountBalanceIcon,
   AccountCircle as AccountCircleIcon,
-} from '@material-ui/icons';
-import IconButton from '@mui/material/IconButton';
-import Icon from '@material-ui/core/Icon';
+} from "@material-ui/icons";
+import Icon from "@material-ui/core/Icon";
 
 const useStyles = makeStyles({
   root: {
@@ -28,21 +27,23 @@ const useStyles = makeStyles({
     },
     "& .MuiInputBase-input": {
       backgroundColor: "#fff",
-      textAlign: 'start'
+      textAlign: "start",
     },
     "& .MuiButton-root": {
       letterSpacing: 0,
-      textTransform: 'capitalize',
-      fontSize: "14px", borderRadius: "25px", padding: "2px 25px"
+      textTransform: "capitalize",
+      fontSize: "14px",
+      borderRadius: "25px",
+      padding: "2px 25px",
     },
     "& .MuiFormControlLabel-label": {
       fontSize: "1.2rem",
       margin: "1rem 0",
     },
-    '& .MuiFormControl-root': {
-      margin: '1rem 0',
-      width: '90%',
-    }
+    "& .MuiFormControl-root": {
+      margin: "1rem 0",
+      width: "90%",
+    },
   },
   continueBtn: {
     "&.MuiButton-root": {
@@ -55,14 +56,13 @@ const useStyles = makeStyles({
     },
   },
   formInput: {
-    '&.MuiBox-root': {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      width: '100%',
-
+    "&.MuiBox-root": {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      width: "100%",
     },
-  }
+  },
 });
 
 const CreateUserTab = () => {
@@ -73,8 +73,8 @@ const CreateUserTab = () => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-  }
+    e.preventDefault();
+  };
 
   const classes = useStyles();
   return (
@@ -99,10 +99,12 @@ const CreateUserTab = () => {
           component="form"
           onSubmit={handleSubmit}
           noValidate
-          sx={{ my: 4, width: '100%' }}
+          sx={{ my: 4, width: "100%" }}
         >
           <Box className={classes.formInput}>
-            <Icon color="action" className="text-gray-600 mr-8">email</Icon>
+            <Icon color="action" className="text-gray-600 mr-8">
+              email
+            </Icon>
             <TextField
               margin="normal"
               required
@@ -115,7 +117,9 @@ const CreateUserTab = () => {
             />
           </Box>
           <Box className={classes.formInput}>
-            <Icon color="action" className="text-gray-600 mr-8">assignment</Icon>
+            <Icon color="action" className="text-gray-600 mr-8">
+              assignment
+            </Icon>
             <TextField
               margin="normal"
               required
@@ -128,7 +132,9 @@ const CreateUserTab = () => {
             />
           </Box>
           <Box className={classes.formInput}>
-            <Icon color="action" className="text-gray-600 mr-8">assign</Icon>
+            <Icon color="action" className="text-gray-600 mr-8">
+              assign
+            </Icon>
             <TextField
               margin="normal"
               required
@@ -185,14 +191,19 @@ const CreateUserTab = () => {
           </Typography>
           <Box className="flex items-center mb-24">
             <AccountCircleIcon />
-            <Box aria-label="upload picture" component="label" sx={{ height: '7rem' }} className="cursor-pointer border-slate-700 border-2 border-solid w-1/4 bg-white flex items-center justify-center ml-32">
+            <Box
+              aria-label="upload picture"
+              component="label"
+              sx={{ height: "7rem" }}
+              className="cursor-pointer border-slate-700 border-2 border-solid w-1/4 bg-white flex items-center justify-center ml-32"
+            >
               <input hidden accept="image/*" type="file" />
-              <Icon color="action" className="text-gray-600 mr-8">upload</Icon>
+              <Icon color="action" className="text-gray-600 mr-8">
+                upload
+              </Icon>
             </Box>
           </Box>
-          <Box
-            className="flex items-center justify-between mx-40"
-          >
+          <Box className="flex items-center justify-between mx-40">
             <Button
               type="submit"
               variant="contained"
@@ -212,6 +223,6 @@ const CreateUserTab = () => {
       </Box>
     </Container>
   );
-}
+};
 
 export default CreateUserTab;

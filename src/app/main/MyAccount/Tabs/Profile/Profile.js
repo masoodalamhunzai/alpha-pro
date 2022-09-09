@@ -7,8 +7,6 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -88,7 +86,9 @@ const ProfileTab = () => {
   };
 
   const classes = useStyles();
-  const { email, firstName, lastName } = user?.user;
+  const {
+    user: { email, firstName, lastName },
+  } = user;
   const { name } = user.organization;
   return (
     <Container
@@ -182,7 +182,7 @@ const ProfileTab = () => {
             />
           </Box>
           <Box className={classes.formInput}>
-            <LocalPhoneIcon className="text-gray-600 mr-8" />
+            <AccountBalanceIcon className="text-gray-600 mr-8" />
             <TextField
               margin="normal"
               required

@@ -2,6 +2,8 @@
   display: flex;
   align-items: center;
   text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 /* To show the lines on right 
@@ -25,6 +27,14 @@
 .ph-no-field .react-tel-input input {
   width: 100% !important;
   height: 52px;
+}
+
+.bg-blue {
+  background-color: #3287fa !important;
+  color: white !important;
+}
+.bg-blue:hover {
+  background-color: #589af7 !important;
 }
 
 .search-bar .MuiFormControl-root .MuiInputBase-root fieldset {
@@ -60,4 +70,77 @@
 
 .icon-gray {
   color: #dcdcdc;
+}
+
+.fs-2 {
+  font-size: 2px;
+}
+.fs-4 {
+  font-size: 4px;
+}
+.fs-6 {
+  font-size: 6px;
+}
+.fs-8 {
+  font-size: 8px;
+}
+.fs-10 {
+  font-size: 10px;
+}
+.fs-12 {
+  font-size: 12px;
+}
+.fs-14 {
+  font-size: 14px;
+}
+.fs-16 {
+  font-size: 16px;
+}
+.fs-18 {
+  font-size: 18px;
+}
+.fs-20 {
+  font-size: 20px;
+}
+.fs-22 {
+  font-size: 22px;
+}
+.fs-24 {
+  font-size: 24px;
+}
+.fs-26 {
+  font-size: 26px;
+}
+.fs-28 {
+  font-size: 28px;
+}
+.fs-30 {
+  font-size: 30px;
+}
+.fs-32 {
+  font-size: 32px;
+}
+.fs-34 {
+  font-size: 34px;
+}
+.fs-36 {
+  font-size: 36px;
+}
+.fs-38 {
+  font-size: 38px;
+}
+.fs-40 {
+  font-size: 40px;
+}
+.fs-42 {
+  font-size: 42px;
+}
+.fs-44 {
+  font-size: 44px;
+}
+.fs-46 {
+  font-size: 46px;
+}
+.fs-48 {
+  font-size: 48px;
 }
