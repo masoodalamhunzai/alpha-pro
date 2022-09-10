@@ -99,6 +99,8 @@ function AddUserDetailsTab({
 }) {
   const [{ user, organization, roles }, dispatch] = useStateValue();
   const USER_ROLE_SUPER_ADMIN = "super-admin";
+  const EDIT_MODE = "edit-user";
+  const CREATE_NEW_MODE = "create-user";
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
   const {
@@ -108,7 +110,7 @@ function AddUserDetailsTab({
     phone,
     organizations,
     userRoles,
-    status,
+    isActive,
   } = formData;
 
   const getAllUserRoles = async () => {
@@ -220,7 +222,7 @@ function AddUserDetailsTab({
               defaultValue={phone}
             />
           </Box>
-          {mode === "create-user" && (
+          {mode === CREATE_NEW_MODE && (
             <>
               <Box className={classes.formInput}>
                 <PasswordIcon className="text-gray-600 mr-16" />
@@ -258,21 +260,13 @@ function AddUserDetailsTab({
               <Select
                 labelId="status-dropdown"
                 id="statusDropdown"
-                value={status}
+                defaultValue={isActive}
                 label="status"
                 name="status"
                 onChange={handleChangeInputs}
-                // defaultValue={}
               >
-                {status ? (
-                  
-                <MenuItem value={status}>{status ? 'Active':'InActive'}</MenuItem>
-                ) : (
-                    <>
-                <MenuItem value="active">Active</MenuItem>
-                      <MenuItem value="inactive">InActive</MenuItem>
-                      </>
-                )}
+                <MenuItem value={true}>Active</MenuItem>
+                <MenuItem value={false}>InActive</MenuItem>
               </Select>
             </FormControl>
           </Box>

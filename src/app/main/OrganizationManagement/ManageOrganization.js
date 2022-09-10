@@ -121,9 +121,10 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
     .join(" ");
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const { editData, mode } = location?.state && location?.state;
+  const EDIT_MODE = "edit-org";
+  const { editData, mode } = location?.state ? location?.state : "";
 
-  const editOrganization = mode === "edit-org" ? editData : editData;
+  const editOrganization = mode === EDIT_MODE ? editData : "";
   console.log(editOrganization, "editOrganization");
   const [loading, setLoading] = useState(true);
   const [organization, setOrganization] = useState(null);
@@ -219,7 +220,7 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
             ) => {
               try {
                 const orgReq = {
-                  id: "",
+                  id: mode === EDIT_MODE ? editOrganization?.id : "",
                   name: values.name.trim(),
                   description: "This is test organization 1",
                   contactFullName: values.contactperson.trim(),
@@ -233,7 +234,10 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                 if (res && res.data && res.data.status === "success") {
                   swal({
                     title: "Good job!",
-                    text: "Organization Saved Successfully!",
+                    text:
+                      mode === EDIT_MODE
+                        ? "Organization Updated Successfully!"
+                        : "Organization Saved Successfully!",
                     icon: "success",
                     button: "Ok!",
                   }).then((value) => {

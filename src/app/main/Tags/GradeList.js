@@ -20,6 +20,7 @@ import Typography from "@mui/material/Typography";
 import swal from "sweetalert";
 import { CustomToolbar } from "../../components";
 import Icon from "@material-ui/core/Icon";
+import StatusIcon from "app/shared-components/StatusIcon";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -98,32 +99,9 @@ function GradeList({ page, loading, grade }) {
       renderCell: (params) => (
         <>
           {params.row.status === "inActive" ? (
-            <span
-              style={{
-                color: "white",
-                background: "red",
-                borderRadius: " 50%",
-                height: "24px",
-                width: "24px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Icon>close</Icon>
-            </span>
+            <StatusIcon isActive={params?.row?.status} />
           ) : (
-            <span
-              style={{
-                color: "white",
-                background: "#0bbf0b",
-                borderRadius: " 50%",
-                height: "24px",
-                width: "24px",
-              }}
-            >
-              <Icon>checkcirclerounded</Icon>
-            </span>
+            <StatusIcon isActive={params?.row?.status} />
           )}
         </>
       ),
