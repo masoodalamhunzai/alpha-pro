@@ -34,10 +34,9 @@ const useStyles = makeStyles({
 
     "& .MuiFormControlLabel-label": {
       fontSize: "1.2rem",
-      margin: "1rem 0",
     },
     "& .Mui-focused": {
-      fontSize: "1.6rem !important",
+      fontSize: "1.4rem !important",
     },
     "& .MuiFormControl-root": {
       margin: "1rem 0",
@@ -48,7 +47,10 @@ const useStyles = makeStyles({
       top: "-5px",
     },
     "& .MuiOutlinedInput-input:focus": {
-      height: "14px",
+      fontSize: "1.4rem",
+    },
+    "& .MuiOutlinedInput-root": {
+      fontSize: "1.4rem",
     },
     "& .react-tel-input": {
       width: "90%",
