@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     left: "50%",
     overflowY: "auto",
     transform: "translate(-50%, -50%)",
-    minWidth: "35%",
+    minWidth: "30%",
     bgcolor: "background.paper",
     borderRadius: "1rem",
     height: "fit-content",

@@ -8,6 +8,12 @@ import QuestionConfiguration from './QuestionConfiguration';
 import DropAndAdd from './DrapAndAdd';
 import CreateQuestion from './CreateQuestion';
 
+import TrueFalseQuestionLayout from './TrueFalseQuestionLayout';
+import LabelImageWithTextLayout from './LabelImageWithTextLayout';
+import LabelImageWithDropDownLayout from './LabelImageWithDropDownLayout';
+import LabelImageWithDragDropLayout from './LabelImageWithDragDropLayout';
+import ChoiceMatrixQuestionLayout from './ChoiceMatrixQuestionLayout';
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -64,8 +70,56 @@ function SimpleSection(props) {
                     return (
                       <div key={index}>
                         <div>
-                          {' '}
-                          <CreateQuestion key={index} />
+                          {item.component === 'CreateQuestion' ? (
+                            <CreateQuestion key={index} />
+                          ) : item.component === 'TrueFalseQuestionLayout' ? (
+                            <TrueFalseQuestionLayout key={index}
+                  multipleChoices={props.multipleChoicestrueFalse}
+                  setMultipleChoices={props.setMultipleChoicestrueFalse}
+                  editorContent={props.editorContenttrueFalse}
+                  setEditorContent={props.setEditorContenttrueFalse}
+                  trueFalseShuffleOption={props.trueFalseShuffleOptiontrueFalse}
+                  setTrueFalseShuffleOption={props.setTrueFalseShuffleOptiontrueFalse}
+                             />
+                          ) : item.component === 'ChoiceMatrixQuestionLayout' ? (
+                            <ChoiceMatrixQuestionLayout key={index} 
+                            multipleChoices={props.multipleChoiceschoiceMatric}
+                  setMultipleChoices={props.setMultipleChoiceschoiceMatric}
+                  multipleOptions={props.multipleOptionschoiceMatric}
+                  setMultipleOptions={props.setMultipleOptionschoiceMatric}
+                  editorContent={props.editorContentchoiceMatric}
+                  setEditorContent={props.setEditorContentchoiceMatric}
+                            />
+                          ) : item.component === 'LabelImageWithDragDropLayout' ? (
+                            <LabelImageWithDragDropLayout key={index}
+                            multipleChoices={props.multipleChoiceschoiceMatric}
+                  setMultipleChoices={props.setMultipleChoiceschoiceMatric}
+                  multipleOptions={props.multipleOptionschoiceMatric}
+                  setMultipleOptions={props.setMultipleOptionschoiceMatric}
+                  editorContent={props.editorContentchoiceMatric}
+                  setEditorContent={props.setEditorContentchoiceMatric}
+                             />
+                          ) : item.component === 'LabelImageWithDropDownLayout' ? (
+                            <LabelImageWithDropDownLayout key={index}
+                            multipleChoices={props.multipleChoiceschoiceMatric}
+                  setMultipleChoices={props.setMultipleChoiceschoiceMatric}
+                  multipleOptions={props.multipleOptionschoiceMatric}
+                  setMultipleOptions={props.setMultipleOptionschoiceMatric}
+                  editorContent={props.editorContentchoiceMatric}
+                  setEditorContent={props.setEditorContentchoiceMatric}
+                            />
+                          ) : item.component === 'LabelImageWithTextLayout' ? (
+                            <LabelImageWithTextLayout key={index}
+                            multipleChoices={props.multipleChoiceschoiceMatric}
+                  setMultipleChoices={props.setMultipleChoiceschoiceMatric}
+                  multipleOptions={props.multipleOptionschoiceMatric}
+                  setMultipleOptions={props.setMultipleOptionschoiceMatric}
+                  editorContent={props.editorContentchoiceMatric}
+                  setEditorContent={props.setEditorContentchoiceMatric}
+                             />
+                          ) : (
+                            <p>This Component is under construction..</p>
+                          )}
                           <br />
                         </div>
                       </div>

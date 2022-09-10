@@ -30,7 +30,7 @@ export const settings = {
   },
   search: {
     searchOrganizationUsers: (orgId, searchTerm) =>
-      `/api/organizations/${orgId}/users/${searchTerm}`,
+      `/api/organizations/${orgId}/search-users/${searchTerm}`,
     searchOrganizations: (searchTerm) =>
       `/api/organizations/search/${searchTerm}`,
   },

@@ -5,18 +5,18 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import { useLocation } from "react-router-dom";
 import { useHistory } from "react-router";
+import { useStateValue } from "app/services/state/State";
 import swal from "sweetalert";
 import Box from "@mui/material/Box";
 import FusePageSimple from "@fuse/core/FusePageSimple";
 import { makeStyles } from "@material-ui/core/styles";
 import { styled } from "@mui/material/styles";
-import Breadcrumb from "../../../fuse-layouts/shared-components/Breadcrumbs";
 import { createOrganizationUser } from "app/services/api/ApiManager";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import AddUserDetails from "./AddUserDetails/AddUserDetails";
 import Permissions from "./Permissions/Permissions";
-import { useStateValue } from "app/services/state/State";
+import Breadcrumb from "../../../fuse-layouts/shared-components/Breadcrumbs";
 
 const useStyles = makeStyles({
   layoutRoot: {
@@ -136,15 +136,17 @@ const CreateUserTabs = () => {
   const EDIT_MODE = "edit-user";
   const CREATE_NEW_MODE = "create-user";
 
-  const { editData, mode, selectedOrg } = location?.state && location?.state;
+  const { editData, mode, selectedOrg } = location?.state
+    ? location?.state
+    : "";
   const organzationID = mode === EDIT_MODE ? selectedOrg : selectedOrg;
-  console.log(location?.state, "state", organzationID);
+
   const [formData, setFormData] = useState({
     email: editData?.email.length > 0 ? editData?.email : "",
     firstName: editData?.firstName.length > 0 ? editData?.firstName : "",
     lastName: editData?.lastName.length > 0 ? editData?.lastName : "",
     phone: editData?.phonenumber.length > 0 ? editData?.phonenumber : "",
-    organizations: selectedOrg.length > 0 ? selectedOrg : "",
+    organizations: selectedOrg !== "" ? selectedOrg : "",
     password: "",
     confirmPassword: "",
     userRoles: "",
@@ -193,7 +195,6 @@ const CreateUserTabs = () => {
     userRoles,
     password,
     confirmPassword,
-    isActive,
   } = formData;
 
   const redirectTo = async (goTo) => {
@@ -248,7 +249,7 @@ const CreateUserTabs = () => {
     }
     return true;
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = {
       email,
@@ -262,33 +263,38 @@ const CreateUserTabs = () => {
         },
       ],
     };
-    if (user && user.role && user?.role === USER_ROLE_CLIENT_ADMIN) {
-      const { id } = user?.organization;
-      createOrganizationUser(id, user, payload);
-    }
-    if (user && user.role && user?.role === USER_ROLE_SUPER_ADMIN) {
-      if (validation()) {
-        const res = createOrganizationUser(organizations, user, payload);
-        console.log(res, "resss");
-        if (res && res.data && res.data.status === "success") {
-          swal({
-            title: "Good job!",
-            text:
-              mode === EDIT_MODE
-                ? "Organization User Updated Successfully!"
-                : "Organization User Saved Successfully!",
-            icon: "success",
-            button: "Ok!",
-          }).then((value) => {
-            redirectTo("/user-management");
+
+    if (validation()) {
+      const id =
+        user?.role === USER_ROLE_SUPER_ADMIN
+          ? organizations
+          : user?.user?.organizationId;
+      const res = await createOrganizationUser(id, user, payload);
+      console.log(res, "resss");
+      if (res && res.data && res.data.status === "success") {
+        swal({
+          title: "Good job!",
+          text:
+            mode === EDIT_MODE
+              ? "Organization User Updated Successfully!"
+              : "Organization User Saved Successfully!",
+          icon: "success",
+          button: "Ok!",
+        }).then((value) => {
+          history.push({
+            pathname: "/user-managment",
+            state: {
+              _orgId: organizations,
+            },
           });
-        }
-      } else {
-        setTimeout(() => {
-          setError(false);
-        }, 3000);
+        });
       }
+    } else {
+      setTimeout(() => {
+        setError(false);
+      }, 3000);
     }
+    // }
   };
 
   const handleChangeTabs = () => {

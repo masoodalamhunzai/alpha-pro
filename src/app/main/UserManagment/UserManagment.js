@@ -32,9 +32,13 @@ const useStyles = makeStyles({
       fontSize: "1.2rem",
       margin: "1rem 0",
     },
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "1.6rem",
+    },
     "& .MuiInputBase-input": {
-      backgroundColor: "#fff",
+      borderRadius: "1.6rem",
       textAlign: "start",
+      backgroundColor: "#fff",
     },
     "& .MuiInputLabel-root": {
       fontSize: "1.4rem",
@@ -58,6 +62,8 @@ const UserManagment = () => {
     .join(" ");
 
   const classes = useStyles();
+  const { _orgId } = location?.state ? location?.state : "";
+
   const [organizationSelected, setOrganizationSelected] = useState("");
   const [count, setCount] = useState(0);
   const theme = useTheme();
@@ -88,25 +94,30 @@ const UserManagment = () => {
   };
   const handleGetClientAdminOrgUsers = async () => {
     if (user && user.role && user?.role === USER_ROLE_CLIENT_ADMIN) {
-      const { id } = user.organization;
+      const id = user?.user?.organizationId;
       await handleGetOrganizationUsers(id);
     }
   };
   const handleSearchOrganizationUsers = async () => {
-    if (searchText?.length === 0) {
-      return false;
-    }
     let res = null;
     const userRole = user && user.role && user?.role;
     if (userRole === USER_ROLE_SUPER_ADMIN) {
-      res = await searchOrganizationUser(
-        organizationSelected,
-        user,
-        searchText
-      );
+      if (searchText.trim() === "") {
+        handleGetOrganizationUsers(organizationSelected);
+      } else {
+        res = await searchOrganizationUser(
+          organizationSelected,
+          user,
+          searchText
+        );
+      }
     } else if (userRole !== USER_ROLE_SUPER_ADMIN) {
-      const { id } = user?.organization;
-      res = await searchOrganizationUser(id, user, searchText);
+      const id = user?.user?.organizationId;
+      if (searchText.trim() === "") {
+        handleGetOrganizationUsers(id);
+      } else {
+        res = await searchOrganizationUser(id, user, searchText);
+      }
     }
     if (res && res.status === 200 && res.data) {
       dispatch({
@@ -186,15 +197,25 @@ const UserManagment = () => {
                   <Select
                     labelId="organization-dropdown"
                     id="organizationDropdown"
-                    value={organizationSelected}
+                    value={
+                      organizationSelected === ""
+                        ? _orgId
+                        : organizationSelected
+                    }
                     label="organization"
                     onChange={handleChange}
                   >
-                    {organization?.map((org) => (
-                      <MenuItem value={org?.id} key={org?.id}>
-                        {org?.name}
-                      </MenuItem>
-                    ))}
+                    {organization?.map((org) =>
+                      _orgId === org?.id ? (
+                        <MenuItem value={_orgId} key={_orgId}>
+                          {org?.name}
+                        </MenuItem>
+                      ) : (
+                        <MenuItem value={org?.id} key={org?.id}>
+                          {org?.name}
+                        </MenuItem>
+                      )
+                    )}
                   </Select>
                 </FormControl>
               </div>

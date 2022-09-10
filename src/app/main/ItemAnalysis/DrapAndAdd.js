@@ -36,7 +36,7 @@ function DropAndAdd(props) {
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
     accept: 'box',
     drop: (item, monitor) => {
-      console.log('you dropped this itm every time here and there ');
+      props.handleQuestionDragDrop(props.SectionName, props.TabName, item.component);
     },
     collect: (monitor) => ({
       isOver: monitor.isOver(),
@@ -54,15 +54,18 @@ function DropAndAdd(props) {
     textColor = 'white';
   }
 
-  useEffect(() => {
+/*   useEffect(() => {
     if (isActive) {
-      props.handleQuestionDragDrop(props.SectionName, props.TabName);
+      //   props.handleQuestionDragDrop(props.SectionName, props.TabName);
     }
-  }, [isActive]);
+  }, [isActive]); */
 
   return (
     <>
-      <div ref={drop} /* style={{ ...style, backgroundColor }} */ data-testid="dustbin">
+      <div
+        ref={drop}
+        /* style={{ ...style, backgroundColor }} */ data-testid="dustbin"
+      >
         <div className={classes.root} style={{ backgroundColor }}>
           <div className={`${'mt-32' + ' '}${classes.textCenter}`}>
             <span className="p-12">

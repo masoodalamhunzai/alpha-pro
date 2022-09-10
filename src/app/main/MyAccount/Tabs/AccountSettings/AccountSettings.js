@@ -6,18 +6,8 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
+import PasswordIcon from "@mui/icons-material/Password";
 import { useStateValue } from "app/services/state/State";
-import {
-  LocalPhone as LocalPhoneIcon,
-  AccountBalance as AccountBalanceIcon,
-  Upload as UploadIcon,
-  AccountCircle as AccountCircleIcon,
-} from "@material-ui/icons";
 import Icon from "@material-ui/core/Icon";
 
 const useStyles = makeStyles({
@@ -110,8 +100,35 @@ const AccountSettingsTab = () => {
           noValidate
           sx={{ my: 4, width: "100%" }}
         >
+         
           <Box className={classes.formInput}>
-            <Icon color="action" className="text-gray-600 mr-8">
+            <PasswordIcon className="text-gray-600 mr-16" />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="Password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+            />
+          </Box>
+          <Box className={classes.formInput}>
+            <PasswordIcon className="text-gray-600 mr-16" />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="Confirm Password"
+              label="Confirm Password"
+              type="password"
+              id="confirmPassword"
+              autoComplete="current-password"
+            />
+          </Box>
+          <Box className={classes.formInput}>
+            <Icon color="action" className="text-gray-600 mr-8 mb-16">
               email
             </Icon>
             <div className="flex flex-col w-full items-center mb-7">
@@ -132,37 +149,6 @@ const AccountSettingsTab = () => {
               </span>
             </div>
           </Box>
-          <Box className={classes.formInput}>
-            <Icon color="action" className="text-gray-600 mr-8">
-              assign
-            </Icon>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="Password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-          </Box>
-          <Box className={classes.formInput}>
-            <Icon color="action" className="text-gray-600 mr-8">
-              assign
-            </Icon>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="Confirm Password"
-              label="Confirm Password"
-              type="password"
-              id="confirmPassword"
-              autoComplete="current-password"
-            />
-          </Box>
-
           <Box
             sx={{
               display: "flex",

@@ -7,10 +7,6 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import Typography from "@mui/material/Typography";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import { useStateValue } from "app/services/state/State";
 import {
   LocalPhone as LocalPhoneIcon,
@@ -18,7 +14,6 @@ import {
   Upload as UploadIcon,
   AccountCircle as AccountCircleIcon,
 } from "@material-ui/icons";
-import IconButton from "@mui/material/IconButton";
 import Icon from "@material-ui/core/Icon";
 
 const useStyles = makeStyles({
@@ -76,7 +71,16 @@ const useStyles = makeStyles({
 const ProfileTab = () => {
   const [{ user }, dispatch] = useStateValue();
   const [organizations, setOrganizations] = useState("");
-  console.log(user, "user");
+  const [formData, setFormData] = useState({
+    _firstName: "",
+    _lastName: "",
+    _phoneNo: "",
+    _email: "",
+    _organization: "",
+    _photo: "",
+  });
+  const { _firstName, _lastName, _phoneNo, _email, _organization, _photo } =
+    formData;
   const handleChange = (event) => {
     setOrganizations(event.target.value);
   };
@@ -90,15 +94,14 @@ const ProfileTab = () => {
     const name = target.accept.includes("image");
     fileReader.readAsDataURL(target.files[0]);
     fileReader.onload = (e) => {
+      setFormData({ ...formData, _photo: e.target.result });
       console.log(e, "e.target.result", e.target.result);
     };
   };
 
   const classes = useStyles();
-  const {
-    user: { email, firstName, lastName },
-  } = user;
-  const { name } = user.organization;
+  const { email, firstName, lastName } = user && user?.user ? user?.user : "";
+  const { name } = user?.organization ? user?.organization : "";
   return (
     <Container
       classes={{
@@ -203,23 +206,6 @@ const ProfileTab = () => {
               autoComplete="current-password"
             />
           </Box>
-          {/* <Box className={classes.formInput}>
-            <AccountBalanceIcon className="text-gray-600 mr-8" />
-            <FormControl fullWidth>
-              <InputLabel id="organization-dropdown">Organization</InputLabel>
-              <Select
-                labelId="organization-dropdown"
-                id="organizationDropdown"
-                value={organizations}
-                label="organization"
-                onChange={handleChange}
-              >
-                <MenuItem value={"eAlpha1"}>eAlpha1</MenuItem>
-                <MenuItem value={"eAlpha2"}>eAlpha2</MenuItem>
-                <MenuItem value={"eAlpha3"}>eAlpha3</MenuItem>
-              </Select>
-            </FormControl>
-          </Box> */}
           <Typography
             variant="h6"
             sx={{
@@ -239,7 +225,7 @@ const ProfileTab = () => {
               aria-label="upload picture"
               component="label"
               sx={{ height: "7rem" }}
-              className="cursor-pointer border-slate-700 border-2 border-solid w-1/4 bg-white flex items-center justify-center ml-32"
+              className="cursor-pointer border-slate-700 border-2 border-solid w-1/4 bg-white flex items-center justify-center ml-20"
             >
               <input
                 hidden
@@ -253,18 +239,16 @@ const ProfileTab = () => {
               </Icon>
             </Box>
           </Box>
-          {/* <Box className="flex items-center mb-24">
-            <AccountCircleIcon />
-            <Box
-              sx={{ height: "7rem" }}
-              className="border-slate-700 border-2 border-solid w-1/4 bg-white flex items-center justify-center ml-6"
-            >
-              <input hidden accept="image/*" type="file" />
-              <Icon color="action" className="text-gray-600 mr-8">
-                upload
-              </Icon>
-            </Box>
-          </Box> */}
+          <Box className="flex items-center ml-20 text-2xl">
+            {_photo.length > 0 && (
+              <>
+                <Icon color="action" className="text-gray-600 mr-8">
+                  attachment
+                </Icon>
+                1 file Attached
+              </>
+            )}
+          </Box>
           <Box
             sx={{
               display: "flex",
@@ -276,6 +260,7 @@ const ProfileTab = () => {
               type="submit"
               variant="contained"
               className={classes.continueBtn}
+              onClick={handleSubmit}
             >
               Save Changes
             </Button>
