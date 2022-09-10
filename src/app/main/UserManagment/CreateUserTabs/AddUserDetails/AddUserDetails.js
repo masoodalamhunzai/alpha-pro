@@ -94,6 +94,8 @@ function AddUserDetailsTab({
   handleChangeInputs,
   handleChangePhone,
   formData,
+  organzationID,
+  mode,
 }) {
   const [{ user, organization, roles }, dispatch] = useStateValue();
   const USER_ROLE_SUPER_ADMIN = "super-admin";
@@ -129,7 +131,6 @@ function AddUserDetailsTab({
   useEffect(() => {
     handleRole();
   }, [roles]);
-
   const classes = useStyles();
   return (
     <Container
@@ -219,32 +220,37 @@ function AddUserDetailsTab({
               defaultValue={phone}
             />
           </Box>
-          <Box className={classes.formInput}>
-            <PasswordIcon className="text-gray-600 mr-16" />
-            <TextField
-              margin="normal"
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              onChange={handleChangeInputs}
-              autoComplete="current-password"
-            />
-          </Box>
-          <Box className={classes.formInput}>
-            <PasswordIcon className="text-gray-600 mr-16" />
-            <TextField
-              margin="normal"
-              fullWidth
-              name="confirmPassword"
-              label="Confirm Password"
-              type="password"
-              id="confirmPassword"
-              onChange={handleChangeInputs}
-              autoComplete="current-password"
-            />
-          </Box>
+          {mode === "create-user" && (
+            <>
+              <Box className={classes.formInput}>
+                <PasswordIcon className="text-gray-600 mr-16" />
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  onChange={handleChangeInputs}
+                  autoComplete="current-password"
+                />
+              </Box>
+              <Box className={classes.formInput}>
+                <PasswordIcon className="text-gray-600 mr-16" />
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  type="password"
+                  id="confirmPassword"
+                  onChange={handleChangeInputs}
+                  autoComplete="current-password"
+                />
+              </Box>
+            </>
+          )}
+
           <Box className={classes.formInput}>
             <AccountBalanceIcon className="text-gray-600 mr-8" />
             <FormControl fullWidth>
@@ -258,8 +264,15 @@ function AddUserDetailsTab({
                 onChange={handleChangeInputs}
                 // defaultValue={}
               >
+                {status ? (
+                  
+                <MenuItem value={status}>{status ? 'Active':'InActive'}</MenuItem>
+                ) : (
+                    <>
                 <MenuItem value="active">Active</MenuItem>
-                <MenuItem value="inactive">InActive</MenuItem>
+                      <MenuItem value="inactive">InActive</MenuItem>
+                      </>
+                )}
               </Select>
             </FormControl>
           </Box>
@@ -278,13 +291,15 @@ function AddUserDetailsTab({
                     label="organizations"
                     name="organizations"
                     onChange={handleChangeInputs}
-                    // defaultValue={}
                   >
-                    {organization?.map((org) => (
-                      <MenuItem value={org?.id} key={org?.id}>
-                        {org?.name}
-                      </MenuItem>
-                    ))}
+                    {organization?.map(
+                      (org) =>
+                        org.id === organzationID && (
+                          <MenuItem value={org?.id} key={org?.id}>
+                            {org?.name}
+                          </MenuItem>
+                        )
+                    )}
                   </Select>
                 </FormControl>
               </Box>

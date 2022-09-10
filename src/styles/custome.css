@@ -37,6 +37,35 @@
   background-color: #589af7 !important;
 }
 
+.btn-blue-white {
+  background-color: #3287fa !important;
+  color: white !important;
+  padding: 2px 10px;
+  cursor: pointer;
+  user-select: none;
+}
+.btn-blue-white:hover {
+  background-color: #589af7 !important;
+}
+
+.font-white-black {
+  color: white !important;
+}
+.font-white-black:hover {
+  color: black !important;
+}
+
+.btn-white-blue {
+  background-color: white !important;
+  color: #3287fa !important;
+  padding: 2px 10px;
+  cursor: pointer;
+  user-select: none;
+}
+.btn-white-blue:hover {
+  background-color: whitesmoke !important;
+}
+
 .search-bar .MuiFormControl-root .MuiInputBase-root fieldset {
   border: none !important;
 }

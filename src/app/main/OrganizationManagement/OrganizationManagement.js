@@ -9,14 +9,46 @@ import { Add as AddIcon } from "@material-ui/icons";
 import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
 import Input from "@material-ui/core/Input";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 import Paper from "@material-ui/core/Paper";
 import { useHistory } from "react-router";
 import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
-import { searchOrganizations } from "app/services/api/ApiManager";
+import {
+  searchOrganizations,
+  getOrganizations,
+} from "app/services/api/ApiManager";
 import OrganizationsList from "./OrganizationsList";
 
 const useStyles = makeStyles({
-  layoutRoot: {},
+  layoutRoot: {
+    "& .MuiSelect-select ": {
+      padding: "13px",
+    },
+    fontSize: "1.5rem",
+    "& .MuiFormControlLabel-label": {
+      fontSize: "1.2rem",
+      margin: "1rem 0",
+    },
+    "& .MuiInputBase-input": {
+      backgroundColor: "#fff",
+      textAlign: "start",
+    },
+    "& .MuiInputLabel-root": {
+      fontSize: "1.4rem",
+      left: "-4px",
+      top: "-5px",
+    },
+  },
+  refreshButton: {
+    backgroundColor: "#0d870d",
+    color: "white",
+    padding: "0.5rem 4rem",
+    display: "flex",
+    justifyContent: "center",
+  },
 });
 
 const OrganizationManagement = () => {
@@ -62,7 +94,19 @@ const OrganizationManagement = () => {
       });
     }
   };
+  const loadOrganizations = async () => {
+    const res = await getOrganizations(user);
 
+    if (res && res.status === 200 && res.data && res.data.length > 0) {
+      dispatch({
+        type: actions.SET_ORGANIZATION,
+        payload: res.data,
+      });
+    }
+  };
+  const handleChange = (e) => {
+    const { value } = e.target;
+  };
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "name", headerName: "Name", width: 70 },
@@ -200,10 +244,8 @@ const OrganizationManagement = () => {
         <div className="p-24">
           {/* start */}
 
-          <div className="flex flex-wrap flex-1 items-center justify-between mb-10 p-8">
-            <div className="flex flex-col w-full sm:w-auto" />
-
-            <div className="flex flex-1 items-center justify-end w-full sm:w-auto sm:px-12">
+          <div className="flex flex-wrap items-center justify-end mb-10 p-8">
+            <div className="flex items-center justify-end w-1/2  sm:px-12">
               <ThemeProvider theme={theme}>
                 <Paper className="flex items-center min-w-full sm:min-w-0 w-full max-w-512 px-12 py-4 rounded-16 shdaow">
                   <Icon color="action">search</Icon>
@@ -212,6 +254,7 @@ const OrganizationManagement = () => {
                     className="flex flex-1 px-8"
                     disableUnderline
                     fullWidth
+                    size="small"
                     value={searchText}
                     onChange={handleSearch}
                     inputProps={{
@@ -221,14 +264,40 @@ const OrganizationManagement = () => {
                 </Paper>
               </ThemeProvider>
             </div>
-            <div className="flex items-center justify-end -mx-4 mt-24 md:mt-0">
+            <div className="flex items-center justify-end w-1/3 -mx-4 mt-24 md:mt-0">
               <Button
                 variant="contained"
                 color="secondary"
                 aria-label="Send Message"
+                style={{ padding: "0.5rem 3rem" }}
                 onClick={handleSearchOrganizations}
               >
                 Search
+              </Button>
+              <FormControl size="small" sx={{ mx: 2, width: "100%" }}>
+                <InputLabel id="organization-dropdown">Archive</InputLabel>
+                <Select
+                  labelId="organization-dropdown"
+                  id="organizationDropdown"
+                  value=""
+                  label="organization"
+                  onChange={handleChange}
+                >
+                  <MenuItem value="archive">Un Archive</MenuItem>
+                </Select>
+              </FormControl>
+              <Button
+                variant="contained"
+                className={classes.refreshButton}
+                onClick={loadOrganizations}
+              >
+                <Icon
+                  color="white"
+                  style={{ marginRight: "0.6rem", fontSize: "1.6rem" }}
+                >
+                  refresh
+                </Icon>{" "}
+                Refresh
               </Button>
             </div>
           </div>

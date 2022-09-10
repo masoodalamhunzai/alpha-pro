@@ -8,17 +8,17 @@ import {
   BorderColor as EditIcon,
   VisibilityRounded as VisibilityRoundedIcon,
 } from "@material-ui/icons";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 // import { DataGrid } from '@material-ui/data-grid';
 import { useStateValue } from "app/services/state/State";
 import { dataGridPageSizes } from "app/services/Settings";
-
 import FuseLoading from "@fuse/core/FuseLoading";
 import { actions } from "app/services/state/Reducer";
 import { useSnackbar } from "notistack";
 import swal from "sweetalert";
 import { getOrganizations } from "app/services/api/ApiManager";
+import ViewModal from "app/main/OrganizationManagement/ViewModal";
 import { CustomToolbar } from "../../components";
 
 const useStyles = makeStyles((theme) => ({
@@ -84,7 +84,8 @@ function OrganizationsList({
     useStateValue();
   const [rowCount, setRowCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-  const [open, setOpen] = useState(false);
+  const [openViewModal, setOpenViewModal] = useState(false);
+  const [organizationDetailsView, setOrganizationDetailsView] = useState(null);
   // const { payload: organizationsListList, pagination } = organizations;
   const [pagination, setPagination] = useState([]);
 
@@ -120,9 +121,16 @@ function OrganizationsList({
 
   async function handleRestoreOrganization(Id) {}
 
-  const showOrganizationDetail = (id) => {};
+  const handleModalClose = () => setOpenViewModal(false);
 
-  async function handleEditOrganization(Id) {}
+  const showOrganizationDetail = (details) => {
+    setOrganizationDetailsView(details);
+    setOpenViewModal(true);
+  };
+
+  async function handleEditOrganization(Id) {
+    console.log(Id, "eidt");
+  }
 
   const handleChangePage = async (event, newPage) => {};
 
@@ -133,7 +141,7 @@ function OrganizationsList({
   const loadOrganizations = async () => {
     const res = await getOrganizations(user);
 
-    if (res && res.status == 200 && res.data && res.data.length > 0) {
+    if (res && res.status === 200 && res.data && res.data.length > 0) {
       dispatch({
         type: actions.SET_ORGANIZATION,
         payload: res.data,
@@ -159,17 +167,28 @@ function OrganizationsList({
           <Tooltip title="View">
             <VisibilityRoundedIcon
               className={classes.icon}
-              onClick={() => showOrganizationDetail(params.id)}
-            />
-          </Tooltip>
-          <Tooltip title="Edit">
-            <EditIcon
-              style={{ marginLeft: 5 }}
-              className={classes.icon}
-              onClick={() => handleEditOrganization(params.id)}
+              onClick={() => showOrganizationDetail(params.row)}
             />
           </Tooltip>
 
+          <Link
+            to={{
+              pathname: "/manage-organization",
+              state: {
+                editData: params?.row,
+                mode: "edit-org",
+              },
+            }}
+          >
+            <Tooltip title="Edit">
+              <EditIcon
+                style={{ marginLeft: 5 }}
+                className={classes.icon}
+
+                // onClick={() => handleEditOrganization(params.id)}
+              />
+            </Tooltip>
+          </Link>
           <Tooltip title="Archive">
             <DeleteIcon
               className={classes.icon}
@@ -200,14 +219,14 @@ function OrganizationsList({
   }, [rows]);
   return (
     <>
-      {/*  <button
-        onClick={() => {
-          loadOrganizations();
-        }}
-      >
-        Load Organizations
-      </button> */}
       <div className={classes.root}>
+        {openViewModal && (
+          <ViewModal
+            handleClose={handleModalClose}
+            open={openViewModal}
+            organization={organizationDetailsView}
+          />
+        )}
         {rows && (
           <DataGrid
             sx={{

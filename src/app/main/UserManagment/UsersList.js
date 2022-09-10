@@ -15,21 +15,13 @@ import {
   settings as s,
   states,
 } from "app/services/Settings";
-import FuseLoading from "@fuse/core/FuseLoading";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@mui/material/Typography";
 // import { actions } from "app/services/state/Reducer";
 import { useSnackbar } from "notistack";
 import swal from "sweetalert";
 // import moment from "moment";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import EditUser from "./EditUser";
 import { CustomToolbar } from "../../components";
-import {
-  getOrganizationUsers,
-  getOrganizations,
-} from "app/services/api/ApiManager";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -77,18 +69,9 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "bold",
     fontSize: 16,
   },
-  modalStyle: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    background: "white",
-    padding: "10px",
-    textAlign: "center",
-  },
 }));
 
-function UsersList({ page, loading, organizationUsers }) {
+function UsersList({ page, loading, organizationUsers, organizationSelected }) {
   const history = useHistory();
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
@@ -155,9 +138,8 @@ function UsersList({ page, loading, organizationUsers }) {
     { field: "lastName", headerName: "Last Name", flex: 1 },
     { field: "email", headerName: "Email/username", flex: 1 },
     { field: "phonenumber", headerName: "Mobile Phone", flex: 1 },
-    { field: "organization", headerName: "Organization", flex: 1 },
     {
-      field: "status",
+      field: "isActive",
       headerName: "Status",
       flex: 1,
       renderCell: (params) => (
@@ -165,10 +147,10 @@ function UsersList({ page, loading, organizationUsers }) {
           {" "}
           <span
             style={{
-              color: params.row.status === "inActive" ? "red" : "green",
+              color: params.row.isActive ? "green" : "red",
             }}
           >
-            {params.row.status}
+            {params.row.isActive ? "Active" : "inActive"}
           </span>
         </>
       ),
@@ -185,7 +167,11 @@ function UsersList({ page, loading, organizationUsers }) {
             <Link
               to={{
                 pathname: "/user-management/edit-user",
-                state: { editData: params?.row },
+                state: {
+                  editData: params?.row,
+                  selectedOrg: organizationSelected,
+                  mode: "edit-user",
+                },
               }}
             >
               <EditIcon
@@ -209,29 +195,18 @@ function UsersList({ page, loading, organizationUsers }) {
 
   const rows = organizationUsers?.map((user) => {
     return {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
+      id: user?.id,
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      email: user?.email,
       phonenumber: "",
-      organization: "",
-      status: "",
+      isActive: user?.isActive,
     };
   });
 
   return (
     <>
       <div className={classes.root}>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box className={classes.modalStyle}>
-            <EditUser setOpen={setOpen} />
-          </Box>
-        </Modal>
         {loading && (
           <div className="flex justify-center flex-col items-center py-12">
             <Typography

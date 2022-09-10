@@ -85,6 +85,15 @@ const ProfileTab = () => {
     e.preventDefault();
   };
 
+  const handleUploadImage = ({ target }) => {
+    const fileReader = new FileReader();
+    const name = target.accept.includes("image");
+    fileReader.readAsDataURL(target.files[0]);
+    fileReader.onload = (e) => {
+      console.log(e, "e.target.result", e.target.result);
+    };
+  };
+
   const classes = useStyles();
   const {
     user: { email, firstName, lastName },
@@ -227,6 +236,26 @@ const ProfileTab = () => {
           <Box className="flex items-center mb-24">
             <AccountCircleIcon />
             <Box
+              aria-label="upload picture"
+              component="label"
+              sx={{ height: "7rem" }}
+              className="cursor-pointer border-slate-700 border-2 border-solid w-1/4 bg-white flex items-center justify-center ml-32"
+            >
+              <input
+                hidden
+                accept="image/*"
+                type="file"
+                name="photo"
+                onChange={handleUploadImage}
+              />
+              <Icon color="action" className="text-gray-600 mr-8">
+                upload
+              </Icon>
+            </Box>
+          </Box>
+          {/* <Box className="flex items-center mb-24">
+            <AccountCircleIcon />
+            <Box
               sx={{ height: "7rem" }}
               className="border-slate-700 border-2 border-solid w-1/4 bg-white flex items-center justify-center ml-6"
             >
@@ -235,7 +264,7 @@ const ProfileTab = () => {
                 upload
               </Icon>
             </Box>
-          </Box>
+          </Box> */}
           <Box
             sx={{
               display: "flex",

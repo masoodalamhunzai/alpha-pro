@@ -115,11 +115,16 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
   const history = useHistory();
   const pageTitle = location.pathname
     .split("/")
-    .filter((x) => x)[0]
+    .filter((x) => x)
+    .pop()
     .split("-")
     .join(" ");
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
+  const { editData, mode } = location?.state && location?.state;
+
+  const editOrganization = mode === "edit-org" ? editData : editData;
+  console.log(editOrganization, "editOrganization");
   const [loading, setLoading] = useState(true);
   const [organization, setOrganization] = useState(null);
   const [serviceProviderDialog, setServiceProviderDialog] = useState(false);
@@ -170,15 +175,42 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
         content={
           <Formik
             initialValues={{
-              name: (organization && organization.name) || "",
-              contactperson: (organization && organization.contactperson) || "",
-              email: (organization && organization.email) || "",
-              phonenumber: (organization && organization.phonenumber) || "",
-              address: (organization && organization.address) || "",
-              city: (organization && organization.city) || "",
-              state: (organization && organization.state) || "",
-              country: (organization && organization.country) || "",
-              website: (organization && organization.website) || "",
+              name:
+                (organization && organization.name) ||
+                editOrganization?.name ||
+                "",
+              contactperson:
+                (organization && organization.contactperson) ||
+                editOrganization?.contactperson ||
+                "",
+              email:
+                (organization && organization.email) ||
+                editOrganization?.email ||
+                "",
+              phonenumber:
+                (organization && organization.phonenumber) ||
+                editOrganization?.phonenumber ||
+                "",
+              address:
+                (organization && organization.address) ||
+                editOrganization?.address ||
+                "",
+              city:
+                (organization && organization.city) ||
+                editOrganization?.city ||
+                "",
+              state:
+                (organization && organization.state) ||
+                editOrganization?.state ||
+                "",
+              country:
+                (organization && organization.country) ||
+                editOrganization?.country ||
+                "",
+              website:
+                (organization && organization.website) ||
+                editOrganization?.website ||
+                "",
               isActive: (organization && organization.isActive) || false,
             }}
             onSubmit={async (
@@ -537,6 +569,7 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                       style={{ marginLeft: "1%" }}
                     >
                       <Typography>Status</Typography>
+                      {console.log(values.isActive, "values.isActive")}
                       <FormControlLabel
                         control={
                           <Switch

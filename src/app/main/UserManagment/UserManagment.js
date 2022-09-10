@@ -21,7 +21,7 @@ import {
   getOrganizations,
   searchOrganizationUser,
 } from "app/services/api/ApiManager";
-import { useHistory } from "react-router";
+import { useHistory, Link } from "react-router-dom";
 import UsersList from "./UsersList";
 import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
 
@@ -75,19 +75,7 @@ const UserManagment = () => {
     setOrganizationSelected(orgId);
     handleGetOrganizationUsers(orgId);
   };
-  const setNews = async () => {
-    dispatch({
-      type: actions.SET_NEWS,
-      payload: { header: "new header text", des: "new description text" },
-    });
-  };
-  const redirectTo = async (goTo) => {
-    try {
-      history.push(goTo);
-    } catch (err) {
-      // console.log(err);
-    }
-  };
+
   const handleGetOrganizationUsers = async (id) => {
     const res = await getOrganizationUsers(id, user);
     if (res && res.status === 200 && res.data) {
@@ -109,7 +97,7 @@ const UserManagment = () => {
       return false;
     }
     let res = null;
-    let userRole = user && user.role && user?.role;
+    const userRole = user && user.role && user?.role;
     if (userRole === USER_ROLE_SUPER_ADMIN) {
       res = await searchOrganizationUser(
         organizationSelected,
@@ -167,16 +155,22 @@ const UserManagment = () => {
           >
             {pageTitle}
           </Typography>
-          <Button
-            variant="contained"
-            style={{ float: "right" }}
-            color="secondary"
-            aria-label="Send Message"
-            onClick={() => redirectTo("/user-management/create-user")}
-            startIcon={<AddIcon />}
+          <Link
+            to={{
+              pathname: "/user-management/create-user",
+              state: { selectedOrg: organizationSelected, mode: "create-user" },
+            }}
           >
-            Create User
-          </Button>
+            <Button
+              variant="contained"
+              style={{ float: "right" }}
+              color="secondary"
+              aria-label="Send Message"
+              startIcon={<AddIcon />}
+            >
+              Create User
+            </Button>
+          </Link>
         </div>
       }
       content={
@@ -241,6 +235,7 @@ const UserManagment = () => {
             setPage={setPage}
             loading={loading}
             organizationUsers={organizationUsers}
+            organizationSelected={organizationSelected}
           />
         </div>
       }

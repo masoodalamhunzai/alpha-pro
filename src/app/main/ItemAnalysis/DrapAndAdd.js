@@ -35,15 +35,14 @@ function DropAndAdd(props) {
 
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
     accept: 'box',
-    drop: () => ({ name: 'Dustbin' }),
+    drop: (item, monitor) => {
+      console.log('you dropped this itm every time here and there ');
+    },
     collect: (monitor) => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),
     }),
   }));
-  console.log('drop ',drop);
-  console.log('canDrop ',canDrop);
-  console.log('isOver ',isOver);
   const isActive = canDrop && isOver;
   let backgroundColor = '#fff';
   let textColor = 'gray';
@@ -57,8 +56,6 @@ function DropAndAdd(props) {
 
   useEffect(() => {
     if (isActive) {
-      console.log('isActive= ', isActive);
-      console.log('this is called again');
       props.handleQuestionDragDrop(props.SectionName, props.TabName);
     }
   }, [isActive]);
