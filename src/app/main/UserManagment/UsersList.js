@@ -21,6 +21,7 @@ import Typography from "@mui/material/Typography";
 import { useSnackbar } from "notistack";
 import swal from "sweetalert";
 // import moment from "moment";
+import StatusIcon from "app/shared-components/StatusIcon";
 import { CustomToolbar } from "../../components";
 
 const useStyles = makeStyles((theme) => ({
@@ -144,14 +145,11 @@ function UsersList({ page, loading, organizationUsers, organizationSelected }) {
       flex: 1,
       renderCell: (params) => (
         <>
-          {" "}
-          <span
-            style={{
-              color: params.row.isActive ? "green" : "red",
-            }}
-          >
-            {params.row.isActive ? "Active" : "inActive"}
-          </span>
+          {params?.row?.isActive ? (
+            <StatusIcon isActive={params?.row?.isActive} />
+          ) : (
+            <StatusIcon isActive={params?.row?.isActive} />
+          )}
         </>
       ),
     },

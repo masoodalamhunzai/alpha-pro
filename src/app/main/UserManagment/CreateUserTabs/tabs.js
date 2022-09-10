@@ -5,6 +5,7 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import { useLocation } from "react-router-dom";
 import { useHistory } from "react-router";
+import swal from "sweetalert";
 import Box from "@mui/material/Box";
 import FusePageSimple from "@fuse/core/FusePageSimple";
 import { makeStyles } from "@material-ui/core/styles";
@@ -132,10 +133,11 @@ const CreateUserTabs = () => {
   const [{ user }, dispatch] = useStateValue();
   const USER_ROLE_CLIENT_ADMIN = "client-admin";
   const USER_ROLE_SUPER_ADMIN = "super-admin";
+  const EDIT_MODE = "edit-user";
+  const CREATE_NEW_MODE = "create-user";
 
   const { editData, mode, selectedOrg } = location?.state && location?.state;
-
-  const organzationID = mode === "edit-user" ? selectedOrg : selectedOrg;
+  const organzationID = mode === EDIT_MODE ? selectedOrg : selectedOrg;
   console.log(location?.state, "state", organzationID);
   const [formData, setFormData] = useState({
     email: editData?.email.length > 0 ? editData?.email : "",
@@ -146,7 +148,7 @@ const CreateUserTabs = () => {
     password: "",
     confirmPassword: "",
     userRoles: "",
-    status: editData?.isActive ? editData?.isActive : "",
+    isActive: editData?.isActive ? editData?.isActive : "",
     alphaProd: false,
     alphaDev: false,
     bulkUpdateManager: false,
@@ -191,7 +193,7 @@ const CreateUserTabs = () => {
     userRoles,
     password,
     confirmPassword,
-    status,
+    isActive,
   } = formData;
 
   const redirectTo = async (goTo) => {
@@ -206,7 +208,7 @@ const CreateUserTabs = () => {
     const errorEmail = regex.test(email);
     if (email === "") {
       setError(true);
-      return setErrorMessage("email required");
+      return setErrorMessage("email is required");
     }
     if (!errorEmail) {
       setError(true);
@@ -214,35 +216,35 @@ const CreateUserTabs = () => {
     }
     if (firstName === "") {
       setError(true);
-      return setErrorMessage("First Name required");
+      return setErrorMessage("First Name is required");
     }
     if (lastName === "") {
       setError(true);
-      return setErrorMessage("Last Name required");
+      return setErrorMessage("Last Name is required");
     }
-    if (password === "") {
+    if (password === "" && mode === CREATE_NEW_MODE) {
       setError(true);
-      return setErrorMessage("Password required");
+      return setErrorMessage("Password is required");
     }
-    if (confirmPassword === "") {
+    if (confirmPassword === "" && mode === CREATE_NEW_MODE) {
       setError(true);
-      return setErrorMessage("confirmPassword required");
+      return setErrorMessage("Confirm Password is required");
     }
-    if (confirmPassword !== password) {
+    if (confirmPassword !== password && mode === CREATE_NEW_MODE) {
       setError(true);
       return setErrorMessage("Password doesn't match");
     }
     if (phone === "") {
       setError(true);
-      return setErrorMessage("Phone required");
+      return setErrorMessage("Phone is required");
     }
     if (organizations === "" && user?.role === USER_ROLE_SUPER_ADMIN) {
       setError(true);
-      return setErrorMessage("Organizations required");
+      return setErrorMessage("Organizations is required");
     }
     if (userRoles === "" && user?.role === USER_ROLE_SUPER_ADMIN) {
       setError(true);
-      return setErrorMessage("user Roles required");
+      return setErrorMessage("user Roles is required");
     }
     return true;
   };
@@ -264,14 +266,28 @@ const CreateUserTabs = () => {
       const { id } = user?.organization;
       createOrganizationUser(id, user, payload);
     }
-    if (validation()) {
-      const res = createOrganizationUser(organizations, user, payload);
-
-      redirectTo("/user-managment");
-    } else {
-      setTimeout(() => {
-        setError(false);
-      }, 3000);
+    if (user && user.role && user?.role === USER_ROLE_SUPER_ADMIN) {
+      if (validation()) {
+        const res = createOrganizationUser(organizations, user, payload);
+        console.log(res, "resss");
+        if (res && res.data && res.data.status === "success") {
+          swal({
+            title: "Good job!",
+            text:
+              mode === EDIT_MODE
+                ? "Organization User Updated Successfully!"
+                : "Organization User Saved Successfully!",
+            icon: "success",
+            button: "Ok!",
+          }).then((value) => {
+            redirectTo("/user-management");
+          });
+        }
+      } else {
+        setTimeout(() => {
+          setError(false);
+        }, 3000);
+      }
     }
   };
 
