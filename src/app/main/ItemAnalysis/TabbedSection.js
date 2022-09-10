@@ -94,7 +94,9 @@ function TabbedSection(props) {
                         className="mx-8"
                         variant="contained"
                         color="primary"
-                        onClick={() => props.handleNewTab(props.sectionName, 'New Tab')}
+                        onClick={() =>
+                          props.handleNewTab(props.sectionName, `Tab ${props.TabsList.length + 1}`)
+                        }
                         style={{
                           borderRadius: '0px',
                           background: '#b1acac',

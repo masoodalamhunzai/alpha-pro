@@ -80,46 +80,6 @@ function QuestionConfiguration(props) {
                     component="5"
                     handleComponentDragDrop={props.handleComponentDragDrop}
                   />
-                  {/* <div ref={drag} style={{ ...style, opacity }} data-testid="box">
-                    <div style={{ padding: '1% 2%', width: '50%' }}>
-                      <div className="flex flex-col items-center">
-                        <img src="assets/images/uicapture/StandardIcon.png" alt="Image1" />
-                        <text className="my-4">Standard</text>
-                      </div>
-                    </div>
-                  </div>
-                  <div ref={drag} style={{ ...style, opacity }} data-testid="box">
-                    <div style={{ padding: '1% 2%', width: '50%' }}>
-                      <div className="flex flex-col items-center">
-                        <img src="assets/images/uicapture/MultipleIcon.png" alt="Image2" />
-                        <text className="my-4">Multiple Responses</text>
-                      </div>
-                    </div>
-                  </div>
-                  <div ref={drag} style={{ ...style, opacity }} data-testid="box">
-                    <div style={{ padding: '1% 2%', width: '50%' }}>
-                      <div className="flex flex-col items-center">
-                        <img src="assets/images/uicapture/TrueFalseIcon.png" alt="Image3" />
-                        <text className="my-4">True Or False</text>
-                      </div>
-                    </div>
-                  </div>
-                  <div ref={drag} style={{ ...style, opacity }} data-testid="box">
-                    <div style={{ padding: '1% 2%', width: '50%' }}>
-                      <div className="flex flex-col items-center">
-                        <img src="assets/images/uicapture/BlockLayoutIcon.png" alt="Image4" />
-                        <text className="my-4">Block Layout</text>
-                      </div>
-                    </div>
-                  </div>
-                  <div ref={drag} style={{ ...style, opacity }} data-testid="box">
-                    <div style={{ padding: '1% 2%', width: '50%' }}>
-                      <div className="flex flex-col items-center">
-                        <img src="assets/images/uicapture/ChMixedIcon.png" alt="Image5" />
-                        <text className="my-4">Ch Matrix Std</text>
-                      </div>
-                    </div>
-                  </div> */}
                 </div>
               </div>
             </AccordionDetails>

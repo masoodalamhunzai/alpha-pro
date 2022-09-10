@@ -8,7 +8,6 @@ import { useHistory, useLocation } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import { saveQuestion, saveItem } from 'app/services/api/ApiManager';
 import swal from 'sweetalert';
-
 // import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import { useForm } from 'react-hook-form';
 import _ from '@lodash';
@@ -20,6 +19,7 @@ import Breadcrumb from '../../fuse-layouts/shared-components/Breadcrumbs';
 import ItemConfiguration from './ItemConfiguration';
 
 import TabbedSection from './TabbedSection';
+import SimpleSection from './SimpleSection';
 
 const useStyles = makeStyles({
   layoutRoot: {},
@@ -57,7 +57,7 @@ const CreateItem = () => {
 
   const [selectedLayout, setSelectedLayout] = useState('1');
   const [tagsList, setTagsList] = useState([]);
-  const [tabsInColumn, setTabsInColumn] = useState(false);
+  const [tabsInColumn, setTabsInColumn] = useState(true);
   const [tabsInColumnOne, setTabsInColumnOne] = useState(false);
   const [tabsInColumnTwo, setTabsInColumnTwo] = useState(false);
   const [verticalDivider, setVerticalDivider] = useState(false);
@@ -121,14 +121,14 @@ const CreateItem = () => {
     {
       id: `item-1}`,
       position: 0,
-      title: '',
+      title: 'True',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-2`,
       position: 1,
-      title: '',
+      title: 'False',
       isCorrect: false,
       isAlternate: false,
     },
@@ -264,7 +264,6 @@ const CreateItem = () => {
       // setSubmitting(false);
     }
   };
-  console.log('user in create item ', user);
   if (_.isEmpty(form)) {
     return null;
   }
@@ -283,32 +282,29 @@ const CreateItem = () => {
   }
 
   const handleComponentDragDrop = (newValue) => {
-    // setComponentsList(newValue);
-    console.log('this new console value is ', newValue);
     const comp = componentsList;
     comp.push({ component: newValue });
     setComponentsList([...comp]);
-    console.log('comp is ', comp);
-    console.log('componentsList is ', componentsList);
     onNewTabAdded('A', 1);
   };
 
   useEffect(() => {
-    setComponentsStructureList([
+    getItemLayout();
+    /*  setComponentsStructureList([
       {
-        Section: 'A',
-        Layout: '12',
+        Section: "A",
+        Layout: "12",
         Tabs: [
-          { TabName: 'First Tab', QuestionsList: [], Layout: '12' },
-          { TabName: 'Second Tab', QuestionsList: [], Layout: '12' },
+          { TabName: "First Tab", QuestionsList: [], Layout: "12" },
+          { TabName: "Second Tab", QuestionsList: [], Layout: "12" },
         ],
       },
       {
-        section: 'B',
-        Layout: '12',
-        Tabs: [{ TabName: 'Third Tab', QuestionsList: [], Layout: '12' }],
+        section: "B",
+        Layout: "12",
+        Tabs: [{ TabName: "Third Tab", QuestionsList: [], Layout: "12" }],
       },
-    ]);
+    ]); */
   }, []);
 
   function onNewTabAdded(section, title) {
@@ -333,11 +329,15 @@ const CreateItem = () => {
     const comp = componentsStructureList;
     comp.forEach((item) => {
       if (item.Section === sectionname) {
-        item.Tabs.forEach((tab) => {
-          if (tab.TabName === tabname) {
-            tab.QuestionsList.push(question);
-          }
-        });
+        if (item.isTabbed === true) {
+          item.Tabs.forEach((tab) => {
+            if (tab.TabName === tabname) {
+              tab.QuestionsList.push(question);
+            }
+          });
+        } else {
+          item.QuestionsList.push(question);
+        }
       }
     });
     setComponentsStructureList([...comp]);
@@ -348,6 +348,150 @@ const CreateItem = () => {
     // comp.push(option);
     // setMultipleChoices(choices);
   }
+
+  function getItemLayout() {
+    const section = [];
+    if (selectedLayout === '1') {
+      if (tabsInColumn === true) {
+        section.push({
+          Section: 'A',
+          Layout: '12',
+          isTabbed: true,
+          Tabs: [{ TabName: 'Tab 1', QuestionsList: [], Layout: '12' }],
+        });
+      } else {
+        section.push({
+          Section: 'A',
+          Layout: '12',
+          isTabbed: false,
+          QuestionsList: [],
+        });
+      }
+    } else {
+      if (tabsInColumnOne === true) {
+        section.push({
+          Section: 'A',
+          Layout: '6',
+          isTabbed: true,
+          Tabs: [{ TabName: 'Tab 1', QuestionsList: [], Layout: '12' }],
+        });
+      } else {
+        section.push({
+          Section: 'A',
+          Layout: '6',
+          isTabbed: false,
+          QuestionsList: [],
+        });
+      }
+      if (tabsInColumnTwo === true) {
+        section.push({
+          Section: 'B',
+          Layout: '6',
+          isTabbed: true,
+          Tabs: [{ TabName: 'Tab 1', QuestionsList: [], Layout: '12' }],
+        });
+      } else {
+        section.push({
+          Section: 'B',
+          Layout: '6',
+          isTabbed: false,
+          QuestionsList: [],
+        });
+      }
+    }
+    setComponentsStructureList([...section]);
+    /* const tab = { TabName: 'Tab 1', QuestionsList: [], Layout: '12' };
+    const comp = componentsStructureList;
+    comp.forEach((item) => {
+      if (item.Section === section) {
+        item.Tabs.push(tab);
+      }
+    });
+    setComponentsStructureList([...comp]); */
+  }
+
+  function handleLayoutChange() {
+    const _layout = [...componentsStructureList];
+    const section = [];
+    // ..below logic is for extracting questions from a tab or multiple tabs or sections
+    const questions = [];
+    _layout.forEach((sec) => {
+      if (sec.isTabbed === true) {
+        sec.Tabs.forEach((tab) => {
+          tab.QuestionsList.forEach((q) => {
+            questions.push(q);
+          });
+        });
+      } else {
+        sec.QuestionsList.forEach((q) => {
+          questions.push(q);
+        });
+      }
+    });
+    // ..above logic is for extracting questions from a tab or multiple tabs or sections
+    if (selectedLayout === '1') {
+      if (tabsInColumn === true) {
+        section.push({
+          Section: 'A',
+          Layout: '12',
+          isTabbed: true,
+          Tabs: [{ TabName: 'Tab 1', QuestionsList: questions, Layout: '12' }],
+        });
+      } else {
+        section.push({
+          Section: 'A',
+          Layout: '12',
+          isTabbed: false,
+          QuestionsList: questions,
+        });
+      }
+    } else {
+      if (tabsInColumnOne === true) {
+        section.push({
+          Section: 'A',
+          Layout: '6',
+          isTabbed: true,
+          Tabs: [{ TabName: 'Tab 1', QuestionsList: questions, Layout: '12' }],
+        });
+      } else {
+        section.push({
+          Section: 'A',
+          Layout: '6',
+          isTabbed: false,
+          QuestionsList: questions,
+        });
+      }
+      if (tabsInColumnTwo === true) {
+        section.push({
+          Section: 'B',
+          Layout: '6',
+          isTabbed: true,
+          Tabs: [{ TabName: 'Tab 1', QuestionsList: [], Layout: '12' }],
+        });
+      } else {
+        section.push({
+          Section: 'B',
+          Layout: '6',
+          isTabbed: false,
+          QuestionsList: [],
+        });
+      }
+    }
+    setComponentsStructureList([...section]);
+    /* const tab = { TabName: 'Tab 1', QuestionsList: [], Layout: '12' };
+    const comp = componentsStructureList;
+    comp.forEach((item) => {
+      if (item.Section === section) {
+        item.Tabs.push(tab);
+      }
+    });
+    setComponentsStructureList([...comp]); */
+    console.log('updated section is ', section);
+  }
+
+  useEffect(() => {
+    handleLayoutChange();
+  }, [selectedLayout, tabsInColumn, tabsInColumnOne, tabsInColumnTwo]);
 
   return (
     <FusePageSimple
@@ -448,17 +592,41 @@ const CreateItem = () => {
                     className="flex flex-col w-full max-w-4xl p-20"
                     style={{ paddingRight: '2%', paddingLeft: '2%' }}
                   >
-                    <TabbedSection
-                      TabsList={item.Tabs}
-                      sectionName={item.Section}
-                      handleNewTab={onNewTabAdded}
-                      handleQuestionDragDrop={handleQuestionDragDrop}
-                    />
+                    {item.isTabbed === true ? (
+                      <TabbedSection
+                        TabsList={item.Tabs}
+                        sectionName={item.Section}
+                        handleNewTab={onNewTabAdded}
+                        handleQuestionDragDrop={handleQuestionDragDrop}
+                      />
+                    ) : (
+                      <>
+                        <SimpleSection
+                          QuestionsList={item.QuestionsList}
+                          sectionName={item.Section}
+                          handleQuestionDragDrop={handleQuestionDragDrop}
+                        />
+                        {/* {item.QuestionsList.map((q, i) => {
+                          return <CreateQuestion key={i} />;
+                        })} */}
+                      </>
+                    )}
                   </div>
                 );
               })}
             </DndProvider>
           </div>
+
+          {/*  <div className="mt-12">
+            <LabelImageWithDragDropLayout
+              multipleChoices={choiceMatricMultipleChoices}
+              setMultipleChoices={setChoiceMatricMultipleChoices}
+              multipleOptions={choiceMatricMultipleOptions}
+              setMultipleOptions={setChoiceMatricMultipleOptions}
+              editorContent={choiceMatricEditorContent}
+              setEditorContent={setChoiceMatricEditorContent}
+            />
+          </div> */}
         </>
 
         /*   </div> */

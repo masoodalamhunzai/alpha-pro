@@ -118,6 +118,7 @@ function a11yProps(index) {
 
 const CreateUserTabs = () => {
   const location = useLocation();
+  const classes = useStyles();
   const history = useHistory();
   const pageTitle = location.pathname
     .split("/")
@@ -125,33 +126,27 @@ const CreateUserTabs = () => {
     .pop()
     .split("-")
     .join(" ");
-  const classes = useStyles();
 
   const [tabValue, setTabValue] = useState(0);
-  const handleChange = (event, newValue) => {
-    console.log(newValue, "newValue");
 
-    setTabValue(newValue);
-  };
-  const [{ user, organization, roles }, dispatch] = useStateValue();
+  const [{ user }, dispatch] = useStateValue();
   const USER_ROLE_CLIENT_ADMIN = "client-admin";
   const USER_ROLE_SUPER_ADMIN = "super-admin";
-  const [error, setError] = useState(false);
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const { editData } = location?.state ? location?.state : "";
 
+  const { editData, mode, selectedOrg } = location?.state && location?.state;
+
+  const organzationID = mode === "edit-user" ? selectedOrg : selectedOrg;
+  console.log(location?.state, "state", organzationID);
   const [formData, setFormData] = useState({
     email: editData?.email.length > 0 ? editData?.email : "",
     firstName: editData?.firstName.length > 0 ? editData?.firstName : "",
     lastName: editData?.lastName.length > 0 ? editData?.lastName : "",
     phone: editData?.phonenumber.length > 0 ? editData?.phonenumber : "",
-    organizations:
-      editData?.organization.length > 0 ? editData?.organization : "",
+    organizations: selectedOrg.length > 0 ? selectedOrg : "",
     password: "",
     confirmPassword: "",
     userRoles: "",
-    status: editData?.status.length > 0 ? editData?.status : "",
+    status: editData?.isActive ? editData?.isActive : "",
     alphaProd: false,
     alphaDev: false,
     bulkUpdateManager: false,
@@ -168,7 +163,12 @@ const CreateUserTabs = () => {
     insightAccess: false,
     aurthorSiteSettingManager: false,
   });
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
+  const handleChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
   const handleChangeInputs = (e) => {
     const { value } = e.target;
     const { name } = e.target;
@@ -267,10 +267,6 @@ const CreateUserTabs = () => {
     if (validation()) {
       const res = createOrganizationUser(organizations, user, payload);
 
-      setIsFormSubmitted(true);
-      setTimeout(() => {
-        setIsFormSubmitted(false);
-      }, 3000);
       redirectTo("/user-managment");
     } else {
       setTimeout(() => {
@@ -325,7 +321,6 @@ const CreateUserTabs = () => {
                   {...a11yProps(0)}
                 />
                 <AntTab label="Permissions" {...a11yProps(1)} />
-                {/* <AntTab label="Create User" {...a11yProps(3)} />*/}
               </AntTabs>
             </Box>
             {error && (
@@ -336,16 +331,13 @@ const CreateUserTabs = () => {
                 {errorMessage}
               </Alert>
             )}
-            {/* {isFormSubmitted && (
-        <Alert severity="success">
-          {editData ? "successfully Updated" : "successfully Created"}
-        </Alert>
-      )} */}
             <TabPanel value={tabValue} index={0}>
               <AddUserDetails
                 formData={formData}
                 handleChangeInputs={handleChangeInputs}
                 handleChangePhone={handleChangePhone}
+                organzationID={organzationID}
+                mode={mode}
               />
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
@@ -376,7 +368,6 @@ const CreateUserTabs = () => {
                 Cancel
               </Button>
             </div>
-            {/* )} */}
           </Box>
         </div>
       }
