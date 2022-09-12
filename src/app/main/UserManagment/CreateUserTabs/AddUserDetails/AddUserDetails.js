@@ -46,12 +46,7 @@ const useStyles = makeStyles({
       left: "-4px",
       top: "-5px",
     },
-    "& .MuiOutlinedInput-input:focus": {
-      fontSize: "1.4rem",
-    },
-    "& .MuiOutlinedInput-root": {
-      fontSize: "1.4rem",
-    },
+
     "& .react-tel-input": {
       width: "90%",
       border: "1px solid #b0b8c3",
@@ -79,6 +74,12 @@ const useStyles = makeStyles({
       width: "50%",
       fontSize: "1.2rem",
       textTransform: "capitalize",
+    },
+    "& .MuiOutlinedInput-input:focus": {
+      fontSize: "1.4rem",
+    },
+    "& .MuiOutlinedInput-root": {
+      fontSize: "1.4rem",
     },
   },
 
@@ -256,7 +257,9 @@ function AddUserDetailsTab({
           )}
 
           <Box className={classes.formInput}>
-            <AccountBalanceIcon className="text-gray-600 mr-8" />
+            <Icon color="action" className="text-gray-600 mr-8">
+              toggle_on
+            </Icon>
             <FormControl fullWidth>
               <InputLabel id="status-dropdown">Select status</InputLabel>
               <Select

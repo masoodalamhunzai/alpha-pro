@@ -24,17 +24,17 @@ import OrganizationsList from "./OrganizationsList";
 
 const useStyles = makeStyles({
   layoutRoot: {
-    "& .MuiSelect-select ": {
-      padding: "13px",
-    },
-    fontSize: "1.5rem",
     "& .MuiFormControlLabel-label": {
       fontSize: "1.2rem",
       margin: "1rem 0",
     },
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "1.6rem",
+    },
     "& .MuiInputBase-input": {
-      backgroundColor: "#fff",
+      borderRadius: "1.6rem",
       textAlign: "start",
+      backgroundColor: "#fff",
     },
     "& .MuiInputLabel-root": {
       fontSize: "1.4rem",
@@ -69,12 +69,12 @@ const OrganizationManagement = () => {
   function handleSearch(event) {
     setSearchText(event.target.value);
   }
-  const setNews = async () => {
-    dispatch({
-      type: actions.SET_NEWS,
-      payload: { header: "new header text", des: "new description text" },
-    });
-  };
+  // const setNews = async () => {
+  //   dispatch({
+  //     type: actions.SET_NEWS,
+  //     payload: { header: "new header text", des: "new description text" },
+  //   });
+  // };
   const redirectTo = async (goTo) => {
     try {
       history.push(goTo);
@@ -83,15 +83,16 @@ const OrganizationManagement = () => {
     }
   };
   const handleSearchOrganizations = async () => {
-    if (searchText?.length === 0) {
-      return false;
-    }
-    const res = await searchOrganizations(searchText, user);
-    if (res && res.status === 200 && res.data) {
-      dispatch({
-        type: actions.SET_SEARCH_ORGANIZATION,
-        payload: res.data,
-      });
+    if (searchText.trim() === "") {
+      loadOrganizations();
+    } else {
+      const res = await searchOrganizations(searchText, user);
+      if (res && res.status === 200 && res.data) {
+        dispatch({
+          type: actions.SET_SEARCH_ORGANIZATION,
+          payload: res.data,
+        });
+      }
     }
   };
   const loadOrganizations = async () => {
@@ -274,16 +275,16 @@ const OrganizationManagement = () => {
               >
                 Search
               </Button>
-              <FormControl size="small" sx={{ mx: 2, width: "100%" }}>
-                <InputLabel id="organization-dropdown">Archive</InputLabel>
+              <FormControl sx={{ width: "100%", mx: 2 }} size="small">
+                <InputLabel id="archive-dropdown">Archive</InputLabel>
                 <Select
-                  labelId="organization-dropdown"
-                  id="organizationDropdown"
-                  value=""
-                  label="organization"
+                  labelId="archive-dropdown"
+                  id="archiveDropdown"
+                  label="archive"
                   onChange={handleChange}
                 >
                   <MenuItem value="archive">Un Archive</MenuItem>
+                  <MenuItem value="archive"> Archive</MenuItem>
                 </Select>
               </FormControl>
               <Button

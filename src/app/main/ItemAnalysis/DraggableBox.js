@@ -11,14 +11,12 @@ const style = {
 function DraggableBox(props) {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'box',
-    item: { name: props.title },
+    item: { name: props.title,component:props.component },
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
       if (item && dropResult) {
-
-       // props.handleComponentDragDrop(props.component);
-
-        alert(`You dropped ${item.name} into ${dropResult.name} comp ${props.component}!`);
+        // props.handleComponentDragDrop(props.component);
+        //  alert(`You dropped ${item.name} into ${dropResult.name} comp ${props.component}!`);
       }
     },
     collect: (monitor) => ({

@@ -62,12 +62,12 @@ function QuestionConfiguration(props) {
                   />
                   <DraggableBox
                     title="Multiple Responses"
-                    component="2"
+                    component="multipleResponses"
                     handleComponentDragDrop={props.handleComponentDragDrop}
                   />
                   <DraggableBox
                     title="True Or False"
-                    component="3"
+                    component="TrueFalseQuestionLayout"
                     handleComponentDragDrop={props.handleComponentDragDrop}
                   />
                   <DraggableBox
@@ -77,7 +77,22 @@ function QuestionConfiguration(props) {
                   />
                   <DraggableBox
                     title="Ch Matrix Std"
-                    component="5"
+                    component="ChoiceMatrixQuestionLayout"
+                    handleComponentDragDrop={props.handleComponentDragDrop}
+                  />
+                  <DraggableBox
+                    title="Label Image with drag & drop"
+                    component="LabelImageWithDragDropLayout"
+                    handleComponentDragDrop={props.handleComponentDragDrop}
+                  />
+                  <DraggableBox
+                    title="Label Image with drop-down"
+                    component="LabelImageWithDropDownLayout"
+                    handleComponentDragDrop={props.handleComponentDragDrop}
+                  />
+                  <DraggableBox
+                    title="Label Image with text"
+                    component="LabelImageWithTextLayout"
                     handleComponentDragDrop={props.handleComponentDragDrop}
                   />
                 </div>

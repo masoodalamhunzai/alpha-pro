@@ -306,24 +306,39 @@ const LabelImageWithDragDropLayout = (props) => {
                     </div>
                   </div>
 
-                  <div className="">
-                    <TextField
-                      className="mx-6"
-                      style={{ width: "100%" }}
-                      inputProps={{
-                        style: {
-                          backgroundColor: "white",
-                          fontSize: "13px",
-                        },
-                      }}
-                      size="small"
-                      required
-                      id="outlined-required"
-                      label="1"
-                    />
-                  </div>
+                  {annotations &&
+                    annotations.length > 0 &&
+                    annotations.map((annt, index) => {
+                      return (
+                        <div className={index == 0 ? "" : "mt-12"}>
+                          <TextField
+                            className="mx-6"
+                            style={{ width: "100%" }}
+                            inputProps={{
+                              style: {
+                                backgroundColor: "white",
+                                fontSize: "13px",
+                              },
+                            }}
+                            onChange={(e) => {
+                              var temp = annotations.slice();
+                              var tem = annt;
+                              tem.data.text = e.target.value;
 
-                  <div className="mt-12">
+                              temp[index] = tem;
+                              setAnnotations(temp);
+                            }}
+                            value={annt.data.text}
+                            size="small"
+                            required
+                            id="outlined-required"
+                            label={index + 1}
+                          />
+                        </div>
+                      );
+                    })}
+
+                  {/* <div className="mt-12">
                     <TextField
                       className="mx-6"
                       style={{ width: "100%" }}
@@ -338,9 +353,9 @@ const LabelImageWithDragDropLayout = (props) => {
                       id="outlined-required"
                       label="2"
                     />
-                  </div>
+                  </div> */}
 
-                  <div className="mt-12">
+                  {/* <div className="mt-12">
                     <TextField
                       className="mx-6"
                       style={{ width: "100%" }}
@@ -355,7 +370,7 @@ const LabelImageWithDragDropLayout = (props) => {
                       id="outlined-required"
                       label="3"
                     />
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

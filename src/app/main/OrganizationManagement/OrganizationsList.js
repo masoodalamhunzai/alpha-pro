@@ -181,12 +181,7 @@ function OrganizationsList({
             }}
           >
             <Tooltip title="Edit">
-              <EditIcon
-                style={{ marginLeft: 5 }}
-                className={classes.icon}
-
-                // onClick={() => handleEditOrganization(params.id)}
-              />
+              <EditIcon style={{ marginLeft: 5 }} className={classes.icon} />
             </Tooltip>
           </Link>
           <Tooltip title="Archive">

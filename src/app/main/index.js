@@ -5,7 +5,7 @@ export { default as UserManagment } from "./UserManagment/UserManagment";
 export { default as CreateUser } from "./UserManagment/CreateUserTabs/tabs";
 export { default as Items } from "./ItemAnalysis/Items";
 export { default as ItemAnalysis } from "./ItemAnalysis/ItemAnalysis";
-export { default as CreateItem } from "./ItemAnalysis/CreateItemDragable";
+export { default as CreateItem } from "./ItemAnalysis/CreateItem";
 export { default as ItemsBulkUpdate } from "./ItemAnalysis/ItemsBulkUpdates";
 export { default as AuthorSiteSettings } from "./AuthorSiteSettings/AuthorSiteSettings";
 export { default as ItemBankDetails } from "./Insight/ItemBankDetails/ItemBankDetails";

@@ -12,6 +12,12 @@ import QuestionConfiguration from './QuestionConfiguration';
 import DropAndAdd from './DrapAndAdd';
 import CreateQuestion from './CreateQuestion';
 
+import TrueFalseQuestionLayout from './TrueFalseQuestionLayout';
+import LabelImageWithTextLayout from './LabelImageWithTextLayout';
+import LabelImageWithDropDownLayout from './LabelImageWithDropDownLayout';
+import LabelImageWithDragDropLayout from './LabelImageWithDragDropLayout';
+import ChoiceMatrixQuestionLayout from './ChoiceMatrixQuestionLayout';
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -124,9 +130,57 @@ function TabbedSection(props) {
                             {item.QuestionsList.map((ques, i) => {
                               return (
                                 <>
-                                  {' '}
-                                  <CreateQuestion key={i} />
-                                  <br />
+                                 {ques.component === 'CreateQuestion' ? (
+                            <CreateQuestion key={index} />
+                          ) : ques.component === 'TrueFalseQuestionLayout' ? (
+                            <TrueFalseQuestionLayout key={index}
+                  multipleChoices={props.multipleChoicestrueFalse}
+                  setMultipleChoices={props.setMultipleChoicestrueFalse}
+                  editorContent={props.editorContenttrueFalse}
+                  setEditorContent={props.setEditorContenttrueFalse}
+                  trueFalseShuffleOption={props.trueFalseShuffleOptiontrueFalse}
+                  setTrueFalseShuffleOption={props.setTrueFalseShuffleOptiontrueFalse}
+                             />
+                          ) : ques.component === 'ChoiceMatrixQuestionLayout' ? (
+                            <ChoiceMatrixQuestionLayout key={index} 
+                            multipleChoices={props.multipleChoiceschoiceMatric}
+                  setMultipleChoices={props.setMultipleChoiceschoiceMatric}
+                  multipleOptions={props.multipleOptionschoiceMatric}
+                  setMultipleOptions={props.setMultipleOptionschoiceMatric}
+                  editorContent={props.editorContentchoiceMatric}
+                  setEditorContent={props.setEditorContentchoiceMatric}
+                            />
+                          ) : ques.component === 'LabelImageWithDragDropLayout' ? (
+                            <LabelImageWithDragDropLayout key={index}
+                            multipleChoices={props.multipleChoiceschoiceMatric}
+                  setMultipleChoices={props.setMultipleChoiceschoiceMatric}
+                  multipleOptions={props.multipleOptionschoiceMatric}
+                  setMultipleOptions={props.setMultipleOptionschoiceMatric}
+                  editorContent={props.editorContentchoiceMatric}
+                  setEditorContent={props.setEditorContentchoiceMatric}
+                             />
+                          ) : ques.component === 'LabelImageWithDropDownLayout' ? (
+                            <LabelImageWithDropDownLayout key={index}
+                            multipleChoices={props.multipleChoiceschoiceMatric}
+                  setMultipleChoices={props.setMultipleChoiceschoiceMatric}
+                  multipleOptions={props.multipleOptionschoiceMatric}
+                  setMultipleOptions={props.setMultipleOptionschoiceMatric}
+                  editorContent={props.editorContentchoiceMatric}
+                  setEditorContent={props.setEditorContentchoiceMatric}
+                            />
+                          ) : ques.component === 'LabelImageWithTextLayout' ? (
+                            <LabelImageWithTextLayout key={index}
+                            multipleChoices={props.multipleChoiceschoiceMatric}
+                  setMultipleChoices={props.setMultipleChoiceschoiceMatric}
+                  multipleOptions={props.multipleOptionschoiceMatric}
+                  setMultipleOptions={props.setMultipleOptionschoiceMatric}
+                  editorContent={props.editorContentchoiceMatric}
+                  setEditorContent={props.setEditorContentchoiceMatric}
+                            />
+                          ) : (
+                            <p>This Component is under construction..</p>
+                          )}
+                          <br />
                                 </>
                               );
                             })}
