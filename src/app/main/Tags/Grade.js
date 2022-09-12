@@ -43,7 +43,7 @@ const useStyles = makeStyles({
   },
 });
 const Grade = () => {
-  const [{ user, grade }, dispatch] = useStateValue();
+  const [{ user, grades }, dispatch] = useStateValue();
   const location = useLocation();
   const history = useHistory();
   const pageTitle = location.pathname
@@ -70,7 +70,7 @@ const Grade = () => {
     if (res && res.status === 200 && res.data) {
       setLoading(false);
       dispatch({
-        type: actions.SET_GRADE,
+        type: actions.SET_GRADES,
         payload: res.data,
       });
     }
@@ -161,7 +161,7 @@ const Grade = () => {
             page={page}
             setPage={setPage}
             loading={loading}
-            grade={grade}
+            grades={grades}
           />
         </div>
       }

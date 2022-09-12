@@ -5,7 +5,8 @@ export const initialState = {
   stockPrice: 0,
   items: null,
   feeds: null,
-  grade: null,
+  grades: null,
+  subjects: null,
   news: {
     header: "This is Header Stored in Global State",
     des: "This Description is stored in Global State",

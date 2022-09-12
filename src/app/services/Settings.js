@@ -35,7 +35,8 @@ export const settings = {
       `/api/organizations/search/${searchTerm}`,
   },
   roles: "/api/roles",
-  grade: "/api/grades",
+  grades: "/api/grades",
+  subjects: "/api/subjects",
 };
 
 export const primaryBlueColor = "#3287fa";
