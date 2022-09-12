@@ -161,7 +161,15 @@ export const getAllRoles = async (user) => {
 };
 export const getAllGrades = async (user) => {
   try {
-    const response = await getData(`${s.grade}`, user);
+    const response = await getData(`${s.grades}`, user);
+    return response;
+  } catch (err) {
+    return null;
+  }
+};
+export const getAllSubjects = async (user) => {
+  try {
+    const response = await getData(`${s.subjects}`, user);
     return response;
   } catch (err) {
     return null;
@@ -169,7 +177,15 @@ export const getAllGrades = async (user) => {
 };
 export const createUserGrade = async (user, data) => {
   try {
-    const response = await postData(`${s.grade}`, user, data);
+    const response = await postData(`${s.grades}`, user, data);
+    return response;
+  } catch (err) {
+    return null;
+  }
+};
+export const createUserSubject = async (user, data) => {
+  try {
+    const response = await postData(`${s.subjects}`, user, data);
     return response;
   } catch (err) {
     return null;

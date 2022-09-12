@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function GradeList({ page, loading, grade }) {
+function GradeList({ page, loading, grades }) {
   const history = useHistory();
   const classes = useStyles();
   const anchorRef = useRef(null);
@@ -131,7 +131,7 @@ function GradeList({ page, loading, grade }) {
     },
   ];
 
-  const rows = grade?.map((data) => {
+  const rows = grades?.map((data) => {
     return {
       id: data.id,
       title: data.title,

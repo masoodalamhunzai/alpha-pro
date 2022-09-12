@@ -1,5 +1,5 @@
-import * as React from "react";
-import { useState } from "react";
+import React from "react";
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@mui/material/TextField";
@@ -11,8 +11,8 @@ import Select from "@mui/material/Select";
 import { useStateValue } from "app/services/state/State";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-
-import Divider from "@mui/material/Divider";
+import { useHistory } from "react-router";
+import { createUserSubject } from "app/services/api/ApiManager";
 import Stack from "@mui/material/Stack";
 
 const useStyles = makeStyles({
@@ -68,11 +68,53 @@ const useStyles = makeStyles({
 });
 
 const NewSubject = () => {
-  const [{ user }, dispatch] = useStateValue();
-  const [organization, setOrganization] = useState("");
+  const history = useHistory();
+  const [{ user, grades }, dispatch] = useStateValue();
+  const { _subjectId } = location?.state ? location?.state : "";
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [newSubject, setNewSubject] = useState("");
+  const [selectGrade, setSelectGrade] = useState("");
 
-  const handleChange = (event) => {
-    setOrganization(event.target.value);
+  const redirectTo = async (goTo) => {
+    try {
+      history.push(goTo);
+    } catch (err) {}
+  };
+
+  const handleChangeInputs = (e) => {
+    setNewSubject(e.target.value);
+  };
+
+  const validation = () => {
+    if (newSubject === "") {
+      setError(true);
+      setErrorMessage("Subject Name Required");
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubjectSubmit = (e) => {
+    e.preventDefault();
+    const payload = {
+      title: newSubject,
+      grade: selectGrade,
+    };
+    console.log(payload, "payload");
+    if (validation()) {
+      const res = createUserSubject(user, payload);
+      setTimeout(() => {}, 3000);
+      redirectTo("/subject");
+    } else {
+      setTimeout(() => {
+        setError(false);
+      }, 3000);
+    }
+  };
+
+  const handleChangeGrade = (event) => {
+    setSelectGrade(event.target.value);
   };
 
   const handleSubmit = (e) => {
@@ -89,6 +131,14 @@ const NewSubject = () => {
       maxWidth="xs"
     >
       <CssBaseline />
+      {error && (
+        <Alert
+          severity="error"
+          sx={{ fontSize: "1.3rem", width: "100%", m: 0 }}
+        >
+          {errorMessage}
+        </Alert>
+      )}
       <Box
         sx={{
           marginTop: 2,
@@ -109,10 +159,12 @@ const NewSubject = () => {
               margin="normal"
               required
               fullWidth
+              onChange={handleChangeInputs}
               id="subject"
               label="subject"
-              name="email"
-              autoComplete="email"
+              name="subject"
+              defaultValue={newSubject}
+              autoComplete="subject"
               autoFocus
             />
           </FormControl>
@@ -122,11 +174,20 @@ const NewSubject = () => {
               labelId="organization-dropdown"
               id="organizationDropdown"
               label="organization"
-              onChange={handleChange}
+              value={selectGrade === "" ? _subjectId : selectGrade}
+              onChange={handleChangeGrade}
             >
-              <MenuItem value={10}>Class 8TH</MenuItem>
-              <MenuItem value={20}>Class 9TH</MenuItem>
-              <MenuItem value={30}>Class 10TH</MenuItem>
+              {grades?.map((grade) =>
+                _subjectId === grade?.id ? (
+                  <MenuItem value={_subjectId} key={_subjectId}>
+                    {grade?.title}
+                  </MenuItem>
+                ) : (
+                  <MenuItem value={grade?.id} key={grade?.id}>
+                    {grade?.title}
+                  </MenuItem>
+                )
+              )}
             </Select>
           </FormControl>
           <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -163,6 +224,7 @@ const NewSubject = () => {
               type="submit"
               variant="contained"
               className={classes.continueBtn}
+              onClick={handleSubjectSubmit}
             >
               Create
             </Button>

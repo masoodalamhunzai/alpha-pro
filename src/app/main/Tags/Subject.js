@@ -19,6 +19,7 @@ import Paper from "@material-ui/core/Paper";
 import { useHistory } from "react-router";
 import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
 import SubjectList from "./SubjectList";
+import { getAllSubjects } from "app/services/api/ApiManager";
 
 const useStyles = makeStyles({
   layoutRoot: {
@@ -42,11 +43,9 @@ const useStyles = makeStyles({
     },
   },
 });
-const Grade = () => {
-  const [
-    { user, patients, defaultPageSize, organization, organizationUsers },
-    dispatch,
-  ] = useStateValue();
+const Subject = () => {
+  const [{ user, subjects }, dispatch] = useStateValue();
+  const [loading, setLoading] = useState(true);
   const location = useLocation();
   const history = useHistory();
   const pageTitle = location.pathname
@@ -57,16 +56,25 @@ const Grade = () => {
     .join(" ");
 
   const classes = useStyles();
-  const [count, setCount] = useState(0);
   const theme = useTheme();
   const [page, setPage] = useState(0);
 
-  const setNews = async () => {
-    dispatch({
-      type: actions.SET_NEWS,
-      payload: { header: "new header text", des: "new description text" },
-    });
+  const handleGetSubjects = async () => {
+    const res = await getAllSubjects(user);
+    if (res && res.status === 200 && res.data) {
+      setLoading(false);
+      console.log(res, "subject res");
+      dispatch({
+        type: actions.SET_SUBJECTS,
+        payload: res.data,
+      });
+    }
   };
+
+  useEffect(() => {
+    handleGetSubjects();
+  }, []);
+
   const redirectTo = async (goTo) => {
     try {
       history.push(goTo);
@@ -152,11 +160,16 @@ const Grade = () => {
             </div>
           </div>
           {/*end*/}
-          <SubjectList />
+          <SubjectList
+            page={page}
+            setPage={setPage}
+            loading={loading}
+            subjects={subjects}
+          />
         </div>
       }
     />
   );
 };
 
-export default Grade;
+export default Subject;

@@ -7,10 +7,9 @@ import Container from "@mui/material/Container";
 import FormControl from "@mui/material/FormControl";
 import Alert from "@mui/material/Alert";
 import CssBaseline from "@mui/material/CssBaseline";
-import { useLocation } from "react-router-dom";
+import TextareaAutosize from "@mui/material/TextareaAutosize";
 import { useHistory } from "react-router";
 import { useStateValue } from "app/services/state/State";
-import { actions } from "app/services/state/Reducer";
 import Stack from "@mui/material/Stack";
 import { createUserGrade } from "app/services/api/ApiManager";
 
@@ -73,6 +72,7 @@ const NewGrade = () => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [grade, setGrade] = useState("");
+  const [description, setDescription] = useState("");
 
   const redirectTo = async (goTo) => {
     try {
@@ -82,6 +82,9 @@ const NewGrade = () => {
 
   const handleChangeInputs = (e) => {
     setGrade(e.target.value);
+  };
+  const handleChangeDescript = (e) => {
+    setDescription(e.target.value);
   };
 
   const validation = () => {
@@ -152,6 +155,19 @@ const NewGrade = () => {
               defaultValue={grade}
               autoComplete="grade"
               autoFocus
+            />
+          </FormControl>
+          <FormControl fullWidth>
+            <TextareaAutosize
+              sx={{ width: "100%", border: "1px solid gray" }}
+              margin="normal"
+              required
+              fullWidth
+              onChange={handleChangeDescript}
+              aria-label="description"
+              placeholder="Description"
+              defaultValue={description}
+              minRows={3}
             />
           </FormControl>
           <Box sx={{ display: "flex", alignItems: "center" }}>

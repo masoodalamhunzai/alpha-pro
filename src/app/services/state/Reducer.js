@@ -12,7 +12,8 @@ export const actions = {
   SET_USER: "SET_USER",
   SET_ITEMS: "SET_ITEMS",
   SET_ROLES: "SET_ROLES",
-  SET_GRADE: "SET_GRADE",
+  SET_GRADES: "SET_GRADES",
+  SET_SUBJECTS: "SET_SUBJECTS",
   SET_ORGANIZATION_USERS: "SET_ORGANIZATION_USERS",
   SET_SEARCH_ORGANIZATION: "SET_SEARCH_ORGANIZATION",
   SET_SEARCH_ORGANIZATION_USERS: "SET_SEARCH_ORGANIZATION_USERS",
@@ -37,10 +38,15 @@ export const reducer = (state, action) => {
         ...state,
         user: action.payload,
       };
-    case actions.SET_GRADE:
+    case actions.SET_GRADES:
       return {
         ...state,
-        grade: action.payload,
+        grades: action.payload,
+      };
+    case actions.SET_SUBJECTS:
+      return {
+        ...state,
+        subjects: action.payload,
       };
     case actions.SET_ITEMS:
       return {

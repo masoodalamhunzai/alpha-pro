@@ -51,11 +51,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SubjectList({ page, loading }) {
+function SubjectList({ page, loading, subjects }) {
   const history = useHistory();
   const classes = useStyles();
   const [{ defaultPageSize }, dispatch] = useStateValue();
-  const [open, setOpen] = useState(false);
 
   async function onArchiveSubject(Id) {
     swal({
@@ -98,32 +97,9 @@ function SubjectList({ page, loading }) {
       renderCell: (params) => (
         <>
           {params.row.status === "inActive" ? (
-            <span
-              style={{
-                color: "white",
-                background: "red",
-                borderRadius: " 50%",
-                height: "24px",
-                width: "24px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Icon>close</Icon>
-            </span>
+            <StatusIcon isActive={params?.row?.status} />
           ) : (
-            <span
-              style={{
-                color: "white",
-                background: "#0bbf0b",
-                borderRadius: " 50%",
-                height: "24px",
-                width: "24px",
-              }}
-            >
-              <Icon>checkcirclerounded</Icon>
-            </span>
+            <StatusIcon isActive={params?.row?.status} />
           )}
         </>
       ),
@@ -162,71 +138,81 @@ function SubjectList({ page, loading }) {
     },
   ];
 
-  const rows = [
-    {
-      id: 1,
-      subject: "Mathematics",
-      grade: "Class 8",
-      createdBy: "Ranjith Pattu",
-      status: "active",
-    },
-    {
-      id: 2,
-      subject: "English",
-      grade: "Class 9",
-      createdBy: "Ranjith Pattu",
-      status: "inActive",
-    },
-    {
-      id: 3,
-      subject: "Chemistry",
-      grade: "Class 8",
-      createdBy: "Ranjith Pattu",
-      status: "active",
-    },
-    {
-      id: 4,
-      subject: "Physics",
-      grade: "Class 7",
-      createdBy: "Ranjith Pattu",
-      status: "active",
-    },
-    {
-      id: 5,
-      subject: "Mathematics",
-      grade: "Class 9",
-      createdBy: "Ranjith Pattu",
-      status: "active",
-    },
-    {
-      id: 6,
-      subject: "English",
-      grade: "Class 6",
-      createdBy: "Ranjith Pattu",
-      status: "active",
-    },
-    {
-      id: 7,
-      subject: "Chemistry",
-      grade: "Class 9",
-      createdBy: "Ranjith Pattu",
-      status: "inActive",
-    },
-    {
-      id: 8,
-      subject: "Physics",
-      grade: "Class 8",
-      createdBy: "Ranjith Pattu",
-      status: "inActive",
-    },
-    {
-      id: 9,
-      subject: "Chemistry",
-      grade: "Class 7",
-      createdBy: "Ranjith Pattu",
-      status: "active",
-    },
-  ];
+  const rows = subjects?.map((data) => {
+    return {
+      id: data.id,
+      subject: data.subject,
+      grade: data.grade,
+      createdBy: data.createdBy,
+      status: data.status,
+    };
+  });
+
+  // const rows = [
+  //   {
+  //     id: 1,
+  //     subject: "Mathematics",
+  //     grade: "Class 8",
+  //     createdBy: "Ranjith Pattu",
+  //     status: "active",
+  //   },
+  //   {
+  //     id: 2,
+  //     subject: "English",
+  //     grade: "Class 9",
+  //     createdBy: "Ranjith Pattu",
+  //     status: "inActive",
+  //   },
+  //   {
+  //     id: 3,
+  //     subject: "Chemistry",
+  //     grade: "Class 8",
+  //     createdBy: "Ranjith Pattu",
+  //     status: "active",
+  //   },
+  //   {
+  //     id: 4,
+  //     subject: "Physics",
+  //     grade: "Class 7",
+  //     createdBy: "Ranjith Pattu",
+  //     status: "active",
+  //   },
+  //   {
+  //     id: 5,
+  //     subject: "Mathematics",
+  //     grade: "Class 9",
+  //     createdBy: "Ranjith Pattu",
+  //     status: "active",
+  //   },
+  //   {
+  //     id: 6,
+  //     subject: "English",
+  //     grade: "Class 6",
+  //     createdBy: "Ranjith Pattu",
+  //     status: "active",
+  //   },
+  //   {
+  //     id: 7,
+  //     subject: "Chemistry",
+  //     grade: "Class 9",
+  //     createdBy: "Ranjith Pattu",
+  //     status: "inActive",
+  //   },
+  //   {
+  //     id: 8,
+  //     subject: "Physics",
+  //     grade: "Class 8",
+  //     createdBy: "Ranjith Pattu",
+  //     status: "inActive",
+  //   },
+  //   {
+  //     id: 9,
+  //     subject: "Chemistry",
+  //     grade: "Class 7",
+  //     createdBy: "Ranjith Pattu",
+  //     status: "active",
+  //   },
+  // ];
 
   return (
     <>
