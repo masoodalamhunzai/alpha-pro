@@ -270,7 +270,7 @@ const CreateUserTabs = () => {
           ? organizations
           : user?.user?.organizationId;
       const res = await createOrganizationUser(id, user, payload);
-      console.log(res, "resss");
+
       if (res && res.data && res.data.status === "success") {
         swal({
           title: "Good job!",

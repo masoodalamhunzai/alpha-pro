@@ -1,12 +1,14 @@
 // eslint-disable-next-line import/prefer-default-export
 export const initialState = {
   organization: null,
+  publishingEnvironment: "",
   organizationUsers: null,
   stockPrice: 0,
   items: null,
   feeds: null,
-  grades: null,
+  grade: null,
   subjects: null,
+  itemQuestionsList: [],
   news: {
     header: "This is Header Stored in Global State",
     des: "This Description is stored in Global State",

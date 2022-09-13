@@ -19,6 +19,8 @@ import Icon from "@material-ui/core/Icon";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@mui/material/Typography";
 import swal from "sweetalert";
+import StatusIcon from "app/shared-components/StatusIcon";
+import { deleteSubject } from "app/services/api/ApiManager";
 import { CustomToolbar } from "../../components";
 
 const useStyles = makeStyles((theme) => ({
@@ -54,21 +56,9 @@ const useStyles = makeStyles((theme) => ({
 function SubjectList({ page, loading, subjects }) {
   const history = useHistory();
   const classes = useStyles();
-  const [{ defaultPageSize }, dispatch] = useStateValue();
+  const [{ user, defaultPageSize }, dispatch] = useStateValue();
+  const [open, setOpen] = useState(false);
 
-  async function onArchiveSubject(Id) {
-    swal({
-      title: "Are you sure?",
-      text: "Are you sure you want to archive this User?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then(async (willDelete) => {
-      if (willDelete) {
-        handleArchiveUser(Id);
-      }
-    });
-  }
   const redirectTo = async (goTo) => {
     try {
       history.push(goTo);
@@ -76,6 +66,29 @@ function SubjectList({ page, loading, subjects }) {
       // console.log(err);
     }
   };
+  async function onArchiveSubject(id) {
+    swal({
+      title: "Are you sure?",
+      text: "Are you sure you want to archive this subject?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        const res = await deleteSubject(id, user);
+        if (res && res.data && res.data.status === "success") {
+          swal({
+            title: "Good job!",
+            text: "subject archive successfully!",
+            icon: "success",
+            button: "Ok!",
+          }).then((value) => {
+            redirectTo("/subject");
+          });
+        }
+      }
+    });
+  }
 
   async function handleArchiveUser(Id) {}
 
@@ -84,26 +97,25 @@ function SubjectList({ page, loading, subjects }) {
   function handleChangeRowsPerPage(event) {}
 
   const columns = [
-    // { field: "id", headerName: "ID", width: 70 },
-    { field: "subject", headerName: "Subject", minWidth: 200 },
+    { field: "sNo", headerName: "ID", flex: 1 },
+    { field: "subject", headerName: "Subject", flex: 1 },
     { field: "grade", headerName: "Grade", flex: 1 },
-    { field: "createdBy", headerName: "Created By" },
-    {
-      field: "status",
-      headerName: "Status",
-      headerAlign: "center",
-      align: "center",
+    // {
+    //   field: "status",
+    //   headerName: "Status",
+    //   headerAlign: "center",
+    //   align: "center",
 
-      renderCell: (params) => (
-        <>
-          {params.row.status === "inActive" ? (
-            <StatusIcon isActive={params?.row?.status} />
-          ) : (
-            <StatusIcon isActive={params?.row?.status} />
-          )}
-        </>
-      ),
-    },
+    //   renderCell: (params) => (
+    //     <>
+    //       {params.row.status === "inActive" ? (
+    //         <StatusIcon isActive={params?.row?.status} />
+    //       ) : (
+    //         <StatusIcon isActive={params?.row?.status} />
+    //       )}
+    //     </>
+    //   ),
+    // },
     {
       field: "action",
       headerName: "Action",
@@ -114,23 +126,22 @@ function SubjectList({ page, loading, subjects }) {
         <>
           <Tooltip title="Edit">
             <Link
-            // to={{
-            //   pathname: "/user-management/edit-user",
-            //   state: { editData: params?.row },
-            // }}
+              to={{
+                pathname: "/edit-subject",
+                state: {
+                  editData: params?.row,
+                  mode: "edit-subject",
+                },
+              }}
             >
-              <EditIcon
-                style={{ marginLeft: 5 }}
-                className={classes.icon}
-                onClick={() => redirectTo("/grade/edit-grade")}
-              />
+              <EditIcon style={{ marginLeft: 5 }} className={classes.icon} />
             </Link>
           </Tooltip>
           <Tooltip title="Archive">
             <DeleteIcon
               className={classes.icon}
               style={{ marginLeft: 5 }}
-              onClick={() => onArchiveSubject(params.id)}
+              onClick={() => onArchiveSubject(params?.id)}
             />
           </Tooltip>
         </>
@@ -138,81 +149,14 @@ function SubjectList({ page, loading, subjects }) {
     },
   ];
 
-  const rows = subjects?.map((data) => {
+  const rows = subjects?.map((subject, id) => {
     return {
-      id: data.id,
-      subject: data.subject,
-      grade: data.grade,
-      createdBy: data.createdBy,
-      status: data.status,
+      sNo: id + 1,
+      id: subject?.id,
+      gradeId: subject?.gradeId,
+      subject: subject?.title,
     };
   });
-
-  // const rows = [
-  //   {
-  //     id: 1,
-  //     subject: "Mathematics",
-  //     grade: "Class 8",
-  //     createdBy: "Ranjith Pattu",
-  //     status: "active",
-  //   },
-  //   {
-  //     id: 2,
-  //     subject: "English",
-  //     grade: "Class 9",
-  //     createdBy: "Ranjith Pattu",
-  //     status: "inActive",
-  //   },
-  //   {
-  //     id: 3,
-  //     subject: "Chemistry",
-  //     grade: "Class 8",
-  //     createdBy: "Ranjith Pattu",
-  //     status: "active",
-  //   },
-  //   {
-  //     id: 4,
-  //     subject: "Physics",
-  //     grade: "Class 7",
-  //     createdBy: "Ranjith Pattu",
-  //     status: "active",
-  //   },
-  //   {
-  //     id: 5,
-  //     subject: "Mathematics",
-  //     grade: "Class 9",
-  //     createdBy: "Ranjith Pattu",
-  //     status: "active",
-  //   },
-  //   {
-  //     id: 6,
-  //     subject: "English",
-  //     grade: "Class 6",
-  //     createdBy: "Ranjith Pattu",
-  //     status: "active",
-  //   },
-  //   {
-  //     id: 7,
-  //     subject: "Chemistry",
-  //     grade: "Class 9",
-  //     createdBy: "Ranjith Pattu",
-  //     status: "inActive",
-  //   },
-  //   {
-  //     id: 8,
-  //     subject: "Physics",
-  //     grade: "Class 8",
-  //     createdBy: "Ranjith Pattu",
-  //     status: "inActive",
-  //   },
-  //   {
-  //     id: 9,
-  //     subject: "Chemistry",
-  //     grade: "Class 7",
-  //     createdBy: "Ranjith Pattu",
-  //     status: "active",
-  //   },
-  // ];
 
   return (
     <>

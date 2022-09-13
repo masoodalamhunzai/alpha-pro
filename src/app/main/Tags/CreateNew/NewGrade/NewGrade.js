@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@mui/material/TextField";
@@ -8,8 +8,10 @@ import FormControl from "@mui/material/FormControl";
 import Alert from "@mui/material/Alert";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
-import { useHistory } from "react-router";
+import { useLocation, useHistory } from "react-router-dom";
 import { useStateValue } from "app/services/state/State";
+import { actions } from "app/services/state/Reducer";
+import swal from "sweetalert";
 import Stack from "@mui/material/Stack";
 import { createUserGrade } from "app/services/api/ApiManager";
 
@@ -30,7 +32,6 @@ const useStyles = makeStyles({
       borderRadius: "1.6rem",
       margin: "1rem 0.5rem",
       padding: "0.5rem 2rem",
-      fontSize: "1rem",
     },
     "& .MuiFormControlLabel-label": {
       fontSize: "1.2rem",
@@ -44,15 +45,22 @@ const useStyles = makeStyles({
       left: "-4px",
       top: "-5px",
     },
+    "& .MuiOutlinedInput-root": {
+      backgroundColor: "#fff",
+    },
   },
   continueBtn: {
     "&.MuiButton-root": {
       backgroundColor: "#3287FB",
+      fontSize: "1.3rem",
+      textTransform: "capitalize",
     },
   },
   cancelBtn: {
     "&.MuiButton-root": {
       backgroundColor: "#ACACAC",
+      fontSize: "1.3rem",
+      textTransform: "capitalize",
     },
   },
   formInput: {
@@ -67,12 +75,17 @@ const useStyles = makeStyles({
 
 const NewGrade = () => {
   const history = useHistory();
+  const location = useLocation();
+  const EDIT_MODE = "edit-grade";
+  const CREATE_NEW_MODE = "create-grade";
+  const { editData, mode } = location?.state ? location?.state : "";
   const [{ user }, dispatch] = useStateValue();
   const [error, setError] = useState(false);
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [grade, setGrade] = useState("");
-  const [description, setDescription] = useState("");
+  const [grade, setGrade] = useState(mode === EDIT_MODE ? editData?.title : "");
+  const [description, setDescription] = useState(
+    mode === EDIT_MODE ? editData?.description : ""
+  );
 
   const redirectTo = async (goTo) => {
     try {
@@ -83,32 +96,63 @@ const NewGrade = () => {
   const handleChangeInputs = (e) => {
     setGrade(e.target.value);
   };
-  const handleChangeDescript = (e) => {
+  const handleChangeDescription = (e) => {
     setDescription(e.target.value);
   };
 
   const validation = () => {
-    if (grade === "") {
+    if (grade.trim === "") {
       setError(true);
-      setErrorMessage("Grade required");
+      setErrorMessage("grade is required");
+      return false;
+    }
+    if (description.trim === "") {
+      setError(true);
+      setErrorMessage("description is required");
       return false;
     }
     return true;
   };
-
-  const handleGradeSubmit = (e) => {
+  const slugify = (text) => {
+    return text
+      .toString()
+      .normalize("NFD") // split an accented letter in the base letter and the acent
+      .replace(/[\u0300-\u036f]/g, "") // remove all previously split accents
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/[^\w\-]+/g, "")
+      .replace(/\-\-+/g, "-");
+  };
+  const handleGradeSubmit = async (e) => {
     e.preventDefault();
+
     const payload = {
-      grade,
+      id: mode === EDIT_MODE ? editData?.id : "",
+      title: grade,
+      slug: slugify(grade),
+      description,
+      org_search_key: mode === EDIT_MODE ? editData?.org_search_key : 1,
+      curriculumId:
+        mode === EDIT_MODE
+          ? editData?.curriculumId
+          : "fad64cae-edff-41c3-bbcb-ca3c77b54087",
     };
-    console.log(payload, "payload");
     if (validation()) {
-      const res = createUserGrade(user, payload);
-      setIsFormSubmitted(true);
-      setTimeout(() => {
-        setIsFormSubmitted(false);
-      }, 3000);
-      redirectTo("/grade");
+      const res = await createUserGrade(user, payload);
+      if (res && res.data && res.data.status === "success") {
+        swal({
+          title: "Good job!",
+          text:
+            mode === EDIT_MODE
+              ? "Grade Updated Successfully!"
+              : "Grade Saved Successfully!",
+          icon: "success",
+          button: "Ok!",
+        }).then((value) => {
+          redirectTo("/grade");
+        });
+      }
     } else {
       setTimeout(() => {
         setError(false);
@@ -142,7 +186,7 @@ const NewGrade = () => {
           alignItems: "center",
         }}
       >
-        <Box component="form" noValidate sx={{ my: 4, width: "100%" }}>
+        <Box component="form" noValidate sx={{ my: 1, width: "70%" }}>
           <FormControl fullWidth>
             <TextField
               sx={{ width: "100%" }}
@@ -157,19 +201,34 @@ const NewGrade = () => {
               autoFocus
             />
           </FormControl>
-          <FormControl fullWidth>
-            <TextareaAutosize
-              sx={{ width: "100%", border: "1px solid gray" }}
-              margin="normal"
-              required
-              fullWidth
-              onChange={handleChangeDescript}
-              aria-label="description"
+          <FormControl sx={{ my: 1, width: "100%" }}>
+            <TextField
+              sx={{ width: "100%" }}
+              id="outlined-multiline-flexible"
+              label="Multiline"
+              multiline
+              rows={4}
               placeholder="Description"
               defaultValue={description}
-              minRows={3}
+              onChange={handleChangeDescription}
             />
           </FormControl>
+          {grade && (
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <span className="text-gray-500 text-base">slug:</span>
+              <Stack
+                direction="row"
+                alignItems="center"
+                display="flex"
+                className="w-full"
+                justifyContent="start"
+              >
+                <Button variant="contained" sx={{ textTransform: "lowercase" }}>
+                  {slugify(grade)}
+                </Button>
+              </Stack>
+            </Box>
+          )}
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <span className="text-gray-500 text-base">status:</span>
             <Stack

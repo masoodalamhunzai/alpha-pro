@@ -34,9 +34,10 @@ const useStyles = makeStyles({
 
     "& .MuiFormControlLabel-label": {
       fontSize: "1.2rem",
+      margin: "1rem 0",
     },
     "& .Mui-focused": {
-      fontSize: "1.4rem !important",
+      fontSize: "1.6rem !important",
     },
     "& .MuiFormControl-root": {
       margin: "1rem 0",

@@ -15,7 +15,15 @@ const subRoutesConfig = {
       component: () => <CreateNewGrade />,
     },
     {
+      path: "/edit-grade",
+      component: () => <CreateNewGrade />,
+    },
+    {
       path: "/create-subject",
+      component: () => <CreateNewSubject />,
+    },
+    {
+      path: "/edit-subject",
       component: () => <CreateNewSubject />,
     },
   ],

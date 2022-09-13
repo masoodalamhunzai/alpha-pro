@@ -19,6 +19,7 @@ const useStyles = makeStyles({
 const Permissions = ({
   handleChangeInputs,
   formData: {
+    omrManager,
     activityManager,
     alphaProd,
     alphaDev,
@@ -168,6 +169,35 @@ const Permissions = ({
                       name="usersChkbox"
                       value={usersChkbox}
                       onChange={handleChangeInputs}
+                    />
+                  </FormGroup>
+                </Box>
+
+                <div className="flex justify-between my-5">
+                  <p
+                    style={{ fontSize: "11px" }}
+                    className="font-semibold text-gray-500"
+                  >
+                    Set Rights For Optical Mark Recognition(OMR)
+                  </p>
+                  {/* <span
+                    style={{ fontSize: "10px" }}
+                    className="underline text-blue-600 whitespace-nowrap"
+                  >
+                    Learn more about Aurthor Site user roles
+                  </span> */}
+                </div>
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          name="omrManager"
+                          value={omrManager}
+                          onChange={handleChangeInputs}
+                        />
+                      }
+                      label="OMR"
                     />
                   </FormGroup>
                 </Box>

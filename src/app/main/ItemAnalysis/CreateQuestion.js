@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { useStateValue } from 'app/services/state/State';
@@ -26,7 +26,7 @@ const defaultValues = { name: '', email: '', subject: '', message: '' };
   email: yup.string().email('You must enter a valid email').required('You must enter a email'),
 }); */
 
-const CreateQuestion = () => {
+const CreateQuestion = (props) => {
   const location = useLocation();
   const history = useHistory();
   const pageTitle = location.pathname
@@ -35,11 +35,7 @@ const CreateQuestion = () => {
     .split('-')
     .join(' ');
   const classes = useStyles();
-  const [{ user }, dispatch] = useStateValue();
-  const [count, setCount] = useState(0);
-  const [editorContent, setEditorContent] = useState('');
-  const [multipleChoices, setMultipleChoices] = useState([]);
-
+  const [{user,itemQuestionsList}, dispatch] =useStateValue();
   const { control, handleSubmit, watch, formState } = useForm({
     mode: 'onChange',
     defaultValues,
@@ -47,6 +43,7 @@ const CreateQuestion = () => {
   });
   const { isValid, dirtyFields, errors } = formState;
   const form = watch();
+  const [filteredQuestion, setFilteredQuestion] = useState("");
 
   if (_.isEmpty(form)) {
     return null;
@@ -57,14 +54,28 @@ const CreateQuestion = () => {
       position: index,
       title: '',
       isCorrect: false,
-      isAlternate: false,
+      isAlternate: false
     };
     let choices = [];
-    choices = multipleChoices;
+    console.log('props.multipleChoices ',props.multipleChoices);
+    choices = props.multipleChoices;
     choices.push(option);
-    setMultipleChoices(choices);
+    props.setMultipleChoices(choices);
   }
 
+  useEffect(()=>{
+    if(props.questionId!=null)
+    {
+    const filteredQuestion=itemQuestionsList.find(q => q.id==props.questionId);
+    if(filteredQuestion)
+    {
+      setFilteredQuestion(filteredQuestion);
+      props.setMultipleChoices(filteredQuestion.options);
+      props.setEditorContent(filteredQuestion.description);
+    }
+    console.log('filteredQuestion ',filteredQuestion);
+    }
+  },[]);
   return (
     <>
       <Paper
@@ -77,17 +88,48 @@ const CreateQuestion = () => {
         className="border border-blue border-2 pb-28 sm:pb-28 rounded-2xl border-blue-600"
       >
         <div className="text-right">
-          <Icon
-            className="p-3 bg bg-blue bg-blue-600"
-            style={{
-              padding: '2px 24px 24px 4px',
-              color: 'white',
-            }}
-            size="small"
-          >
-            edit
-          </Icon>
-        </div>
+        <Icon
+          onClick={() => {
+            props.onSaveQuestion(props.sectionName,props.tabName,props.questionId,props.questionIndex,"simple-mcqs");
+          }}
+          className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
+          style={{
+            padding: "2px 24px 24px 4px",
+            color: "white",
+          }}
+          size="small"
+        >
+          save
+        </Icon>
+
+        <Icon
+          onClick={() => {
+            props.onEditQuestion();
+          }}
+          className="p-3 bg bg-blue bg-blue-500 hover:bg-blue-700"
+          style={{
+            padding: "2px 24px 24px 4px",
+            color: "white",
+          }}
+          size="small"
+        >
+          edit
+        </Icon>
+
+        <Icon
+          onClick={() => {
+            props.onRemoveQuestion();
+          }}
+          className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
+          style={{
+            padding: "2px 24px 24px 4px",
+            color: "white",
+          }}
+          size="small"
+        >
+          close
+        </Icon>
+      </div>
         <form className="px-0 sm:px-24 ">
           <div className="mb-24 flex justify-between flex-wrap wrap">
             <h2 className="pose-h2 font-bold tracking-tight">Multiple choice - standard</h2>
@@ -136,7 +178,7 @@ const CreateQuestion = () => {
             <Controller
               className="mt-8 mb-16"
               render={({ field }) => (
-                <WYSIWYGEditor setEditorContent={setEditorContent} {...field} />
+                <WYSIWYGEditor setEditorContent={props.setEditorContent} {...field} />
               )}
               name="message"
               control={control}
@@ -156,8 +198,8 @@ const CreateQuestion = () => {
 
             <DraggableItem
               onNewOptionAdded={onNewOptionAdded}
-              multipleChoices={multipleChoices}
-              setMultipleChoices={setMultipleChoices}
+              multipleChoices={props.multipleChoices}
+              setMultipleChoices={props.setMultipleChoices}
             />
           </div>
         </form>

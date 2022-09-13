@@ -79,7 +79,6 @@ const Grade = () => {
   useEffect(() => {
     handleGetGrade();
   }, []);
-
   return (
     <FusePageSimple
       classes={{

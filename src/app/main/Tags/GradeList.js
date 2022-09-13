@@ -18,9 +18,10 @@ import {
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@mui/material/Typography";
 import swal from "sweetalert";
-import { CustomToolbar } from "../../components";
 import Icon from "@material-ui/core/Icon";
 import StatusIcon from "app/shared-components/StatusIcon";
+import { deleteGrade } from "app/services/api/ApiManager";
+import { CustomToolbar } from "../../components";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -60,19 +61,6 @@ function GradeList({ page, loading, grades }) {
     useStateValue();
   const [open, setOpen] = useState(false);
 
-  async function onArchiveGrade(Id) {
-    swal({
-      title: "Are you sure?",
-      text: "Are you sure you want to archive this User?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then(async (willDelete) => {
-      if (willDelete) {
-        handleArchiveUser(Id);
-      }
-    });
-  }
   const redirectTo = async (goTo) => {
     try {
       history.push(goTo);
@@ -81,41 +69,56 @@ function GradeList({ page, loading, grades }) {
     }
   };
 
+  async function onArchiveGrade(id) {
+    swal({
+      title: "Are you sure?",
+      text: "Are you sure you want to archive this grade?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        const res = await deleteGrade(id, user);
+        if (res && res.data && res.data.status === "success") {
+          swal({
+            title: "Good job!",
+            text: "grade archive successfully!",
+            icon: "success",
+            button: "Ok!",
+          }).then((value) => {
+            redirectTo("/grade");
+          });
+        }
+      }
+    });
+  }
+
   async function handleArchiveUser(Id) {}
 
   const handleChangePage = async (event, newPage) => {};
 
   function handleChangeRowsPerPage(event) {}
-
   const columns = [
+    { field: "sNo", headerName: "sNo", flex: 1 },
     { field: "title", headerName: "Grade Name", flex: 1 },
-    { field: "createdBy", headerName: "Created By" },
-    {
-      field: "status",
-      headerName: "Status",
-      headerAlign: "center",
-      align: "center",
-
-      renderCell: (params) => (
-        <>
-          {params.row.status === "inActive" ? (
-            <StatusIcon isActive={params?.row?.status} />
-          ) : (
-            <StatusIcon isActive={params?.row?.status} />
-          )}
-        </>
-      ),
-    },
+    { field: "createAt", headerName: "Created At", flex: 1 },
     {
       field: "action",
       headerName: "Action",
-      description: "This column has a value getter and is not sortable.",
       sortable: false,
-      width: 160,
+      flex: 1,
       renderCell: (params) => (
         <>
           <Tooltip title="Edit">
-            <Link>
+            <Link
+              to={{
+                pathname: "/edit-grade",
+                state: {
+                  editData: params?.row,
+                  mode: "edit-grade",
+                },
+              }}
+            >
               <EditIcon style={{ marginLeft: 5 }} className={classes.icon} />
             </Link>
           </Tooltip>
@@ -131,71 +134,18 @@ function GradeList({ page, loading, grades }) {
     },
   ];
 
-  const rows = grades?.map((data) => {
+  const rows = grades?.map((grade, id) => {
+    const createdAt = new Date(grade?.created_at);
     return {
-      id: data.id,
-      title: data.title,
-      createdBy: data.createdBy,
-      status: "",
+      id: grade?.id,
+      sNo: id + 1,
+      title: grade?.title,
+      description: grade?.description,
+      org_search_key: grade?.org_search_key,
+      curriculumId: grade?.curriculumId,
+      createAt: createdAt.toLocaleString("en-US"),
     };
   });
-
-  // const rows = [
-  //   {
-  //     id: 1,
-  //     gradeName: "Class 8",
-  //     createdBy: "Ranjith Pattu",
-  //     status: "active",
-  //   },
-  //   {
-  //     id: 2,
-  //     gradeName: "Class 9",
-  //     createdBy: "Ranjith Pattu",
-  //     status: "inActive",
-  //   },
-  //   {
-  //     id: 3,
-  //     gradeName: "Class 8",
-  //     createdBy: "Ranjith Pattu",
-  //     status: "active",
-  //   },
-  //   {
-  //     id: 4,
-  //     gradeName: "Class 7",
-  //     createdBy: "Ranjith Pattu",
-  //     status: "active",
-  //   },
-  //   {
-  //     id: 5,
-  //     gradeName: "Class 9",
-  //     createdBy: "Ranjith Pattu",
-  //     status: "active",
-  //   },
-  //   {
-  //     id: 6,
-  //     gradeName: "Class 6",
-  //     createdBy: "Ranjith Pattu",
-  //     status: "active",
-  //   },
-  //   {
-  //     id: 7,
-  //     gradeName: "Class 9",
-  //     createdBy: "Ranjith Pattu",
-  //     status: "inActive",
-  //   },
-  //   {
-  //     id: 8,
-  //     gradeName: "Class 8",
-  //     createdBy: "Ranjith Pattu",
-  //     status: "inActive",
-  //   },
-  //   {
-  //     id: 9,
-  //     gradeName: "Class 7",
-  //     createdBy: "Ranjith Pattu",
-  //     status: "active",
-  //   },
-  // ];
 
   return (
     <>

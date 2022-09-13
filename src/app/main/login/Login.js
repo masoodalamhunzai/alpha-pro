@@ -147,7 +147,7 @@ function Login() {
 
             <div>
               <span className="font-normal mr-8 pr-8 pb-8">
-                Copyright @ Learnosity Ltd. 2006-2022
+                Copyright © 2022 Alpha Publishing
               </span>
             </div>
           </div>

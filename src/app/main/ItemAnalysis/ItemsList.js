@@ -10,7 +10,7 @@ import {
   LocalOffer as TagIcon,
   CheckCircle as CheckIcon,
 } from "@material-ui/icons";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 // import { DataGrid } from '@material-ui/data-grid';
 import { useStateValue } from "app/services/state/State";
@@ -200,6 +200,15 @@ function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
               onClick={() => showOrganizationDetail(params.id)}
             />
           </Tooltip> */}
+          <Link
+            to={{
+              pathname: "/create-new-question",
+              state: {
+                itemIdProps: params.id,
+                mode: "edit-item",
+              },
+            }}
+          >
           <Tooltip title="Edit">
             <EditIcon
               style={{ marginLeft: 5 }}
@@ -207,6 +216,7 @@ function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
               onClick={() => handleEditOrganization(params.id)}
             />
           </Tooltip>
+          </Link>
 
           <Tooltip title="Archive">
             <DeleteIcon

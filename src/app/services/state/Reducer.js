@@ -17,6 +17,8 @@ export const actions = {
   SET_ORGANIZATION_USERS: "SET_ORGANIZATION_USERS",
   SET_SEARCH_ORGANIZATION: "SET_SEARCH_ORGANIZATION",
   SET_SEARCH_ORGANIZATION_USERS: "SET_SEARCH_ORGANIZATION_USERS",
+  SET_ITEM_QUESTIONS_LIST: "SET_ITEM_QUESTIONS_LIST",
+  SET_PUBLISHING_ENVIRONMENT: "SET_PUBLISHING_ENVIRONMENT",
 };
 
 export const reducer = (state, action) => {
@@ -27,6 +29,11 @@ export const reducer = (state, action) => {
       return {
         ...state,
         organization: action.payload,
+      };
+    case actions.SET_PUBLISHING_ENVIRONMENT:
+      return {
+        ...state,
+        publishingEnvironment: action.payload,
       };
     case actions.SET_ORGANIZATION_USERS:
       return {
@@ -97,6 +104,11 @@ export const reducer = (state, action) => {
       return {
         ...state,
         organizationUsers: action.payload,
+      };
+    case actions.SET_ITEM_QUESTIONS_LIST:
+      return {
+        ...state,
+        itemQuestionsList: action.payload,
       };
     default:
       return state;

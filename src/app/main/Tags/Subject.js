@@ -17,9 +17,9 @@ import { Add as AddIcon } from "@material-ui/icons";
 import Input from "@material-ui/core/Input";
 import Paper from "@material-ui/core/Paper";
 import { useHistory } from "react-router";
+import { getAllSubjects } from "app/services/api/ApiManager";
 import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
 import SubjectList from "./SubjectList";
-import { getAllSubjects } from "app/services/api/ApiManager";
 
 const useStyles = makeStyles({
   layoutRoot: {
@@ -43,9 +43,18 @@ const useStyles = makeStyles({
     },
   },
 });
-const Subject = () => {
-  const [{ user, subjects }, dispatch] = useStateValue();
-  const [loading, setLoading] = useState(true);
+const Subjects = () => {
+  const [
+    {
+      user,
+      subjects,
+      patients,
+      defaultPageSize,
+      organization,
+      organizationUsers,
+    },
+    dispatch,
+  ] = useStateValue();
   const location = useLocation();
   const history = useHistory();
   const pageTitle = location.pathname
@@ -58,30 +67,29 @@ const Subject = () => {
   const classes = useStyles();
   const theme = useTheme();
   const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  const redirectTo = async (goTo) => {
+    try {
+      history.push(goTo);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleGetSubjects = async () => {
     const res = await getAllSubjects(user);
     if (res && res.status === 200 && res.data) {
       setLoading(false);
-      console.log(res, "subject res");
       dispatch({
         type: actions.SET_SUBJECTS,
         payload: res.data,
       });
     }
   };
-
   useEffect(() => {
     handleGetSubjects();
   }, []);
-
-  const redirectTo = async (goTo) => {
-    try {
-      history.push(goTo);
-    } catch (err) {
-      // console.log(err);
-    }
-  };
 
   return (
     <FusePageSimple
@@ -172,4 +180,4 @@ const Subject = () => {
   );
 };
 
-export default Subject;
+export default Subjects;

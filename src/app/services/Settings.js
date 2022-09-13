@@ -14,7 +14,9 @@ export const settings = {
   },
   items: {
     getItems: "/api/items",
-    saveQuestion: "/api/items/",
+    saveQuestion:(itemId)=> `/api/items/${itemId}/questions`,
+    getQuestionByItemId:(itemId)=> `/api/items/${itemId}/questions`,
+    getItemById:(itemId)=> `/api/items/${itemId}`,
     addItems: "/api/items",
   },
   sector: {
@@ -35,8 +37,16 @@ export const settings = {
       `/api/organizations/search/${searchTerm}`,
   },
   roles: "/api/roles",
-  grades: "/api/grades",
-  subjects: "/api/subjects",
+  grades: {
+    getGrades: "/api/grades",
+    addGrade: "/api/grades",
+    delete: (id) => `/api/grades/${id}`,
+  },
+  subjects: {
+    getSubjects: "/api/subjects",
+    addSubject: "/api/subjects",
+    delete: (id) => `/api/subjects/${id}`,
+  },
 };
 
 export const primaryBlueColor = "#3287fa";

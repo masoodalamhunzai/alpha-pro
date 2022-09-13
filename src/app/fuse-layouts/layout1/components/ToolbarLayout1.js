@@ -14,6 +14,7 @@ import { selectToolbarTheme } from "app/store/fuse/settingsSlice";
 import AdjustFontSize from "../../shared-components/AdjustFontSize";
 import FullScreenToggle from "../../shared-components/FullScreenToggle";
 import LanguageSwitcher from "../../shared-components/LanguageSwitcher";
+import PublishingEnviromentSwitch from "app/fuse-layouts/shared-components/PublishingEnviromentSwitch";
 import Inbox from "../../shared-components/Inbox";
 import Notifications from "../../shared-components/Notifications";
 import Messages from "../../shared-components/Messages";
@@ -71,13 +72,15 @@ function ToolbarLayout1(props) {
           <div className="flex items-center px-8 h-full overflow-x-auto">
             {/* <LanguageSwitcher /> */}
 
+            <PublishingEnviromentSwitch />
+
             {/* <AdjustFontSize /> */}
 
             {/* <FullScreenToggle /> */}
 
-            <FuseSearch />
+            {/* <FuseSearch />
             <Messages />
-            <Inbox />
+            <Inbox /> */}
             <Notifications />
             {/* <QuickPanelToggleButton /> */}
 

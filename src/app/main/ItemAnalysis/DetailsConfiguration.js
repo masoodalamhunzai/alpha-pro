@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -6,6 +6,8 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import { Button } from "@material-ui/core";
 import { primaryBlueColor, primaryGrayColor } from "app/services/Settings";
+import { getAllGrades } from "app/services/api/ApiManager";
+import { useStateValue } from "app/services/state/State";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -105,7 +107,39 @@ const scoringTypesList = [
   },
 ];
 
+const subjectsList = [
+  {
+    value: 1,
+    label: "English",
+  },
+  {
+    value: 2,
+    label: "Physics",
+  },
+  {
+    value: 3,
+    label: "Mathmatics",
+  },
+];
+
 function DetailsConfiguration(props) {
+  const [{ user }, dispatch] = useStateValue();
+  const [gradesList, setGradesList] = useState([]);
+  const getGrades = async () => {
+    const res = await getAllGrades(user);
+    if (res && res.status && res.status === 200 && res.data) {
+      const temp = [];
+      res.data.map((g) => {
+        temp.push({ value: g.id, label: g.title });
+      });
+      setGradesList(temp);
+    }
+    console.log("Grades are here", res);
+  };
+  useEffect(() => {
+    getGrades();
+  }, []);
+
   const classes = useStyles();
   const [scoringType, setScoringType] = useState(1);
 
@@ -156,6 +190,66 @@ function DetailsConfiguration(props) {
           >
             The unique identifying code for an item
           </Typography>
+
+          <TextField
+            style={{ backgroundColor: "white", width: "100%", marginTop: "3%" }}
+            id="outlined-select-currency"
+            size="small"
+            inputProps={{
+              style: {
+                backgroundColor: "white",
+                fontSize: "13px",
+              },
+            }}
+            select
+            label="Grade"
+            // value={answer}
+            //value={props.scoringType}
+            onChange={(e) => {
+              console.log(
+                "score type",
+                e.target.value + " vs" + props.scoringType
+              );
+              //props.setScoringType(e.target.value);
+            }}
+            // helperText="Correct Ans"
+          >
+            {gradesList.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          <TextField
+            style={{ backgroundColor: "white", width: "100%", marginTop: "5%" }}
+            id="outlined-select-currency"
+            size="small"
+            inputProps={{
+              style: {
+                backgroundColor: "white",
+                fontSize: "13px",
+              },
+            }}
+            select
+            label="Subject"
+            // value={answer}
+            //value={props.scoringType}
+            onChange={(e) => {
+              console.log(
+                "score type",
+                e.target.value + " vs" + props.scoringType
+              );
+              //props.setScoringType(e.target.value);
+            }}
+            // helperText="Correct Ans"
+          >
+            {subjectsList.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
 
           <Typography
             variant="h6"

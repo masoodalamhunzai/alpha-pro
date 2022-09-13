@@ -1,5 +1,5 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@mui/material/TextField";
@@ -11,9 +11,12 @@ import Select from "@mui/material/Select";
 import { useStateValue } from "app/services/state/State";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import { useHistory } from "react-router";
-import { createUserSubject } from "app/services/api/ApiManager";
+import { useLocation, useHistory } from "react-router-dom";
+import swal from "sweetalert";
+import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
+import { actions } from "app/services/state/Reducer";
+import { createUserSubject, getAllGrades } from "app/services/api/ApiManager";
 
 const useStyles = makeStyles({
   root: {
@@ -32,7 +35,6 @@ const useStyles = makeStyles({
       borderRadius: "1.6rem",
       margin: "1rem 0.5rem",
       padding: "0.5rem 2rem",
-      fontSize: "1rem",
     },
     "& .MuiFormControlLabel-label": {
       fontSize: "1.2rem",
@@ -50,11 +52,15 @@ const useStyles = makeStyles({
   continueBtn: {
     "&.MuiButton-root": {
       backgroundColor: "#3287FB",
+      fontSize: "1.3rem",
+      textTransform: "capitalize",
     },
   },
   cancelBtn: {
     "&.MuiButton-root": {
       backgroundColor: "#ACACAC",
+      fontSize: "1.3rem",
+      textTransform: "capitalize",
     },
   },
   formInput: {
@@ -69,12 +75,19 @@ const useStyles = makeStyles({
 
 const NewSubject = () => {
   const history = useHistory();
+  const location = useLocation();
+  const EDIT_MODE = "edit-subject";
+  const CREATE_NEW_MODE = "create-subject";
+  const { editData, mode } = location?.state ? location?.state : "";
   const [{ user, grades }, dispatch] = useStateValue();
-  const { _subjectId } = location?.state ? location?.state : "";
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [newSubject, setNewSubject] = useState("");
-  const [selectGrade, setSelectGrade] = useState("");
+  const [newSubject, setNewSubject] = useState(
+    mode === EDIT_MODE ? editData.subject : ""
+  );
+  const [selectGrade, setSelectGrade] = useState(
+    mode === EDIT_MODE ? editData.gradeId : ""
+  );
 
   const redirectTo = async (goTo) => {
     try {
@@ -82,10 +95,20 @@ const NewSubject = () => {
     } catch (err) {}
   };
 
+  const slugify = (text) => {
+    return text
+      .toString()
+      .normalize("NFD") // split an accented letter in the base letter and the acent
+      .replace(/[\u0300-\u036f]/g, "") // remove all previously split accents
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/[^\w\-]+/g, "")
+      .replace(/\-\-+/g, "-");
+  };
   const handleChangeInputs = (e) => {
     setNewSubject(e.target.value);
   };
-
   const validation = () => {
     if (newSubject === "") {
       setError(true);
@@ -94,18 +117,29 @@ const NewSubject = () => {
     }
     return true;
   };
-
-  const handleSubjectSubmit = (e) => {
+  const handleSubjectSubmit = async (e) => {
     e.preventDefault();
     const payload = {
+      id: mode === EDIT_MODE ? editData?.id : "",
       title: newSubject,
-      grade: selectGrade,
+      slug: slugify(newSubject),
+      gradeId: selectGrade,
     };
-    console.log(payload, "payload");
     if (validation()) {
-      const res = createUserSubject(user, payload);
-      setTimeout(() => {}, 3000);
-      redirectTo("/subject");
+      const res = await createUserSubject(user, payload);
+      if (res && res.data && res.data.status === "success") {
+        swal({
+          title: "Good job!",
+          text:
+            mode === EDIT_MODE
+              ? "Subject Updated Successfully!"
+              : "Subject Saved Successfully!",
+          icon: "success",
+          button: "Ok!",
+        }).then((value) => {
+          redirectTo("/subject");
+        });
+      }
     } else {
       setTimeout(() => {
         setError(false);
@@ -117,9 +151,19 @@ const NewSubject = () => {
     setSelectGrade(event.target.value);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleGetGrade = async () => {
+    const res = await getAllGrades(user);
+    if (res && res.status === 200 && res.data) {
+      dispatch({
+        type: actions.SET_GRADES,
+        payload: res.data,
+      });
+    }
   };
+
+  useEffect(() => {
+    handleGetGrade();
+  }, []);
 
   const classes = useStyles();
   return (
@@ -131,14 +175,6 @@ const NewSubject = () => {
       maxWidth="xs"
     >
       <CssBaseline />
-      {error && (
-        <Alert
-          severity="error"
-          sx={{ fontSize: "1.3rem", width: "100%", m: 0 }}
-        >
-          {errorMessage}
-        </Alert>
-      )}
       <Box
         sx={{
           marginTop: 2,
@@ -147,12 +183,7 @@ const NewSubject = () => {
           alignItems: "center",
         }}
       >
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          noValidate
-          sx={{ my: 4, width: "100%" }}
-        >
+        <Box component="form" noValidate sx={{ my: 4, width: "100%" }}>
           <FormControl fullWidth>
             <TextField
               sx={{ width: "100%" }}
@@ -174,22 +205,32 @@ const NewSubject = () => {
               labelId="organization-dropdown"
               id="organizationDropdown"
               label="organization"
-              value={selectGrade === "" ? _subjectId : selectGrade}
+              value={selectGrade}
               onChange={handleChangeGrade}
             >
-              {grades?.map((grade) =>
-                _subjectId === grade?.id ? (
-                  <MenuItem value={_subjectId} key={_subjectId}>
-                    {grade?.title}
-                  </MenuItem>
-                ) : (
-                  <MenuItem value={grade?.id} key={grade?.id}>
-                    {grade?.title}
-                  </MenuItem>
-                )
-              )}
+              {grades?.map((grade) => (
+                <MenuItem value={grade?.id} key={grade?.id}>
+                  {grade?.title}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
+          {newSubject && (
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <span className="text-gray-500 text-base">slug:</span>
+              <Stack
+                direction="row"
+                alignItems="center"
+                display="flex"
+                className="w-full"
+                justifyContent="start"
+              >
+                <Button variant="contained" sx={{ textTransform: "lowercase" }}>
+                  {slugify(newSubject)}
+                </Button>
+              </Stack>
+            </Box>
+          )}
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <span className="text-gray-500 text-base">status:</span>
             <Stack

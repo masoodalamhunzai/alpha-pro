@@ -4,6 +4,7 @@ import { settings as s } from "app/services/Settings";
 import {
   getData,
   postData,
+  deleteData,
   getDataAnonymously,
   postDataAnonymously,
 } from "./ApiCalls";
@@ -71,14 +72,38 @@ export const saveItem = async (data, user) => {
 
 export const saveQuestion = async (data, id, user) => {
   try {
+    console.log('api manager savequestion');
     const response = await postData(
-      `${`${s.items.saveQuestion + id}/questions`}`,
+      `${s.items.saveQuestion(id)}`,
       user,
       data
     );
-
+    console.log('api manager savequestion response ',response);
     return response;
   } catch (error) {
+    console.log('api manager savequestion error ',error);
+    return null;
+  }
+};
+export const getQuestionByItemId = async (itemId, user) => {
+  try {
+    const response = await getData(
+      `${s.items.getQuestionByItemId(itemId)}`,
+      user
+    );
+    return response;
+  } catch (err) {
+    return null;
+  }
+};
+export const getItemById = async (itemId, user) => {
+  try {
+    const response = await getData(
+      `${s.items.getItemById(itemId)}`,
+      user
+    );
+    return response;
+  } catch (err) {
     return null;
   }
 };
@@ -161,15 +186,7 @@ export const getAllRoles = async (user) => {
 };
 export const getAllGrades = async (user) => {
   try {
-    const response = await getData(`${s.grades}`, user);
-    return response;
-  } catch (err) {
-    return null;
-  }
-};
-export const getAllSubjects = async (user) => {
-  try {
-    const response = await getData(`${s.subjects}`, user);
+    const response = await getData(`${s.grades.getGrades}`, user);
     return response;
   } catch (err) {
     return null;
@@ -177,7 +194,23 @@ export const getAllSubjects = async (user) => {
 };
 export const createUserGrade = async (user, data) => {
   try {
-    const response = await postData(`${s.grades}`, user, data);
+    const response = await postData(`${s.grades.addGrade}`, user, data);
+    return response;
+  } catch (err) {
+    return null;
+  }
+};
+export const deleteGrade = async (id, user) => {
+  try {
+    const response = await deleteData(`${s.grades.delete(id)}`, user);
+    return response;
+  } catch (err) {
+    return null;
+  }
+};
+export const getAllSubjects = async (user) => {
+  try {
+    const response = await getData(`${s.subjects.getSubjects}`, user);
     return response;
   } catch (err) {
     return null;
@@ -185,12 +218,21 @@ export const createUserGrade = async (user, data) => {
 };
 export const createUserSubject = async (user, data) => {
   try {
-    const response = await postData(`${s.subjects}`, user, data);
+    const response = await postData(`${s.subjects.addSubject}`, user, data);
     return response;
   } catch (err) {
     return null;
   }
 };
+export const deleteSubject = async (id, user) => {
+  try {
+    const response = await deleteData(`${s.subjects.delete(id)}`, user);
+    return response;
+  } catch (err) {
+    return null;
+  }
+};
+
 export const createOrganizationUser = async (id, user, data) => {
   try {
     const response = await postData(

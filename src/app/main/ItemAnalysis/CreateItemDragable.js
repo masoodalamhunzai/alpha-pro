@@ -11,8 +11,7 @@ import Button from "@material-ui/core/Button";
 import { saveQuestion, saveItem } from "app/services/api/ApiManager";
 import TextField from "@mui/material/TextField";
 import swal from "sweetalert";
-import Switch from "@mui/material/Switch";
-import { styled } from "@mui/material/styles";
+
 // import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import Paper from "@mui/material/Paper";
 import { Controller, useForm } from "react-hook-form";
@@ -70,51 +69,6 @@ const CreateItemDraggable = () => {
       payload: { header: "new header text", des: "new description text" },
     });
   };
-
-  const AntSwitch = styled(Switch)(({ theme }) => ({
-    width: 28,
-    height: 16,
-    padding: 0,
-    display: "flex",
-    "&:active": {
-      "& .MuiSwitch-thumb": {
-        width: 15,
-      },
-      "& .MuiSwitch-switchBase.Mui-checked": {
-        transform: "translateX(9px)",
-      },
-    },
-    "& .MuiSwitch-switchBase": {
-      padding: 2,
-      "&.Mui-checked": {
-        transform: "translateX(12px)",
-        color: "#fff",
-        "& + .MuiSwitch-track": {
-          opacity: 1,
-          backgroundColor:
-            theme.palette.mode === "dark" ? "#177ddc" : "#1890ff",
-        },
-      },
-    },
-    "& .MuiSwitch-thumb": {
-      boxShadow: "0 2px 4px 0 rgb(0 35 11 / 20%)",
-      width: 12,
-      height: 12,
-      borderRadius: 6,
-      transition: theme.transitions.create(["width"], {
-        duration: 200,
-      }),
-    },
-    "& .MuiSwitch-track": {
-      borderRadius: 16 / 2,
-      opacity: 1,
-      backgroundColor:
-        theme.palette.mode === "dark"
-          ? "rgba(255,255,255,.35)"
-          : "rgba(0,0,0,.25)",
-      boxSizing: "border-box",
-    },
-  }));
 
   const { control, handleSubmit, watch, formState } = useForm({
     mode: "onChange",
@@ -280,40 +234,14 @@ const CreateItemDraggable = () => {
           </Typography>
           <Button
             variant="contained"
-            color="Secondary"
-            size="medium"
-            style={{ float: "right", margin: "0px 5px" }}
-            aria-label="Publish"
-          >
-            Publish
-          </Button>
-          <Button
-            variant="contained"
             color="primary"
-            size="medium"
-            style={{ float: "right", margin: "0px 5px" }}
-            aria-label="Preview"
-          >
-            Preview
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            size="medium"
-            style={{ float: "right", margin: "0px 5px" }}
+            size="small"
+            style={{ float: "right" }}
             aria-label="Save Draft"
             onClick={() => onSaveQuestion()}
+            // startIcon={<AddIcon />}
           >
             Save Draft
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            size="medium"
-            style={{ float: "right", margin: "0px 5px" }}
-            aria-label="Duplicate"
-          >
-            Duplicate
           </Button>
         </div>
       }
@@ -381,7 +309,7 @@ const CreateItemDraggable = () => {
                 <form className="px-0 sm:px-24 ">
                   <div className="mb-24 flex justify-between flex-wrap wrap">
                     <h2 className="pose-h2 font-bold tracking-tight">
-                      Cloze With Drag & Drop
+                      Multiple choice - standard
                     </h2>
                     <div>
                       <button className="border border-gray border-gray-300 bg-white hover:bg-gray-100 text-gray-800 text-white font-bold py-2 px-6 rounded-full mx-4">
@@ -422,31 +350,24 @@ const CreateItemDraggable = () => {
                       control={control}
                     />
                     <TextField
-                      sx={{ width: "100%" }}
                       id="outlined-multiline-static"
                       label="Template Markup"
                       multiline
                       rows={4}
                       defaultValue=""
                     />
-                    <div className="flex items-center">
-                      <Typography
-                        variant="h6"
-                        gutterBottom
-                        sx={{
-                          color: "gray",
-                          fontWeight: 700,
-                          mr: 2,
-                          mb: 0,
-                        }}
-                      >
-                        Group Possible Responses
-                      </Typography>
-                      <AntSwitch
-                        defaultChecked
-                        inputProps={{ "aria-label": "ant design" }}
-                      />
-                    </div>
+                    <Typography
+                      variant="h6"
+                      gutterBottom
+                      sx={{
+                        color: "gray",
+                        fontWeight: 700,
+                        mt: 2,
+                      }}
+                    >
+                      Multiple Choice Options
+                    </Typography>
+
                     <DraggableItem
                       onNewOptionAdded={onNewOptionAdded}
                       multipleChoices={multipleChoices}
@@ -455,9 +376,10 @@ const CreateItemDraggable = () => {
                   </div>
                 </form>
               </Paper>
-              {/* <div className="mt-12" style={{ width: "300px" }}>
+
+              <div className="mt-12" style={{ width: "300px" }}>
                 <QuestionOptions />
-              </div> */}
+              </div>
             </div>
           </div>
         </>

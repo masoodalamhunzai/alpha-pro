@@ -201,11 +201,11 @@ export const putFormData = async (relativeUrl, user, data) => {
   }
 };
 
-export const deleteData = async (relativeUrl) => {
+export const deleteData = async (relativeUrl, user) => {
   const url = getUrl(relativeUrl);
   const options = {
     headers: {
-      // Authorization: `Bearer ${user.token}`,
+      Authorization: `Bearer ${user.token}`,
       "Content-Type": "application/json-patch+json",
       Accept: "*/*",
     },
