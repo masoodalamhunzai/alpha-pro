@@ -173,16 +173,19 @@ const CreateUserTabs = () => {
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
   };
+
   const handleChangeInputs = (e) => {
     const { value } = e.target;
     const { name } = e.target;
     const { checked } = e.target;
-    if (checked) {
+    console.log(checked, "target", e.target);
+    if (checked || !checked) {
       setFormData({ ...formData, [name]: checked });
     } else {
       setFormData({ ...formData, [name]: value });
     }
   };
+  console.log(formData, "checkBox CHeck");
   const handleChangePhone = (value) => {
     setFormData({ ...formData, phone: value });
   };
@@ -196,6 +199,20 @@ const CreateUserTabs = () => {
     password,
     confirmPassword,
     alphaProd,
+    alphaDev,
+    bulkUpdateManager,
+    activityManager,
+    tagManager,
+    tagHierarchyManager,
+    roleUsers,
+    accessEditProfile,
+    admin,
+    roleUser,
+    managementAdmin,
+    userManager,
+    systemAdmin,
+    insightAccess,
+    aurthorSiteSettingManager,
   } = formData;
 
   const redirectTo = async (goTo) => {
@@ -258,7 +275,25 @@ const CreateUserTabs = () => {
       lastName,
       password,
       phone,
-      permissions: [{ alpha_publishing_prod: alphaProd }],
+      permissions: [
+        {
+          alpha_publishing_prod: alphaProd,
+          alpha_publishing_dev: alphaDev,
+          bulk_update_manager: bulkUpdateManager,
+          activity_manager: activityManager,
+          tag_manager: tagManager,
+          tag_hierarchy_manager: tagHierarchyManager,
+          role_users: roleUsers,
+          access_edit_profile: accessEditProfile,
+          admin: admin,
+          role_user: roleUser,
+          management_admin: managementAdmin,
+          user_manager: userManager,
+          system_admin: systemAdmin,
+          insight_access: insightAccess,
+          aurthor_site_setting_manager: aurthorSiteSettingManager,
+        },
+      ],
       roles: [
         {
           name: userRoles,

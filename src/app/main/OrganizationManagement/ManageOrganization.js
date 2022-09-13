@@ -227,6 +227,11 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                   contactDesignation: "Developer",
                   contactNumber: values.phonenumber.trim(),
                   contactEmail: values.email.trim(),
+                  country: values.country.trim(),
+                  state: values.state.trim(),
+                  city: values.city.trim(),
+                  website: values.website.trim(),
+                  isActive: values.isActive,
                 };
 
                 const res = await AddOrganization(orgReq, user);
@@ -573,7 +578,6 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                       style={{ marginLeft: "1%" }}
                     >
                       <Typography>Status</Typography>
-                      {console.log(values.isActive, "values.isActive")}
                       <FormControlLabel
                         control={
                           <Switch
