@@ -157,10 +157,10 @@ const CreateUserTabs = () => {
     activityManager: false,
     tagManager: false,
     tagHierarchyManager: false,
-    usersChkbox: false,
+    roleUsers: false,
     accessEditProfile: false,
     admin: false,
-    userChkbox: false,
+    roleUser: false,
     managementAdmin: false,
     userManager: false,
     systemAdmin: false,
@@ -195,6 +195,7 @@ const CreateUserTabs = () => {
     userRoles,
     password,
     confirmPassword,
+    alphaProd,
   } = formData;
 
   const redirectTo = async (goTo) => {
@@ -257,6 +258,7 @@ const CreateUserTabs = () => {
       lastName,
       password,
       phone,
+      permissions: [{ alpha_publishing_prod: alphaProd }],
       roles: [
         {
           name: userRoles,

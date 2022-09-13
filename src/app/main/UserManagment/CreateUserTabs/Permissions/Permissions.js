@@ -26,10 +26,10 @@ const Permissions = ({
     bulkUpdateManager,
     tagManager,
     tagHierarchyManager,
-    usersChkbox,
+    roleUsers,
     accessEditProfile,
     admin,
-    userChkbox,
+    roleUser,
     managementAdmin,
     userManager,
     systemAdmin,
@@ -166,8 +166,8 @@ const Permissions = ({
                     <FormControlLabel
                       control={<Checkbox />}
                       label="Users"
-                      name="usersChkbox"
-                      value={usersChkbox}
+                      name="roleUsers"
+                      value={roleUsers}
                       onChange={handleChangeInputs}
                     />
                   </FormGroup>
@@ -243,8 +243,8 @@ const Permissions = ({
                   <FormControlLabel
                     control={<Checkbox />}
                     label="User"
-                    name="userChkbox"
-                    value={userChkbox}
+                    name="roleUser"
+                    value={roleUser}
                     onChange={handleChangeInputs}
                   />
                   <FormControlLabel
