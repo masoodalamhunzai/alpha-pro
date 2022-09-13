@@ -28,7 +28,7 @@ const Permissions = ({
     tagHierarchyManager,
     roleUsers,
     accessEditProfile,
-    admin,
+    roleAdmin,
     roleUser,
     managementAdmin,
     userManager,
@@ -265,8 +265,8 @@ const Permissions = ({
                   <FormControlLabel
                     control={
                       <Checkbox
-                        name="admin"
-                        value={admin}
+                        name="roleAdmin"
+                        value={roleAdmin}
                         onChange={handleChangeInputs}
                       />
                     }
