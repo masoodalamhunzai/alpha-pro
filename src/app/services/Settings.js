@@ -14,10 +14,12 @@ export const settings = {
   },
   items: {
     getItems: "/api/items",
-    saveQuestion:(itemId)=> `/api/items/${itemId}/questions`,
-    getQuestionByItemId:(itemId)=> `/api/items/${itemId}/questions`,
-    getItemById:(itemId)=> `/api/items/${itemId}`,
+    saveQuestion: (itemId) => `/api/items/${itemId}/questions`,
+    getQuestionByItemId: (itemId) => `/api/items/${itemId}/questions`,
+    getItemById: (itemId) => `/api/items/${itemId}`,
     addItems: "/api/items",
+    deleteItem: (itemId) => `/api/items/${itemId}`,
+    deleteQuestion: (questionId) => `/api/questions/${questionId}`,
   },
   sector: {
     addSector: "/api/AddSector",
@@ -46,6 +48,9 @@ export const settings = {
     getSubjects: "/api/subjects",
     addSubject: "/api/subjects",
     delete: (id) => `/api/subjects/${id}`,
+  },
+  alphaEnv: {
+    setEnvironment: (env) => `/api/environment/set/${env}`,
   },
 };
 

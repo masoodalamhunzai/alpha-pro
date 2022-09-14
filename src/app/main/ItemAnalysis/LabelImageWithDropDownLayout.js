@@ -19,14 +19,27 @@ import Switch from "app/shared-components/Switch";
 import { DeleteSweep, ToggleOff, Upload } from "@mui/icons-material";
 import { primaryBlueColor } from "app/services/Settings";
 import LabelImageWithDropDownDraggableItem from "./LabelImageWithDropDownDraggableItem";
+import { useStateValue } from "app/services/state/State";
+
+import { EditorState, convertFromRaw } from "draft-js";
 
 const defaultValues = { name: "", email: "", subject: "", message: "" };
 
 const LabelImageWithDropDownLayout = (props) => {
+  const htmlForId = Math.random();
   const { control } = useForm({
     mode: "onChange",
     defaultValues,
   });
+  const [{ itemQuestionsList }] = useStateValue();
+
+  // States start
+  const [editorContent, setEditorContent] = useState("");
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+
+  const [multipleChoices, setMultipleChoices] = useState([]);
+  // States end
+
   const [annotations, setAnnotations] = useState([]);
   const [annotation, setAnnotation] = useState({});
 
@@ -49,6 +62,8 @@ const LabelImageWithDropDownLayout = (props) => {
         },
       })
     );
+
+    onNewOptionAdded();
   };
 
   const [selectedImage, setSelectedImage] = useState(null);
@@ -67,35 +82,81 @@ const LabelImageWithDropDownLayout = (props) => {
       label: "None",
     },
   ];
-  console.log("props.multipleOptions:", props.multipleOptions);
+
+  /* function onNewOptionAdded(index) {
+    const option = {
+      id: `item-${index + 1}`,
+      position: index,
+      title: "",
+      isCorrect: false,
+      isAlternate: false,
+    };
+    let choices = [];
+    choices = multipleChoices;
+    choices.push(option);
+    setMultipleChoices(choices);
+    props.setMultipleChoices(choices);
+  } */
 
   function onNewOptionAdded(index) {
     const option = {
-      id: `item-${index + 1}`,
-      position: index,
-      title: "",
-      isCorrect: false,
-      isAlternate: false,
+      responses: [
+        {
+          id: `item-1}`,
+          position: 0,
+          choice: "",
+          title: "first 1",
+          isCorrect: false,
+          isAlternate: false,
+        },
+        {
+          id: `item-2}`,
+          position: 1,
+          choice: "",
+          title: "first 2",
+          isCorrect: false,
+          isAlternate: false,
+        },
+      ],
     };
     let choices = [];
-    choices = props.multipleChoices;
+    choices = multipleChoices;
     choices.push(option);
+    setMultipleChoices(choices);
     props.setMultipleChoices(choices);
   }
 
-  function onOptionAdded(index) {
-    const option = {
-      id: `item-${index + 1}`,
-      position: index,
-      title: "",
-      isCorrect: false,
-      isAlternate: false,
-    };
-    let choices = [];
-    choices = props.multipleOptions;
-    choices.push(option);
-    props.setMultipleOptions(choices);
-  }
+  useEffect(() => {
+    if (props.questionId != null) {
+      const _filteredQuestion = itemQuestionsList.find(
+        (q) => q.id == props.questionId
+      );
+      console.log(
+        "filteredQuestion in Lable Image with Drop Down ",
+        _filteredQuestion
+      );
+      if (_filteredQuestion) {
+        console.log(
+          "_filteredQuestion.description in Lable Image with Drop Down ",
+          _filteredQuestion.description
+        );
+        const convertedState = convertFromRaw(
+          JSON.parse(_filteredQuestion.description)
+        );
+        const _editorValue = EditorState.createWithContent(convertedState);
+        setEditorState(_editorValue);
+
+        setMultipleChoices(_filteredQuestion.options);
+        setEditorContent(_filteredQuestion.description);
+
+        props.setEditorContent(_filteredQuestion.description);
+        props.setMultipleChoices([..._filteredQuestion.options]);
+      }
+    } else {
+      props.setMultipleChoices([...multipleChoices]);
+    }
+  }, []);
+
   return (
     <Paper
       style={{
@@ -107,7 +168,30 @@ const LabelImageWithDropDownLayout = (props) => {
     >
       <div className="text-right">
         <Icon
-          className="p-3 bg bg-blue bg-blue-600"
+          onClick={() => {
+            props.onSaveQuestion(
+              props.sectionName,
+              props.tabName,
+              props.questionId,
+              props.questionIndex,
+              "true-false-question"
+            );
+          }}
+          className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
+          style={{
+            padding: "2px 24px 24px 4px",
+            color: "white",
+          }}
+          size="small"
+        >
+          save
+        </Icon>
+
+        <Icon
+          onClick={() => {
+            props.editAnItem();
+          }}
+          className="p-3 bg bg-blue bg-blue-500 hover:bg-blue-700"
           style={{
             padding: "2px 24px 24px 4px",
             color: "white",
@@ -115,6 +199,20 @@ const LabelImageWithDropDownLayout = (props) => {
           size="small"
         >
           edit
+        </Icon>
+
+        <Icon
+          onClick={() => {
+            props.removeAnItem();
+          }}
+          className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
+          style={{
+            padding: "2px 24px 24px 4px",
+            color: "white",
+          }}
+          size="small"
+        >
+          close
         </Icon>
       </div>
       <form className="px-0 sm:px-24 ">
@@ -153,7 +251,10 @@ const LabelImageWithDropDownLayout = (props) => {
             className="mt-8 mb-16"
             render={({ field }) => (
               <WYSIWYGEditor
-                setEditorContent={props.setEditorContent}
+                setEditorContent={setEditorContent}
+                editorState={editorState}
+                setEditorState={setEditorState}
+                setEditorContentMain={props.setEditorContent}
                 {...field}
               />
             )}
@@ -209,15 +310,6 @@ const LabelImageWithDropDownLayout = (props) => {
                           onSubmit={onSubmit}
                           allowTouch
                         />
-
-                        {/* <img
-                          src={selectedImageUrl}
-                          alt="beach"
-                          style={{
-                            width: "100%",
-                            height: "auto",
-                          }}
-                        /> */}
                       </>
                     ) : (
                       <>
@@ -306,56 +398,36 @@ const LabelImageWithDropDownLayout = (props) => {
                     </div>
                   </div>
 
-                  <div className="">
-                    <TextField
-                      className="mx-6"
-                      style={{ width: "100%" }}
-                      inputProps={{
-                        style: {
-                          backgroundColor: "white",
-                          fontSize: "13px",
-                        },
-                      }}
-                      size="small"
-                      required
-                      id="outlined-required"
-                      label="1"
-                    />
-                  </div>
+                  {annotations &&
+                    annotations.length > 0 &&
+                    annotations.map((annt, index) => {
+                      return (
+                        <div className={index == 0 ? "" : "mt-12"}>
+                          <TextField
+                            className="mx-6"
+                            style={{ width: "100%" }}
+                            inputProps={{
+                              style: {
+                                backgroundColor: "white",
+                                fontSize: "13px",
+                              },
+                            }}
+                            onChange={(e) => {
+                              var temp = annotations.slice();
+                              var tem = annt;
+                              tem.data.text = e.target.value;
 
-                  <div className="mt-12">
-                    <TextField
-                      className="mx-6"
-                      style={{ width: "100%" }}
-                      inputProps={{
-                        style: {
-                          backgroundColor: "white",
-                          fontSize: "13px",
-                        },
-                      }}
-                      size="small"
-                      required
-                      id="outlined-required"
-                      label="2"
-                    />
-                  </div>
-
-                  <div className="mt-12">
-                    <TextField
-                      className="mx-6"
-                      style={{ width: "100%" }}
-                      inputProps={{
-                        style: {
-                          backgroundColor: "white",
-                          fontSize: "13px",
-                        },
-                      }}
-                      size="small"
-                      required
-                      id="outlined-required"
-                      label="3"
-                    />
-                  </div>
+                              temp[index] = tem;
+                              setAnnotations(temp);
+                            }}
+                            value={annt.data.text}
+                            size="small"
+                            id="outlined-required"
+                            label={index + 1}
+                          />
+                        </div>
+                      );
+                    })}
                 </div>
               </div>
             </div>
@@ -363,7 +435,7 @@ const LabelImageWithDropDownLayout = (props) => {
             <div className="mt-12">
               <label
                 style={{ padding: "6px 12px" }}
-                htmlFor="upload-now-image"
+                htmlFor={htmlForId}
                 className="btn-blue-white py-4 px-6 rounded-full mx-4"
               >
                 <text className="py-12">
@@ -374,8 +446,8 @@ const LabelImageWithDropDownLayout = (props) => {
               <input
                 style={{ display: "none" }}
                 type="file"
-                id="upload-now-image"
-                name="upload-now-image"
+                id={htmlForId}
+                name={htmlForId}
                 accept="image/png, image/gif, image/jpeg"
                 onChange={(e) => {
                   console.log(e.target.files);
@@ -395,70 +467,95 @@ const LabelImageWithDropDownLayout = (props) => {
             </div>
           </div>
 
-          <div className="grid gap-4 grid-cols-2">
-            <div>
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{
-                  color: "gray",
-                  fontWeight: 700,
-                  mt: 2,
-                }}
-              >
-                Possible Responses
-              </Typography>
-
-              <LabelImageWithDropDownDraggableItem
-                onNewOptionAdded={onNewOptionAdded}
-                multipleChoices={props.multipleChoices}
-                setMultipleChoices={props.setMultipleChoices}
-                optionsList={optionsList}
-              />
-            </div>
-
-            <div>
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{
-                  color: "gray",
-                  fontWeight: 700,
-                  mt: 2,
-                }}
-              >
-                Possible Responses
-              </Typography>
-
-              <LabelImageWithDropDownDraggableItem
-                onNewOptionAdded={onNewOptionAdded}
-                multipleChoices={props.multipleChoices}
-                setMultipleChoices={props.setMultipleChoices}
-                optionsList={optionsList}
-              />
-            </div>
-
-            <div>
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{
-                  color: "gray",
-                  fontWeight: 700,
-                  mt: 2,
-                }}
-              >
-                Possible Responses
-              </Typography>
-
-              <LabelImageWithDropDownDraggableItem
-                onNewOptionAdded={onNewOptionAdded}
-                multipleChoices={props.multipleChoices}
-                setMultipleChoices={props.setMultipleChoices}
-                optionsList={optionsList}
-              />
-            </div>
+          <div className="grid gap-8 grid-cols-2">
+            {multipleChoices &&
+              multipleChoices.map((item, index) => {
+                return (
+                  <div
+                    style={{
+                      padding: "20px",
+                      backgroundColor: "white", //"#e9f3ff",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    <h3>Responses {index + 1}</h3>
+                    <LabelImageWithDropDownDraggableItem
+                      object={item}
+                      objectIndex={index}
+                      onNewOptionAdded={onNewOptionAdded}
+                      multipleChoices={multipleChoices}
+                      setMultipleChoices={setMultipleChoices}
+                      optionsList={optionsList}
+                    />
+                  </div>
+                );
+              })}
           </div>
+
+          {/* <div className="grid gap-4 grid-cols-2">
+            <div>
+              <Typography
+                variant="h6"
+                gutterBottom
+                sx={{
+                  color: "gray",
+                  fontWeight: 700,
+                  mt: 2,
+                }}
+              >
+                Possible Responses
+              </Typography>
+
+              <LabelImageWithDropDownDraggableItem
+                onNewOptionAdded={onNewOptionAdded}
+                multipleChoices={multipleChoices}
+                setMultipleChoices={setMultipleChoices}
+                optionsList={optionsList}
+              />
+            </div>
+
+            <div>
+              <Typography
+                variant="h6"
+                gutterBottom
+                sx={{
+                  color: "gray",
+                  fontWeight: 700,
+                  mt: 2,
+                }}
+              >
+                Possible Responses
+              </Typography>
+
+              <LabelImageWithDropDownDraggableItem
+                onNewOptionAdded={onNewOptionAdded}
+                multipleChoices={multipleChoices}
+                setMultipleChoices={setMultipleChoices}
+                optionsList={optionsList}
+              />
+            </div>
+
+            <div>
+              <Typography
+                variant="h6"
+                gutterBottom
+                sx={{
+                  color: "gray",
+                  fontWeight: 700,
+                  mt: 2,
+                }}
+              >
+                Possible Responses
+              </Typography>
+
+              <LabelImageWithDropDownDraggableItem
+                onNewOptionAdded={onNewOptionAdded}
+                multipleChoices={multipleChoices}
+                setMultipleChoices={setMultipleChoices}
+                optionsList={optionsList}
+              />
+            </div>
+          </div> */}
 
           <div className="flex items-center flex-wrap">
             <div className="my-4 mr-12 flex justify-between items-center">

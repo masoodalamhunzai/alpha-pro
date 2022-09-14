@@ -87,6 +87,7 @@ function TrueFalseDraggableItem(props) {
       result.destination.index
     );
     props.setMultipleChoices(item);
+    props.setMultipleChoices_Main(item);
     // setItem(item);
   };
   const handleTitleChange = (e, index) => {
@@ -96,7 +97,8 @@ function TrueFalseDraggableItem(props) {
     const tempElement = { ...tempState[index] };
     tempElement.title = e.target.value;
     tempState[index] = tempElement;
-    props.setMultipleChoices(tempState);
+    props.setMultipleChoices([...tempState]);
+    props.setMultipleChoices_Main([...tempState]);
   };
 
   const handleChange = (event, index) => {
@@ -116,7 +118,8 @@ function TrueFalseDraggableItem(props) {
     }
 
     tempState[index] = tempElement;
-    props.setMultipleChoices(tempState);
+    props.setMultipleChoices([...tempState]);
+    props.setMultipleChoices_Main([...tempState]);
   };
   const AddNewOption = () => {
     setItemCount(itemCount + 1);
@@ -127,6 +130,7 @@ function TrueFalseDraggableItem(props) {
     const tempState = [...props.multipleChoices];
     const tempElement = { ...tempState[index] };
     props.setMultipleChoices(tempState.filter((x) => x.id !== tempElement.id));
+    props.setMultipleChoices_Main(tempState.filter((x) => x.id !== tempElement.id));
     //setItemCount(itemCount - 1);
     setItem(getItems(itemCount - 1));
   };

@@ -9,6 +9,9 @@ import { TextField, Checkbox } from "@mui/material";
 import Switch from "app/shared-components/Switch";
 import { primaryBlueColor } from "app/services/Settings";
 import MenuItem from "@mui/material/MenuItem";
+import { useStateValue } from 'app/services/state/State';
+
+import { EditorState,convertFromRaw } from "draft-js";
 
 const defaultValues = { name: "", email: "", subject: "", message: "" };
 
@@ -22,6 +25,15 @@ const propsType = [
 ];
 
 const EssayWithPlainTextLayout = (props) => {
+  const [{itemQuestionsList}] =useStateValue();
+  //EssayWithPlainTextLayout starts
+  const [editorContent, setEditorContent] = useState("");
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+
+  const [wordLimit, setWordLimit] = useState(10000);
+
+  const [wordType, setWordType] = useState("");
+  //EssayWithPlainTextLayout ends
   const { control } = useForm({
     mode: "onChange",
     defaultValues,
@@ -42,6 +54,31 @@ const EssayWithPlainTextLayout = (props) => {
     },
   ];
 
+
+  useEffect(()=>{
+    if(props.questionId!=null)
+    {
+    const _filteredQuestion=itemQuestionsList.find(q => q.id==props.questionId);
+    console.log('filteredQuestion in essay with plain text ',_filteredQuestion);
+    if(_filteredQuestion)
+    {
+      console.log('_filteredQuestion.description in essay with plain text ',_filteredQuestion.description);
+      const convertedState = convertFromRaw(JSON.parse(_filteredQuestion.description));
+      const _editorValue = EditorState.createWithContent(convertedState);
+      setEditorState(_editorValue);
+
+      setEditorContent(_filteredQuestion.description);
+
+      props.setEditorContent(_filteredQuestion.description);
+      props.setMultipleChoices([{data:'no data found'}]);
+    }
+    }else{
+      props.setMultipleChoices([{data:'no data found'}]);
+    }
+  },[]);
+
+
+
   return (
     <Paper
       style={{
@@ -53,7 +90,24 @@ const EssayWithPlainTextLayout = (props) => {
     >
       <div className="text-right">
         <Icon
-          className="p-3 bg bg-blue bg-blue-600"
+          onClick={() => {
+            props.onSaveQuestion(props.sectionName,props.tabName,props.questionId,props.questionIndex,"essay-with-plain-text-question");
+          }}
+          className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
+          style={{
+            padding: "2px 24px 24px 4px",
+            color: "white",
+          }}
+          size="small"
+        >
+          save
+        </Icon>
+
+        <Icon
+          onClick={() => {
+            props.editAnItem();
+          }}
+          className="p-3 bg bg-blue bg-blue-500 hover:bg-blue-700"
           style={{
             padding: "2px 24px 24px 4px",
             color: "white",
@@ -61,6 +115,20 @@ const EssayWithPlainTextLayout = (props) => {
           size="small"
         >
           edit
+        </Icon>
+
+        <Icon
+          onClick={() => {
+            props.removeAnItem();
+          }}
+          className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
+          style={{
+            padding: "2px 24px 24px 4px",
+            color: "white",
+          }}
+          size="small"
+        >
+          close
         </Icon>
       </div>
       <form className="px-0 sm:px-24 ">
@@ -98,10 +166,10 @@ const EssayWithPlainTextLayout = (props) => {
           <Controller
             className="mt-8 mb-16"
             render={({ field }) => (
-              <WYSIWYGEditor
-                setEditorContent={props.setEditorContent}
-                {...field}
-              />
+              <WYSIWYGEditor setEditorContent={setEditorContent}
+              editorState={editorState} setEditorState={setEditorState}
+              setEditorContentMain={props.setEditorContent}
+              {...field} />
             )}
             name="message"
             control={control}
@@ -138,9 +206,9 @@ const EssayWithPlainTextLayout = (props) => {
                 required
                 id="outlined-required"
                 label={"Word limit"}
-                value={props.wordLimit}
+                value={wordLimit}
                 onChange={(e) => {
-                  props.setWordLimit(e.target.value);
+                  setWordLimit(e.target.value);
                 }}
               />
             </div>
@@ -151,9 +219,9 @@ const EssayWithPlainTextLayout = (props) => {
                 id="outlined-select-currency"
                 select
                 label="Word limit type"
-                // value={answer}
+                value={wordType}
                 onChange={(e) => {
-                  props.setWordType(e.target.value);
+                  setWordType(e.target.value);
                 }}
                 // helperText="Correct Ans"
               >

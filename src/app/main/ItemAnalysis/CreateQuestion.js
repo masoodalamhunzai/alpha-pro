@@ -11,6 +11,8 @@ import { Controller, useForm } from 'react-hook-form';
 import _ from '@lodash';
 import WYSIWYGEditor from 'app/shared-components/WYSIWYGEditor';
 import DraggableItem from './DraggableItem';
+import { EditorState, convertToRaw,convertFromRaw } from "draft-js";
+import draftToHtml from "draftjs-to-html";
 // import * as yup from 'yup';
 // import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
 
@@ -44,6 +46,11 @@ const CreateQuestion = (props) => {
   const { isValid, dirtyFields, errors } = formState;
   const form = watch();
   const [filteredQuestion, setFilteredQuestion] = useState("");
+  const [editorContent_Comp, setEditorContent_Comp] = useState("");
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+
+  const [multipleChoices_Comp, setMultipleChoices_Comp] = useState([]);
+  const [componentValues, setcomponentValues] = useState(itemQuestionsList);
 
   if (_.isEmpty(form)) {
     return null;
@@ -57,25 +64,36 @@ const CreateQuestion = (props) => {
       isAlternate: false
     };
     let choices = [];
-    console.log('props.multipleChoices ',props.multipleChoices);
-    choices = props.multipleChoices;
+    choices =multipleChoices_Comp /* props.multipleChoices */;
     choices.push(option);
+    setMultipleChoices_Comp(choices);
     props.setMultipleChoices(choices);
   }
-
   useEffect(()=>{
     if(props.questionId!=null)
     {
-    const filteredQuestion=itemQuestionsList.find(q => q.id==props.questionId);
-    if(filteredQuestion)
+    const _filteredQuestion=itemQuestionsList.find(q => q.id==props.questionId);
+    console.log('filteredQuestion in createquestion ',_filteredQuestion);
+    if(_filteredQuestion)
     {
-      setFilteredQuestion(filteredQuestion);
-      props.setMultipleChoices(filteredQuestion.options);
-      props.setEditorContent(filteredQuestion.description);
+      console.log('_filteredQuestion.description in createquestion ',_filteredQuestion.description);
+      const convertedState = convertFromRaw(JSON.parse(_filteredQuestion.description));
+      const _editorValue = EditorState.createWithContent(convertedState);
+      setEditorState(_editorValue);
+
+      setMultipleChoices_Comp(_filteredQuestion.options);
+      setEditorContent_Comp(_filteredQuestion.description);
+
+      props.setEditorContent(_filteredQuestion.description);
+      props.setMultipleChoices(_filteredQuestion.options);
     }
-    console.log('filteredQuestion ',filteredQuestion);
+   
     }
+   
+    console.log('props.questionId in createquestion ',props.questionId);
+    console.log('itemQuestionsList in createquestion ',itemQuestionsList);
   },[]);
+console.log('props.selectedQuestionId ',props.selectedQuestionId);
   return (
     <>
       <Paper
@@ -104,6 +122,7 @@ const CreateQuestion = (props) => {
 
         <Icon
           onClick={() => {
+            props.setSelectedQuestionId(props.questionId!=null?props.questionId:props.questionIndex);
             props.onEditQuestion();
           }}
           className="p-3 bg bg-blue bg-blue-500 hover:bg-blue-700"
@@ -178,7 +197,8 @@ const CreateQuestion = (props) => {
             <Controller
               className="mt-8 mb-16"
               render={({ field }) => (
-                <WYSIWYGEditor setEditorContent={props.setEditorContent} {...field} />
+                <WYSIWYGEditor setEditorContent={ setEditorContent_Comp /* props.setEditorContent */} editorState={editorState} setEditorState={setEditorState}
+                setEditorContentMain={props.setEditorContent} {...field} />
               )}
               name="message"
               control={control}
@@ -198,8 +218,9 @@ const CreateQuestion = (props) => {
 
             <DraggableItem
               onNewOptionAdded={onNewOptionAdded}
-              multipleChoices={props.multipleChoices}
-              setMultipleChoices={props.setMultipleChoices}
+              multipleChoices={ multipleChoices_Comp /* props.multipleChoices */}
+              setMultipleChoices={ setMultipleChoices_Comp /* props.setMultipleChoices */}
+              setMultipleChoices_Main={props.setMultipleChoices}
             />
           </div>
         </form>

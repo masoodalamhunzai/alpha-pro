@@ -11,6 +11,9 @@ import { DeleteSweep, ToggleOff, Upload } from "@mui/icons-material";
 import { primaryBlueColor } from "app/services/Settings";
 import ClozeWithDropDownDraggableItem from "./ClozeWithDropDownDraggableItem";
 import { defaultProps } from "velocity-react/velocity-component";
+import { useStateValue } from "app/services/state/State";
+
+import { EditorState, convertFromRaw } from "draft-js";
 
 const defaultValues = { name: "", email: "", subject: "", message: "" };
 
@@ -24,6 +27,58 @@ const props = [
 ];
 
 const ClozeWithDropDownLayout = (props) => {
+  const [{ itemQuestionsList }] = useStateValue();
+  //ClozeWithDropDown starts
+
+  const [editorContent, setEditorContent] = useState("");
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+
+  const [templateMarkup, setTemplateMarkup] = useState("");
+  const [multipleChoices, setMultipleChoices] = useState([
+    {
+      responses: [
+        {
+          id: `item-1}`,
+          position: 0,
+          choice: "",
+          title: "first 1",
+          isCorrect: false,
+          isAlternate: false,
+        },
+        {
+          id: `item-2}`,
+          position: 1,
+          choice: "",
+          title: "first 2",
+          isCorrect: false,
+          isAlternate: false,
+        },
+      ],
+    },
+    {
+      responses: [
+        {
+          id: `item-1}`,
+          position: 0,
+          choice: "",
+          title: "second 1",
+          isCorrect: false,
+          isAlternate: false,
+        },
+        {
+          id: `item-2}`,
+          position: 1,
+          choice: "",
+          title: "second 2",
+          isCorrect: false,
+          isAlternate: false,
+        },
+      ],
+    },
+  ]);
+
+  //ClozeWithDropDown ends
+
   const { control } = useForm({
     mode: "onChange",
     defaultValues,
@@ -64,17 +119,44 @@ const ClozeWithDropDownLayout = (props) => {
           isAlternate: false,
         },
       ],
-      /* id: `item-${index + 1}`,
-      position: index,
-      title: "",
-      isCorrect: false,
-      isAlternate: false, */
     };
     let choices = [];
-    choices = props.multipleChoices;
+    choices = multipleChoices;
     choices.push(option);
+    setMultipleChoices(choices);
     props.setMultipleChoices(choices);
   }
+
+  useEffect(() => {
+    if (props.questionId != null) {
+      const _filteredQuestion = itemQuestionsList.find(
+        (q) => q.id == props.questionId
+      );
+      console.log(
+        "filteredQuestion in close with drop down ",
+        _filteredQuestion
+      );
+      if (_filteredQuestion) {
+        console.log(
+          "_filteredQuestion.description in close with drop down ",
+          _filteredQuestion.description
+        );
+        const convertedState = convertFromRaw(
+          JSON.parse(_filteredQuestion.description)
+        );
+        const _editorValue = EditorState.createWithContent(convertedState);
+        setEditorState(_editorValue);
+
+        setMultipleChoices(_filteredQuestion.options);
+        setEditorContent(_filteredQuestion.description);
+
+        props.setEditorContent(_filteredQuestion.description);
+        props.setMultipleChoices([..._filteredQuestion.options]);
+      }
+    } else {
+      props.setMultipleChoices([...multipleChoices]);
+    }
+  }, []);
 
   return (
     <Paper
@@ -87,7 +169,30 @@ const ClozeWithDropDownLayout = (props) => {
     >
       <div className="text-right">
         <Icon
-          className="p-3 bg bg-blue bg-blue-600"
+          onClick={() => {
+            props.onSaveQuestion(
+              props.sectionName,
+              props.tabName,
+              props.questionId,
+              props.questionIndex,
+              "close-with-drop-down-question"
+            );
+          }}
+          className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
+          style={{
+            padding: "2px 24px 24px 4px",
+            color: "white",
+          }}
+          size="small"
+        >
+          save
+        </Icon>
+
+        <Icon
+          onClick={() => {
+            props.editAnItem();
+          }}
+          className="p-3 bg bg-blue bg-blue-500 hover:bg-blue-700"
           style={{
             padding: "2px 24px 24px 4px",
             color: "white",
@@ -95,6 +200,20 @@ const ClozeWithDropDownLayout = (props) => {
           size="small"
         >
           edit
+        </Icon>
+
+        <Icon
+          onClick={() => {
+            props.removeAnItem();
+          }}
+          className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
+          style={{
+            padding: "2px 24px 24px 4px",
+            color: "white",
+          }}
+          size="small"
+        >
+          close
         </Icon>
       </div>
       <form className="px-0 sm:px-24 ">
@@ -133,7 +252,10 @@ const ClozeWithDropDownLayout = (props) => {
             className="mt-8 mb-16"
             render={({ field }) => (
               <WYSIWYGEditor
-                setEditorContent={props.setEditorContent}
+                setEditorContent={setEditorContent}
+                editorState={editorState}
+                setEditorState={setEditorState}
+                setEditorContentMain={props.setEditorContent}
                 {...field}
               />
             )}
@@ -158,9 +280,9 @@ const ClozeWithDropDownLayout = (props) => {
               label={"Title"}
               placeholder="Template Markup"
               onChange={(e) => {
-                props.setTemplateMarkup(e.target.value);
+                setTemplateMarkup(e.target.value);
               }}
-              value={props.templateMarkup}
+              value={templateMarkup}
             />
           </div>
 
@@ -177,8 +299,8 @@ const ClozeWithDropDownLayout = (props) => {
           </Typography>
 
           <div className="grid gap-8 grid-cols-2">
-            {props.multipleChoices &&
-              props.multipleChoices.map((item, index) => {
+            {multipleChoices &&
+              multipleChoices.map((item, index) => {
                 return (
                   <div
                     style={{
@@ -191,8 +313,8 @@ const ClozeWithDropDownLayout = (props) => {
                     <ClozeWithDropDownDraggableItem
                       object={item}
                       objectIndex={index}
-                      multipleChoices={props.multipleChoices}
-                      setMultipleChoices={props.setMultipleChoices}
+                      multipleChoices={multipleChoices}
+                      setMultipleChoices={setMultipleChoices}
                       optionsList={optionsList}
                     />
                   </div>

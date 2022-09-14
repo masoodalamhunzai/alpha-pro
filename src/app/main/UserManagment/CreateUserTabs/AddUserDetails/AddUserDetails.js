@@ -266,6 +266,7 @@ function AddUserDetailsTab({
               <Select
                 labelId="status-dropdown"
                 id="statusDropdown"
+                value={isActive}
                 defaultValue={isActive}
                 label="status"
                 name="status"
@@ -287,18 +288,24 @@ function AddUserDetailsTab({
                   <Select
                     labelId="organization-dropdown"
                     id="organizationDropdown"
-                    value={organizations}
+                    defaultValue={
+                      organizations === "" ? organzationID : organizations
+                    }
+                    value={organizations === "" ? organzationID : organizations}
                     label="organizations"
                     name="organizations"
                     onChange={handleChangeInputs}
                   >
-                    {organization?.map(
-                      (org) =>
-                        org.id === organzationID && (
-                          <MenuItem value={org?.id} key={org?.id}>
-                            {org?.name}
-                          </MenuItem>
-                        )
+                    {organization?.map((org) =>
+                      org.id === organzationID ? (
+                        <MenuItem value={org?.id} key={org?.id}>
+                          {org?.name}
+                        </MenuItem>
+                      ) : (
+                        <MenuItem value={org?.id} key={org?.id}>
+                          {org?.name}
+                        </MenuItem>
+                      )
                     )}
                   </Select>
                 </FormControl>
@@ -307,22 +314,27 @@ function AddUserDetailsTab({
                 <AccountBalanceIcon className="text-gray-600 mr-8" />
                 <FormControl fullWidth>
                   <InputLabel id="role-dropdown">Select Role</InputLabel>
-
                   <Select
                     labelId="role-dropdown"
                     id="roleDropdown"
                     defaultValue={userRoles}
+                    value={userRoles}
                     label="role"
                     name="userRoles"
                     onChange={handleChangeInputs}
                   >
                     {roles?.map(
                       (role) =>
-                        role?.name !== "super-admin" && (
+                        role?.name !== USER_ROLE_SUPER_ADMIN &&
+                        (userRoles === role?.name ? (
                           <MenuItem value={role?.name} key={role?.id}>
                             {role?.name}
                           </MenuItem>
-                        )
+                        ) : (
+                          <MenuItem value={role?.name} key={role?.id}>
+                            {role?.name}
+                          </MenuItem>
+                        ))
                     )}
                   </Select>
                 </FormControl>

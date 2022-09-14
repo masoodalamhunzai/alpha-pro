@@ -1,10 +1,3 @@
-import Annotation from "react-image-annotation";
-import {
-  PointSelector,
-  RectangleSelector,
-  OvalSelector,
-} from "react-image-annotation/lib/selectors";
-//<Annotation type={PointSelector.TYPE} />;
 import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import WYSIWYGEditor from "app/shared-components/WYSIWYGEditor";
@@ -19,40 +12,69 @@ import { primaryBlueColor } from "app/services/Settings";
 import ClozeWithDragAndDropDraggableItem from "./ClozeWithDragAndDropDraggableItem";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
+import { useStateValue } from "app/services/state/State";
+
+import { EditorState, convertFromRaw } from "draft-js";
 
 const defaultValues = { name: "", email: "", subject: "", message: "" };
 
 const ClozeWithDragAndDropLayout = (props) => {
+  const [{ itemQuestionsList }] = useStateValue();
+  //ClozeWithDragAndDrop starts
+  const [editorContent, setEditorContent] = useState("");
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+
+  const [templateMarkup, setTemplateMarkup] = useState("");
+  const [multipleChoices, setMultipleChoices] = useState([
+    {
+      groupTitle: "Title 1",
+      responses: [
+        {
+          id: `item-1}`,
+          position: 0,
+          choice: "",
+          title: "first 1",
+          isCorrect: false,
+          isAlternate: false,
+        },
+        {
+          id: `item-2}`,
+          position: 1,
+          choice: "",
+          title: "first 2",
+          isCorrect: false,
+          isAlternate: false,
+        },
+      ],
+    },
+    {
+      groupTitle: "Title 2",
+      responses: [
+        {
+          id: `item-1}`,
+          position: 0,
+          choice: "",
+          title: "second 1",
+          isCorrect: false,
+          isAlternate: false,
+        },
+        {
+          id: `item-2}`,
+          position: 1,
+          choice: "",
+          title: "second 2",
+          isCorrect: false,
+          isAlternate: false,
+        },
+      ],
+    },
+  ]);
+  //ClozeWithDragAndDrop ends
+
   const { control } = useForm({
     mode: "onChange",
     defaultValues,
   });
-  const [annotations, setAnnotations] = useState([]);
-  const [annotation, setAnnotation] = useState({});
-
-  const onChange = (newAnnotation) => {
-    setAnnotation(newAnnotation);
-  };
-
-  const onSubmit = (newAnnotation) => {
-    const { geometry, data } = newAnnotation;
-
-    console.log("annotation", newAnnotation);
-    console.log("annotations", annotations);
-    setAnnotation({});
-    setAnnotations(
-      annotations.concat({
-        geometry,
-        data: {
-          ...data,
-          id: Math.random(),
-        },
-      })
-    );
-  };
-
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedImageUrl, setSelectedImageUrl] = useState(null);
   const optionsList = [
     {
       value: 1,
@@ -90,10 +112,42 @@ const ClozeWithDragAndDropLayout = (props) => {
       ],
     };
     let choices = [];
-    choices = props.multipleChoices;
+    choices = multipleChoices;
     choices.push(option);
+    setMultipleChoices([...choices]);
     props.setMultipleChoices([...choices]);
   }
+
+  useEffect(() => {
+    if (props.questionId != null) {
+      const _filteredQuestion = itemQuestionsList.find(
+        (q) => q.id == props.questionId
+      );
+      console.log(
+        "filteredQuestion in Close with Drag and drop ",
+        _filteredQuestion
+      );
+      if (_filteredQuestion) {
+        console.log(
+          "_filteredQuestion.description in Close with Drag and drop ",
+          _filteredQuestion.description
+        );
+        const convertedState = convertFromRaw(
+          JSON.parse(_filteredQuestion.description)
+        );
+        const _editorValue = EditorState.createWithContent(convertedState);
+        setEditorState(_editorValue);
+
+        setMultipleChoices(_filteredQuestion.options);
+        setEditorContent(_filteredQuestion.description);
+
+        props.setEditorContent(_filteredQuestion.description);
+        props.setMultipleChoices([..._filteredQuestion.options]);
+      }
+    } else {
+      props.setMultipleChoices([...multipleChoices]);
+    }
+  }, []);
 
   return (
     <Paper
@@ -106,7 +160,30 @@ const ClozeWithDragAndDropLayout = (props) => {
     >
       <div className="text-right">
         <Icon
-          className="p-3 bg bg-blue bg-blue-600"
+          onClick={() => {
+            props.onSaveQuestion(
+              props.sectionName,
+              props.tabName,
+              props.questionId,
+              props.questionIndex,
+              "true-false-question"
+            );
+          }}
+          className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
+          style={{
+            padding: "2px 24px 24px 4px",
+            color: "white",
+          }}
+          size="small"
+        >
+          save
+        </Icon>
+
+        <Icon
+          onClick={() => {
+            props.editAnItem();
+          }}
+          className="p-3 bg bg-blue bg-blue-500 hover:bg-blue-700"
           style={{
             padding: "2px 24px 24px 4px",
             color: "white",
@@ -114,6 +191,20 @@ const ClozeWithDragAndDropLayout = (props) => {
           size="small"
         >
           edit
+        </Icon>
+
+        <Icon
+          onClick={() => {
+            props.removeAnItem();
+          }}
+          className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
+          style={{
+            padding: "2px 24px 24px 4px",
+            color: "white",
+          }}
+          size="small"
+        >
+          close
         </Icon>
       </div>
       <form className="px-0 sm:px-24 ">
@@ -152,7 +243,10 @@ const ClozeWithDragAndDropLayout = (props) => {
             className="mt-8 mb-16"
             render={({ field }) => (
               <WYSIWYGEditor
-                setEditorContent={props.setEditorContent}
+                setEditorContent={setEditorContent}
+                editorState={editorState}
+                setEditorState={setEditorState}
+                setEditorContentMain={props.setEditorContent}
                 {...field}
               />
             )}
@@ -177,9 +271,9 @@ const ClozeWithDragAndDropLayout = (props) => {
               label={"Title"}
               placeholder="Template Markup"
               onChange={(e) => {
-                props.setTemplateMarkup(e.target.value);
+                setTemplateMarkup(e.target.value);
               }}
-              value={props.templateMarkup}
+              value={templateMarkup}
             />
           </div>
 
@@ -204,8 +298,8 @@ const ClozeWithDragAndDropLayout = (props) => {
 
           <div>
             <div className="grid gap-8 grid-cols-1">
-              {props.multipleChoices &&
-                props.multipleChoices.map((item, index) => {
+              {multipleChoices &&
+                multipleChoices.map((item, index) => {
                   return (
                     <div
                       style={{
@@ -231,7 +325,7 @@ const ClozeWithDragAndDropLayout = (props) => {
                         label={"Title"}
                         value={item.groupTitle}
                         onChange={(e) => {
-                          var tempState = [...props.multipleChoices];
+                          var tempState = [...multipleChoices];
                           var tempObject = { ...tempState[index] };
 
                           tempObject.groupTitle = e.target.value;
@@ -239,15 +333,15 @@ const ClozeWithDragAndDropLayout = (props) => {
 
                           console.log("group title", tempObject);
                           console.log("group title obj", tempState);
-                          props.setMultipleChoices(tempState);
-                          //props.setTemplateMarkup(e.target.value);
+                          setMultipleChoices(tempState);
+                          //setTemplateMarkup(e.target.value);
                         }}
                       />
                       <ClozeWithDragAndDropDraggableItem
                         object={item}
                         objectIndex={index}
-                        multipleChoices={props.multipleChoices}
-                        setMultipleChoices={props.setMultipleChoices}
+                        multipleChoices={multipleChoices}
+                        setMultipleChoices={setMultipleChoices}
                         optionsList={optionsList}
                       />
                     </div>
@@ -266,8 +360,8 @@ const ClozeWithDragAndDropLayout = (props) => {
             </div>
             {/* <ClozeWithDragAndDropDraggableItem
               onNewOptionAdded={onNewOptionAdded}
-              multipleChoices={props.multipleChoices}
-              setMultipleChoices={props.setMultipleChoices}
+              multipleChoices={multipleChoices}
+              setMultipleChoices={setMultipleChoices}
               optionsList={optionsList}
             />*/}
           </div>

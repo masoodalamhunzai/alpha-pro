@@ -1,6 +1,6 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react/jsx-no-bind */
-import { memo, useState, useRef } from "react";
+import { memo, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { TablePagination, Tooltip } from "@material-ui/core";
 import {
@@ -18,7 +18,6 @@ import {
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@mui/material/Typography";
 // import { actions } from "app/services/state/Reducer";
-import { useSnackbar } from "notistack";
 import swal from "sweetalert";
 // import moment from "moment";
 import StatusIcon from "app/shared-components/StatusIcon";
@@ -75,17 +74,10 @@ const useStyles = makeStyles((theme) => ({
 function UsersList({ page, loading, organizationUsers, organizationSelected }) {
   const history = useHistory();
   const classes = useStyles();
-  const { enqueueSnackbar } = useSnackbar();
-  const anchorRef = useRef(null);
-  const [userId, setUserId] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const MODE = "edit-user";
   const [{ user, patients, defaultPageSize, organization }, dispatch] =
     useStateValue();
-  const [usersList, setUsersList] = useState([]);
-  const [pagination, setPagination] = useState([]);
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
 
   async function onArchiveUser(Id) {
     swal({
@@ -110,20 +102,20 @@ function UsersList({ page, loading, organizationUsers, organizationSelected }) {
 
   async function handleArchiveUser(Id) {}
 
-  async function onRestoreUser(Id) {
-    swal({
-      title: "Are you sure?",
-      text: "Are you sure you want to restore this User?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then(async (willDelete) => {
-      if (willDelete) {
-        handleRestoreUser(Id);
-      }
-    });
-  }
-  async function handleRestoreUser(Id) {}
+  // async function onRestoreUser(Id) {
+  //   swal({
+  //     title: "Are you sure?",
+  //     text: "Are you sure you want to restore this User?",
+  //     icon: "warning",
+  //     buttons: true,
+  //     dangerMode: true,
+  //   }).then(async (willDelete) => {
+  //     if (willDelete) {
+  //       handleRestoreUser(Id);
+  //     }
+  //   });
+  // }
+  // async function handleRestoreUser(Id) {}
 
   // const showUserDetail = (id) => {};
 
@@ -134,7 +126,6 @@ function UsersList({ page, loading, organizationUsers, organizationSelected }) {
   function handleChangeRowsPerPage(event) {}
 
   const columns = [
-    { field: "id", headerName: "ID", width: 70 },
     { field: "firstName", headerName: "First Name", flex: 1 },
     { field: "lastName", headerName: "Last Name", flex: 1 },
     { field: "email", headerName: "Email/username", flex: 1 },
@@ -168,7 +159,7 @@ function UsersList({ page, loading, organizationUsers, organizationSelected }) {
                 state: {
                   editData: params?.row,
                   selectedOrg: organizationSelected,
-                  mode: "edit-user",
+                  mode: MODE,
                 },
               }}
             >
@@ -197,8 +188,10 @@ function UsersList({ page, loading, organizationUsers, organizationSelected }) {
       firstName: user?.firstName,
       lastName: user?.lastName,
       email: user?.email,
-      phonenumber: "",
+      phoneNumber: user?.phoneNumber,
       isActive: user?.isActive,
+      organizationId: user?.organizationId,
+      roles: user?.roles[0]?.name,
     };
   });
 

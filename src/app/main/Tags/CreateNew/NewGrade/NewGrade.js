@@ -5,12 +5,13 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import FormControl from "@mui/material/FormControl";
-import Alert from "@mui/material/Alert";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 import { useLocation, useHistory } from "react-router-dom";
+import { primaryBlueColor, primaryGrayColor } from "app/services/Settings";
 import { useStateValue } from "app/services/state/State";
 import { actions } from "app/services/state/Reducer";
+import Alert from "@mui/material/Alert";
 import swal from "sweetalert";
 import Stack from "@mui/material/Stack";
 import { createUserGrade } from "app/services/api/ApiManager";
@@ -49,6 +50,21 @@ const useStyles = makeStyles({
       backgroundColor: "#fff",
     },
   },
+  buttonGrey: {
+    "&.MuiButton-root": {
+      backgroundColor: "grey",
+      color: "#fff",
+      "&:hover": { backgroundColor: primaryBlueColor },
+      textTransform: "capitalize",
+    },
+  },
+  buttonSelected: {
+    "&.MuiButton-root": {
+      backgroundColor: "#3287FB",
+      color: "#fff",
+      textTransform: "capitalize",
+    },
+  },
   continueBtn: {
     "&.MuiButton-root": {
       backgroundColor: "#3287FB",
@@ -72,7 +88,11 @@ const useStyles = makeStyles({
     },
   },
 });
-
+const gradeStatusArr = [
+  { id: 1, status: "published" },
+  { id: 2, status: "unPublished" },
+  { id: 3, status: "archive" },
+];
 const NewGrade = () => {
   const history = useHistory();
   const location = useLocation();
@@ -86,7 +106,10 @@ const NewGrade = () => {
   const [description, setDescription] = useState(
     mode === EDIT_MODE ? editData?.description : ""
   );
-
+  const [gradeStatus, setGradeStatus] = useState(0);
+  const handleChangeStatus = (key) => {
+    setGradeStatus(key);
+  };
   const redirectTo = async (goTo) => {
     try {
       history.push(goTo);
@@ -101,12 +124,12 @@ const NewGrade = () => {
   };
 
   const validation = () => {
-    if (grade.trim === "") {
+    if (grade.trim() === "") {
       setError(true);
       setErrorMessage("grade is required");
       return false;
     }
-    if (description.trim === "") {
+    if (description.trim() === "") {
       setError(true);
       setErrorMessage("description is required");
       return false;
@@ -170,14 +193,7 @@ const NewGrade = () => {
       maxWidth="xs"
     >
       <CssBaseline />
-      {error && (
-        <Alert
-          severity="error"
-          sx={{ fontSize: "1.3rem", width: "100%", m: 0 }}
-        >
-          {errorMessage}
-        </Alert>
-      )}
+
       <Box
         sx={{
           marginTop: 2,
@@ -186,10 +202,18 @@ const NewGrade = () => {
           alignItems: "center",
         }}
       >
-        <Box component="form" noValidate sx={{ my: 1, width: "70%" }}>
+        <Box component="form" noValidate sx={{ my: 1, width: "80%" }}>
+          {error && (
+            <Alert
+              severity="error"
+              sx={{ fontSize: "1.3rem", width: "100%", m: 0 }}
+            >
+              {errorMessage}
+            </Alert>
+          )}
           <FormControl fullWidth>
             <TextField
-              sx={{ width: "100%" }}
+              fullWidth
               margin="normal"
               required
               fullWidth
@@ -201,11 +225,11 @@ const NewGrade = () => {
               autoFocus
             />
           </FormControl>
-          <FormControl sx={{ my: 1, width: "100%" }}>
+          <FormControl fullWidth>
             <TextField
-              sx={{ width: "100%" }}
+              fullWidth
               id="outlined-multiline-flexible"
-              label="Multiline"
+              label="Description"
               multiline
               rows={4}
               placeholder="Description"
@@ -215,7 +239,7 @@ const NewGrade = () => {
           </FormControl>
           {grade && (
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <span className="text-gray-500 text-base">slug:</span>
+              <span className="text-gray-500 text-base">Slug:</span>
               <Stack
                 direction="row"
                 alignItems="center"
@@ -230,7 +254,7 @@ const NewGrade = () => {
             </Box>
           )}
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <span className="text-gray-500 text-base">status:</span>
+            <span className="text-gray-500 text-base">Status:</span>
             <Stack
               spacing={3}
               direction="row"
@@ -239,15 +263,20 @@ const NewGrade = () => {
               className="w-full"
               justifyContent="center"
             >
-              <Button variant="contained" sx={{ textTransform: "lowercase" }}>
-                published
-              </Button>
-              <Button variant="contained" sx={{ textTransform: "lowercase" }}>
-                unpublished
-              </Button>
-              <Button variant="contained" sx={{ textTransform: "lowercase" }}>
-                archive
-              </Button>
+              {gradeStatusArr?.map((item) => (
+                <Button
+                  key={item.id}
+                  variant="contained"
+                  className={
+                    item.id === gradeStatus
+                      ? classes.buttonSelected
+                      : classes.buttonGrey
+                  }
+                  onClick={() => handleChangeStatus(item.id)}
+                >
+                  {item.status}
+                </Button>
+              ))}
             </Stack>
           </Box>
           <div className="h-0.5 w-ful text-slate-700 bg-slate-400 " />

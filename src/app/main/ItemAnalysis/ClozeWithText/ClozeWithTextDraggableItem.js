@@ -84,6 +84,7 @@ function ClozeWithTextDraggableItem(props) {
       result.destination.index
     );
     props.setMultipleChoices(item);
+    props.setMultipleChoices_Main(item);
     // setItem(item);
   };
   const handleTitleChange = (e, index) => {
@@ -93,7 +94,8 @@ function ClozeWithTextDraggableItem(props) {
     const tempElement = { ...tempState[index] };
     tempElement.title = e.target.value;
     tempState[index] = tempElement;
-    props.setMultipleChoices(tempState);
+    props.setMultipleChoices([...tempState]);
+    props.setMultipleChoices_Main([...tempState]);
   };
 
   const handleChange = (event, index) => {
@@ -113,7 +115,8 @@ function ClozeWithTextDraggableItem(props) {
     }
 
     tempState[index] = tempElement;
-    props.setMultipleChoices(tempState);
+    props.setMultipleChoices([...tempState]);
+    props.setMultipleChoices_Main([...tempState]);
   };
   const AddNewOption = () => {
     setItemCount(itemCount + 1);
@@ -124,6 +127,7 @@ function ClozeWithTextDraggableItem(props) {
     const tempState = [...props.multipleChoices];
     const tempElement = { ...tempState[index] };
     props.setMultipleChoices(tempState.filter((x) => x.id !== tempElement.id));
+    props.setMultipleChoices_Main(tempState.filter((x) => x.id !== tempElement.id));
     //setItemCount(itemCount - 1);
     setItem(getItems(itemCount - 1));
   };
@@ -171,6 +175,7 @@ function ClozeWithTextDraggableItem(props) {
                               id="outlined-required"
                               label={`Choice ${index + 1}`}
                               placeholder="Option Title"
+                              value={item.title}
                               onChange={(e) => {
                                 handleTitleChange(e, index);
                               }}

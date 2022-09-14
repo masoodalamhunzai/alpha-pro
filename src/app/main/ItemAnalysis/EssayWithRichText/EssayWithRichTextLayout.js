@@ -10,16 +10,19 @@ import { TextField, Checkbox } from "@mui/material";
 import Switch from "app/shared-components/Switch";
 import { primaryBlueColor } from "app/services/Settings";
 import MenuItem from "@mui/material/MenuItem";
+import { useStateValue } from 'app/services/state/State';
+
+import { EditorState,convertFromRaw } from "draft-js";
 
 const defaultValues = { name: "", email: "", subject: "", message: "" };
 
 const propsType = [
-  "editorContent={essayWithRichTextEditorContent}",
+  /* "editorContent={essayWithRichTextEditorContent}",
   "setEditorContent={setEssayWithRichTextEditorContent}",
   "wordLimit={essayWithRichTextWordLimit}",
   "setWordLimit={setEssayWithRichTextWordLimit}",
   "wordLimitType={essayWithRichTextWordLimitType}",
-  "setWordLimitType={setEssayWithRichTextWordLimitType}",
+  "setWordLimitType={setEssayWithRichTextWordLimitType}", */
   "removeAnItem={removeAnItem}",
   "editAnItem={editAnItem}",
   "saveAnItem={saveAnItem}",
@@ -30,6 +33,16 @@ const EssayWithRichTextLayout = (props) => {
     mode: "onChange",
     defaultValues,
   });
+  const [{itemQuestionsList}] =useStateValue();
+  //EssayWithRichText Layout starts
+
+  const [editorContent, setEditorContent] = useState("");
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+
+  const [wordLimit, setWordLimit] = useState(10000);
+  const [wordLimitType, setWordLimitType] = useState("");
+
+  //EssayWithRichText Layout ends
 
   const optionsList = [
     {
@@ -46,6 +59,28 @@ const EssayWithRichTextLayout = (props) => {
     },
   ];
 
+  useEffect(()=>{
+    if(props.questionId!=null)
+    {
+    const _filteredQuestion=itemQuestionsList.find(q => q.id==props.questionId);
+    console.log('filteredQuestion in essay with rich text ',_filteredQuestion);
+    if(_filteredQuestion)
+    {
+      console.log('_filteredQuestion.description in essay with rich text ',_filteredQuestion.description);
+      const convertedState = convertFromRaw(JSON.parse(_filteredQuestion.description));
+      const _editorValue = EditorState.createWithContent(convertedState);
+      setEditorState(_editorValue);
+
+      setEditorContent(_filteredQuestion.description);
+
+      props.setEditorContent(_filteredQuestion.description);
+      props.setMultipleChoices([{data:'no data found'}]);
+    }
+    }else{
+      props.setMultipleChoices([{data:'no data found'}]);
+    }
+  },[]);
+
   return (
     <Paper
       style={{
@@ -58,7 +93,7 @@ const EssayWithRichTextLayout = (props) => {
       <div className="text-right">
         <Icon
           onClick={() => {
-            props.saveAnItem();
+            props.onSaveQuestion(props.sectionName,props.tabName,props.questionId,props.questionIndex,"essay-with-rich-text-question");
           }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
@@ -133,10 +168,10 @@ const EssayWithRichTextLayout = (props) => {
           <Controller
             className="mt-8 mb-16"
             render={({ field }) => (
-              <WYSIWYGEditor
-                setEditorContent={props.setEditorContent}
-                {...field}
-              />
+              <WYSIWYGEditor setEditorContent={setEditorContent}
+              editorState={editorState} setEditorState={setEditorState}
+              setEditorContentMain={props.setEditorContent}
+              {...field} />
             )}
             name="message"
             control={control}
@@ -156,9 +191,9 @@ const EssayWithRichTextLayout = (props) => {
                 required
                 id="outlined-required"
                 label={"Word limit"}
-                value={props.wordLimit}
+                value={wordLimit}
                 onChange={(e) => {
-                  props.setWordLimit(e.target.value);
+                  setWordLimit(e.target.value);
                 }}
               />
             </div>
@@ -168,10 +203,11 @@ const EssayWithRichTextLayout = (props) => {
                 style={{ width: "100%" }}
                 id="outlined-select-currency"
                 select
+                value={wordLimitType}
                 label="Player type"
                 // value={answer}
                 onChange={(e) => {
-                  props.setWordLimitType(e.target.value);
+                  setWordLimitType(e.target.value);
                 }}
                 // helperText="Correct Ans"
               >

@@ -1,13 +1,14 @@
+import {
+  deleteData,
+  getData,
+  getDataAnonymously,
+  postData,
+  postDataAnonymously,
+} from "./ApiCalls";
+
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable max-len */
 import { settings as s } from "app/services/Settings";
-import {
-  getData,
-  postData,
-  deleteData,
-  getDataAnonymously,
-  postDataAnonymously,
-} from "./ApiCalls";
 
 export const login = async (data) => {
   try {
@@ -78,10 +79,10 @@ export const saveQuestion = async (data, id, user) => {
       user,
       data
     );
-    console.log('api manager savequestion response ',response);
+    console.log('api manager savequestion response ', response);
     return response;
   } catch (error) {
-    console.log('api manager savequestion error ',error);
+    console.log('api manager savequestion error ', error);
     return null;
   }
 };
@@ -245,6 +246,7 @@ export const createOrganizationUser = async (id, user, data) => {
     return null;
   }
 };
+
 export const searchOrganizationUser = async (id, user, searchTerm) => {
   try {
     const response = await getData(
@@ -256,6 +258,7 @@ export const searchOrganizationUser = async (id, user, searchTerm) => {
     return null;
   }
 };
+
 export const searchOrganizations = async (searchTerm, user) => {
   try {
     const response = await getData(
@@ -264,6 +267,36 @@ export const searchOrganizations = async (searchTerm, user) => {
     );
     return response;
   } catch (err) {
+    return null;
+  }
+};
+
+export const switchAlphaEnvironments = async (env, user) => {
+  try {
+    const response = await getData(`${s.alphaEnv.setEnvironment(env)}`, user);
+    return response;
+  } catch (err) {
+    console.log('err', err);
+    return null;
+  }
+};
+
+export const deleteItem = async (itemId, user) => {
+  try {
+    const response = await deleteData(`${s.items.deleteItem(itemId)}`, user);
+    return response;
+  } catch (err) {
+    console.log('err', err);
+    return null;
+  }
+};
+
+export const deleteQuestion = async (questionId, user) => {
+  try {
+    const response = await deleteData(`${s.items.deleteQuestion(questionId)}`, user);
+    return response;
+  } catch (err) {
+    console.log('err', err);
     return null;
   }
 };

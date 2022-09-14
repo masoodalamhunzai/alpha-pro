@@ -97,7 +97,6 @@ function SubjectList({ page, loading, subjects }) {
   function handleChangeRowsPerPage(event) {}
 
   const columns = [
-    { field: "sNo", headerName: "ID", flex: 1 },
     { field: "subject", headerName: "Subject", flex: 1 },
     { field: "grade", headerName: "Grade", flex: 1 },
     // {
@@ -151,7 +150,6 @@ function SubjectList({ page, loading, subjects }) {
 
   const rows = subjects?.map((subject, id) => {
     return {
-      sNo: id + 1,
       id: subject?.id,
       gradeId: subject?.gradeId,
       subject: subject?.title,

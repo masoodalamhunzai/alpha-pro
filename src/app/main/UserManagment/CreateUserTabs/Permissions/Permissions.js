@@ -17,9 +17,8 @@ const useStyles = makeStyles({
 });
 
 const Permissions = ({
-  handleChangeInputs,
-  formData: {
-    omrManager,
+  handleChangePermissions,
+  permissions: {
     activityManager,
     alphaProd,
     alphaDev,
@@ -34,7 +33,8 @@ const Permissions = ({
     userManager,
     systemAdmin,
     insightAccess,
-    aurthorSiteSettingManager,
+    roleOmr,
+    authorSiteSettingManager,
   },
 }) => {
   const classes = useStyles();
@@ -94,7 +94,7 @@ const Permissions = ({
                       <Checkbox
                         name="alphaProd"
                         value={alphaProd}
-                        onChange={handleChangeInputs}
+                        onChange={handleChangePermissions}
                       />
                     }
                     label="Alpha Publishing Prod"
@@ -105,7 +105,7 @@ const Permissions = ({
                       <Checkbox
                         name="alphaDev"
                         value={alphaDev}
-                        onChange={handleChangeInputs}
+                        onChange={handleChangePermissions}
                       />
                     }
                     label="Alpha Publishing Dev"
@@ -132,7 +132,7 @@ const Permissions = ({
                         <Checkbox
                           name="activityManager"
                           value={activityManager}
-                          onChange={handleChangeInputs}
+                          onChange={handleChangePermissions}
                         />
                       }
                       label="Activity Manager"
@@ -142,7 +142,7 @@ const Permissions = ({
                         <Checkbox
                           name="bulkUpdateManager"
                           value={bulkUpdateManager}
-                          onChange={handleChangeInputs}
+                          onChange={handleChangePermissions}
                         />
                       }
                       label="Bulk Update Manager"
@@ -152,7 +152,7 @@ const Permissions = ({
                         <Checkbox
                           name="tagManager"
                           value={tagManager}
-                          onChange={handleChangeInputs}
+                          onChange={handleChangePermissions}
                         />
                       }
                       label="Tag Manager"
@@ -164,7 +164,7 @@ const Permissions = ({
                         <Checkbox
                           name="tagHierarchyManager"
                           value={tagHierarchyManager}
-                          onChange={handleChangeInputs}
+                          onChange={handleChangePermissions}
                         />
                       }
                       label="Tag Hierarchy Manager"
@@ -174,14 +174,13 @@ const Permissions = ({
                         <Checkbox
                           name="roleUsers"
                           value={roleUsers}
-                          onChange={handleChangeInputs}
+                          onChange={handleChangePermissions}
                         />
                       }
                       label="Users"
                     />
                   </FormGroup>
                 </Box>
-
                 <div className="flex justify-between my-5">
                   <p
                     style={{ fontSize: "11px" }}
@@ -201,9 +200,9 @@ const Permissions = ({
                     <FormControlLabel
                       control={
                         <Checkbox
-                          name="omrManager"
-                          value={omrManager}
-                          onChange={handleChangeInputs}
+                          name="roleOmr"
+                          value={roleOmr}
+                          onChange={handleChangePermissions}
                         />
                       }
                       label="OMR"
@@ -246,7 +245,7 @@ const Permissions = ({
                       <Checkbox
                         name="accessEditProfile"
                         value={accessEditProfile}
-                        onChange={handleChangeInputs}
+                        onChange={handleChangePermissions}
                       />
                     }
                     label="Access(Edit profile only)"
@@ -257,7 +256,7 @@ const Permissions = ({
                       <Checkbox
                         name="roleUser"
                         value={roleUser}
-                        onChange={handleChangeInputs}
+                        onChange={handleChangePermissions}
                       />
                     }
                     label="User"
@@ -267,7 +266,7 @@ const Permissions = ({
                       <Checkbox
                         name="roleAdmin"
                         value={roleAdmin}
-                        onChange={handleChangeInputs}
+                        onChange={handleChangePermissions}
                       />
                     }
                     label="Admin"
@@ -287,7 +286,7 @@ const Permissions = ({
                       <Checkbox
                         name="managementAdmin"
                         value={managementAdmin}
-                        onChange={handleChangeInputs}
+                        onChange={handleChangePermissions}
                       />
                     }
                     label="Management Admin"
@@ -297,7 +296,7 @@ const Permissions = ({
                       <Checkbox
                         name="userManager"
                         value={userManager}
-                        onChange={handleChangeInputs}
+                        onChange={handleChangePermissions}
                       />
                     }
                     label="User Manager"
@@ -307,7 +306,7 @@ const Permissions = ({
                       <Checkbox
                         name="systemAdmin"
                         value={systemAdmin}
-                        onChange={handleChangeInputs}
+                        onChange={handleChangePermissions}
                       />
                     }
                     label="System Admin"
@@ -326,7 +325,7 @@ const Permissions = ({
                     <Checkbox
                       name="insightAccess"
                       value={insightAccess}
-                      onChange={handleChangeInputs}
+                      onChange={handleChangePermissions}
                     />
                   }
                   label="Insight Access"
@@ -342,9 +341,9 @@ const Permissions = ({
                 <FormControlLabel
                   control={
                     <Checkbox
-                      name="aurthorSiteSettingManager"
-                      value={aurthorSiteSettingManager}
-                      onChange={handleChangeInputs}
+                      name="authorSiteSettingManager"
+                      value={authorSiteSettingManager}
+                      onChange={handleChangePermissions}
                     />
                   }
                   label="Aurthor Site Setting Manager"
@@ -362,7 +361,7 @@ const Permissions = ({
             alignItems: "center",
           }}
         >
-          <Icon color="action" style={{ color: "#0078d2", margin: "0 0.8rem" }}>
+          <Icon color="action" style={{ color: "#0078D2", margin: "0 0.8rem" }}>
             infoicon
           </Icon>
           The new user newuser@gmail.com will be sent an email with a set

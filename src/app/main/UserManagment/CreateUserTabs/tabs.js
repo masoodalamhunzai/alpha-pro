@@ -140,17 +140,18 @@ const CreateUserTabs = () => {
     ? location?.state
     : "";
   const organzationID = mode === EDIT_MODE ? selectedOrg : selectedOrg;
-
   const [formData, setFormData] = useState({
-    email: editData?.email.length > 0 ? editData?.email : "",
-    firstName: editData?.firstName.length > 0 ? editData?.firstName : "",
-    lastName: editData?.lastName.length > 0 ? editData?.lastName : "",
-    phone: editData?.phonenumber.length > 0 ? editData?.phonenumber : "",
-    organizations: selectedOrg !== "" ? selectedOrg : "",
+    email: editData?.email?.length > 0 ? editData?.email : "",
+    firstName: editData?.firstName?.length > 0 ? editData?.firstName : "",
+    lastName: editData?.lastName?.length > 0 ? editData?.lastName : "",
+    phone: editData?.phoneNumber?.length > 0 ? editData?.phoneNumber : "",
+    organizations: selectedOrg?.trim() !== "" ? selectedOrg : "",
     password: "",
     confirmPassword: "",
-    userRoles: "",
+    userRoles: editData?.roles !== "" ? editData?.roles : "",
     isActive: editData?.isActive ? editData?.isActive : "",
+  });
+  const [permissions, setPermissions] = useState({
     alphaProd: false,
     alphaDev: false,
     bulkUpdateManager: false,
@@ -164,8 +165,9 @@ const CreateUserTabs = () => {
     managementAdmin: false,
     userManager: false,
     systemAdmin: false,
+    roleOmr: false,
     insightAccess: false,
-    aurthorSiteSettingManager: false,
+    authorSiteSettingManager: false,
   });
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -178,14 +180,18 @@ const CreateUserTabs = () => {
     const { value } = e.target;
     const { name } = e.target;
     const { checked } = e.target;
-    console.log(checked, "target", e.target);
     if (checked || !checked) {
-      setFormData({ ...formData, [name]: checked });
+      setFormData({ ...formData, [name]: checked || value });
     } else {
       setFormData({ ...formData, [name]: value });
     }
   };
-  console.log(formData, "checkBox CHeck");
+  const handleChangePermissions = (e) => {
+    const { value } = e.target;
+    const { name } = e.target;
+    const { checked } = e.target;
+    setPermissions({ ...permissions, [name]: checked || value });
+  };
   const handleChangePhone = (value) => {
     setFormData({ ...formData, phone: value });
   };
@@ -198,6 +204,8 @@ const CreateUserTabs = () => {
     userRoles,
     password,
     confirmPassword,
+  } = formData;
+  const {
     alphaProd,
     alphaDev,
     bulkUpdateManager,
@@ -212,9 +220,9 @@ const CreateUserTabs = () => {
     userManager,
     systemAdmin,
     insightAccess,
-    aurthorSiteSettingManager,
-  } = formData;
-
+    roleOmr,
+    authorSiteSettingManager,
+  } = permissions;
   const redirectTo = async (goTo) => {
     try {
       history.push(goTo);
@@ -267,38 +275,42 @@ const CreateUserTabs = () => {
     }
     return true;
   };
+  const permissionArray = [
+    alphaProd ? "alpha-publishing-prod" : null,
+    alphaDev ? "alpha-publishing-dev" : null,
+    bulkUpdateManager ? "bulk-update-manager" : null,
+    activityManager ? "activity-manager" : null,
+    tagManager ? "tag-manager" : null,
+    tagHierarchyManager ? "tag-hierarchy-manager" : null,
+    roleUsers ? "role-users" : null,
+    accessEditProfile ? "access-edit-profile" : null,
+    roleAdmin ? "role-admin" : null,
+    roleUser ? "role-user" : null,
+    managementAdmin ? "management-admin" : null,
+    userManager ? "user-manager" : null,
+    systemAdmin ? "system-admin" : null,
+    roleOmr ? "optical-mark-recognition" : null,
+    insightAccess ? "insight-access" : null,
+    authorSiteSettingManager ? "author-site-setting-manager" : null,
+  ];
+  const result = permissionArray?.filter((permission) => permission);
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = {
       email,
       firstName,
       lastName,
-      password,
       phone,
-      permissions: [
-        alphaProd && "alpha-publishing-prod",
-        alphaDev && "alpha-publishing-dev",
-        bulkUpdateManager && "bulk-update-manager",
-        activityManager && "activity-manager",
-        tagManager && "tag-manager",
-        tagHierarchyManager && "tag-hierarchy-manager",
-        roleUsers && "role-users",
-        accessEditProfile && "access-edit-profile",
-        roleAdmin && "role-admin",
-        roleUser && "role-user",
-        managementAdmin && "management-admin",
-        userManager && "user-manager",
-        systemAdmin && "system-admin",
-        insightAccess && "insight-access",
-        aurthorSiteSettingManager && "aurthor-site-setting-manager",
-      ],
+      permissions: [...result],
       roles: [
         {
           name: userRoles,
         },
       ],
     };
-
+    if (mode === CREATE_NEW_MODE) {
+      payload["password"] = password;
+    }
     if (validation()) {
       const id =
         user?.role === USER_ROLE_SUPER_ADMIN
@@ -399,8 +411,8 @@ const CreateUserTabs = () => {
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
               <Permissions
-                formData={formData}
-                handleChangeInputs={handleChangeInputs}
+                permissions={permissions}
+                handleChangePermissions={handleChangePermissions}
                 handleChangePhone={handleChangePhone}
               />
             </TabPanel>
