@@ -94,15 +94,15 @@ const useStyles = makeStyles((theme) => ({
 
 const scoringTypesList = [
   {
-    value: 1,
+    value: "per question",
     label: "Per Question",
   },
   {
-    value: 2,
+    value: "dichotomous",
     label: "Dichotomous",
   },
   {
-    value: 3,
+    value: "dependent (ebsr)",
     label: "Dependent (EBSR)",
   },
 ];
@@ -265,12 +265,12 @@ function DetailsConfiguration(props) {
           <div>
             <Button
               className={
-                props.statusButtonDetails == "Published"
+                props.statusButtonDetails == "published"
                   ? classes.btnSelected
                   : classes.buttonGrey
               }
               onClick={() => {
-                props.setStatusButtonDetails("Published");
+                props.setStatusButtonDetails("published");
               }}
               variant="contained"
               color="secondary"
@@ -279,12 +279,12 @@ function DetailsConfiguration(props) {
             </Button>
             <Button
               className={
-                props.statusButtonDetails == "Unpublished"
+                props.statusButtonDetails == "unpublished"
                   ? classes.btnSelected
                   : classes.buttonGrey
               }
               onClick={() => {
-                props.setStatusButtonDetails("Unpublished");
+                props.setStatusButtonDetails("unpublished");
               }}
               variant="contained"
               color="secondary"
@@ -293,12 +293,12 @@ function DetailsConfiguration(props) {
             </Button>
             <Button
               className={
-                props.statusButtonDetails == "Archive"
+                props.statusButtonDetails == "archive"
                   ? classes.btnSelected
                   : classes.buttonGrey
               }
               onClick={() => {
-                props.setStatusButtonDetails("Archive");
+                props.setStatusButtonDetails("archive");
               }}
               variant="contained"
               color="secondary"
@@ -387,12 +387,12 @@ function DetailsConfiguration(props) {
           <div>
             <Button
               className={
-                props.difficultyButtonDetails == "Easy"
+                props.difficultyButtonDetails == "easy"
                   ? classes.btnSelected
                   : classes.buttonGrey
               }
               onClick={() => {
-                props.setDifficultyButtonDetails("Easy");
+                props.setDifficultyButtonDetails("easy");
               }}
               variant="contained"
               color="secondary"
@@ -401,12 +401,12 @@ function DetailsConfiguration(props) {
             </Button>
             <Button
               className={
-                props.difficultyButtonDetails == "Medium"
+                props.difficultyButtonDetails == "medium"
                   ? classes.btnSelected
                   : classes.buttonGrey
               }
               onClick={() => {
-                props.setDifficultyButtonDetails("Medium");
+                props.setDifficultyButtonDetails("medium");
               }}
               variant="contained"
               color="secondary"
@@ -415,12 +415,12 @@ function DetailsConfiguration(props) {
             </Button>
             <Button
               className={
-                props.difficultyButtonDetails == "Hard"
+                props.difficultyButtonDetails == "hard"
                   ? classes.btnSelected
                   : classes.buttonGrey
               }
               onClick={() => {
-                props.setDifficultyButtonDetails("Hard");
+                props.setDifficultyButtonDetails("hard");
               }}
               variant="contained"
               color="secondary"

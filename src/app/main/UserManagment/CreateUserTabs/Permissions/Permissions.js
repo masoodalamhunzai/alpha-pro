@@ -17,8 +17,8 @@ const useStyles = makeStyles({
 });
 
 const Permissions = ({
-  handleChangeInputs,
-  formData: {
+  handleChangePermissions,
+  permissions: {
     omrManager,
     activityManager,
     alphaProd,
@@ -28,13 +28,13 @@ const Permissions = ({
     tagHierarchyManager,
     roleUsers,
     accessEditProfile,
-    admin,
+    roleAdmin,
     roleUser,
     managementAdmin,
     userManager,
     systemAdmin,
     insightAccess,
-    aurthorSiteSettingManager,
+    authorSiteSettingManager,
   },
 }) => {
   const classes = useStyles();
@@ -95,21 +95,25 @@ const Permissions = ({
                 </div>
                 <FormGroup sx={{ display: "flex" }}>
                   <FormControlLabel
-                    control={<Checkbox />}
-                    // checked={checked}
+                    control={
+                      <Checkbox
+                        name="alphaProd"
+                        value={alphaProd}
+                        onChange={handleChangePermissions}
+                      />
+                    }
                     label="Alpha Publishing Prod"
                     className="text-2xl"
-                    name="alphaProd"
-                    value={alphaProd}
-                    onChange={handleChangeInputs}
                   />
                   <FormControlLabel
-                    control={<Checkbox />}
-                    // checked={checked}
+                    control={
+                      <Checkbox
+                        name="alphaDev"
+                        value={alphaDev}
+                        onChange={handleChangePermissions}
+                      />
+                    }
                     label="Alpha Publishing Dev"
-                    name="alphaDev"
-                    value={alphaDev}
-                    onChange={handleChangeInputs}
                   />
                 </FormGroup>
                 <div className="flex justify-between my-5">
@@ -133,46 +137,55 @@ const Permissions = ({
                         <Checkbox
                           name="activityManager"
                           value={activityManager}
-                          onChange={handleChangeInputs}
+                          onChange={handleChangePermissions}
                         />
                       }
                       label="Activity Manager"
                     />
                     <FormControlLabel
-                      control={<Checkbox />}
-                      // checked={checked}
+                      control={
+                        <Checkbox
+                          name="bulkUpdateManager"
+                          value={bulkUpdateManager}
+                          onChange={handleChangePermissions}
+                        />
+                      }
                       label="Bulk Update Manager"
-                      name="bulkUpdateManager"
-                      value={bulkUpdateManager}
-                      onChange={handleChangeInputs}
                     />
                     <FormControlLabel
-                      control={<Checkbox />}
-                      // checked={checked}
+                      control={
+                        <Checkbox
+                          name="tagManager"
+                          value={tagManager}
+                          onChange={handleChangePermissions}
+                        />
+                      }
                       label="Tag Manager"
-                      name="tagManager"
-                      value={tagManager}
-                      onChange={handleChangeInputs}
                     />
                   </FormGroup>
                   <FormGroup>
                     <FormControlLabel
-                      control={<Checkbox />}
+                      control={
+                        <Checkbox
+                          name="tagHierarchyManager"
+                          value={tagHierarchyManager}
+                          onChange={handleChangePermissions}
+                        />
+                      }
                       label="Tag Hierarchy Manager"
-                      name="tagHierarchyManager"
-                      value={tagHierarchyManager}
-                      onChange={handleChangeInputs}
                     />
                     <FormControlLabel
-                      control={<Checkbox />}
+                      control={
+                        <Checkbox
+                          name="roleUsers"
+                          value={roleUsers}
+                          onChange={handleChangePermissions}
+                        />
+                      }
                       label="Users"
-                      name="roleUsers"
-                      value={roleUsers}
-                      onChange={handleChangeInputs}
                     />
                   </FormGroup>
                 </Box>
-
                 <div className="flex justify-between my-5">
                   <p
                     style={{ fontSize: "11px" }}
@@ -194,7 +207,7 @@ const Permissions = ({
                         <Checkbox
                           name="omrManager"
                           value={omrManager}
-                          onChange={handleChangeInputs}
+                          onChange={handleChangePermissions}
                         />
                       }
                       label="OMR"
@@ -233,26 +246,35 @@ const Permissions = ({
                 </div>
                 <FormGroup sx={{ display: "inline-block" }}>
                   <FormControlLabel
-                    control={<Checkbox />}
+                    control={
+                      <Checkbox
+                        name="accessEditProfile"
+                        value={accessEditProfile}
+                        onChange={handleChangePermissions}
+                      />
+                    }
                     label="Access(Edit profile only)"
-                    name="accessEditProfile"
-                    value={accessEditProfile}
                     className="text-2xl"
-                    onChange={handleChangeInputs}
                   />
                   <FormControlLabel
-                    control={<Checkbox />}
+                    control={
+                      <Checkbox
+                        name="roleUser"
+                        value={roleUser}
+                        onChange={handleChangePermissions}
+                      />
+                    }
                     label="User"
-                    name="roleUser"
-                    value={roleUser}
-                    onChange={handleChangeInputs}
                   />
                   <FormControlLabel
-                    control={<Checkbox />}
+                    control={
+                      <Checkbox
+                        name="roleAdmin"
+                        value={roleAdmin}
+                        onChange={handleChangePermissions}
+                      />
+                    }
                     label="Admin"
-                    name="admin"
-                    value={admin}
-                    onChange={handleChangeInputs}
                   />
                 </FormGroup>
                 <div className="flex justify-between my-5">
@@ -265,25 +287,34 @@ const Permissions = ({
                 </div>
                 <FormGroup sx={{ display: "inline-block" }}>
                   <FormControlLabel
-                    control={<Checkbox />}
+                    control={
+                      <Checkbox
+                        name="managementAdmin"
+                        value={managementAdmin}
+                        onChange={handleChangePermissions}
+                      />
+                    }
                     label="Management Admin"
-                    name="managementAdmin"
-                    value={managementAdmin}
-                    onChange={handleChangeInputs}
                   />
                   <FormControlLabel
-                    control={<Checkbox />}
+                    control={
+                      <Checkbox
+                        name="userManager"
+                        value={userManager}
+                        onChange={handleChangePermissions}
+                      />
+                    }
                     label="User Manager"
-                    name="userManager"
-                    value={userManager}
-                    onChange={handleChangeInputs}
                   />
                   <FormControlLabel
-                    control={<Checkbox />}
+                    control={
+                      <Checkbox
+                        name="systemAdmin"
+                        value={systemAdmin}
+                        onChange={handleChangePermissions}
+                      />
+                    }
                     label="System Admin"
-                    name="systemAdmin"
-                    value={systemAdmin}
-                    onChange={handleChangeInputs}
                   />
                 </FormGroup>
                 <div className="flex justify-between my-5">
@@ -295,11 +326,14 @@ const Permissions = ({
                   </p>
                 </div>
                 <FormControlLabel
-                  control={<Checkbox />}
+                  control={
+                    <Checkbox
+                      name="insightAccess"
+                      value={insightAccess}
+                      onChange={handleChangePermissions}
+                    />
+                  }
                   label="Insight Access"
-                  name="insightAccess"
-                  value={insightAccess}
-                  onChange={handleChangeInputs}
                 />
                 <div className="flex justify-between my-5">
                   <p
@@ -310,11 +344,14 @@ const Permissions = ({
                   </p>
                 </div>
                 <FormControlLabel
-                  control={<Checkbox />}
+                  control={
+                    <Checkbox
+                      name="authorSiteSettingManager"
+                      value={authorSiteSettingManager}
+                      onChange={handleChangePermissions}
+                    />
+                  }
                   label="Aurthor Site Setting Manager"
-                  name="aurthorSiteSettingManager"
-                  value={aurthorSiteSettingManager}
-                  onChange={handleChangeInputs}
                 />
               </CardContent>
             </Card>
@@ -329,7 +366,7 @@ const Permissions = ({
             alignItems: "center",
           }}
         >
-          <Icon color="action" style={{ color: "#0078d2", margin: "0 0.8rem" }}>
+          <Icon color="action" style={{ color: "#0078D2", margin: "0 0.8rem" }}>
             infoicon
           </Icon>
           The new user newuser@gmail.com will be sent an email with a set

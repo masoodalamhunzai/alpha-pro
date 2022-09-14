@@ -227,6 +227,11 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                   contactDesignation: "Developer",
                   contactNumber: values.phonenumber.trim(),
                   contactEmail: values.email.trim(),
+                  country: values.country.trim(),
+                  state: values.state.trim(),
+                  city: values.city.trim(),
+                  website: values.website.trim(),
+                  isActive: values.isActive,
                 };
 
                 const res = await AddOrganization(orgReq, user);

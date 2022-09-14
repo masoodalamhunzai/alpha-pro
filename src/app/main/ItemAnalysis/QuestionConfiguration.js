@@ -70,21 +70,21 @@ function QuestionConfiguration(props) {
                     component="CreateQuestion"
                     handleComponentDragDrop={props.handleComponentDragDrop}
                   />
-                  <DraggableBox
+                 {/*  <DraggableBox
                     title="Multiple Responses"
                     component="multipleResponses"
                     handleComponentDragDrop={props.handleComponentDragDrop}
-                  />
+                  /> */}
                   <DraggableBox
                     title="True Or False"
                     component="TrueFalseQuestionLayout"
                     handleComponentDragDrop={props.handleComponentDragDrop}
                   />
-                  <DraggableBox
+                 {/*  <DraggableBox
                     title="Block Layout"
                     component="4"
                     handleComponentDragDrop={props.handleComponentDragDrop}
-                  />
+                  /> */}
                   <DraggableBox
                     title="Ch Matrix Std"
                     component="ChoiceMatrixQuestionLayout"

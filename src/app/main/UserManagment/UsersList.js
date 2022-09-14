@@ -75,6 +75,7 @@ const useStyles = makeStyles((theme) => ({
 function UsersList({ page, loading, organizationUsers, organizationSelected }) {
   const history = useHistory();
   const classes = useStyles();
+  const MODE = "edit-user";
   const { enqueueSnackbar } = useSnackbar();
   const anchorRef = useRef(null);
   const [userId, setUserId] = useState(0);
@@ -134,7 +135,6 @@ function UsersList({ page, loading, organizationUsers, organizationSelected }) {
   function handleChangeRowsPerPage(event) {}
 
   const columns = [
-    { field: "id", headerName: "ID", width: 70 },
     { field: "firstName", headerName: "First Name", flex: 1 },
     { field: "lastName", headerName: "Last Name", flex: 1 },
     { field: "email", headerName: "Email/username", flex: 1 },
@@ -168,7 +168,7 @@ function UsersList({ page, loading, organizationUsers, organizationSelected }) {
                 state: {
                   editData: params?.row,
                   selectedOrg: organizationSelected,
-                  mode: "edit-user",
+                  mode: MODE,
                 },
               }}
             >
@@ -197,8 +197,10 @@ function UsersList({ page, loading, organizationUsers, organizationSelected }) {
       firstName: user?.firstName,
       lastName: user?.lastName,
       email: user?.email,
-      phonenumber: "",
+      phoneNumber: user?.phoneNumber,
       isActive: user?.isActive,
+      organizationId: user?.organizationId,
+      roles: user?.roles[0]?.name,
     };
   });
 

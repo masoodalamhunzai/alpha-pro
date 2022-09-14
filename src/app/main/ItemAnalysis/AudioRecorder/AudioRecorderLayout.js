@@ -10,22 +10,36 @@ import { TextField, Checkbox } from "@mui/material";
 import Switch from "app/shared-components/Switch";
 import { primaryBlueColor } from "app/services/Settings";
 import MenuItem from "@mui/material/MenuItem";
+import { useStateValue } from 'app/services/state/State';
+
+import { EditorState,convertFromRaw } from "draft-js";
 
 const defaultValues = { name: "", email: "", subject: "", message: "" };
 
 const propsType = [
-  "editorContent={audioRecorderEditorContent}",
+  /*  "editorContent={audioRecorderEditorContent}",
   "setEditorContent={setAudioRecorderEditorContent}",
   "maximumSecond={audioRecorderMaximumSecond}",
   "setMaximumSecond={setAudioRecorderMaximumSecond}",
   "playerType={audioRecorderPlayerType}",
-  "setPlayerType={setAudioRecorderPlayerType}",
+  "setPlayerType={setAudioRecorderPlayerType}", */
   "removeAnItem={removeAnItem}",
   "editAnItem={removeAnItem}",
   "saveAnItem={saveAnItem}",
 ];
 
 const AudioRecorderLayout = (props) => {
+  const [{itemQuestionsList}] =useStateValue();
+  //Audio recorder Layout starts
+
+  const [editorContent, setEditorContent] = useState("");
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+
+  const [maximumSecond, setMaximumSecond] = useState(1);
+  const [playerType, setPlayerType] = useState("");
+
+  //audio recorder Layout ends
+
   const { control } = useForm({
     mode: "onChange",
     defaultValues,
@@ -46,6 +60,28 @@ const AudioRecorderLayout = (props) => {
     },
   ];
 
+  useEffect(()=>{
+    if(props.questionId!=null)
+    {
+    const _filteredQuestion=itemQuestionsList.find(q => q.id==props.questionId);
+    console.log('filteredQuestion in audio recorder  ',_filteredQuestion);
+    if(_filteredQuestion)
+    {
+      console.log('_filteredQuestion.description in audio recorder ',_filteredQuestion.description);
+      const convertedState = convertFromRaw(JSON.parse(_filteredQuestion.description));
+      const _editorValue = EditorState.createWithContent(convertedState);
+      setEditorState(_editorValue);
+
+      setEditorContent(_filteredQuestion.description);
+
+      props.setEditorContent(_filteredQuestion.description);
+      props.setMultipleChoices([{data:'no data found'}]);
+    }
+    }else{
+      props.setMultipleChoices([{data:'no data found'}]);
+    }
+  },[]);
+
   return (
     <Paper
       style={{
@@ -58,7 +94,7 @@ const AudioRecorderLayout = (props) => {
       <div className="text-right">
         <Icon
           onClick={() => {
-            props.saveAnItem();
+            props.onSaveQuestion(props.sectionName,props.tabName,props.questionId,props.questionIndex,"audio-recorder-question");
           }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
@@ -131,10 +167,10 @@ const AudioRecorderLayout = (props) => {
           <Controller
             className="mt-8 mb-16"
             render={({ field }) => (
-              <WYSIWYGEditor
-                setEditorContent={props.setEditorContent}
-                {...field}
-              />
+              <WYSIWYGEditor setEditorContent={setEditorContent}
+              editorState={editorState} setEditorState={setEditorState}
+              setEditorContentMain={props.setEditorContent}
+              {...field} />
             )}
             name="message"
             control={control}
@@ -147,9 +183,9 @@ const AudioRecorderLayout = (props) => {
                 id="outlined-select-currency"
                 select
                 label="Player type"
-                // value={answer}
+                value={playerType}
                 onChange={(e) => {
-                  props.setPlayerType(e.target.value);
+                  setPlayerType(e.target.value);
                 }}
                 // helperText="Correct Ans"
               >
@@ -174,9 +210,9 @@ const AudioRecorderLayout = (props) => {
                 required
                 id="outlined-required"
                 label={"Maximum length (seconds)"}
-                value={props.maximumSecond}
+                value={maximumSecond}
                 onChange={(e) => {
-                  props.setMaximumSecond(e.target.value);
+                  setMaximumSecond(e.target.value);
                 }}
               />
             </div>

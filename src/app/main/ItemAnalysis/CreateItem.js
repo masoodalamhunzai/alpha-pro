@@ -6,7 +6,12 @@ import { useStateValue } from "app/services/state/State";
 import { actions } from "app/services/state/Reducer";
 import { useHistory, useLocation } from "react-router-dom";
 import Button from "@material-ui/core/Button";
-import { saveQuestion, saveItem,getItemById,getQuestionByItemId } from "app/services/api/ApiManager";
+import {
+  saveQuestion,
+  saveItem,
+  getItemById,
+  getQuestionByItemId,
+} from "app/services/api/ApiManager";
 import swal from "sweetalert";
 // import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import { useForm } from "react-hook-form";
@@ -45,14 +50,14 @@ const CreateItem = () => {
     .split("-")
     .join(" ");
   const classes = useStyles();
-  const [{ user, news,itemQuestionsList , defaultPageSize }, dispatch] =
-  useStateValue();
+  const [{ user, news, itemQuestionsList, defaultPageSize }, dispatch] =
+    useStateValue();
   const { itemIdProps, mode } = location?.state ? location?.state : "";
 
   console.log(itemIdProps, "itemIdProps");
 
   const [itemId, setItemId] = useState(itemIdProps);
-  const [questionId, setQuestionId] = useState('');
+  const [selectedQuestionId, setSelectedQuestionId] = useState('');
   const [count, setCount] = useState(0);
   const [editorContent, setEditorContent] = useState("");
   const [multipleChoices, setMultipleChoices] = useState([]);
@@ -489,26 +494,22 @@ const CreateItem = () => {
       // console.log(err);
     }
   };
-  const onSaveQuestion = async (sectionname, tabname,questionId,questionIndex,questiontype) => {
-    console.log('onSaveQuestion sectionname ',sectionname);
-     console.log('onSaveQuestion tabname ',tabname);
-     console.log('onSaveQuestion questionId ',questionId);
-      console.log('onSaveQuestion questionIndex ',questionIndex);
-      console.log('onSaveQuestion questiontype ',questiontype);
-    console.log('onSaveQuestion multipleChoices ',multipleChoices);
+  const onSaveQuestion = async (sectionname, tabname,questionId,questionIndex,questiontype,itemObject) => {
     try {
-      if(questionId!=null)
-      {
+      if (questionId != null) {
         const finalItemObject = {
-          id:questionId,
+          id: questionId,
           description: editorContent,
           options: multipleChoices,
-         // itemId: "1eff4c49-fcb1-432e-83c8-c5a0023ee5e0",
-          questionType: questiontype,//"simple-mcqs",
-          questionConfig: "{\"some_key_1\": \"some_val_1\", \"some_key_2\": \"some_value_2\"}",
-          position: 1
+          // itemId: "1eff4c49-fcb1-432e-83c8-c5a0023ee5e0",
+          questionType: questiontype, //"simple-mcqs",
+          questionConfig:
+            '{"some_key_1": "some_val_1", "some_key_2": "some_value_2"}',
+          position: 1,
         };
-        if (editorContent === "" || editorContent === "<p></p>\n") {
+
+        console.log('editorContent in save question ',editorContent);
+       /*  if (editorContent === "" || editorContent === "<p></p>\n") {
           swal({
             title: "Error!",
             text: "Question Description is Required!",
@@ -523,9 +524,10 @@ const CreateItem = () => {
             icon: "error",
             button: "Ok!",
           });
-        } else {
+        } else { */
           const res = await saveQuestion(
-            finalItemObject,
+           // finalItemObject,
+           itemObject,
             itemId,
             user
           );
@@ -537,24 +539,27 @@ const CreateItem = () => {
               icon: "success",
               button: "Ok!",
             }).then((value) => {
-             // setEditorContent("");
-            //  setMultipleChoices([]);
-              console.log("saved successfully");
-            //  redirectTo("/all-questions");
+              const _content = "";
+              const _choices = [];
+              setEditorContent(..._content);
+              setMultipleChoices([..._choices]);
+              console.log("updated successfully");
+              //  redirectTo("/all-questions");
             });
           }
-        }
+       // }
       }else
       {
         const finalItemObject = {
           description: editorContent,
           options: multipleChoices,
-         // itemId: "1eff4c49-fcb1-432e-83c8-c5a0023ee5e0",
+          // itemId: "1eff4c49-fcb1-432e-83c8-c5a0023ee5e0",
           questionType: questiontype, // "simple-mcqs",
-          questionConfig: "{\"some_key_1\": \"some_val_1\", \"some_key_2\": \"some_value_2\"}",
-          position: 1
+          questionConfig:
+            '{"some_key_1": "some_val_1", "some_key_2": "some_value_2"}',
+          position: 1,
         };
-        if (editorContent === "" || editorContent === "<p></p>\n") {
+       /*  if (editorContent === "" || editorContent === "<p></p>\n") {
           swal({
             title: "Error!",
             text: "Question Description is Required!",
@@ -569,9 +574,10 @@ const CreateItem = () => {
             icon: "error",
             button: "Ok!",
           });
-        } else {
+        } else { */
           const res = await saveQuestion(
-            finalItemObject,
+            //finalItemObject,
+            itemObject,
             itemId,
             user
           );
@@ -583,54 +589,47 @@ const CreateItem = () => {
               icon: "success",
               button: "Ok!",
             }).then((value) => {
-            //  setEditorContent("");
-            //  setMultipleChoices([]);
+              const _content = "";
+              const _choices = [];
+              setEditorContent(..._content);
+              setMultipleChoices([..._choices]);
               console.log("saved successfully");
-            //  redirectTo("/all-questions");
+              //  redirectTo("/all-questions");
             });
 
-              //...here shuffles question to push new created question id in layout
-              const comp = componentsStructureList;
-              comp.forEach((item) => {
-                if (item.Section === sectionname) {
-                  if (item.isTabbed === true) {
-                    item.Tabs.forEach((tab) => {
-                      if (tab.TabName === tabname) {
-                        if(tab.QuestionsList && tab.QuestionsList.length>0)
-                        {
-                          console.log('res.data.question.id ',res.data.question.id);
-                        tab.QuestionsList[questionIndex].id=res.data.question.id;
-                       // tab.QuestionsList.push(question);
-                        }
+            //...here shuffles question to push new created question id in layout
+            const comp = componentsStructureList;
+            comp.forEach((item) => {
+              if (item.Section === sectionname) {
+                if (item.isTabbed === true) {
+                  item.Tabs.forEach((tab) => {
+                    if (tab.TabName === tabname) {
+                      if (tab.QuestionsList && tab.QuestionsList.length > 0) {
+                        tab.QuestionsList[questionIndex].id =
+                          res.data.question.id;
+                        // tab.QuestionsList.push(question);
                       }
-                    });
-                  } else {
-                    if(item.QuestionsList && item.QuestionsList.length>0)
-                        {
-                          console.log('res.data.question.id in else case ',res.data.question.id);
-                    item.QuestionsList[questionIndex].id=res.data.question.id;
+                    }
+                  });
+                } else {
+                  if (item.QuestionsList && item.QuestionsList.length > 0) {
+                    item.QuestionsList[questionIndex].id = res.data.question.id;
                     //item.QuestionsList.push(question);
-                        }
                   }
                 }
-              });
-              setComponentsStructureList([...comp]);
-              console.log("compin save question ", comp);
-              console.log("componentsStructureList in save question ", componentsStructureList);
-            
-
-
-
-
-
+              }
+            });
+            setComponentsStructureList([...comp]);
+            console.log("compin save question ", comp);
           }
-        }
-
+       // }
       }
-
-      
+      console.log(
+        "componentsStructureList in save question ",
+        componentsStructureList
+      );
     } catch (error) {
-      console.log('onSaveQuestion error is ',error);
+      console.log("onSaveQuestion error is ", error);
       swal({
         title: "Error!",
         text: "Something Went Wrong,Please Contact Admin!",
@@ -650,11 +649,15 @@ const CreateItem = () => {
         description: descriptionDetails,
         id: itemId,
         layout: JSON.stringify(componentsStructureList),
-        status: "draft",
-        scoringType: "dichotomous",
-        difficultyLevel: "easy",
+        status: statusButtonDetails,
+        scoringType: scoringType,
+        difficultyLevel: difficultyButtonDetails,
+        acknowledgement: contentAcknowledgements,
+        notes: contentNotes,
+        source: contentSource,
+        tags: tagsList,
       };
-      if (itemId === '') {
+      if (itemId === "") {
         swal({
           title: "Error!",
           text: "Item Doesnt Exist!",
@@ -694,10 +697,14 @@ const CreateItem = () => {
           });
         }
       }
+      console.log(
+        "componentsStructureList in save item ",
+        componentsStructureList
+      );
     } catch (error) {
       swal({
         title: "Error!",
-        text: "Something Went Wrong, Please Contact Admin!",
+        text: "Something Went Wrong on saving item, Please Contact Admin!",
         icon: "error",
         button: "Ok!",
       });
@@ -731,20 +738,17 @@ const CreateItem = () => {
   };
 
   useEffect(() => {
-   // getItemLayout();
-   if(itemId==null || itemId=='')
-   {
-    createInitialItem();
-   }else
-   {
-    getItem(itemId);
-    getItemQuestions(itemId);
-   }
+    // getItemLayout();
+    if (itemId == null || itemId == "") {
+      createInitialItem();
+    } else {
+      getItemQuestions(itemId);
+      getItem(itemId);
+    }
   }, []);
 
-   const createInitialItem = async () => {
+  const createInitialItem = async () => {
     try {
-      console.log('create Initial Item called');
       const itemObject = {
         title: "New Item",
         description: "New Item",
@@ -752,35 +756,32 @@ const CreateItem = () => {
           user && user.organization && user.organization.id
             ? user.organization.id
             : "", // '37cb22ba-fdb4-478f-b0d3-35312134e7ec',
-           status: "draft",
-           scoringType: "dichotomous",
-            difficultyLevel: "easy",
-            layout:JSON.stringify( [{
-              Section: "A",
-              Layout: "12",
-              isTabbed: false,
-              QuestionsList: [],
-            }]),
-
-      };
-        const res = await saveItem(itemObject, user);
-        console.log('create item res on page load ',res);
-        if (res && res.data && res.data.status === "success") {
-          if(res.data.item)
+        status: "draft",
+        scoringType: "dichotomous",
+        difficultyLevel: "easy",
+        layout: JSON.stringify([
           {
+            Section: "A",
+            Layout: "12",
+            isTabbed: false,
+            QuestionsList: [],
+          },
+        ]),
+      };
+      const res = await saveItem(itemObject, user);
+      if (res && res.data && res.data.status === "success") {
+        if (res.data.item) {
           setItemId(res.data.item.id);
           setNameDetails(res.data.item.id);
           setDescriptionDetails(res.data.item.description);
-          if(res.data.item.layout)
-          {
-          setComponentsStructureList(JSON.parse(res.data.item.layout));
+          if (res.data.item.layout) {
+            setComponentsStructureList(JSON.parse(res.data.item.layout));
           }
-          console.log('Basic item created successfully');
-          }
+          console.log("Basic item created successfully");
         }
-      
+      }
     } catch (error) {
-      console.log('create item error on page load ',error);
+      console.log("create item error on page load ", error);
       swal({
         title: "Error!",
         text: "Something Went Wrong on Creating Item, Please Contact Admin!",
@@ -794,27 +795,48 @@ const CreateItem = () => {
   };
 
   const getItem = async (itemId) => {
+    console.log("getItem called ", itemId);
     try {
-      console.log('getItem called ',itemId);
-
-        const res = await getItemById(itemId, user);
-        console.log('getItem res on page load ',res);
-        if (res && res.status === 200 && res.data) {
-          if(res.data.description)
-          {
-            setDescriptionDetails(res.data.description);
-          }
-          if(res.data.layout)
-          {
-          setComponentsStructureList(JSON.parse(res.data.layout));
-          }
+      const res = await getItemById(itemId, user);
+      console.log("getItem res on page load ", res);
+      if (res && res.status === 200 && res.data) {
+        if (res.data.description) {
+          setDescriptionDetails(res.data.description);
         }
-        console.log('getItem componentsStructureList  =  ',componentsStructureList);
+        if (res.data.status) {
+          setStatusButtonDetails(res.data.status);
+        }
+        if (res.data.scoringType) {
+          setScoringType(res.data.scoringType);
+        }
+        if (res.data.difficultyLevel) {
+          setDifficultyButtonDetails(res.data.difficultyLevel);
+        }
+        if (res.data.source) {
+          setContentSource(res.data.source);
+        }
+        if (res.data.notes) {
+          setContentNotes(res.data.notes);
+        }
+        if (res.data.acknowledgement) {
+          setContentAcknowledgements(res.data.acknowledgement);
+        }
+        if (res.data.tags) {
+          setTagsList(res.data.tags);
+        }
+        if (res.data.title) {
+          setNameDetails(res.data.title);
+        }
+
+        if (res.data.layout) {
+          setComponentsStructureList(JSON.parse(res.data.layout));
+        }
+      }
     } catch (error) {
-      console.log('create item error on page load ',error);
+      console.log("create item error on page load ", error);
       swal({
         title: "Error!",
-        text: "Something Went Wrong, Please Contact Admin!",
+        text: "Something Went Wrong in getting items, Please Contact Admin!",
         icon: "error",
         button: "Ok!",
       });
@@ -826,22 +848,18 @@ const CreateItem = () => {
 
   const getItemQuestions = async (itemId) => {
     try {
-      console.log('getQuestionsByItemId called');
-
-        const res = await getQuestionByItemId(itemId, user);
-        console.log('getQuestionsByItemId res on page load ',res);
-        if (res && res.status === 200 && res.data && res.data.length > 0) {
-          dispatch({
-            type: actions.SET_ITEM_QUESTIONS_LIST,
-            payload: res.data,
-          });
-        }
-        console.log('itemQuestionsList  =  ',itemQuestionsList);
+      const res = await getQuestionByItemId(itemId, user);
+      if (res && res.status === 200 && res.data && res.data.length > 0) {
+        dispatch({
+          type: actions.SET_ITEM_QUESTIONS_LIST,
+          payload: res.data,
+        });
+      }
     } catch (error) {
-      console.log('create item error on page load ',error);
+      console.log("create item error on page load ", error);
       swal({
         title: "Error!",
-        text: "Something Went Wrong, Please Contact Admin!",
+        text: "Something Went Wrong in getting questions, Please Contact Admin!",
         icon: "error",
         button: "Ok!",
       });
@@ -850,8 +868,6 @@ const CreateItem = () => {
       // setSubmitting(false);
     }
   };
-
-
 
   function onNewTabAdded(section, title) {
     const tab = { TabName: title, QuestionsList: [], Layout: "12" };
@@ -862,8 +878,6 @@ const CreateItem = () => {
       }
     });
     setComponentsStructureList([...comp]);
-    console.log("comp ", comp);
-    console.log("componentsStructureList ", componentsStructureList);
     // let tabs=comp.Tabs;
     // choices = multipleChoices;
     // comp.push(option);
@@ -871,8 +885,7 @@ const CreateItem = () => {
   }
 
   function handleQuestionDragDrop(sectionname, tabname, componentName) {
-    console.log("this is tesing for drop issue ",componentsStructureList);
-    const question = { component: componentName,id:null };
+    const question = { component: componentName, id: null };
     const comp = componentsStructureList;
     comp.forEach((item) => {
       if (item.Section === sectionname) {
@@ -887,9 +900,7 @@ const CreateItem = () => {
         }
       }
     });
-    console.log('comp before setting up ',comp);
     setComponentsStructureList([...comp]);
-    console.log("comp ", comp);
     console.log("componentsStructureList ", componentsStructureList);
     // let tabs=comp.Tabs;
     // choices = multipleChoices;
@@ -960,7 +971,7 @@ const CreateItem = () => {
 
   function handleLayoutChange() {
     const _layout = [...componentsStructureList];
-    console.log('_layout ',_layout);
+    console.log("_layout ", _layout);
     const section = [];
     // ..below logic is for extracting questions from a tab or multiple tabs or sections
     const questions = [];
@@ -1035,8 +1046,7 @@ const CreateItem = () => {
       }
     });
     setComponentsStructureList([...comp]); */
-    console.log("this is tesing in handle layout ",componentsStructureList);
-    console.log("updated section is ", section);
+    console.log("this is tesing in handle layout ", componentsStructureList);
   }
 
   useEffect(() => {
@@ -1541,11 +1551,14 @@ const CreateItem = () => {
                         onSaveQuestion={onSaveQuestion}
                         onRemoveQuestion={removeQuestion}
                         onEditQuestion={editQuestion}
+                        selectedQuestionId={selectedQuestionId}
+                        setSelectedQuestionId={setSelectedQuestionId}
                       />
                     )}
                   </div>
                 );
               })}
+
             </DndProvider>
           </div>
           {/* <div className="mt-12">

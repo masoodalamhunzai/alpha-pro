@@ -206,6 +206,11 @@ function OrganizationsList({
         email: org.contactEmail,
         phonenumber: org.contactNumber,
         address: org.description,
+        country: org.country,
+        state: org.state,
+        city: org.city,
+        website: org.website,
+        isActive: org.isActive,
       };
     });
 

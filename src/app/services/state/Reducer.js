@@ -10,6 +10,7 @@ export const actions = {
   SET_ALL_NEWS: "SET_ALL_NEWS",
   SET_NEWS: "SET_NEWS",
   SET_USER: "SET_USER",
+  SET_CURRENT_ENV: "SET_CURRENT_ENV",
   SET_ITEMS: "SET_ITEMS",
   SET_ROLES: "SET_ROLES",
   SET_GRADES: "SET_GRADES",
@@ -44,6 +45,11 @@ export const reducer = (state, action) => {
       return {
         ...state,
         user: action.payload,
+      };
+    case actions.SET_CURRENT_ENV:
+      return {
+        ...state,
+        currentEnv: action.payload,
       };
     case actions.SET_GRADES:
       return {

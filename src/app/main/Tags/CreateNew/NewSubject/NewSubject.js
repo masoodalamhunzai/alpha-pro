@@ -13,7 +13,8 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import { useLocation, useHistory } from "react-router-dom";
 import swal from "sweetalert";
-import Divider from "@mui/material/Divider";
+import Alert from "@mui/material/Alert";
+import { primaryBlueColor, primaryGrayColor } from "app/services/Settings";
 import Stack from "@mui/material/Stack";
 import { actions } from "app/services/state/Reducer";
 import { createUserSubject, getAllGrades } from "app/services/api/ApiManager";
@@ -49,6 +50,21 @@ const useStyles = makeStyles({
       top: "-5px",
     },
   },
+  buttonGrey: {
+    "&.MuiButton-root": {
+      backgroundColor: "grey",
+      color: "#fff",
+      "&:hover": { backgroundColor: primaryBlueColor },
+      textTransform: "capitalize",
+    },
+  },
+  buttonSelected: {
+    "&.MuiButton-root": {
+      backgroundColor: "#3287FB",
+      color: "#fff",
+      textTransform: "capitalize",
+    },
+  },
   continueBtn: {
     "&.MuiButton-root": {
       backgroundColor: "#3287FB",
@@ -72,7 +88,11 @@ const useStyles = makeStyles({
     },
   },
 });
-
+const subjectStatusArr = [
+  { id: 1, status: "published" },
+  { id: 2, status: "unPublished" },
+  { id: 3, status: "archive" },
+];
 const NewSubject = () => {
   const history = useHistory();
   const location = useLocation();
@@ -82,6 +102,8 @@ const NewSubject = () => {
   const [{ user, grades }, dispatch] = useStateValue();
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [subjectStatus, setSubjectStatus] = useState(0);
+
   const [newSubject, setNewSubject] = useState(
     mode === EDIT_MODE ? editData.subject : ""
   );
@@ -89,6 +111,9 @@ const NewSubject = () => {
     mode === EDIT_MODE ? editData.gradeId : ""
   );
 
+  const handleChangeStatus = (key) => {
+    setSubjectStatus(key);
+  };
   const redirectTo = async (goTo) => {
     try {
       history.push(goTo);
@@ -110,9 +135,14 @@ const NewSubject = () => {
     setNewSubject(e.target.value);
   };
   const validation = () => {
-    if (newSubject === "") {
+    if (newSubject.trim() === "") {
       setError(true);
-      setErrorMessage("Subject Name Required");
+      setErrorMessage("Subject field is Required");
+      return false;
+    }
+    if (selectGrade === "") {
+      setError(true);
+      setErrorMessage("grade field is Required");
       return false;
     }
     return true;
@@ -183,13 +213,20 @@ const NewSubject = () => {
           alignItems: "center",
         }}
       >
-        <Box component="form" noValidate sx={{ my: 4, width: "100%" }}>
+        <Box component="form" noValidate sx={{ my: 4, width: "80%" }}>
+          {error && (
+            <Alert
+              severity="error"
+              sx={{ fontSize: "1.3rem", m: 0, width: "100%" }}
+            >
+              {errorMessage}
+            </Alert>
+          )}
           <FormControl fullWidth>
             <TextField
-              sx={{ width: "100%" }}
+              fullWidth
               margin="normal"
               required
-              fullWidth
               onChange={handleChangeInputs}
               id="subject"
               label="subject"
@@ -217,7 +254,7 @@ const NewSubject = () => {
           </FormControl>
           {newSubject && (
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <span className="text-gray-500 text-base">slug:</span>
+              <span className="text-gray-500 text-base">Slug:</span>
               <Stack
                 direction="row"
                 alignItems="center"
@@ -232,7 +269,7 @@ const NewSubject = () => {
             </Box>
           )}
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <span className="text-gray-500 text-base">status:</span>
+            <span className="text-gray-500 text-base">Status:</span>
             <Stack
               spacing={3}
               direction="row"
@@ -241,15 +278,20 @@ const NewSubject = () => {
               className="w-full"
               justifyContent="center"
             >
-              <Button variant="contained" sx={{ textTransform: "lowercase" }}>
-                published
-              </Button>
-              <Button variant="contained" sx={{ textTransform: "lowercase" }}>
-                unpublished
-              </Button>
-              <Button variant="contained" sx={{ textTransform: "lowercase" }}>
-                archive
-              </Button>
+              {subjectStatusArr?.map((item) => (
+                <Button
+                  key={item.id}
+                  variant="contained"
+                  className={
+                    item.id === subjectStatus
+                      ? classes.buttonSelected
+                      : classes.buttonGrey
+                  }
+                  onClick={() => handleChangeStatus(item.id)}
+                >
+                  {item.status}
+                </Button>
+              ))}
             </Stack>
           </Box>
           <div className="h-0.5 w-ful text-slate-700 bg-slate-400 " />

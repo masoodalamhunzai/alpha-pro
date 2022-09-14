@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from 'react';
 import Typography from "@mui/material/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import WYSIWYGEditor from "app/shared-components/WYSIWYGEditor";
@@ -7,6 +7,9 @@ import Paper from "@mui/material/Paper";
 import { Controller, useForm } from "react-hook-form";
 import _ from "@lodash";
 import TrueFalseDraggableItem from "./TrueFalseDraggableItem";
+import { useStateValue } from 'app/services/state/State';
+
+import { EditorState,convertFromRaw } from "draft-js";
 
 const useStyles = makeStyles({
   layoutRoot: {},
@@ -15,6 +18,30 @@ const useStyles = makeStyles({
 const defaultValues = { name: "", email: "", subject: "", message: "" };
 
 const TrueFalseQuestionLayout = (props) => {
+  const [{itemQuestionsList}] =useStateValue();
+  //trueFalse layout starts
+  const [trueFalseShuffleOption, setTrueFalseShuffleOption] = useState(false);
+  const [editorContent, setEditorContent] = useState("");
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+
+  const [multipleChoices, setMultipleChoices] = useState([
+    {
+      id: `item-1`,
+      position: 0,
+      title: "True",
+      isCorrect: false,
+      isAlternate: false,
+    },
+    {
+      id: `item-2`,
+      position: 1,
+      title: "False",
+      isCorrect: false,
+      isAlternate: false,
+    },
+  ]);
+  //trueFalse layout ends
+
   const classes = useStyles();
 
   const { control } = useForm({
@@ -31,12 +58,37 @@ const TrueFalseQuestionLayout = (props) => {
       isAlternate: false,
     };
     let choices = [];
-    choices = props.multipleChoices;
+    choices = multipleChoices;
     choices.push(option);
+    setMultipleChoices(choices);
     props.setMultipleChoices(choices);
-
     console.log("choices are here: ", choices);
   }
+
+  useEffect(()=>{
+    if(props.questionId!=null)
+    {
+    const _filteredQuestion=itemQuestionsList.find(q => q.id==props.questionId);
+    console.log('filteredQuestion in true false ',_filteredQuestion);
+    if(_filteredQuestion)
+    {
+      console.log('_filteredQuestion.description in true false ',_filteredQuestion.description);
+      const convertedState = convertFromRaw(JSON.parse(_filteredQuestion.description));
+      const _editorValue = EditorState.createWithContent(convertedState);
+      setEditorState(_editorValue);
+
+      setMultipleChoices(_filteredQuestion.options);
+      setEditorContent(_filteredQuestion.description);
+
+      props.setEditorContent(_filteredQuestion.description);
+      props.setMultipleChoices([..._filteredQuestion.options]);
+    }
+    }else{
+      props.setMultipleChoices([...multipleChoices]);
+    }
+  },[]);
+
+
   return (
     <>
       <Paper
@@ -49,7 +101,25 @@ const TrueFalseQuestionLayout = (props) => {
       >
         <div className="text-right">
           <Icon
-            className="p-3 bg bg-blue bg-blue-600"
+            onClick={() => {
+              props.onSaveQuestion(props.sectionName,props.tabName,props.questionId,props.questionIndex,"true-false-question");
+           //   props.saveAnItem();
+            }}
+            className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
+            style={{
+              padding: "2px 24px 24px 4px",
+              color: "white",
+            }}
+            size="small"
+          >
+            save
+          </Icon>
+
+          <Icon
+            onClick={() => {
+              props.onEditQuestion();
+            }}
+            className="p-3 bg bg-blue bg-blue-500 hover:bg-blue-700"
             style={{
               padding: "2px 24px 24px 4px",
               color: "white",
@@ -57,6 +127,20 @@ const TrueFalseQuestionLayout = (props) => {
             size="small"
           >
             edit
+          </Icon>
+
+          <Icon
+            onClick={() => {
+              props.onRemoveQuestion();
+            }}
+            className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
+            style={{
+              padding: "2px 24px 24px 4px",
+              color: "white",
+            }}
+            size="small"
+          >
+            close
           </Icon>
         </div>
         <form className="px-0 sm:px-24 ">
@@ -92,10 +176,10 @@ const TrueFalseQuestionLayout = (props) => {
             <Controller
               className="mt-8 mb-16"
               render={({ field }) => (
-                <WYSIWYGEditor
-                  setEditorContent={props.setEditorContent}
-                  {...field}
-                />
+                <WYSIWYGEditor setEditorContent={setEditorContent}
+                editorState={editorState} setEditorState={setEditorState}
+                setEditorContentMain={props.setEditorContent}
+                {...field} />
               )}
               name="message"
               control={control}
@@ -115,10 +199,12 @@ const TrueFalseQuestionLayout = (props) => {
 
             <TrueFalseDraggableItem
               onNewOptionAdded={onNewOptionAdded}
-              multipleChoices={props.multipleChoices}
-              setMultipleChoices={props.setMultipleChoices}
-              trueFalseShuffleOption={props.trueFalseShuffleOption}
-              setTrueFalseShuffleOption={props.setTrueFalseShuffleOption}
+              multipleChoices={multipleChoices}
+              setMultipleChoices={setMultipleChoices}
+              trueFalseShuffleOption={trueFalseShuffleOption}
+              setTrueFalseShuffleOption={setTrueFalseShuffleOption}
+              
+              setMultipleChoices_Main={props.setMultipleChoices}
             />
           </div>
         </form>

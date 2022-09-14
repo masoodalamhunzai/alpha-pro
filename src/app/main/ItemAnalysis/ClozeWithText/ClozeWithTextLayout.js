@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from 'react';
 import Typography from "@mui/material/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import WYSIWYGEditor from "app/shared-components/WYSIWYGEditor";
@@ -8,16 +8,19 @@ import Paper from "@mui/material/Paper";
 import { Controller, useForm } from "react-hook-form";
 import _ from "@lodash";
 import ClozeWithTextDraggableItem from "./ClozeWithTextDraggableItem";
+import { useStateValue } from 'app/services/state/State';
+
+import { EditorState,convertFromRaw } from "draft-js";
 
 const propsType = [
-  "editorContent={clozeWithTextEditorContent}",
+  /* "editorContent={clozeWithTextEditorContent}",
   "setEditorContent={setClozeWithTextEditorContent}",
   "templateMarkup={clozeWithTextTemplateMarkup}",
   "setTemplateMarkup={setClozeWithTextTemplateMarkup}",
   "matchAllResponses={clozeWithTextMatchAllResponses}",
   "setMatchAllResponses={setClozeWithTextMatchAllResponses}",
   "multipleChoices={clozeWithTextCorrectAnswer}",
-  "setMultipleChoices={setClozeWithTextCorrectAnswer}",
+  "setMultipleChoices={setClozeWithTextCorrectAnswer}", */
 ];
 
 const useStyles = makeStyles({
@@ -27,6 +30,33 @@ const useStyles = makeStyles({
 const defaultValues = { name: "", email: "", subject: "", message: "" };
 
 const ClozeWithTextLayout = (props) => {
+  const [{itemQuestionsList}] =useStateValue();
+  //Cloze With Text Layout starts
+
+  const [matchAllResponses, setMatchAllResponses] = useState(false);
+  const [templateMarkup, setTemplateMarkup] = useState("");
+  const [editorContent, setEditorContent] = useState("");
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+
+  const [multipleChoices, setMultipleChoices] = useState([
+    {
+      id: `item-1`,
+      position: 0,
+      title: "Response 1",
+      isCorrect: false,
+      isAlternate: false,
+    },
+    {
+      id: `item-2`,
+      position: 1,
+      title: "Response 2",
+      isCorrect: false,
+      isAlternate: false,
+    },
+  ]);
+
+  //Cloze With Texts Layout ends
+
   const classes = useStyles();
 
   const { control } = useForm({
@@ -43,12 +73,37 @@ const ClozeWithTextLayout = (props) => {
       isAlternate: false,
     };
     let choices = [];
-    choices = props.multipleChoices;
+    choices = multipleChoices;
     choices.push(option);
+    setMultipleChoices(choices);
     props.setMultipleChoices(choices);
-
     console.log("choices are here: ", choices);
   }
+
+  useEffect(()=>{
+    if(props.questionId!=null)
+    {
+    const _filteredQuestion=itemQuestionsList.find(q => q.id==props.questionId);
+    console.log('filteredQuestion in close with text ',_filteredQuestion);
+    if(_filteredQuestion)
+    {
+      console.log('_filteredQuestion.description in close with text ',_filteredQuestion.description);
+      const convertedState = convertFromRaw(JSON.parse(_filteredQuestion.description));
+      const _editorValue = EditorState.createWithContent(convertedState);
+      setEditorState(_editorValue);
+
+      setMultipleChoices(_filteredQuestion.options);
+      setEditorContent(_filteredQuestion.description);
+
+      props.setEditorContent(_filteredQuestion.description);
+      props.setMultipleChoices([..._filteredQuestion.options]);
+    }
+    }else{
+      props.setMultipleChoices([...multipleChoices]);
+    }
+  },[]);
+
+
   return (
     <>
       <Paper
@@ -61,7 +116,24 @@ const ClozeWithTextLayout = (props) => {
       >
         <div className="text-right">
           <Icon
-            className="p-3 bg bg-blue bg-blue-600"
+            onClick={() => {
+              props.onSaveQuestion(props.sectionName,props.tabName,props.questionId,props.questionIndex,"close-with-text-question");
+            }}
+            className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
+            style={{
+              padding: "2px 24px 24px 4px",
+              color: "white",
+            }}
+            size="small"
+          >
+            save
+          </Icon>
+
+          <Icon
+            onClick={() => {
+              props.editAnItem();
+            }}
+            className="p-3 bg bg-blue bg-blue-500 hover:bg-blue-700"
             style={{
               padding: "2px 24px 24px 4px",
               color: "white",
@@ -69,6 +141,20 @@ const ClozeWithTextLayout = (props) => {
             size="small"
           >
             edit
+          </Icon>
+
+          <Icon
+            onClick={() => {
+              props.removeAnItem();
+            }}
+            className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
+            style={{
+              padding: "2px 24px 24px 4px",
+              color: "white",
+            }}
+            size="small"
+          >
+            close
           </Icon>
         </div>
         <form className="px-0 sm:px-24 ">
@@ -106,10 +192,10 @@ const ClozeWithTextLayout = (props) => {
             <Controller
               className="mt-8 mb-16"
               render={({ field }) => (
-                <WYSIWYGEditor
-                  setEditorContent={props.setEditorContent}
-                  {...field}
-                />
+                <WYSIWYGEditor setEditorContent={setEditorContent}
+                editorState={editorState} setEditorState={setEditorState}
+                setEditorContentMain={props.setEditorContent}
+                {...field} />
               )}
               name="message"
               control={control}
@@ -131,9 +217,9 @@ const ClozeWithTextLayout = (props) => {
                 id="outlined-required"
                 label="Template Markup"
                 onChange={(e) => {
-                  props.setTemplateMarkup(e.target.value);
+                  setTemplateMarkup(e.target.value);
                 }}
-                value={props.templateMarkup}
+                value={templateMarkup}
               />
             </div>
 
@@ -151,10 +237,12 @@ const ClozeWithTextLayout = (props) => {
 
             <ClozeWithTextDraggableItem
               onNewOptionAdded={onNewOptionAdded}
-              multipleChoices={props.multipleChoices}
-              setMultipleChoices={props.setMultipleChoices}
-              matchAllResponses={props.matchAllResponses}
-              setMatchAllResponses={props.setMatchAllResponses}
+              multipleChoices={multipleChoices}
+              setMultipleChoices={setMultipleChoices}
+              matchAllResponses={matchAllResponses}
+              setMatchAllResponses={setMatchAllResponses}
+
+              setMultipleChoices_Main={props.setMultipleChoices}
             />
           </div>
         </form>

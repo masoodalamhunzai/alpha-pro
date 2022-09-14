@@ -99,7 +99,6 @@ function GradeList({ page, loading, grades }) {
 
   function handleChangeRowsPerPage(event) {}
   const columns = [
-    { field: "sNo", headerName: "sNo", flex: 1 },
     { field: "title", headerName: "Grade Name", flex: 1 },
     { field: "createAt", headerName: "Created At", flex: 1 },
     {
@@ -138,7 +137,6 @@ function GradeList({ page, loading, grades }) {
     const createdAt = new Date(grade?.created_at);
     return {
       id: grade?.id,
-      sNo: id + 1,
       title: grade?.title,
       description: grade?.description,
       org_search_key: grade?.org_search_key,

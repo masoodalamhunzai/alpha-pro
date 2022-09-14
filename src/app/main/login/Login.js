@@ -1,14 +1,14 @@
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-//import moment from "moment";
-import JWTLoginTab from "./tabs/JWTLoginTab";
-import { Link } from "react-router-dom";
-import Typography from "@material-ui/core/Typography";
-import clsx from "clsx";
-import { makeStyles } from "@material-ui/core/styles";
-import { motion } from "framer-motion";
-import { useHistory } from "react-router";
-import { useState } from "react";
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import JWTLoginTab from './tabs/JWTLoginTab';
+// import moment from "moment";
+import { Link } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
+import clsx from 'clsx';
+import { makeStyles } from '@material-ui/core/styles';
+import { motion } from 'framer-motion';
+import { useHistory } from 'react-router';
+import { useState } from 'react';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,7 +41,7 @@ function Login() {
     <div
       className={clsx(
         classes.root,
-        "flex flex-col flex-auto items-center justify-center flex-shrink-0 p-16 md:p-24"
+        'flex flex-col flex-auto items-center justify-center flex-shrink-0 p-16 md:p-24'
       )}
     >
       <motion.div
@@ -52,7 +52,7 @@ function Login() {
         <div
           className={clsx(
             classes.rightSection,
-            "hidden md:flex flex-1 lg-col-6 md-col-6 items-center justify-end"
+            'hidden md:flex flex-1 lg-col-6 md-col-6 items-center justify-end'
           )}
         >
           <div className="max-w-320">
@@ -75,9 +75,8 @@ function Login() {
               animate={{ opacity: 1, transition: { delay: 0.3 } }}
             >
               <Typography variant="subtitle1" color="inherit" className="mt-32">
-                An all-in-one platform that lets content authors create,
-                customize, preview and manage intractive assessment content with
-                ease.
+                An all-in-one platform that lets content authors create, customize, preview and
+                manage intractive assessment content with ease.
               </Typography>
             </motion.div>
           </div>
@@ -85,7 +84,7 @@ function Login() {
         <Card
           className={clsx(
             classes.leftSection,
-            "md:flex flex-1 flex flex-col w-full justify-start shadow-0"
+            'md:flex flex-1 flex flex-col w-full justify-start shadow-0'
           )}
           square
         >
@@ -95,11 +94,7 @@ function Login() {
               animate={{ opacity: 1, transition: { delay: 0.2 } }}
             >
               <div className="flex items-center mb-48">
-                <img
-                  className={classes.logo}
-                  src="assets/images/logos/logo.png"
-                  alt="logo"
-                />
+                <img className={classes.logo} src="assets/images/logos/logo.png" alt="logo" />
               </div>
             </motion.div>
 
@@ -116,15 +111,11 @@ function Login() {
 
           <div className="flex items-center justify-start wrap flex-wrap pb-32 pl-20">
             <div>
-              <span className="font-normal mr-8 pr-8 pb-8">
-                Developer Reference
-              </span>
+              <span className="font-normal mr-8 pr-8 pb-8">Developer Reference</span>
             </div>
 
             <div>
-              <span className="font-normal mr-8 pr-8 pb-8">
-                Developer Demos
-              </span>
+              <span className="font-normal mr-8 pr-8 pb-8">Developer Demos</span>
             </div>
 
             <div>
@@ -137,7 +128,7 @@ function Login() {
 
             <div>
               <span className="font-normal mr-8 pr-8 pb-8">
-                Visit Learnosity.com
+                Visit <Link href="https://www.ealpha.info/"> Alpha Publishing</Link>
               </span>
             </div>
 
@@ -146,9 +137,7 @@ function Login() {
             </div>
 
             <div>
-              <span className="font-normal mr-8 pr-8 pb-8">
-                Copyright © 2022 Alpha Publishing
-              </span>
+              <span className="font-normal mr-8 pr-8 pb-8">Copyright © 2022 Alpha Publishing</span>
             </div>
           </div>
         </Card>

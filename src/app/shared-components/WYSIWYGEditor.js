@@ -29,13 +29,17 @@ const useStyles = makeStyles({
 const WYSIWYGEditor = forwardRef((props, ref) => {
   const classes = useStyles();
 
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+ // const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
   function onEditorStateChange(_editorState) {
     console.log("value in WYSIWYGEditor ", _editorState);
-    setEditorState(_editorState);
+    props.setEditorState(_editorState);
     props.setEditorContent(
-      draftToHtml(convertToRaw(_editorState.getCurrentContent()))
+     // draftToHtml(convertToRaw(_editorState.getCurrentContent()))
+      JSON.stringify(convertToRaw(_editorState.getCurrentContent()))
+    );
+    props.setEditorContentMain(
+      JSON.stringify(convertToRaw(_editorState.getCurrentContent()))
     );
     return props.onChange(
       draftToHtml(convertToRaw(_editorState.getCurrentContent()))
@@ -52,7 +56,7 @@ const WYSIWYGEditor = forwardRef((props, ref) => {
       ref={ref}
     >
       <Editor
-        editorState={editorState}
+        editorState={ props.editorState }
         toolbarClassName={classes.toolbar}
         wrapperClassName={classes.wrapper}
         editorClassName={classes.editor}
