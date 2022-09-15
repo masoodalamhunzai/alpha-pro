@@ -238,21 +238,22 @@ function ChoiceMatrixDraggableItem(props) {
         <div className="flex justify-between items-center">
           <div className="flex justify-between items-center">
             <label className="fs-14">Multiple Responses</label>
+            
             <Switch
-            /* checked={props.trueFalseShuffleOption}
-              onChange={() =>
-                props.setTrueFalseShuffleOption(!props.trueFalseShuffleOption)
-              } */
-            />
+            checked={props.trueFalsemultipleResponse}
+            onChange={() =>
+              props.setTrueFalsemultipleResponse(!props.trueFalsemultipleResponse)
+            }
+          />
           </div>
           <div className="flex justify-between items-center">
             <label className="fs-14">Shuffle option</label>
             <Switch
-            /*  checked={props.trueFalseShuffleOption}
-              onChange={() =>
-                props.setTrueFalseShuffleOption(!props.trueFalseShuffleOption)
-              } */
-            />
+            checked={props.trueFalseShuffleOption}
+            onChange={() =>
+              props.setTrueFalseShuffleOption(!props.trueFalseShuffleOption)
+            }
+          />
           </div>
         </div>
       </div>

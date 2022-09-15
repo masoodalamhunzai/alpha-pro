@@ -146,10 +146,10 @@ const CreateUserTabs = () => {
     lastName: editData?.lastName?.length > 0 ? editData?.lastName : "",
     phone: editData?.phoneNumber?.length > 0 ? editData?.phoneNumber : "",
     organizations: selectedOrg?.trim() !== "" ? selectedOrg : "",
-    password: "",
-    confirmPassword: "",
     userRoles: editData?.roles !== "" ? editData?.roles : "",
     isActive: editData?.isActive ? editData?.isActive : "",
+    password: "",
+    confirmPassword: "",
   });
   const [permissions, setPermissions] = useState({
     alphaProd: false,
@@ -157,6 +157,7 @@ const CreateUserTabs = () => {
     bulkUpdateManager: false,
     activityManager: false,
     tagManager: false,
+    omrManager: false,
     tagHierarchyManager: false,
     roleUsers: false,
     accessEditProfile: false,
@@ -177,9 +178,7 @@ const CreateUserTabs = () => {
   };
 
   const handleChangeInputs = (e) => {
-    const { value } = e.target;
-    const { name } = e.target;
-    const { checked } = e.target;
+    const { value, name, checked } = e.target;
     if (checked || !checked) {
       setFormData({ ...formData, [name]: checked || value });
     } else {
@@ -187,9 +186,7 @@ const CreateUserTabs = () => {
     }
   };
   const handleChangePermissions = (e) => {
-    const { value } = e.target;
-    const { name } = e.target;
-    const { checked } = e.target;
+    const { value, name, checked } = e.target;
     setPermissions({ ...permissions, [name]: checked || value });
   };
   const handleChangePhone = (value) => {
@@ -212,6 +209,7 @@ const CreateUserTabs = () => {
     activityManager,
     tagManager,
     tagHierarchyManager,
+    omrManager,
     roleUsers,
     accessEditProfile,
     roleAdmin,
@@ -282,6 +280,7 @@ const CreateUserTabs = () => {
     activityManager ? "activity-manager" : null,
     tagManager ? "tag-manager" : null,
     tagHierarchyManager ? "tag-hierarchy-manager" : null,
+    omrManager ? "omr-manager" : null,
     roleUsers ? "role-users" : null,
     accessEditProfile ? "access-edit-profile" : null,
     roleAdmin ? "role-admin" : null,

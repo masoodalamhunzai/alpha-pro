@@ -136,6 +136,15 @@ function ManageOrganization() {
       temp.push({ name: cnt.country, code: cnt.alpha2Code });
     });
     setCountriesArray(temp);
+
+if(editOrganization?.state != ''){
+    countriesState.map((s) => {
+      if (s.alpha2Code === editOrganization?.country) {
+        setStatesArray(s.states);
+      }
+    })
+  }
+
   }, []);
 
   const redirectTo = async (goTo) => {
@@ -209,7 +218,7 @@ function ManageOrganization() {
                 (organization && organization.website) ||
                 editOrganization?.website ||
                 "",
-              isActive: (organization && organization.isActive) || false,
+              isActive: (organization && organization.isActive) || editOrganization?.isActive || false,
             }}
             onSubmit={async (
               values,
@@ -217,7 +226,6 @@ function ManageOrganization() {
             ) => {
               try {
                 const orgReq = {
-                  id: mode === EDIT_MODE ? editOrganization?.id : "",
                   name: values.name.trim(),
                   description: "This is test organization 1",
                   contactFullName: values.contactperson.trim(),
@@ -230,7 +238,10 @@ function ManageOrganization() {
                   website: values.website.trim(),
                   isActive: values.isActive,
                 };
-
+                if (mode === EDIT_MODE) {
+                  orgReq["id"] = editOrganization?.id;
+                }
+                console.log('orgReq: '+orgReq.isActive);
                 const res = await AddOrganization(orgReq, user);
 
                 if (res && res.data && res.data.status === "success") {
@@ -504,7 +515,7 @@ function ManageOrganization() {
                         value={
                           (statesArray &&
                             statesArray.length > 0 &&
-                            states.find((s) => s === values.state)) ||
+                            statesArray.find((s) => s === values.state)) ||
                           ""
                         }
                         onChange={(event, newValue) => {

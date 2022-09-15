@@ -85,7 +85,7 @@ function StimulusListDraggableItem(props) {
     const tempElement = { ...tempState[index] };
     tempElement.title = e.target.value;
     tempState[index] = tempElement;
-    props.setMultipleChoices(tempState);
+    props.setMultipleChoices([...tempState]);
   };
 
   const handleChange = (event, index) => {
@@ -105,7 +105,7 @@ function StimulusListDraggableItem(props) {
     }
 
     tempState[index] = tempElement;
-    props.setMultipleChoices(tempState);
+    props.setMultipleChoices([...tempState]);
   };
   const AddNewOption = () => {
     setItemCount(itemCount + 1);
@@ -158,6 +158,7 @@ function StimulusListDraggableItem(props) {
                                   height: "5",
                                 },
                               }}
+                              value={item.title}
                               size="large"
                               required
                               id="outlined-required"

@@ -27,6 +27,10 @@ const propsType = [
 const EssayWithPlainTextLayout = (props) => {
   const [{itemQuestionsList}] =useStateValue();
   //EssayWithPlainTextLayout starts
+  const [trueFalseCopy, setTrueFalseCopy] = useState(false);
+  const [trueFalseCut, setTrueFalseCut] = useState(false);
+  const [trueFalsePaste, setTrueFalsePaste] = useState(false);
+
   const [editorContent, setEditorContent] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
@@ -71,6 +75,19 @@ const EssayWithPlainTextLayout = (props) => {
 
       props.setEditorContent(_filteredQuestion.description);
       props.setMultipleChoices([{data:'no data found'}]);
+      if(_filteredQuestion.questionConfig)
+      {
+        const _config=JSON.parse(_filteredQuestion.questionConfig);
+        if(_config)
+        {
+          setWordLimit(_config.wordlimit);
+          setWordType(_config.wordtype);
+          setTrueFalseCopy(_config.copy);
+          setTrueFalseCut(_config.cut);
+          setTrueFalsePaste(_config.paste);
+       
+        }
+      }
     }
     }else{
       props.setMultipleChoices([{data:'no data found'}]);
@@ -91,8 +108,40 @@ const EssayWithPlainTextLayout = (props) => {
       <div className="text-right">
         <Icon
           onClick={() => {
-            props.onSaveQuestion(props.sectionName,props.tabName,props.questionId,props.questionIndex,"essay-with-plain-text-question");
-          }}
+
+            if (editorContent === "" || editorContent === "<p></p>\n") {
+              swal({
+                title: "Error!",
+                text: "Question Description is Required!",
+                icon: "error",
+                button: "Ok!",
+              });
+            }else{
+            const itemObject =props.questionId!=null? {
+              id:props.questionId,
+              description: editorContent,
+              options: [{}],
+              questionType: "essay-with-plain-text-question",
+              questionConfig:JSON.stringify({copy:trueFalseCopy,cut:trueFalseCut,paste:trueFalsePaste,wordlimit:wordLimit,wordtype:wordType}),
+              position: props.questionIndex
+            }:{
+              description: editorContent,
+              options: [{}],
+              questionType: "essay-with-plain-text-question",
+              questionConfig:JSON.stringify({copy:trueFalseCopy,cut:trueFalseCut,paste:trueFalsePaste,wordlimit:wordLimit,wordtype:wordType}),
+              position: props.questionIndex
+            };
+            props.onSaveQuestion(
+              props.sectionName,
+              props.tabName,
+              props.questionId,
+              props.questionIndex,
+              "essay-with-plain-text-question",
+              itemObject
+            );
+          }
+
+           }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
             padding: "2px 24px 24px 4px",
@@ -119,7 +168,12 @@ const EssayWithPlainTextLayout = (props) => {
 
         <Icon
           onClick={() => {
-            props.removeAnItem();
+            props.onRemoveQuestion(
+              props.sectionName,
+              props.tabName,
+              props.questionId,
+              props.questionIndex
+            );
           }}
           className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
           style={{
@@ -174,21 +228,35 @@ const EssayWithPlainTextLayout = (props) => {
             name="message"
             control={control}
           />
-
           <div className="flex items-center flex-wrap">
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Copy</label>
-              <Switch />
+              <Switch
+            checked={trueFalseCopy}
+            onChange={() =>
+              setTrueFalseCopy(!trueFalseCopy)
+            }
+          />
             </div>
 
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Cut</label>
-              <Switch />
+              <Switch
+            checked={trueFalseCut}
+            onChange={() =>
+              setTrueFalseCut(!trueFalseCut)
+            }
+          />
             </div>
 
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Paste</label>
-              <Switch />
+              <Switch
+            checked={trueFalsePaste}
+            onChange={() =>
+              setTrueFalsePaste(!trueFalsePaste)
+            }
+          />
             </div>
           </div>
 

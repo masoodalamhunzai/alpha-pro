@@ -357,7 +357,7 @@ function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
             style={{ height: '70vh', border: 'none', boxSizing: 'unset' }}
             pageSize={defaultPageSize}
             hideFooterSelectedRowCount
-            rowCount={10 /* pagination.totalItemsCount */}
+            rowCount={100 /* pagination.totalItemsCount */}
             rowsPerPageOptions={dataGridPageSizes}
           />
         )}

@@ -36,6 +36,14 @@ const LabelImageWithTextLayout = (props) => {
   const [annotation, setAnnotation] = useState({});
 
   // States start
+  const [trueFalseShowDashedBorder, setTrueFalseShowDashedBorder] = useState(false);
+  const [trueFalseEditAriaLabel, setTrueFalseEditAriaLabel] = useState(false);
+
+  const [imageAlternativeText, setImageAlternativeText] = useState("");
+  const [textOnHover, setTextOnHover] = useState("");
+  const [imageWidth, setImageWidth] = useState("");
+  const [fillColor, setFillColor] = useState(false);
+
   const [editorContent, setEditorContent] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
@@ -161,12 +169,32 @@ const LabelImageWithTextLayout = (props) => {
 
         props.setEditorContent(_filteredQuestion.description);
         props.setMultipleChoices([..._filteredQuestion.options]);
+
+        if (_filteredQuestion.questionConfig) {
+          const _config = JSON.parse(_filteredQuestion.questionConfig);
+          if (_config) {
+            setAnnotations(_config.annotations);
+            setMultipleOptions(_config.multipleOption);
+            setSelectedImageUrl(_config.imageUrl);
+
+      
+            setTrueFalseShowDashedBorder(_config.showDashedBorder);
+            setTrueFalseEditAriaLabel(_config.editAriaLabel);
+            setImageAlternativeText(_config.imageAlternativeText);
+            setTextOnHover(_config.textOnHover);
+            setImageWidth(_config.imageWidth);
+            setFillColor(_config.fillColor);
+
+          }
+        }
       }
     } else {
       props.setMultipleChoices([...multipleChoices]);
     }
   }, []);
-
+  const handleFillColorChange = (event) => {
+    setFillColor(event.target.checked);
+  };
   return (
     <Paper
       style={{
@@ -179,13 +207,70 @@ const LabelImageWithTextLayout = (props) => {
       <div className="text-right">
         <Icon
           onClick={() => {
-            props.onSaveQuestion(
-              props.sectionName,
-              props.tabName,
-              props.questionId,
-              props.questionIndex,
-              "true-false-question"
-            );
+            if (editorContent === "" || editorContent === "<p></p>\n") {
+              swal({
+                title: "Error!",
+                text: "Question Description is Required!",
+                icon: "error",
+                button: "Ok!",
+              });
+            }
+            if (multipleChoices === [] || multipleChoices.length === 0) {
+              swal({
+                title: "Error!",
+                text: "Multiple Choice Options are Required!",
+                icon: "error",
+                button: "Ok!",
+              });
+            } else {
+
+              const itemObject =
+                props.questionId != null
+                  ? {
+                      id: props.questionId,
+                      description: editorContent,
+                      options: multipleChoices,
+                      questionType: "label-image-with-text-question",
+                      questionConfig: JSON.stringify({
+                        multipleOption: multipleOptions,
+                        imageUrl: "",
+                        annotations: annotations,
+                        imageAlternativeText: imageAlternativeText,
+                        textOnHover: textOnHover,
+                        imageWidth: imageWidth,
+                        fillColor:fillColor,
+                        showDashedBorder: trueFalseShowDashedBorder,
+                        editAriaLabel: trueFalseEditAriaLabel,
+                      }),
+                      position: props.questionIndex,
+                    }
+                  : {
+                      description: editorContent,
+                      options: multipleChoices,
+                      questionType: "label-image-with-text-question",
+                      questionConfig: JSON.stringify({
+                        multipleOption: multipleOptions,
+                        imageUrl: "",
+                        annotations: annotations,
+                        imageAlternativeText: imageAlternativeText,
+                        textOnHover: textOnHover,
+                        imageWidth: imageWidth,
+                        fillColor: fillColor,
+                        showDashedBorder: trueFalseShowDashedBorder,
+                        editAriaLabel: trueFalseEditAriaLabel,
+                      }),
+                      position: props.questionIndex,
+                    };
+              console.log("Json going to save", itemObject);
+              props.onSaveQuestion(
+                props.sectionName,
+                props.tabName,
+                props.questionId,
+                props.questionIndex,
+                "label-image-with-text-question",
+                itemObject
+              );
+            }
           }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
@@ -213,7 +298,12 @@ const LabelImageWithTextLayout = (props) => {
 
         <Icon
           onClick={() => {
-            props.removeAnItem();
+            props.onRemoveQuestion(
+              props.sectionName,
+              props.tabName,
+              props.questionId,
+              props.questionIndex
+            );
           }}
           className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
           style={{
@@ -357,6 +447,8 @@ const LabelImageWithTextLayout = (props) => {
                           fontSize: "13px",
                         },
                       }}
+                      value={imageAlternativeText}
+                      onChange={(e)=>setImageAlternativeText(e.target.value)}
                       size="small"
                       required
                       id="outlined-required"
@@ -374,6 +466,8 @@ const LabelImageWithTextLayout = (props) => {
                           fontSize: "13px",
                         },
                       }}
+                      value={textOnHover}
+                      onChange={(e)=>setTextOnHover(e.target.value)}
                       size="small"
                       required
                       id="outlined-required"
@@ -391,6 +485,8 @@ const LabelImageWithTextLayout = (props) => {
                           fontSize: "13px",
                         },
                       }}
+                      value={imageWidth}
+                      onChange={(e)=>setImageWidth(e.target.value)}
                       size="small"
                       required
                       id="outlined-required"
@@ -401,19 +497,32 @@ const LabelImageWithTextLayout = (props) => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <label>Fill color</label>
-                      <Checkbox size="large" />
+                      <Checkbox
+                      checked={fillColor}
+                      onChange={handleFillColorChange}
+                      size="large" />
                     </div>
 
                     <div className="my-4 flex justify-between items-center">
                       <label>Show Dashed Border</label>
-                      <Switch />
+                      <Switch
+            checked={trueFalseShowDashedBorder}
+            onChange={() =>
+              setTrueFalseShowDashedBorder(!trueFalseShowDashedBorder)
+            }
+          />
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <div className="my-4 flex justify-between items-center">
                       <label>Edit ARIA Labels</label>
-                      <Switch />
+                      <Switch
+            checked={trueFalseEditAriaLabel}
+            onChange={() =>
+              setTrueFalseEditAriaLabel(!trueFalseEditAriaLabel)
+            }
+          />
                     </div>
                   </div>
                   {annotations &&

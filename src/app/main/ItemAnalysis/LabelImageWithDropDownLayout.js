@@ -34,6 +34,17 @@ const LabelImageWithDropDownLayout = (props) => {
   const [{ itemQuestionsList }] = useStateValue();
 
   // States start
+  const [trueFalseShuffleOption, setTrueFalseShuffleOption] = useState(false);
+  const [trueFalseMatchAllPossibleResponses, setTrueFalseMatchAllPossibleResponses] = useState(false);
+
+  const [trueFalseShowDashedBorder, setTrueFalseShowDashedBorder] = useState(false);
+  const [trueFalseEditAriaLabel, setTrueFalseEditAriaLabel] = useState(false);
+
+  const [imageAlternativeText, setImageAlternativeText] = useState("");
+  const [textOnHover, setTextOnHover] = useState("");
+  const [imageWidth, setImageWidth] = useState("");
+  const [fillColor, setFillColor] = useState(false);
+
   const [editorContent, setEditorContent] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
@@ -151,12 +162,34 @@ const LabelImageWithDropDownLayout = (props) => {
 
         props.setEditorContent(_filteredQuestion.description);
         props.setMultipleChoices([..._filteredQuestion.options]);
+
+        if(_filteredQuestion.questionConfig)
+        {
+          const _config=JSON.parse(_filteredQuestion.questionConfig);
+          if(_config)
+          {
+            setAnnotations(_config.annotation);
+            setSelectedImageUrl(_config.selectedImageUrl);
+
+            setTrueFalseShuffleOption(_config.shuffleOptionRadio);
+            setTrueFalseMatchAllPossibleResponses(_config.matchAllPossibleResponsesRadio);
+            setTrueFalseShowDashedBorder(_config.showDashedBorderRadio);
+            setTrueFalseEditAriaLabel(_config.editARIALabelsRadio);
+            setImageAlternativeText(_config.imageAlternativeText);
+            setTextOnHover(_config.textOnHover);
+            setImageWidth(_config.imageWidth);
+            setFillColor(_config.fillColor);
+          }
+        }
+
       }
     } else {
       props.setMultipleChoices([...multipleChoices]);
     }
   }, []);
-
+  const handleFillColorChange = (event) => {
+    setFillColor(event.target.checked);
+  };
   return (
     <Paper
       style={{
@@ -168,14 +201,54 @@ const LabelImageWithDropDownLayout = (props) => {
     >
       <div className="text-right">
         <Icon
-          onClick={() => {
+          onClick={() => {            
+            if (editorContent === "" || editorContent === "<p></p>\n") {
+              swal({
+                title: "Error!",
+                text: "Question Description is Required!",
+                icon: "error",
+                button: "Ok!",
+              });
+            }
+            if (multipleChoices === [] || multipleChoices.length === 0) {
+              swal({
+                title: "Error!",
+                text: "Multiple Choice Options are Required!",
+                icon: "error",
+                button: "Ok!",
+              });
+            }else{         
+            const itemObject =props.questionId!=null? {
+              id:props.questionId,
+              description: editorContent,
+              options: multipleChoices,
+              questionType: "label-image-with-drop-down-question",
+              questionConfig:JSON.stringify({annotation:annotations,selectedImageUrl:'',fillColor:fillColor,
+              showDashedBorderRadio:trueFalseShowDashedBorder,editARIALabelsRadio:trueFalseEditAriaLabel,matchAllPossibleResponsesRadio:trueFalseMatchAllPossibleResponses,shuffleOptionRadio:trueFalseShuffleOption,
+              imageAlternativeText:imageAlternativeText,textOnHover:textOnHover,imageWidth:imageWidth
+            }),
+              position: props.questionIndex
+            }:{
+              description: editorContent,
+              options: multipleChoices,
+              questionType: "label-image-with-drop-down-question",
+              questionConfig:JSON.stringify({annotation:annotations,selectedImageUrl:'',fillColor:fillColor,
+              showDashedBorderRadio:trueFalseShowDashedBorder,editARIALabelsRadio:trueFalseEditAriaLabel,matchAllPossibleResponsesRadio:trueFalseMatchAllPossibleResponses,shuffleOptionRadio:trueFalseShuffleOption,
+              imageAlternativeText:imageAlternativeText,textOnHover:textOnHover,imageWidth:imageWidth
+            }),
+              position: props.questionIndex
+            };
             props.onSaveQuestion(
               props.sectionName,
               props.tabName,
               props.questionId,
               props.questionIndex,
-              "true-false-question"
+              "label-image-with-drop-down-question",
+              itemObject
             );
+          }
+
+
           }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
@@ -203,7 +276,12 @@ const LabelImageWithDropDownLayout = (props) => {
 
         <Icon
           onClick={() => {
-            props.removeAnItem();
+            props.onRemoveQuestion(
+              props.sectionName,
+              props.tabName,
+              props.questionId,
+              props.questionIndex
+            );
           }}
           className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
           style={{
@@ -338,6 +416,8 @@ const LabelImageWithDropDownLayout = (props) => {
                           fontSize: "13px",
                         },
                       }}
+                      value={imageAlternativeText}
+                      onChange={(e)=>setImageAlternativeText(e.target.value)}
                       size="small"
                       required
                       id="outlined-required"
@@ -355,6 +435,8 @@ const LabelImageWithDropDownLayout = (props) => {
                           fontSize: "13px",
                         },
                       }}
+                      value={textOnHover}
+                      onChange={(e)=>setTextOnHover(e.target.value)}
                       size="small"
                       required
                       id="outlined-required"
@@ -372,6 +454,8 @@ const LabelImageWithDropDownLayout = (props) => {
                           fontSize: "13px",
                         },
                       }}
+                      value={imageWidth}
+                      onChange={(e)=>setImageWidth(e.target.value)}
                       size="small"
                       required
                       id="outlined-required"
@@ -382,19 +466,32 @@ const LabelImageWithDropDownLayout = (props) => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <label>Fill color</label>
-                      <Checkbox size="large" />
+                      <Checkbox
+                      checked={fillColor}
+                      onChange={handleFillColorChange}
+                      size="large" />
                     </div>
 
                     <div className="my-4 flex justify-between items-center">
                       <label>Show Dashed Border</label>
-                      <Switch />
+                      <Switch
+            checked={trueFalseShowDashedBorder}
+            onChange={() =>
+              setTrueFalseShowDashedBorder(!trueFalseShowDashedBorder)
+            }
+          />
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <div className="my-4 flex justify-between items-center">
                       <label>Edit ARIA Labels</label>
-                      <Switch />
+                      <Switch
+            checked={trueFalseEditAriaLabel}
+            onChange={() =>
+              setTrueFalseEditAriaLabel(!trueFalseEditAriaLabel)
+            }
+          />
                     </div>
                   </div>
 
@@ -556,16 +653,25 @@ const LabelImageWithDropDownLayout = (props) => {
               />
             </div>
           </div> */}
-
           <div className="flex items-center flex-wrap">
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Match All Possible Responses</label>
-              <Switch />
+              <Switch
+            checked={trueFalseMatchAllPossibleResponses}
+            onChange={() =>
+              setTrueFalseMatchAllPossibleResponses(!trueFalseMatchAllPossibleResponses)
+            }
+          />
             </div>
 
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Shuffle option</label>
-              <Switch />
+              <Switch
+            checked={trueFalseShuffleOption}
+            onChange={() =>
+              setTrueFalseShuffleOption(!trueFalseShuffleOption)
+            }
+          />
             </div>
           </div>
         </div>

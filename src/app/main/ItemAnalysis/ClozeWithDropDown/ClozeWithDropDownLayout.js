@@ -29,6 +29,8 @@ const props = [
 const ClozeWithDropDownLayout = (props) => {
   const [{ itemQuestionsList }] = useStateValue();
   //ClozeWithDropDown starts
+  const [trueFalseShuffleOption, setTrueFalseShuffleOption] = useState(false);
+  const [trueFalseMatchAllPossibleResponse, setTrueFalseMatchAllPossibleResponse] = useState(false);
 
   const [editorContent, setEditorContent] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -152,6 +154,18 @@ const ClozeWithDropDownLayout = (props) => {
 
         props.setEditorContent(_filteredQuestion.description);
         props.setMultipleChoices([..._filteredQuestion.options]);
+
+        if(_filteredQuestion.questionConfig)
+        {
+          const _config=JSON.parse(_filteredQuestion.questionConfig);
+          if(_config)
+          {
+            setTemplateMarkup(_config.templatemarkup);
+            setTrueFalseShuffleOption(_config.shuffleOptionRadio);
+            setTrueFalseMatchAllPossibleResponse(_config.matchAllPossibleResponsesRadio);
+          
+          }
+        }
       }
     } else {
       props.setMultipleChoices([...multipleChoices]);
@@ -170,13 +184,49 @@ const ClozeWithDropDownLayout = (props) => {
       <div className="text-right">
         <Icon
           onClick={() => {
+
+            if (editorContent === "" || editorContent === "<p></p>\n") {
+              swal({
+                title: "Error!",
+                text: "Question Description is Required!",
+                icon: "error",
+                button: "Ok!",
+              });
+            }
+            if (multipleChoices === [] || multipleChoices.length === 0) {
+              swal({
+                title: "Error!",
+                text: "Multiple Choice Options are Required!",
+                icon: "error",
+                button: "Ok!",
+              });
+            }else{
+            const itemObject =props.questionId!=null? {
+              id:props.questionId,
+              description: editorContent,
+              options: multipleChoices,
+              questionType: "close-with-drop-down-question",
+              questionConfig:JSON.stringify({templatemarkup:templateMarkup,matchAllPossibleResponsesRadio:trueFalseMatchAllPossibleResponse,shuffleOptionRadio:trueFalseShuffleOption,
+            }),
+              position: props.questionIndex
+            }:{
+              description: editorContent,
+              options: multipleChoices,
+              questionType: "close-with-drop-down-question",
+              questionConfig:JSON.stringify({templatemarkup:templateMarkup,matchAllPossibleResponsesRadio:trueFalseMatchAllPossibleResponse,shuffleOptionRadio:trueFalseShuffleOption,
+              }),
+              position: props.questionIndex
+            };
             props.onSaveQuestion(
               props.sectionName,
               props.tabName,
               props.questionId,
               props.questionIndex,
-              "close-with-drop-down-question"
+              "close-with-drop-down-question",
+              itemObject
             );
+          }
+
           }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
@@ -204,7 +254,12 @@ const ClozeWithDropDownLayout = (props) => {
 
         <Icon
           onClick={() => {
-            props.removeAnItem();
+            props.onRemoveQuestion(
+              props.sectionName,
+              props.tabName,
+              props.questionId,
+              props.questionIndex
+            );
           }}
           className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
           style={{
@@ -219,7 +274,7 @@ const ClozeWithDropDownLayout = (props) => {
       <form className="px-0 sm:px-24 ">
         <div className="mb-24 flex justify-between flex-wrap wrap">
           <h2 className="pose-h2 font-bold tracking-tight">
-            Cloze With Drag & Drop
+            Cloze With Drop Down
           </h2>
           <div>
             <button className="border border-gray border-gray-300 bg-white hover:bg-gray-100 text-gray-800 text-white font-bold py-2 px-6 rounded-full mx-4">
@@ -321,16 +376,25 @@ const ClozeWithDropDownLayout = (props) => {
                 );
               })}
           </div>
-
           <div className="flex items-center flex-wrap">
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Match All Possible Responses</label>
-              <Switch />
+              <Switch
+            checked={trueFalseMatchAllPossibleResponse}
+            onChange={() =>
+              setTrueFalseMatchAllPossibleResponse(!trueFalseMatchAllPossibleResponse)
+            }
+          />
             </div>
 
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Shuffle options</label>
-              <Switch />
+              <Switch
+            checked={trueFalseShuffleOption}
+            onChange={() =>
+              setTrueFalseShuffleOption(!trueFalseShuffleOption)
+            }
+          />
             </div>
           </div>
         </div>

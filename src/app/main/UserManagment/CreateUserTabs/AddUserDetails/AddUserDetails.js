@@ -269,7 +269,7 @@ function AddUserDetailsTab({
                 value={isActive}
                 defaultValue={isActive}
                 label="status"
-                name="status"
+                name="isActive"
                 onChange={handleChangeInputs}
               >
                 <MenuItem value={true}>Active</MenuItem>

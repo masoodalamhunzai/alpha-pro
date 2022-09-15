@@ -21,6 +21,14 @@ const defaultValues = { name: "", email: "", subject: "", message: "" };
 const ClozeWithDragAndDropLayout = (props) => {
   const [{ itemQuestionsList }] = useStateValue();
   //ClozeWithDragAndDrop starts
+  const [groupPossibleOption, setGroupPossibleOption] = useState(false);
+
+  const [trueFalseShuffleOption, setTrueFalseShuffleOption] = useState(false);
+  const [trueFalsemultipleResponse, setTrueFalsemultipleResponse] = useState(false);
+
+  const [trueFalseShowDragHandle, setTrueFalseShowDragHandle] = useState(false);
+  const [trueFalseDuplicateResponse, setTrueFalseDuplicateResponse] = useState(false);
+
   const [editorContent, setEditorContent] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
@@ -143,6 +151,21 @@ const ClozeWithDragAndDropLayout = (props) => {
 
         props.setEditorContent(_filteredQuestion.description);
         props.setMultipleChoices([..._filteredQuestion.options]);
+
+        if(_filteredQuestion.questionConfig)
+        {
+          const _config=JSON.parse(_filteredQuestion.questionConfig);
+          if(_config)
+          {
+            setTemplateMarkup(_config.templatemarkup);
+
+            setGroupPossibleOption(_config.groupPossibleResponsesRadio);
+            setTrueFalseShuffleOption(_config.shuffleOptionRadio);
+            setTrueFalsemultipleResponse(_config.multipleResponsesRadio);
+            setTrueFalseShowDragHandle(_config.showDraghandleRadio);
+            setTrueFalseDuplicateResponse(_config.duplicateResponsesRadio);
+          }
+        }
       }
     } else {
       props.setMultipleChoices([...multipleChoices]);
@@ -161,13 +184,53 @@ const ClozeWithDragAndDropLayout = (props) => {
       <div className="text-right">
         <Icon
           onClick={() => {
+
+            if (editorContent === "" || editorContent === "<p></p>\n") {
+              swal({
+                title: "Error!",
+                text: "Question Description is Required!",
+                icon: "error",
+                button: "Ok!",
+              });
+            }
+            if (multipleChoices === [] || multipleChoices.length === 0) {
+              swal({
+                title: "Error!",
+                text: "Multiple Choice Options are Required!",
+                icon: "error",
+                button: "Ok!",
+              });
+            }else{
+
+            const itemObject =props.questionId!=null? {
+              id:props.questionId,
+              description: editorContent,
+              options: multipleChoices,
+              questionType: "close-with-drag-and-drop-question",
+              questionConfig:JSON.stringify({templatemarkup:templateMarkup,groupPossibleResponsesRadio:groupPossibleOption,
+                duplicateResponsesRadio:trueFalseDuplicateResponse,showDraghandleRadio:trueFalseShowDragHandle,
+                multipleResponsesRadio:trueFalsemultipleResponse,shuffleOptionRadio:trueFalseShuffleOption,
+            }),
+              position: props.questionIndex
+            }:{
+              description: editorContent,
+              options: multipleChoices,
+              questionType: "close-with-drag-and-drop-question",
+              questionConfig:JSON.stringify({templatemarkup:templateMarkup,groupPossibleResponsesRadio:groupPossibleOption,
+                duplicateResponsesRadio:trueFalseDuplicateResponse,showDraghandleRadio:trueFalseShowDragHandle,
+                multipleResponsesRadio:trueFalsemultipleResponse,shuffleOptionRadio:trueFalseShuffleOption,
+            }),
+              position: props.questionIndex
+            };
             props.onSaveQuestion(
               props.sectionName,
               props.tabName,
               props.questionId,
               props.questionIndex,
-              "true-false-question"
+              "close-with-drag-and-drop-question",
+              itemObject
             );
+          }
           }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
@@ -195,7 +258,12 @@ const ClozeWithDragAndDropLayout = (props) => {
 
         <Icon
           onClick={() => {
-            props.removeAnItem();
+            props.onRemoveQuestion(
+              props.sectionName,
+              props.tabName,
+              props.questionId,
+              props.questionIndex
+            );
           }}
           className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
           style={{
@@ -276,11 +344,15 @@ const ClozeWithDragAndDropLayout = (props) => {
               value={templateMarkup}
             />
           </div>
-
           <div className="flex">
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Group Possible Responses</label>
-              <Switch />
+              <Switch
+            checked={groupPossibleOption}
+            onChange={() =>
+              setGroupPossibleOption(!groupPossibleOption)
+            }
+          />
             </div>
           </div>
 
@@ -365,26 +437,45 @@ const ClozeWithDragAndDropLayout = (props) => {
               optionsList={optionsList}
             />*/}
           </div>
-
           <div className="flex items-center flex-wrap">
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Duplicate Responses</label>
-              <Switch />
+              <Switch
+            checked={trueFalseDuplicateResponse}
+            onChange={() =>
+              setTrueFalseDuplicateResponse(!trueFalseDuplicateResponse)
+            }
+          />
             </div>
 
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Show drag handle</label>
-              <Switch />
+              <Switch
+            checked={trueFalseShowDragHandle}
+            onChange={() =>
+              setTrueFalseShowDragHandle(!trueFalseShowDragHandle)
+            }
+          />
             </div>
 
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Multiple Responses</label>
-              <Switch />
+              <Switch
+            checked={trueFalsemultipleResponse}
+            onChange={() =>
+              setTrueFalsemultipleResponse(!trueFalsemultipleResponse)
+            }
+          />
             </div>
 
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Shuffle options</label>
-              <Switch />
+              <Switch
+            checked={trueFalseShuffleOption}
+            onChange={() =>
+              setTrueFalseShuffleOption(!trueFalseShuffleOption)
+            }
+          />
             </div>
           </div>
         </div>

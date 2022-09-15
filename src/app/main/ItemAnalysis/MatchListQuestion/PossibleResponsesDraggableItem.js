@@ -85,7 +85,7 @@ function PossibleResponsesDraggableItem(props) {
     const tempElement = { ...tempState[index] };
     tempElement.title = e.target.value;
     tempState[index] = tempElement;
-    props.setMultipleChoices(tempState);
+    props.setMultipleChoices([...tempState]);
   };
 
   const handleChange = (event, index) => {
@@ -105,7 +105,7 @@ function PossibleResponsesDraggableItem(props) {
     }
 
     tempState[index] = tempElement;
-    props.setMultipleChoices(tempState);
+    props.setMultipleChoices([...tempState]);
   };
   const AddNewOption = () => {
     setItemCount(itemCount + 1);
@@ -158,6 +158,7 @@ function PossibleResponsesDraggableItem(props) {
                                   height: "5",
                                 },
                               }}
+                              value={item.title}
                               size="large"
                               required
                               id="outlined-required"
@@ -179,13 +180,9 @@ function PossibleResponsesDraggableItem(props) {
                               select
                               label="Correct Ans"
                               // value={answer}
-                              /* value={
-                                item.isCorrect == true
-                                  ? 1
-                                  : item.isAlternate == true
-                                  ? 2
-                                  : 3
-                              } */
+                               value={
+                                item.position 
+                              } 
                               onChange={(e) => {
                                 handleChange(e, index);
                               }}

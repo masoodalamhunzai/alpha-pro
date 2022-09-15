@@ -71,13 +71,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function UsersList({ page, loading, organizationUsers, organizationSelected }) {
+function UsersList({
+  page,
+  setPage,
+  loading,
+  organizationUsers,
+  organizationSelected,
+}) {
   const history = useHistory();
   const classes = useStyles();
   const MODE = "edit-user";
+  const { enqueueSnackbar } = useSnackbar();
+  const anchorRef = useRef(null);
+  const [userId, setUserId] = useState(0);
   const [{ user, patients, defaultPageSize, organization }, dispatch] =
     useStateValue();
   const [open, setOpen] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [pageSize, setPageSize] = useState(10);
+  const [rowCount, setRowCount] = useState(1);
 
   async function onArchiveUser(Id) {
     swal({
@@ -121,9 +133,16 @@ function UsersList({ page, loading, organizationUsers, organizationSelected }) {
 
   // async function handleEditUser(Id) {}
 
-  const handleChangePage = async (event, newPage) => {};
+  const handleChangePage = async (event, newPage) => {
+    setPage(newPage);
+    setRowCount(newPage);
+  };
 
-  function handleChangeRowsPerPage(event) {}
+  function handleChangeRowsPerPage(event) {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+    setPageSize(+event.target.value);
+  }
 
   const columns = [
     { field: "firstName", headerName: "First Name", flex: 1 },
@@ -241,10 +260,12 @@ function UsersList({ page, loading, organizationUsers, organizationSelected }) {
             hideFooterRowCount
             hideFooterPagination
             style={{ height: "70vh", border: "none", boxSizing: "unset" }}
-            pageSize={defaultPageSize}
             hideFooterSelectedRowCount
-            rowCount={10 /* pagination.totalItemsCount */}
+            rowCount={rowCount /* pagination.totalItemsCount */}
+            pageSize={pageSize}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
             rowsPerPageOptions={dataGridPageSizes}
+            pagination
           />
         ) : (
           ""
@@ -252,9 +273,9 @@ function UsersList({ page, loading, organizationUsers, organizationSelected }) {
         <TablePagination
           page={page}
           component="div"
-          rowsPerPage={defaultPageSize}
+          rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
-          count={100 /* pagination.totalItemsCount */}
+          count={rowCount /* pagination.totalItemsCount */}
           className="flex-shrink-0 border-t-1"
           rowsPerPageOptions={dataGridPageSizes}
           onRowsPerPageChange={handleChangeRowsPerPage}

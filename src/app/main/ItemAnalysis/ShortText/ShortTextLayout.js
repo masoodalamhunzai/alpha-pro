@@ -75,6 +75,16 @@ const ShortTextLayout = (props) => {
 
       props.setEditorContent(_filteredQuestion.description);
       props.setMultipleChoices([{data:'no data found'}]);
+      if(_filteredQuestion.questionConfig)
+      {
+        const _config=JSON.parse(_filteredQuestion.questionConfig);
+        if(_config)
+        {
+          setPoints(_config.points);
+          setAllow(_config.allow);
+          setTextValue(_config.textValue);
+        }
+      }
     }
     }else{
       props.setMultipleChoices([{data:'no data found'}]);
@@ -93,7 +103,38 @@ const ShortTextLayout = (props) => {
       <div className="text-right">
         <Icon
           onClick={() => {
-            props.onSaveQuestion(props.sectionName,props.tabName,props.questionId,props.questionIndex,"short-text-question");
+
+            if (editorContent === "" || editorContent === "<p></p>\n") {
+              swal({
+                title: "Error!",
+                text: "Question Description is Required!",
+                icon: "error",
+                button: "Ok!",
+              });
+            }else{
+            const itemObject =props.questionId!=null? {
+              id:props.questionId,
+              description: editorContent,
+              options: [{}],
+              questionType: "short-text-question",
+              questionConfig:JSON.stringify({textValue:textValue,paste:false,points:points,allow:allow}),
+              position: props.questionIndex
+            }:{
+              description: editorContent,
+              options: [{}],
+              questionType: "short-text-question",
+              questionConfig:JSON.stringify({textValue:textValue,paste:false,points:points,allow:allow}),
+              position: props.questionIndex
+            };
+            props.onSaveQuestion(
+              props.sectionName,
+              props.tabName,
+              props.questionId,
+              props.questionIndex,
+              "short-text-question",
+              itemObject
+            );
+          }
           }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
@@ -121,7 +162,12 @@ const ShortTextLayout = (props) => {
 
         <Icon
           onClick={() => {
-            props.removeAnItem();
+            props.onRemoveQuestion(
+              props.sectionName,
+              props.tabName,
+              props.questionId,
+              props.questionIndex
+            );
           }}
           className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
           style={{
