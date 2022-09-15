@@ -1,4 +1,10 @@
-import { CreateUser, CreateNewGrade, CreateNewSubject } from "app/main";
+import {
+  CreateUser,
+  CreateNewGrade,
+  CreateNewSubject,
+  NewTagType,
+  NewTagHierarchy,
+} from "app/main";
 
 const subRoutesConfig = {
   routes: [
@@ -13,6 +19,14 @@ const subRoutesConfig = {
     {
       path: "/create-grade",
       component: () => <CreateNewGrade />,
+    },
+    {
+      path: "/create-tag-type",
+      component: () => <NewTagType />,
+    },
+    {
+      path: "/create-tag-hierarchy",
+      component: () => <NewTagHierarchy />,
     },
     {
       path: "/edit-grade",
