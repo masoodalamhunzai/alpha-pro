@@ -51,12 +51,15 @@ const useStyles = makeStyles({
     "&.MuiButton-root": {
       backgroundColor: "grey",
       color: "#fff",
+      fontSize: "11px",
       "&:hover": { backgroundColor: primaryBlueColor },
       textTransform: "capitalize",
+      fontSize: "11px",
     },
   },
   buttonSelected: {
     "&.MuiButton-root": {
+      fontSize: "11px",
       backgroundColor: "#3287FB",
       color: "#fff",
       textTransform: "capitalize",
@@ -172,6 +175,7 @@ const NewTagType = () => {
                 <Button
                   key={item.id}
                   variant="contained"
+                  size="medium"
                   className={
                     item.id === tagTypeStatus
                       ? classes.buttonSelected
@@ -198,14 +202,14 @@ const NewTagType = () => {
             }}
           >
             <Button
-              type="submit"
+              // type="submit"
               variant="contained"
               className={classes.continueBtn}
             >
               Save Changes
             </Button>
             <Button
-              type="cancel"
+              // type="cancel"
               variant="contained"
               className={classes.cancelBtn}
             >

@@ -93,10 +93,9 @@ const TagHierarchies = () => {
               </Typography>
               <Typography
                 variant="paragraph"
-                gutterBottom
                 sx={{
                   color: "#000",
-                  mt: 2,
+                  fontSize: "12px",
                   textTransform: "capitalize",
                 }}
               >
