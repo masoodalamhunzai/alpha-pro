@@ -166,6 +166,7 @@ const CreateUserTabs = () => {
     managementAdmin: false,
     userManager: false,
     systemAdmin: false,
+    roleOmr: false,
     insightAccess: false,
     authorSiteSettingManager: false,
   });
@@ -217,6 +218,7 @@ const CreateUserTabs = () => {
     userManager,
     systemAdmin,
     insightAccess,
+    roleOmr,
     authorSiteSettingManager,
   } = permissions;
   const redirectTo = async (goTo) => {
@@ -286,6 +288,7 @@ const CreateUserTabs = () => {
     managementAdmin ? "management-admin" : null,
     userManager ? "user-manager" : null,
     systemAdmin ? "system-admin" : null,
+    roleOmr ? "optical-mark-recognition" : null,
     insightAccess ? "insight-access" : null,
     authorSiteSettingManager ? "author-site-setting-manager" : null,
   ];

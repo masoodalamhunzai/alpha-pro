@@ -19,7 +19,6 @@ const useStyles = makeStyles({
 const Permissions = ({
   handleChangePermissions,
   permissions: {
-    omrManager,
     activityManager,
     alphaProd,
     alphaDev,
@@ -34,16 +33,12 @@ const Permissions = ({
     userManager,
     systemAdmin,
     insightAccess,
+    roleOmr,
     authorSiteSettingManager,
   },
 }) => {
   const classes = useStyles();
 
-  // const [checked, setChecked] = React.useState(true);
-
-  // const handleChange = (event) => {
-  //   setChecked(event.target.checked);
-  // };
   return (
     <div>
       <Box
@@ -205,8 +200,8 @@ const Permissions = ({
                     <FormControlLabel
                       control={
                         <Checkbox
-                          name="omrManager"
-                          value={omrManager}
+                          name="roleOmr"
+                          value={roleOmr}
                           onChange={handleChangePermissions}
                         />
                       }

@@ -216,7 +216,6 @@ const NewGrade = () => {
               fullWidth
               margin="normal"
               required
-              fullWidth
               onChange={handleChangeInputs}
               label="Grade"
               name="grade"

@@ -1,6 +1,6 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react/jsx-no-bind */
-import { memo, useState } from "react";
+import { memo, useState, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { TablePagination, Tooltip } from "@material-ui/core";
 import {
@@ -15,17 +15,17 @@ import {
   settings as s,
   states,
 } from "app/services/Settings";
+import Icon from "@material-ui/core/Icon";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@mui/material/Typography";
-// import { actions } from "app/services/state/Reducer";
 import swal from "sweetalert";
-// import moment from "moment";
 import StatusIcon from "app/shared-components/StatusIcon";
+import { deleteSubject } from "app/services/api/ApiManager";
 import { CustomToolbar } from "../../components";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    fontSize: "1rem",
+    fontSize: "1.2rem",
     backgroundColor: theme.palette.background.paper,
     padding: 20,
   },
@@ -45,61 +45,26 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "space-evenly",
   },
-  types: {
-    zIndex: 1,
+  "& .MuiDataGrid-cell": {
+    fontSize: "16px",
   },
-  avatar: {
-    width: 40,
-    height: 40,
-    border: `1px solid ${theme.palette.background.default}`,
-  },
-  cardRow: {
-    display: "flex",
-    alignItems: "center",
-    width: "100%",
-  },
-  rowLabel: {
-    width: "40%",
-    fontWeight: 500,
-    fontSize: 16,
-  },
-  rowValue: {
-    color: "#01619b",
-    width: "60%",
-    fontWeight: "bold",
-    fontSize: 16,
+  "& .MuiDataGrid-root": {
+    fontSize: "16px",
   },
 }));
 
-function UsersList({
+function TagTypeList({
   page,
   setPage,
-  loading,
-  organizationUsers,
-  organizationSelected,
+  // loading,
 }) {
   const history = useHistory();
   const classes = useStyles();
-  const MODE = "edit-user";
-  const [{ user, patients, defaultPageSize, organization }, dispatch] =
-    useStateValue();
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [pageSize, setPageSize] = useState(10);
   const [rowCount, setRowCount] = useState(1);
+  // const [{ user, defaultPageSize }, dispatch] = useStateValue();
 
-  async function onArchiveUser(Id) {
-    swal({
-      title: "Are you sure?",
-      text: "Are you sure you want to archive this User?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then(async (willDelete) => {
-      if (willDelete) {
-        handleArchiveUser(Id);
-      }
-    });
-  }
   const redirectTo = async (goTo) => {
     try {
       history.push(goTo);
@@ -107,27 +72,33 @@ function UsersList({
       // console.log(err);
     }
   };
+  async function onArchiveSubject(id) {
+    swal({
+      title: "Are you sure?",
+      text: "Are you sure you want to archive this subject?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+      // .then(async (willDelete) => {
+      //   if (willDelete) {
+      //     const res = await deleteTagType(id, user);
+      //     if (res && res.data && res.data.status === "success") {
+      //       swal({
+      //         title: "Good job!",
+      //         text: "Tag Type archive successfully!",
+      //         icon: "success",
+      //         button: "Ok!",
+      //       }
+      //     }
+      //   });
+      // })
+      .then((value) => {
+        redirectTo("/tag-types");
+      });
+  }
 
   async function handleArchiveUser(Id) {}
-
-  // async function onRestoreUser(Id) {
-  //   swal({
-  //     title: "Are you sure?",
-  //     text: "Are you sure you want to restore this User?",
-  //     icon: "warning",
-  //     buttons: true,
-  //     dangerMode: true,
-  //   }).then(async (willDelete) => {
-  //     if (willDelete) {
-  //       handleRestoreUser(Id);
-  //     }
-  //   });
-  // }
-  // async function handleRestoreUser(Id) {}
-
-  // const showUserDetail = (id) => {};
-
-  // async function handleEditUser(Id) {}
 
   const handleChangePage = async (event, newPage) => {
     setPage(newPage);
@@ -141,20 +112,22 @@ function UsersList({
   }
 
   const columns = [
-    { field: "firstName", headerName: "First Name", flex: 1 },
-    { field: "lastName", headerName: "Last Name", flex: 1 },
-    { field: "email", headerName: "Email/username", flex: 1 },
-    { field: "phonenumber", headerName: "Mobile Phone", flex: 1 },
+    { field: "id", headerName: "Id", flex: 1 },
+    { field: "name", headerName: "Name", flex: 1 },
+    { field: "longName", headerName: "Long Name", flex: 1 },
+    { field: "tagUsage", headerName: "Tag Usage", flex: 1 },
     {
-      field: "isActive",
+      field: "status",
       headerName: "Status",
-      flex: 1,
+      headerAlign: "center",
+      align: "center",
+
       renderCell: (params) => (
         <>
-          {params?.row?.isActive ? (
-            <StatusIcon isActive={params?.row?.isActive} />
+          {params.row.status === "inActive" ? (
+            <StatusIcon isActive={params?.row?.status} />
           ) : (
-            <StatusIcon isActive={params?.row?.isActive} />
+            <StatusIcon isActive={params?.row?.status} />
           )}
         </>
       ),
@@ -170,26 +143,21 @@ function UsersList({
           <Tooltip title="Edit">
             <Link
               to={{
-                pathname: "/user-management/edit-user",
+                // pathname: "/edit-tagtype",
                 state: {
                   editData: params?.row,
-                  selectedOrg: organizationSelected,
-                  mode: MODE,
+                  // mode: "edit-tagtype",
                 },
               }}
             >
-              <EditIcon
-                style={{ marginLeft: 5 }}
-                className={classes.icon}
-                // onClick={() => redirectTo("/user-management/edit-user")}
-              />
+              <EditIcon style={{ marginLeft: 5 }} className={classes.icon} />
             </Link>
           </Tooltip>
           <Tooltip title="Archive">
             <DeleteIcon
               className={classes.icon}
               style={{ marginLeft: 5 }}
-              onClick={() => onArchiveUser(params.id)}
+              onClick={() => onArchiveSubject(params?.id)}
             />
           </Tooltip>
         </>
@@ -197,23 +165,76 @@ function UsersList({
     },
   ];
 
-  const rows = organizationUsers?.map((user) => {
-    return {
-      id: user?.id,
-      firstName: user?.firstName,
-      lastName: user?.lastName,
-      email: user?.email,
-      phoneNumber: user?.phoneNumber,
-      isActive: user?.isActive,
-      organizationId: user?.organizationId,
-      roles: user?.roles[0]?.name,
-    };
-  });
+  const rows = [
+    {
+      id: 1,
+      name: "Artifical",
+      longName: "Artifical",
+      tagUsage: "Activity",
+      status: "inActive",
+    },
+    {
+      id: 2,
+      name: "BOY",
+      longName: "BOY",
+      tagUsage: "Item",
+      status: "Active",
+    },
+    {
+      id: 3,
+      name: "CCSS ELA STANDARD",
+      longName: "CCSS ELA STANDARD",
+      tagUsage: "Activity",
+      status: "inActive",
+    },
+    {
+      id: 4,
+      name: "Artifical",
+      longName: "Artifical",
+      tagUsage: "Item",
+      status: "Active",
+    },
+    {
+      id: 5,
+      name: "BOY",
+      longName: "BOY",
+      tagUsage: "Activity",
+      status: "inActive",
+    },
+    {
+      id: 6,
+      name: "CCSS ELA STANDARD",
+      longName: "CCSS ELA STANDARD",
+      tagUsage: "Item",
+      status: "Active",
+    },
+    {
+      id: 7,
+      name: "Artifical",
+      longName: "Artifical",
+      tagUsage: "Activity",
+      status: "inActive",
+    },
+    {
+      id: 8,
+      name: "BOY",
+      longName: "BOY",
+      tagUsage: "Item",
+      status: "Active",
+    },
+    {
+      id: 9,
+      name: "CCSS ELA STANDARD",
+      longName: "CCSS ELA STANDARD",
+      tagUsage: "Activity",
+      status: "inActive",
+    },
+  ];
 
   return (
     <>
       <div className={classes.root}>
-        {loading && (
+        {/* {loading && (
           <div className="flex justify-center flex-col items-center py-12">
             <Typography
               variant="body1"
@@ -228,7 +249,7 @@ function UsersList({
               color="secondary"
             />
           </div>
-        )}
+        )} */}
         {rows ? (
           <DataGrid
             sx={{
@@ -253,6 +274,7 @@ function UsersList({
             components={{
               Toolbar: () => <CustomToolbar />,
             }}
+            checkboxSelection
             hideFooterRowCount
             hideFooterPagination
             style={{ height: "70vh", border: "none", boxSizing: "unset" }}
@@ -283,4 +305,4 @@ function UsersList({
   );
 }
 
-export default memo(UsersList);
+export default memo(TagTypeList);
