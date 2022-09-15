@@ -82,6 +82,14 @@ const TrueFalseQuestionLayout = (props) => {
 
       props.setEditorContent(_filteredQuestion.description);
       props.setMultipleChoices([..._filteredQuestion.options]);
+
+      if (_filteredQuestion.questionConfig) {
+        const _config = JSON.parse(_filteredQuestion.questionConfig);
+        if (_config) {
+          setTrueFalseShuffleOption(_config.shuffleOptionRadio);
+        }
+      }
+
     }
     }else{
       props.setMultipleChoices([...multipleChoices]);
@@ -102,8 +110,45 @@ const TrueFalseQuestionLayout = (props) => {
         <div className="text-right">
           <Icon
             onClick={() => {
-              props.onSaveQuestion(props.sectionName,props.tabName,props.questionId,props.questionIndex,"true-false-question");
-           //   props.saveAnItem();
+              if (editorContent === "" || editorContent === "<p></p>\n") {
+                swal({
+                  title: "Error!",
+                  text: "Question Description is Required!",
+                  icon: "error",
+                  button: "Ok!",
+                });
+              }
+              if (multipleChoices === [] || multipleChoices.length === 0) {
+                swal({
+                  title: "Error!",
+                  text: "Multiple Choice Options are Required!",
+                  icon: "error",
+                  button: "Ok!",
+                });
+              }else{
+              const itemObject =props.questionId!=null? {
+                id:props.questionId,
+                description: editorContent,
+                options: multipleChoices,
+                questionType: "true-false-question",
+                questionConfig:JSON.stringify({shuffleOptionRadio:trueFalseShuffleOption}),
+                position: props.questionIndex
+              }:{
+                description: editorContent,
+                options: multipleChoices,
+                questionType: "true-false-question",
+                questionConfig:JSON.stringify({shuffleOptionRadio:trueFalseShuffleOption}),
+                position: props.questionIndex
+              };
+              props.onSaveQuestion(
+                props.sectionName,
+                props.tabName,
+                props.questionId,
+                props.questionIndex,
+                "true-false-question",
+                itemObject
+              );
+            }
             }}
             className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
             style={{
@@ -131,7 +176,12 @@ const TrueFalseQuestionLayout = (props) => {
 
           <Icon
             onClick={() => {
-              props.onRemoveQuestion();
+              props.onRemoveQuestion(
+                props.sectionName,
+                props.tabName,
+                props.questionId,
+                props.questionIndex
+              );
             }}
             className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
             style={{

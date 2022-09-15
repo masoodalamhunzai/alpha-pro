@@ -53,10 +53,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function GradeList({ page, loading, grades }) {
+function GradeList({ page, setPage, loading, grades }) {
   const history = useHistory();
   const classes = useStyles();
   const anchorRef = useRef(null);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [pageSize, setPageSize] = useState(10);
+  const [rowCount, setRowCount] = useState(1);
   const [{ user, patients, defaultPageSize, organization }, dispatch] =
     useStateValue();
   const [open, setOpen] = useState(false);
@@ -95,9 +98,16 @@ function GradeList({ page, loading, grades }) {
 
   async function handleArchiveUser(Id) {}
 
-  const handleChangePage = async (event, newPage) => {};
+  const handleChangePage = async (event, newPage) => {
+    setPage(newPage);
+    setRowCount(newPage);
+  };
 
-  function handleChangeRowsPerPage(event) {}
+  function handleChangeRowsPerPage(event) {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+    setPageSize(+event.target.value);
+  }
   const columns = [
     { field: "title", headerName: "Grade Name", flex: 1 },
     { field: "createAt", headerName: "Created At", flex: 1 },
@@ -105,7 +115,7 @@ function GradeList({ page, loading, grades }) {
       field: "action",
       headerName: "Action",
       sortable: false,
-      flex: 1,
+      width: 160,
       renderCell: (params) => (
         <>
           <Tooltip title="Edit">
@@ -192,10 +202,12 @@ function GradeList({ page, loading, grades }) {
             hideFooterRowCount
             hideFooterPagination
             style={{ height: "70vh", border: "none", boxSizing: "unset" }}
-            pageSize={defaultPageSize}
             hideFooterSelectedRowCount
-            rowCount={10 /* pagination.totalItemsCount */}
+            rowCount={rowCount /* pagination.totalItemsCount */}
+            pageSize={pageSize}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
             rowsPerPageOptions={dataGridPageSizes}
+            pagination
           />
         ) : (
           ""
@@ -203,9 +215,9 @@ function GradeList({ page, loading, grades }) {
         <TablePagination
           page={page}
           component="div"
-          rowsPerPage={defaultPageSize}
+          rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
-          count={100 /* pagination.totalItemsCount */}
+          count={rowCount /* pagination.totalItemsCount */}
           className="flex-shrink-0 border-t-1"
           rowsPerPageOptions={dataGridPageSizes}
           onRowsPerPageChange={handleChangeRowsPerPage}

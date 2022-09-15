@@ -97,6 +97,16 @@ const ClozeWithTextLayout = (props) => {
 
       props.setEditorContent(_filteredQuestion.description);
       props.setMultipleChoices([..._filteredQuestion.options]);
+
+      if(_filteredQuestion.questionConfig)
+      {
+        const _config=JSON.parse(_filteredQuestion.questionConfig);
+        if(_config)
+        {
+          setMatchAllResponses(_config.matchAllPossibleResponsesRadio);
+          setTemplateMarkup(_config.templatemarkup);
+        }
+      }
     }
     }else{
       props.setMultipleChoices([...multipleChoices]);
@@ -117,7 +127,49 @@ const ClozeWithTextLayout = (props) => {
         <div className="text-right">
           <Icon
             onClick={() => {
-              props.onSaveQuestion(props.sectionName,props.tabName,props.questionId,props.questionIndex,"close-with-text-question");
+
+
+              if (editorContent === "" || editorContent === "<p></p>\n") {
+                swal({
+                  title: "Error!",
+                  text: "Question Description is Required!",
+                  icon: "error",
+                  button: "Ok!",
+                });
+              }
+              if (multipleChoices === [] || multipleChoices.length === 0) {
+                swal({
+                  title: "Error!",
+                  text: "Multiple Choice Options are Required!",
+                  icon: "error",
+                  button: "Ok!",
+                });
+              }else{
+              const itemObject =props.questionId!=null? {
+                id:props.questionId,
+                description: editorContent,
+                options: multipleChoices,
+                questionType: "close-with-text-question",
+                questionConfig:JSON.stringify({templatemarkup:templateMarkup,matchAllPossibleResponsesRadio:matchAllResponses
+              }),
+                position: props.questionIndex
+              }:{
+                description: editorContent,
+                options: multipleChoices,
+                questionType: "close-with-text-question",
+                questionConfig:JSON.stringify({templatemarkup:templateMarkup,matchAllPossibleResponsesRadio:matchAllResponses}),
+                position: props.questionIndex
+              };
+              props.onSaveQuestion(
+                props.sectionName,
+                props.tabName,
+                props.questionId,
+                props.questionIndex,
+                "close-with-text-question",
+                itemObject
+              );
+            }
+
             }}
             className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
             style={{
@@ -145,7 +197,12 @@ const ClozeWithTextLayout = (props) => {
 
           <Icon
             onClick={() => {
-              props.removeAnItem();
+              props.onRemoveQuestion(
+                props.sectionName,
+                props.tabName,
+                props.questionId,
+                props.questionIndex
+              );
             }}
             className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
             style={{

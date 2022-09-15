@@ -79,10 +79,11 @@ function OrganizationsList({
   const { enqueueSnackbar } = useSnackbar();
   const anchorRef = useRef(null);
   const [organizationId, setOrganizationId] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [{ user, organization, patients, defaultPageSize }, dispatch] =
     useStateValue();
-  const [rowCount, setRowCount] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [pageSize, setPageSize] = useState(10);
+  const [rowCount, setRowCount] = useState(1);
   const [currentPage, setCurrentPage] = useState(0);
   const [openViewModal, setOpenViewModal] = useState(false);
   const [organizationDetailsView, setOrganizationDetailsView] = useState(null);
@@ -132,10 +133,15 @@ function OrganizationsList({
     console.log(Id, "eidt");
   }
 
-  const handleChangePage = async (event, newPage) => {};
+  const handleChangePage = async (event, newPage) => {
+    setPage(newPage);
+    setRowCount(newPage);
+  };
 
   function handleChangeRowsPerPage(event) {
-    setPage(page + 1);
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+    setPageSize(+event.target.value);
   }
 
   const loadOrganizations = async () => {
@@ -211,12 +217,14 @@ function OrganizationsList({
         city: org.city,
         website: org.website,
         isActive: org.isActive,
+        created_at: org.created_at,
       };
     });
 
   useEffect(() => {
     setRowCount(rows !== null ? rows.length : 0);
   }, [rows]);
+
   return (
     <>
       <div className={classes.root}>
@@ -245,7 +253,7 @@ function OrganizationsList({
               },
             }}
             rows={rows}
-            page={currentPage}
+            page={page}
             hideFooter
             columns={columns}
             components={{
@@ -254,21 +262,19 @@ function OrganizationsList({
             hideFooterRowCount
             hideFooterPagination
             style={{ height: "70vh", border: "none", boxSizing: "unset" }}
-            pageSize={defaultPageSize}
             hideFooterSelectedRowCount
-            rowCount={10 /* pagination.totalItemsCount */}
+            rowCount={rowCount /* pagination.totalItemsCount */}
+            pageSize={pageSize}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
             rowsPerPageOptions={dataGridPageSizes}
+            pagination
           />
         )}
         <TablePagination
-          page={currentPage}
+          page={page}
           component="div"
-          rowsPerPage={defaultPageSize}
-          onPageChange={(e, newValue) => {
-            setCurrentPage(newValue);
-            console.log("current event", e);
-            console.log("current value", newValue); /* handleChangePage */
-          }}
+          rowsPerPage={rowsPerPage}
+          onPageChange={handleChangePage}
           count={rowCount /* pagination.totalItemsCount */}
           className="flex-shrink-0 border-t-1"
           rowsPerPageOptions={dataGridPageSizes}

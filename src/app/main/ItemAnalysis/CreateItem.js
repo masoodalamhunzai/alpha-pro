@@ -11,6 +11,7 @@ import {
   saveItem,
   getItemById,
   getQuestionByItemId,
+  deleteQuestion,
 } from "app/services/api/ApiManager";
 import swal from "sweetalert";
 // import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
@@ -57,7 +58,7 @@ const CreateItem = () => {
   console.log(itemIdProps, "itemIdProps");
 
   const [itemId, setItemId] = useState(itemIdProps);
-  const [selectedQuestionId, setSelectedQuestionId] = useState('');
+  const [selectedQuestionId, setSelectedQuestionId] = useState("");
   const [count, setCount] = useState(0);
   const [editorContent, setEditorContent] = useState("");
   const [multipleChoices, setMultipleChoices] = useState([]);
@@ -494,8 +495,16 @@ const CreateItem = () => {
       // console.log(err);
     }
   };
-  const onSaveQuestion = async (sectionname, tabname,questionId,questionIndex,questiontype,itemObject) => {
+  const onSaveQuestion = async (
+    sectionname,
+    tabname,
+    questionId,
+    questionIndex,
+    questiontype,
+    itemObject
+  ) => {
     try {
+      console.log('itemObject ',itemObject);
       if (questionId != null) {
         const finalItemObject = {
           id: questionId,
@@ -508,8 +517,8 @@ const CreateItem = () => {
           position: 1,
         };
 
-        console.log('editorContent in save question ',editorContent);
-       /*  if (editorContent === "" || editorContent === "<p></p>\n") {
+        console.log("editorContent in save question ", editorContent);
+        /*  if (editorContent === "" || editorContent === "<p></p>\n") {
           swal({
             title: "Error!",
             text: "Question Description is Required!",
@@ -525,31 +534,30 @@ const CreateItem = () => {
             button: "Ok!",
           });
         } else { */
-          const res = await saveQuestion(
-           // finalItemObject,
-           itemObject,
-            itemId,
-            user
-          );
-          console.log('onSaveQuestion res is ',res);
-          if (res && res.data && res.data.status === "success") {
-            swal({
-              title: "Good job!",
-              text: "Question Updated Successfully!",
-              icon: "success",
-              button: "Ok!",
-            }).then((value) => {
-              const _content = "";
-              const _choices = [];
-              setEditorContent(..._content);
-              setMultipleChoices([..._choices]);
-              console.log("updated successfully");
-              //  redirectTo("/all-questions");
-            });
-          }
-       // }
-      }else
-      {
+        const res = await saveQuestion(
+          // finalItemObject,
+          itemObject,
+          itemId,
+          user
+        );
+        console.log("onSaveQuestion res is ", res);
+        if (res && res.data && res.data.status === "success") {
+          swal({
+            title: "Good job!",
+            text: "Question Updated Successfully!",
+            icon: "success",
+            button: "Ok!",
+          }).then((value) => {
+            const _content = "";
+            const _choices = [];
+            setEditorContent(..._content);
+            setMultipleChoices([..._choices]);
+            console.log("updated successfully");
+            //  redirectTo("/all-questions");
+          });
+        }
+        // }
+      } else {
         const finalItemObject = {
           description: editorContent,
           options: multipleChoices,
@@ -559,7 +567,7 @@ const CreateItem = () => {
             '{"some_key_1": "some_val_1", "some_key_2": "some_value_2"}',
           position: 1,
         };
-       /*  if (editorContent === "" || editorContent === "<p></p>\n") {
+        /*  if (editorContent === "" || editorContent === "<p></p>\n") {
           swal({
             title: "Error!",
             text: "Question Description is Required!",
@@ -575,54 +583,54 @@ const CreateItem = () => {
             button: "Ok!",
           });
         } else { */
-          const res = await saveQuestion(
-            //finalItemObject,
-            itemObject,
-            itemId,
-            user
-          );
-          console.log('onSaveQuestion res is ',res);
-          if (res && res.data && res.data.status === "success") {
-            swal({
-              title: "Good job!",
-              text: "Question Saved Successfully!",
-              icon: "success",
-              button: "Ok!",
-            }).then((value) => {
-              const _content = "";
-              const _choices = [];
-              setEditorContent(..._content);
-              setMultipleChoices([..._choices]);
-              console.log("saved successfully");
-              //  redirectTo("/all-questions");
-            });
+        const res = await saveQuestion(
+          //finalItemObject,
+          itemObject,
+          itemId,
+          user
+        );
+        console.log("onSaveQuestion res is ", res);
+        if (res && res.data && res.data.status === "success") {
+          swal({
+            title: "Good job!",
+            text: "Question Saved Successfully!",
+            icon: "success",
+            button: "Ok!",
+          }).then((value) => {
+            const _content = "";
+            const _choices = [];
+            setEditorContent(..._content);
+            setMultipleChoices([..._choices]);
+            console.log("saved successfully");
+            //  redirectTo("/all-questions");
+          });
 
-            //...here shuffles question to push new created question id in layout
-            const comp = componentsStructureList;
-            comp.forEach((item) => {
-              if (item.Section === sectionname) {
-                if (item.isTabbed === true) {
-                  item.Tabs.forEach((tab) => {
-                    if (tab.TabName === tabname) {
-                      if (tab.QuestionsList && tab.QuestionsList.length > 0) {
-                        tab.QuestionsList[questionIndex].id =
-                          res.data.question.id;
-                        // tab.QuestionsList.push(question);
-                      }
+          //...here shuffles question to push new created question id in layout
+          const comp = componentsStructureList;
+          comp.forEach((item) => {
+            if (item.Section === sectionname) {
+              if (item.isTabbed === true) {
+                item.Tabs.forEach((tab) => {
+                  if (tab.TabName === tabname) {
+                    if (tab.QuestionsList && tab.QuestionsList.length > 0) {
+                      tab.QuestionsList[questionIndex].id =
+                        res.data.question.id;
+                      // tab.QuestionsList.push(question);
                     }
-                  });
-                } else {
-                  if (item.QuestionsList && item.QuestionsList.length > 0) {
-                    item.QuestionsList[questionIndex].id = res.data.question.id;
-                    //item.QuestionsList.push(question);
                   }
+                });
+              } else {
+                if (item.QuestionsList && item.QuestionsList.length > 0) {
+                  item.QuestionsList[questionIndex].id = res.data.question.id;
+                  //item.QuestionsList.push(question);
                 }
               }
-            });
-            setComponentsStructureList([...comp]);
-            console.log("compin save question ", comp);
-          }
-       // }
+            }
+          });
+          setComponentsStructureList([...comp]);
+          console.log("compin save question ", comp);
+        }
+        // }
       }
       console.log(
         "componentsStructureList in save question ",
@@ -825,7 +833,7 @@ const CreateItem = () => {
           setTagsList(res.data.tags);
         }
         if (res.data.title) {
-          setNameDetails(res.data.title);
+          //setNameDetails(res.data.title);
         }
 
         if (res.data.layout) {
@@ -1053,8 +1061,126 @@ const CreateItem = () => {
     handleLayoutChange();
   }, [selectedLayout, tabsInColumn, tabsInColumnOne, tabsInColumnTwo]);
 
-  const removeQuestion = () => {
-    console.log("removeAnItem()");
+  const removeQuestion = async (
+    sectionname,
+    tabname,
+    questionId,
+    questionIndex
+  ) => {
+    try {
+      swal({
+        title: "Are you sure?",
+        text: "Are you sure you want to delete?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then(async (willDelete) => {
+        if (willDelete) {
+          // handleArchiveOrganization(Id);
+          console.log("question id : ", questionId);
+          if (questionId != null) {
+            const res = await deleteQuestion(questionId, user);
+            console.log("onSaveQuestion res is ", res);
+            if (res && res.data && res.data.status === "success") {
+              swal({
+                title: "Good job!",
+                text: "Question Deleted Successfully!",
+                icon: "success",
+                button: "Ok!",
+              }).then((value) => {
+                if (itemId != null && itemId != "") {
+                  getItemQuestions(itemId);
+                }
+              });
+
+              {
+                //...here shuffles question to push new created question id in layout
+                const comp = componentsStructureList;
+                console.log("before", componentsStructureList);
+                comp.forEach((item) => {
+                  if (item.Section === sectionname) {
+                    if (item.isTabbed === true) {
+                      item.Tabs.forEach((tab) => {
+                        if (tab.TabName === tabname) {
+                          if (
+                            tab.QuestionsList &&
+                            tab.QuestionsList.length > 0
+                          ) {
+                            tab.QuestionsList = tab.QuestionsList.filter(
+                              (e, i) => e.id != questionId
+                            );
+
+                            console.log("length>0 ", questionIndex);
+                            //tab.QuestionsList[ questionIndex ].id = questionId;
+                            // tab.QuestionsList.push(question);
+                          }
+                        }
+                      });
+                    } else {
+                      if (item.QuestionsList && item.QuestionsList.length > 0) {
+                        item.QuestionsList = item.QuestionsList.filter(
+                          (e, i) => e.id != questionId
+                        );
+                        console.log("length<0 index", questionIndex);
+                        //item.QuestionsList[ questionIndex ].id =questionId;
+                        //item.QuestionsList.push(question);
+                      }
+                    }
+                  }
+                });
+                setComponentsStructureList([...comp]);
+                console.log("compin delete question ", comp);
+              }
+            }
+          } else {
+            //...here shuffles question to push new created question id in layout
+            const comp = componentsStructureList;
+            console.log("before", componentsStructureList);
+            comp.forEach((item) => {
+              if (item.Section === sectionname) {
+                if (item.isTabbed === true) {
+                  item.Tabs.forEach((tab) => {
+                    if (tab.TabName === tabname) {
+                      if (tab.QuestionsList && tab.QuestionsList.length > 0) {
+                        tab.QuestionsList = tab.QuestionsList.filter(
+                          (e, i) => i != questionIndex
+                        );
+
+                        console.log("length>0 ", questionIndex);
+                        //tab.QuestionsList[ questionIndex ].id = questionId;
+                        // tab.QuestionsList.push(question);
+                      }
+                    }
+                  });
+                } else {
+                  if (item.QuestionsList && item.QuestionsList.length > 0) {
+                    item.QuestionsList = item.QuestionsList.filter(
+                      (e, i) => i != questionIndex
+                    );
+                    console.log("length<0 index", questionIndex);
+                    //item.QuestionsList[ questionIndex ].id =questionId;
+                    //item.QuestionsList.push(question);
+                  }
+                }
+              }
+            });
+            setComponentsStructureList([...comp]);
+            console.log("compin delete question ", comp);
+          }
+        }
+      });
+    } catch (error) {
+      console.log("onSaveQuestion error is ", error);
+      swal({
+        title: "Error!",
+        text: "Something Went Wrong,Please Contact Admin!",
+        icon: "error",
+        button: "Ok!",
+      });
+      // setStatus({ success: false });
+      // setErrors({ submit: error.message });
+      // setSubmitting(false);
+    }
   };
 
   /* const saveQuestion = () => {
@@ -1146,419 +1272,450 @@ const CreateItem = () => {
               </div>
 
               {/* this is for configuration component */}
-              {componentsStructureList && 
-              componentsStructureList.length>0 &&
-               componentsStructureList.map((item, index) => {
-                return (
-                  <div
-                    className="flex flex-col w-full max-w-4xl p-20"
-                    style={{
-                      width:
-                        selectedLayout == "1"
-                          ? "100%"
-                          : selectedLayout == "50%"
-                          ? "50%"
-                          : selectedLayout == "30%,70%" && index % 2 == 0
-                          ? "30%"
-                          : selectedLayout == "30%,70%" && index % 2 !== 0
-                          ? "70%"
-                          : selectedLayout == "70%,30%" && index % 2 == 0
-                          ? "70%"
-                          : selectedLayout == "70%,30%" && index % 2 !== 0
-                          ? "30%"
-                          : selectedLayout == "40%,60%" && index % 2 == 0
-                          ? "40%"
-                          : selectedLayout == "40%,60%" && index % 2 !== 0
-                          ? "60%"
-                          : selectedLayout == "60%,40%" && index % 2 == 0
-                          ? "60%"
-                          : selectedLayout == "60%,40%" && index % 2 !== 0
-                          ? "40%"
-                          : "auto",
-                    }}
-                  >
-                    {item.isTabbed === true ? (
-                      <TabbedSection
-                        TabsList={item.Tabs}
-                        sectionName={item.Section}
-                        handleNewTab={onNewTabAdded}
-                        handleQuestionDragDrop={handleQuestionDragDrop}
-                        multipleChoiceschoiceMatric={
-                          choiceMatricMultipleChoices
-                        }
-                        setMultipleChoiceschoiceMatric={
-                          setChoiceMatricMultipleChoices
-                        }
-                        multipleOptionschoiceMatric={
-                          choiceMatricMultipleOptions
-                        }
-                        setMultipleOptionschoiceMatric={
-                          setChoiceMatricMultipleOptions
-                        }
-                        editorContentchoiceMatric={choiceMatricEditorContent}
-                        setEditorContentchoiceMatric={
-                          setChoiceMatricEditorContent
-                        }
-                        multipleChoicestrueFalse={trueFalseMultipleChoices}
-                        setMultipleChoicestrueFalse={
-                          setTrueFalseMultipleChoices
-                        }
-                        editorContenttrueFalse={trueFalseEditorContent}
-                        setEditorContenttrueFalse={setTrueFalseEditorContent}
-                        trueFalseShuffleOptiontrueFalse={trueFalseShuffleOption}
-                        setTrueFalseShuffleOptiontrueFalse={
-                          setTrueFalseShuffleOption
-                        }
-                        //ubaid
-                        clozeWithDropDownMultipleChoices={
-                          clozeWithDropDownMultipleChoices
-                        }
-                        setClozeWithDropDownMultipleChoices={
-                          setClozeWithDropDownMultipleChoices
-                        }
-                        clozeWithDropDownEditorContent={
-                          clozeWithDropDownEditorContent
-                        }
-                        setClozeWithDropDownEditorContent={
-                          setClozeWithDropDownEditorContent
-                        }
-                        clozeWithDropDownTemplateMarkup={
-                          clozeWithDropDownTemplateMarkup
-                        }
-                        setClozeWithDropDownTemplateMarkup={
-                          setClozeWithDropDownTemplateMarkup
-                        }
-                        clozeWithDragAndDropMultipleChoices={
-                          clozeWithDragAndDropMultipleChoices
-                        }
-                        setClozeWithDragAndDropMultipleChoices={
-                          setClozeWithDragAndDropMultipleChoices
-                        }
-                        clozeWithDragAndDropEditorContent={
-                          clozeWithDragAndDropEditorContent
-                        }
-                        setClozeWithDragAndDropEditorContent={
-                          setClozeWithDragAndDropEditorContent
-                        }
-                        clozeWithDragAndDropTemplateMarkup={
-                          clozeWithDragAndDropTemplateMarkup
-                        }
-                        setClozeWithDragAndDropTemplateMarkup={
-                          setClozeWithDragAndDropTemplateMarkup
-                        }
-                        clozeWithTextEditorContent={clozeWithTextEditorContent}
-                        setClozeWithTextEditorContent={
-                          setClozeWithTextEditorContent
-                        }
-                        clozeWithTextTemplateMarkup={
-                          clozeWithTextTemplateMarkup
-                        }
-                        setClozeWithTextTemplateMarkup={
-                          setClozeWithTextTemplateMarkup
-                        }
-                        clozeWithTextMatchAllResponses={
-                          clozeWithTextMatchAllResponses
-                        }
-                        setClozeWithTextMatchAllResponses={
-                          setClozeWithTextMatchAllResponses
-                        }
-                        clozeWithTextCorrectAnswer={clozeWithTextCorrectAnswer}
-                        setClozeWithTextCorrectAnswer={
-                          setClozeWithTextCorrectAnswer
-                        }
-                        essayWithRichTextEditorContent={
-                          essayWithRichTextEditorContent
-                        }
-                        setEssayWithRichTextEditorContent={
-                          setEssayWithRichTextEditorContent
-                        }
-                        essayWithRichTextWordLimit={essayWithRichTextWordLimit}
-                        setEssayWithRichTextWordLimit={
-                          setEssayWithRichTextWordLimit
-                        }
-                        essayWithRichTextWordLimitType={
-                          essayWithRichTextWordLimitType
-                        }
-                        setEssayWithRichTextWordLimitType={
-                          setEssayWithRichTextWordLimitType
-                        }
-                        removeAnItem={removeQuestion}
-                        editAnItem={editQuestion}
-                        saveAnItem={editQuestion}
-                        audioRecorderEditorContent={audioRecorderEditorContent}
-                        setAudioRecorderEditorContent={
-                          setAudioRecorderEditorContent
-                        }
-                        audioRecorderMaximumSecond={audioRecorderMaximumSecond}
-                        setAudioRecorderMaximumSecond={
-                          setAudioRecorderMaximumSecond
-                        }
-                        audioRecorderPlayerType={audioRecorderPlayerType}
-                        setAudioRecorderPlayerType={setAudioRecorderPlayerType}
-                        shortTextEditorContent={shortTextEditorContent}
-                        setShortTextEditorContent={setShortTextEditorContent}
-                        shortTextPoints={shortTextPoints}
-                        setShortTextPoints={setShortTextPoints}
-                        shortTextAllow={shortTextAllow}
-                        setShortTextAllow={setShortTextAllow}
-                        shortTextValue={shortTextValue}
-                        setShortTextValue={setShortTextValue}
-                        essayWithPlainTextLayoutWordLimit={
-                          essayWithPlainTextLayoutWordLimit
-                        }
-                        setEssayWithPlainTextLayoutWordLimit={
-                          setEssayWithPlainTextLayoutWordLimit
-                        }
-                        essayWithPlainTextLayoutWordType={
-                          essayWithPlainTextLayoutWordType
-                        }
-                        setEssayWithPlainTextLayoutWordType={
-                          setEssayWithPlainTextLayoutWordType
-                        }
-                        essayWithPlainTextLayoutEditorContent={
-                          essayWithPlainTextLayoutEditorContent
-                        }
-                        setEssayWithPlainTextLayoutEditorContent={
-                          setEssayWithPlainTextLayoutEditorContent
-                        }
-                        orderListList={orderListList}
-                        setOrderListList={setOrderListList}
-                        orderListEditorContent={orderListEditorContent}
-                        setOrderListEditorContent={setOrderListEditorContent}
-                        matchListPossibleResponses={matchListPossibleResponses}
-                        setMatchListPossibleResponses={
-                          setMatchListPossibleResponses
-                        }
-                        matchListStimulusList={matchListStimulusList}
-                        setMatchListStimulusList={setMatchListStimulusList}
-                        matchListEditorContent={matchListEditorContent}
-                        setMatchListEditorContent={setMatchListEditorContent}
-                        classificationPossibleResponses={
-                          classificationPossibleResponses
-                        }
-                        setClassificationPossibleResponses={
-                          setClassificationPossibleResponses
-                        }
-                        classificationColumnTitles={classificationColumnTitles}
-                        setClassificationColumnTitles={
-                          setClassificationColumnTitles
-                        }
-                        classificationEditorContent={
-                          classificationEditorContent
-                        }
-                        setClassificationEditorContent={
-                          setClassificationEditorContent
-                        }
-                        classificationColumnCount={classificationColumnCount}
-                        setClassificationColumnCount={
-                          setClassificationColumnCount
-                        }
-                        classificationRowCount={classificationRowCount}
-                        setClassificationRowCount={setClassificationRowCount}
-
-                        editorContent={editorContent}
-                        setEditorContent={setEditorContent}
-                        multipleChoices={multipleChoices}
-                        setMultipleChoices={setMultipleChoices}
-
-                        onSaveQuestion={onSaveQuestion}
-                        onRemoveQuestion={removeQuestion}
-                        onEditQuestion={editQuestion}
-                      />
-                    ) : (
-                      <SimpleSection
-                        QuestionsList={item.QuestionsList}
-                        sectionName={item.Section}
-                        handleQuestionDragDrop={handleQuestionDragDrop}
-                        multipleChoiceschoiceMatric={
-                          choiceMatricMultipleChoices
-                        }
-                        setMultipleChoiceschoiceMatric={
-                          setChoiceMatricMultipleChoices
-                        }
-                        multipleOptionschoiceMatric={
-                          choiceMatricMultipleOptions
-                        }
-                        setMultipleOptionschoiceMatric={
-                          setChoiceMatricMultipleOptions
-                        }
-                        editorContentchoiceMatric={choiceMatricEditorContent}
-                        setEditorContentchoiceMatric={
-                          setChoiceMatricEditorContent
-                        }
-                        multipleChoicestrueFalse={trueFalseMultipleChoices}
-                        setMultipleChoicestrueFalse={
-                          setTrueFalseMultipleChoices
-                        }
-                        editorContenttrueFalse={trueFalseEditorContent}
-                        setEditorContenttrueFalse={setTrueFalseEditorContent}
-                        trueFalseShuffleOptiontrueFalse={trueFalseShuffleOption}
-                        setTrueFalseShuffleOptiontrueFalse={
-                          setTrueFalseShuffleOption
-                        }
-                        //ubaid
-                        clozeWithDropDownMultipleChoices={
-                          clozeWithDropDownMultipleChoices
-                        }
-                        setClozeWithDropDownMultipleChoices={
-                          setClozeWithDropDownMultipleChoices
-                        }
-                        clozeWithDropDownEditorContent={
-                          clozeWithDropDownEditorContent
-                        }
-                        setClozeWithDropDownEditorContent={
-                          setClozeWithDropDownEditorContent
-                        }
-                        clozeWithDropDownTemplateMarkup={
-                          clozeWithDropDownTemplateMarkup
-                        }
-                        setClozeWithDropDownTemplateMarkup={
-                          setClozeWithDropDownTemplateMarkup
-                        }
-                        clozeWithDragAndDropMultipleChoices={
-                          clozeWithDragAndDropMultipleChoices
-                        }
-                        setClozeWithDragAndDropMultipleChoices={
-                          setClozeWithDragAndDropMultipleChoices
-                        }
-                        clozeWithDragAndDropEditorContent={
-                          clozeWithDragAndDropEditorContent
-                        }
-                        setClozeWithDragAndDropEditorContent={
-                          setClozeWithDragAndDropEditorContent
-                        }
-                        clozeWithDragAndDropTemplateMarkup={
-                          clozeWithDragAndDropTemplateMarkup
-                        }
-                        setClozeWithDragAndDropTemplateMarkup={
-                          setClozeWithDragAndDropTemplateMarkup
-                        }
-                        clozeWithTextEditorContent={clozeWithTextEditorContent}
-                        setClozeWithTextEditorContent={
-                          setClozeWithTextEditorContent
-                        }
-                        clozeWithTextTemplateMarkup={
-                          clozeWithTextTemplateMarkup
-                        }
-                        setClozeWithTextTemplateMarkup={
-                          setClozeWithTextTemplateMarkup
-                        }
-                        clozeWithTextMatchAllResponses={
-                          clozeWithTextMatchAllResponses
-                        }
-                        setClozeWithTextMatchAllResponses={
-                          setClozeWithTextMatchAllResponses
-                        }
-                        clozeWithTextCorrectAnswer={clozeWithTextCorrectAnswer}
-                        setClozeWithTextCorrectAnswer={
-                          setClozeWithTextCorrectAnswer
-                        }
-                        essayWithRichTextEditorContent={
-                          essayWithRichTextEditorContent
-                        }
-                        setEssayWithRichTextEditorContent={
-                          setEssayWithRichTextEditorContent
-                        }
-                        essayWithRichTextWordLimit={essayWithRichTextWordLimit}
-                        setEssayWithRichTextWordLimit={
-                          setEssayWithRichTextWordLimit
-                        }
-                        essayWithRichTextWordLimitType={
-                          essayWithRichTextWordLimitType
-                        }
-                        setEssayWithRichTextWordLimitType={
-                          setEssayWithRichTextWordLimitType
-                        }
-                        removeAnItem={removeQuestion}
-                        editAnItem={editQuestion}
-                        saveAnItem={editQuestion}
-                        audioRecorderEditorContent={audioRecorderEditorContent}
-                        setAudioRecorderEditorContent={
-                          setAudioRecorderEditorContent
-                        }
-                        audioRecorderMaximumSecond={audioRecorderMaximumSecond}
-                        setAudioRecorderMaximumSecond={
-                          setAudioRecorderMaximumSecond
-                        }
-                        audioRecorderPlayerType={audioRecorderPlayerType}
-                        setAudioRecorderPlayerType={setAudioRecorderPlayerType}
-                        shortTextEditorContent={shortTextEditorContent}
-                        setShortTextEditorContent={setShortTextEditorContent}
-                        shortTextPoints={shortTextPoints}
-                        setShortTextPoints={setShortTextPoints}
-                        shortTextAllow={shortTextAllow}
-                        setShortTextAllow={setShortTextAllow}
-                        shortTextValue={shortTextValue}
-                        setShortTextValue={setShortTextValue}
-                        essayWithPlainTextLayoutWordLimit={
-                          essayWithPlainTextLayoutWordLimit
-                        }
-                        setEssayWithPlainTextLayoutWordLimit={
-                          setEssayWithPlainTextLayoutWordLimit
-                        }
-                        essayWithPlainTextLayoutWordType={
-                          essayWithPlainTextLayoutWordType
-                        }
-                        setEssayWithPlainTextLayoutWordType={
-                          setEssayWithPlainTextLayoutWordType
-                        }
-                        essayWithPlainTextLayoutEditorContent={
-                          essayWithPlainTextLayoutEditorContent
-                        }
-                        setEssayWithPlainTextLayoutEditorContent={
-                          setEssayWithPlainTextLayoutEditorContent
-                        }
-                        orderListList={orderListList}
-                        setOrderListList={setOrderListList}
-                        orderListEditorContent={orderListEditorContent}
-                        setOrderListEditorContent={setOrderListEditorContent}
-                        matchListPossibleResponses={matchListPossibleResponses}
-                        setMatchListPossibleResponses={
-                          setMatchListPossibleResponses
-                        }
-                        matchListStimulusList={matchListStimulusList}
-                        setMatchListStimulusList={setMatchListStimulusList}
-                        matchListEditorContent={matchListEditorContent}
-                        setMatchListEditorContent={setMatchListEditorContent}
-                        classificationPossibleResponses={
-                          classificationPossibleResponses
-                        }
-                        setClassificationPossibleResponses={
-                          setClassificationPossibleResponses
-                        }
-                        classificationColumnTitles={classificationColumnTitles}
-                        setClassificationColumnTitles={
-                          setClassificationColumnTitles
-                        }
-                        classificationEditorContent={
-                          classificationEditorContent
-                        }
-                        setClassificationEditorContent={
-                          setClassificationEditorContent
-                        }
-                        classificationColumnCount={classificationColumnCount}
-                        setClassificationColumnCount={
-                          setClassificationColumnCount
-                        }
-                        classificationRowCount={classificationRowCount}
-                        setClassificationRowCount={setClassificationRowCount}
-
-                        editorContent={editorContent}
-                        setEditorContent={setEditorContent}
-                        multipleChoices={multipleChoices}
-                        setMultipleChoices={setMultipleChoices}
-
-                        onSaveQuestion={onSaveQuestion}
-                        onRemoveQuestion={removeQuestion}
-                        onEditQuestion={editQuestion}
-                        selectedQuestionId={selectedQuestionId}
-                        setSelectedQuestionId={setSelectedQuestionId}
-                      />
-                    )}
-                  </div>
-                );
-              })}
-
+              {componentsStructureList &&
+                componentsStructureList.length > 0 &&
+                componentsStructureList.map((item, index) => {
+                  return (
+                    <div
+                      className="flex flex-col w-full max-w-4xl p-20"
+                      style={{
+                        width:
+                          selectedLayout == "1"
+                            ? "100%"
+                            : selectedLayout == "50%"
+                            ? "50%"
+                            : selectedLayout == "30%,70%" && index % 2 == 0
+                            ? "30%"
+                            : selectedLayout == "30%,70%" && index % 2 !== 0
+                            ? "70%"
+                            : selectedLayout == "70%,30%" && index % 2 == 0
+                            ? "70%"
+                            : selectedLayout == "70%,30%" && index % 2 !== 0
+                            ? "30%"
+                            : selectedLayout == "40%,60%" && index % 2 == 0
+                            ? "40%"
+                            : selectedLayout == "40%,60%" && index % 2 !== 0
+                            ? "60%"
+                            : selectedLayout == "60%,40%" && index % 2 == 0
+                            ? "60%"
+                            : selectedLayout == "60%,40%" && index % 2 !== 0
+                            ? "40%"
+                            : "auto",
+                      }}
+                    >
+                      {item.isTabbed === true ? (
+                        <TabbedSection
+                          TabsList={item.Tabs}
+                          sectionName={item.Section}
+                          handleNewTab={onNewTabAdded}
+                          handleQuestionDragDrop={handleQuestionDragDrop}
+                          multipleChoiceschoiceMatric={
+                            choiceMatricMultipleChoices
+                          }
+                          setMultipleChoiceschoiceMatric={
+                            setChoiceMatricMultipleChoices
+                          }
+                          multipleOptionschoiceMatric={
+                            choiceMatricMultipleOptions
+                          }
+                          setMultipleOptionschoiceMatric={
+                            setChoiceMatricMultipleOptions
+                          }
+                          editorContentchoiceMatric={choiceMatricEditorContent}
+                          setEditorContentchoiceMatric={
+                            setChoiceMatricEditorContent
+                          }
+                          multipleChoicestrueFalse={trueFalseMultipleChoices}
+                          setMultipleChoicestrueFalse={
+                            setTrueFalseMultipleChoices
+                          }
+                          editorContenttrueFalse={trueFalseEditorContent}
+                          setEditorContenttrueFalse={setTrueFalseEditorContent}
+                          trueFalseShuffleOptiontrueFalse={
+                            trueFalseShuffleOption
+                          }
+                          setTrueFalseShuffleOptiontrueFalse={
+                            setTrueFalseShuffleOption
+                          }
+                          //ubaid
+                          clozeWithDropDownMultipleChoices={
+                            clozeWithDropDownMultipleChoices
+                          }
+                          setClozeWithDropDownMultipleChoices={
+                            setClozeWithDropDownMultipleChoices
+                          }
+                          clozeWithDropDownEditorContent={
+                            clozeWithDropDownEditorContent
+                          }
+                          setClozeWithDropDownEditorContent={
+                            setClozeWithDropDownEditorContent
+                          }
+                          clozeWithDropDownTemplateMarkup={
+                            clozeWithDropDownTemplateMarkup
+                          }
+                          setClozeWithDropDownTemplateMarkup={
+                            setClozeWithDropDownTemplateMarkup
+                          }
+                          clozeWithDragAndDropMultipleChoices={
+                            clozeWithDragAndDropMultipleChoices
+                          }
+                          setClozeWithDragAndDropMultipleChoices={
+                            setClozeWithDragAndDropMultipleChoices
+                          }
+                          clozeWithDragAndDropEditorContent={
+                            clozeWithDragAndDropEditorContent
+                          }
+                          setClozeWithDragAndDropEditorContent={
+                            setClozeWithDragAndDropEditorContent
+                          }
+                          clozeWithDragAndDropTemplateMarkup={
+                            clozeWithDragAndDropTemplateMarkup
+                          }
+                          setClozeWithDragAndDropTemplateMarkup={
+                            setClozeWithDragAndDropTemplateMarkup
+                          }
+                          clozeWithTextEditorContent={
+                            clozeWithTextEditorContent
+                          }
+                          setClozeWithTextEditorContent={
+                            setClozeWithTextEditorContent
+                          }
+                          clozeWithTextTemplateMarkup={
+                            clozeWithTextTemplateMarkup
+                          }
+                          setClozeWithTextTemplateMarkup={
+                            setClozeWithTextTemplateMarkup
+                          }
+                          clozeWithTextMatchAllResponses={
+                            clozeWithTextMatchAllResponses
+                          }
+                          setClozeWithTextMatchAllResponses={
+                            setClozeWithTextMatchAllResponses
+                          }
+                          clozeWithTextCorrectAnswer={
+                            clozeWithTextCorrectAnswer
+                          }
+                          setClozeWithTextCorrectAnswer={
+                            setClozeWithTextCorrectAnswer
+                          }
+                          essayWithRichTextEditorContent={
+                            essayWithRichTextEditorContent
+                          }
+                          setEssayWithRichTextEditorContent={
+                            setEssayWithRichTextEditorContent
+                          }
+                          essayWithRichTextWordLimit={
+                            essayWithRichTextWordLimit
+                          }
+                          setEssayWithRichTextWordLimit={
+                            setEssayWithRichTextWordLimit
+                          }
+                          essayWithRichTextWordLimitType={
+                            essayWithRichTextWordLimitType
+                          }
+                          setEssayWithRichTextWordLimitType={
+                            setEssayWithRichTextWordLimitType
+                          }
+                          removeAnItem={removeQuestion}
+                          editAnItem={editQuestion}
+                          saveAnItem={editQuestion}
+                          audioRecorderEditorContent={
+                            audioRecorderEditorContent
+                          }
+                          setAudioRecorderEditorContent={
+                            setAudioRecorderEditorContent
+                          }
+                          audioRecorderMaximumSecond={
+                            audioRecorderMaximumSecond
+                          }
+                          setAudioRecorderMaximumSecond={
+                            setAudioRecorderMaximumSecond
+                          }
+                          audioRecorderPlayerType={audioRecorderPlayerType}
+                          setAudioRecorderPlayerType={
+                            setAudioRecorderPlayerType
+                          }
+                          shortTextEditorContent={shortTextEditorContent}
+                          setShortTextEditorContent={setShortTextEditorContent}
+                          shortTextPoints={shortTextPoints}
+                          setShortTextPoints={setShortTextPoints}
+                          shortTextAllow={shortTextAllow}
+                          setShortTextAllow={setShortTextAllow}
+                          shortTextValue={shortTextValue}
+                          setShortTextValue={setShortTextValue}
+                          essayWithPlainTextLayoutWordLimit={
+                            essayWithPlainTextLayoutWordLimit
+                          }
+                          setEssayWithPlainTextLayoutWordLimit={
+                            setEssayWithPlainTextLayoutWordLimit
+                          }
+                          essayWithPlainTextLayoutWordType={
+                            essayWithPlainTextLayoutWordType
+                          }
+                          setEssayWithPlainTextLayoutWordType={
+                            setEssayWithPlainTextLayoutWordType
+                          }
+                          essayWithPlainTextLayoutEditorContent={
+                            essayWithPlainTextLayoutEditorContent
+                          }
+                          setEssayWithPlainTextLayoutEditorContent={
+                            setEssayWithPlainTextLayoutEditorContent
+                          }
+                          orderListList={orderListList}
+                          setOrderListList={setOrderListList}
+                          orderListEditorContent={orderListEditorContent}
+                          setOrderListEditorContent={setOrderListEditorContent}
+                          matchListPossibleResponses={
+                            matchListPossibleResponses
+                          }
+                          setMatchListPossibleResponses={
+                            setMatchListPossibleResponses
+                          }
+                          matchListStimulusList={matchListStimulusList}
+                          setMatchListStimulusList={setMatchListStimulusList}
+                          matchListEditorContent={matchListEditorContent}
+                          setMatchListEditorContent={setMatchListEditorContent}
+                          classificationPossibleResponses={
+                            classificationPossibleResponses
+                          }
+                          setClassificationPossibleResponses={
+                            setClassificationPossibleResponses
+                          }
+                          classificationColumnTitles={
+                            classificationColumnTitles
+                          }
+                          setClassificationColumnTitles={
+                            setClassificationColumnTitles
+                          }
+                          classificationEditorContent={
+                            classificationEditorContent
+                          }
+                          setClassificationEditorContent={
+                            setClassificationEditorContent
+                          }
+                          classificationColumnCount={classificationColumnCount}
+                          setClassificationColumnCount={
+                            setClassificationColumnCount
+                          }
+                          classificationRowCount={classificationRowCount}
+                          setClassificationRowCount={setClassificationRowCount}
+                          editorContent={editorContent}
+                          setEditorContent={setEditorContent}
+                          multipleChoices={multipleChoices}
+                          setMultipleChoices={setMultipleChoices}
+                          onSaveQuestion={onSaveQuestion}
+                          onRemoveQuestion={removeQuestion}
+                          onEditQuestion={editQuestion}
+                        />
+                      ) : (
+                        <SimpleSection
+                          QuestionsList={item.QuestionsList}
+                          sectionName={item.Section}
+                          handleQuestionDragDrop={handleQuestionDragDrop}
+                          multipleChoiceschoiceMatric={
+                            choiceMatricMultipleChoices
+                          }
+                          setMultipleChoiceschoiceMatric={
+                            setChoiceMatricMultipleChoices
+                          }
+                          multipleOptionschoiceMatric={
+                            choiceMatricMultipleOptions
+                          }
+                          setMultipleOptionschoiceMatric={
+                            setChoiceMatricMultipleOptions
+                          }
+                          editorContentchoiceMatric={choiceMatricEditorContent}
+                          setEditorContentchoiceMatric={
+                            setChoiceMatricEditorContent
+                          }
+                          multipleChoicestrueFalse={trueFalseMultipleChoices}
+                          setMultipleChoicestrueFalse={
+                            setTrueFalseMultipleChoices
+                          }
+                          editorContenttrueFalse={trueFalseEditorContent}
+                          setEditorContenttrueFalse={setTrueFalseEditorContent}
+                          trueFalseShuffleOptiontrueFalse={
+                            trueFalseShuffleOption
+                          }
+                          setTrueFalseShuffleOptiontrueFalse={
+                            setTrueFalseShuffleOption
+                          }
+                          //ubaid
+                          clozeWithDropDownMultipleChoices={
+                            clozeWithDropDownMultipleChoices
+                          }
+                          setClozeWithDropDownMultipleChoices={
+                            setClozeWithDropDownMultipleChoices
+                          }
+                          clozeWithDropDownEditorContent={
+                            clozeWithDropDownEditorContent
+                          }
+                          setClozeWithDropDownEditorContent={
+                            setClozeWithDropDownEditorContent
+                          }
+                          clozeWithDropDownTemplateMarkup={
+                            clozeWithDropDownTemplateMarkup
+                          }
+                          setClozeWithDropDownTemplateMarkup={
+                            setClozeWithDropDownTemplateMarkup
+                          }
+                          clozeWithDragAndDropMultipleChoices={
+                            clozeWithDragAndDropMultipleChoices
+                          }
+                          setClozeWithDragAndDropMultipleChoices={
+                            setClozeWithDragAndDropMultipleChoices
+                          }
+                          clozeWithDragAndDropEditorContent={
+                            clozeWithDragAndDropEditorContent
+                          }
+                          setClozeWithDragAndDropEditorContent={
+                            setClozeWithDragAndDropEditorContent
+                          }
+                          clozeWithDragAndDropTemplateMarkup={
+                            clozeWithDragAndDropTemplateMarkup
+                          }
+                          setClozeWithDragAndDropTemplateMarkup={
+                            setClozeWithDragAndDropTemplateMarkup
+                          }
+                          clozeWithTextEditorContent={
+                            clozeWithTextEditorContent
+                          }
+                          setClozeWithTextEditorContent={
+                            setClozeWithTextEditorContent
+                          }
+                          clozeWithTextTemplateMarkup={
+                            clozeWithTextTemplateMarkup
+                          }
+                          setClozeWithTextTemplateMarkup={
+                            setClozeWithTextTemplateMarkup
+                          }
+                          clozeWithTextMatchAllResponses={
+                            clozeWithTextMatchAllResponses
+                          }
+                          setClozeWithTextMatchAllResponses={
+                            setClozeWithTextMatchAllResponses
+                          }
+                          clozeWithTextCorrectAnswer={
+                            clozeWithTextCorrectAnswer
+                          }
+                          setClozeWithTextCorrectAnswer={
+                            setClozeWithTextCorrectAnswer
+                          }
+                          essayWithRichTextEditorContent={
+                            essayWithRichTextEditorContent
+                          }
+                          setEssayWithRichTextEditorContent={
+                            setEssayWithRichTextEditorContent
+                          }
+                          essayWithRichTextWordLimit={
+                            essayWithRichTextWordLimit
+                          }
+                          setEssayWithRichTextWordLimit={
+                            setEssayWithRichTextWordLimit
+                          }
+                          essayWithRichTextWordLimitType={
+                            essayWithRichTextWordLimitType
+                          }
+                          setEssayWithRichTextWordLimitType={
+                            setEssayWithRichTextWordLimitType
+                          }
+                          removeAnItem={removeQuestion}
+                          editAnItem={editQuestion}
+                          saveAnItem={editQuestion}
+                          audioRecorderEditorContent={
+                            audioRecorderEditorContent
+                          }
+                          setAudioRecorderEditorContent={
+                            setAudioRecorderEditorContent
+                          }
+                          audioRecorderMaximumSecond={
+                            audioRecorderMaximumSecond
+                          }
+                          setAudioRecorderMaximumSecond={
+                            setAudioRecorderMaximumSecond
+                          }
+                          audioRecorderPlayerType={audioRecorderPlayerType}
+                          setAudioRecorderPlayerType={
+                            setAudioRecorderPlayerType
+                          }
+                          shortTextEditorContent={shortTextEditorContent}
+                          setShortTextEditorContent={setShortTextEditorContent}
+                          shortTextPoints={shortTextPoints}
+                          setShortTextPoints={setShortTextPoints}
+                          shortTextAllow={shortTextAllow}
+                          setShortTextAllow={setShortTextAllow}
+                          shortTextValue={shortTextValue}
+                          setShortTextValue={setShortTextValue}
+                          essayWithPlainTextLayoutWordLimit={
+                            essayWithPlainTextLayoutWordLimit
+                          }
+                          setEssayWithPlainTextLayoutWordLimit={
+                            setEssayWithPlainTextLayoutWordLimit
+                          }
+                          essayWithPlainTextLayoutWordType={
+                            essayWithPlainTextLayoutWordType
+                          }
+                          setEssayWithPlainTextLayoutWordType={
+                            setEssayWithPlainTextLayoutWordType
+                          }
+                          essayWithPlainTextLayoutEditorContent={
+                            essayWithPlainTextLayoutEditorContent
+                          }
+                          setEssayWithPlainTextLayoutEditorContent={
+                            setEssayWithPlainTextLayoutEditorContent
+                          }
+                          orderListList={orderListList}
+                          setOrderListList={setOrderListList}
+                          orderListEditorContent={orderListEditorContent}
+                          setOrderListEditorContent={setOrderListEditorContent}
+                          matchListPossibleResponses={
+                            matchListPossibleResponses
+                          }
+                          setMatchListPossibleResponses={
+                            setMatchListPossibleResponses
+                          }
+                          matchListStimulusList={matchListStimulusList}
+                          setMatchListStimulusList={setMatchListStimulusList}
+                          matchListEditorContent={matchListEditorContent}
+                          setMatchListEditorContent={setMatchListEditorContent}
+                          classificationPossibleResponses={
+                            classificationPossibleResponses
+                          }
+                          setClassificationPossibleResponses={
+                            setClassificationPossibleResponses
+                          }
+                          classificationColumnTitles={
+                            classificationColumnTitles
+                          }
+                          setClassificationColumnTitles={
+                            setClassificationColumnTitles
+                          }
+                          classificationEditorContent={
+                            classificationEditorContent
+                          }
+                          setClassificationEditorContent={
+                            setClassificationEditorContent
+                          }
+                          classificationColumnCount={classificationColumnCount}
+                          setClassificationColumnCount={
+                            setClassificationColumnCount
+                          }
+                          classificationRowCount={classificationRowCount}
+                          setClassificationRowCount={setClassificationRowCount}
+                          editorContent={editorContent}
+                          setEditorContent={setEditorContent}
+                          multipleChoices={multipleChoices}
+                          setMultipleChoices={setMultipleChoices}
+                          onSaveQuestion={onSaveQuestion}
+                          onRemoveQuestion={removeQuestion}
+                          onEditQuestion={editQuestion}
+                          selectedQuestionId={selectedQuestionId}
+                          setSelectedQuestionId={setSelectedQuestionId}
+                        />
+                      )}
+                    </div>
+                  );
+                })}
             </DndProvider>
           </div>
           {/* <div className="mt-12">

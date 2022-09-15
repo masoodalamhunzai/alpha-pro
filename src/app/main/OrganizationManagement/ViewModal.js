@@ -45,14 +45,21 @@ const useStyles = makeStyles((theme) => ({
 const ViewModal = ({
   handleClose,
   open,
-  organization: { name, contactperson, email, phonenumber },
+  organization: { name, contactperson, email, phonenumber,city,state,country,website,created_at },
 }) => {
   const classes = useStyles();
+  console.log('created_at',created_at);
+  console.log('created_at parsing',(created_at != '' || created_at != null ? new Date(created_at).toLocaleString("en-US") : ''));
   const organizationData = [
     { name: "Name:", value: name },
     { name: "Contact Person:", value: contactperson },
     { name: "Email:", value: email },
     { name: "Phone Number:", value: phonenumber },
+    { name: "City:", value: city },
+    { name: "State:", value: state },
+    { name: "Country:", value: country },
+    { name: "Website:", value: website },
+    { name: "Registered On:", value: (created_at != '' ? new Date(created_at).toLocaleString("lookup") : '') },
   ];
   console.log(name, contactperson, email, phonenumber, "org");
   return (

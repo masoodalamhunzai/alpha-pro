@@ -269,7 +269,7 @@ function AddUserDetailsTab({
                 value={isActive}
                 defaultValue={isActive}
                 label="status"
-                name="status"
+                name="isActive"
                 onChange={handleChangeInputs}
               >
                 <MenuItem value={true}>Active</MenuItem>
@@ -322,7 +322,7 @@ function AddUserDetailsTab({
                     label="role"
                     name="userRoles"
                     onChange={handleChangeInputs}
-                    >
+                  >
                     {roles?.map(
                       (role) =>
                         role?.name !== USER_ROLE_SUPER_ADMIN &&

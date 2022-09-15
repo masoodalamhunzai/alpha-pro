@@ -76,6 +76,15 @@ const AudioRecorderLayout = (props) => {
 
       props.setEditorContent(_filteredQuestion.description);
       props.setMultipleChoices([{data:'no data found'}]);
+      if(_filteredQuestion.questionConfig)
+      {
+        const _config=JSON.parse(_filteredQuestion.questionConfig);
+        if(_config)
+        {
+          setMaximumSecond(_config.maximumSecond);
+          setPlayerType(_config.playerType);
+        }
+      }
     }
     }else{
       props.setMultipleChoices([{data:'no data found'}]);
@@ -94,7 +103,38 @@ const AudioRecorderLayout = (props) => {
       <div className="text-right">
         <Icon
           onClick={() => {
-            props.onSaveQuestion(props.sectionName,props.tabName,props.questionId,props.questionIndex,"audio-recorder-question");
+
+            if (editorContent === "" || editorContent === "<p></p>\n") {
+              swal({
+                title: "Error!",
+                text: "Question Description is Required!",
+                icon: "error",
+                button: "Ok!",
+              });
+            }else{
+            const itemObject =props.questionId!=null? {
+              id:props.questionId,
+              description: editorContent,
+              options: [{}],
+              questionType: "audio-recorder-question",
+              questionConfig:JSON.stringify({maximumSecond:maximumSecond,playerType:playerType}),
+              position: props.questionIndex
+            }:{
+              description: editorContent,
+              options: [{}],
+              questionType: "audio-recorder-question",
+              questionConfig:JSON.stringify({maximumSecond:maximumSecond,playerType:playerType}),
+              position: props.questionIndex
+            };
+            props.onSaveQuestion(
+              props.sectionName,
+              props.tabName,
+              props.questionId,
+              props.questionIndex,
+              "audio-recorder-question",
+              itemObject
+            );
+          }
           }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
@@ -122,7 +162,12 @@ const AudioRecorderLayout = (props) => {
 
         <Icon
           onClick={() => {
-            props.removeAnItem();
+            props.onRemoveQuestion(
+              props.sectionName,
+              props.tabName,
+              props.questionId,
+              props.questionIndex
+            );
           }}
           className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
           style={{

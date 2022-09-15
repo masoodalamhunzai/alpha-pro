@@ -5,7 +5,7 @@ import { makeStyles, ThemeProvider, useTheme } from "@material-ui/core/styles";
 import { useStateValue } from "app/services/state/State";
 import { actions } from "app/services/state/Reducer";
 import { useLocation } from "react-router-dom";
-
+import { searchItem,getItems } from 'app/services/api/ApiManager';
 import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
 import Input from "@material-ui/core/Input";
@@ -32,11 +32,39 @@ const Items = () => {
   const [count, setCount] = useState(0);
   const theme = useTheme();
   const [searchText, setSearchText] = useState("");
+  const [searchName, setSearchName] = useState("");
   const [page, setPage] = useState(0);
 
   function handleSearch(event) {
     setSearchText(event.target.value);
   }
+
+  function handleNameSearch(event) {
+    setSearchName(event.target.value);
+  }
+
+    const searchItemByText = async (text) => {
+console.log('')
+//..below is search item call
+      let res =null;
+      if(text)
+      {
+       res = await searchItem(text,user);
+      }else
+      {
+       res = await getItems(user);
+      }
+      console.log('searchItem are here: ', res);
+      if (res && res.status == 200 && res.data) {
+        dispatch({
+          type: actions.SET_ITEMS,
+          payload: res.data,  
+        });
+      }
+    }
+
+  
+
   const setNews = async () => {
     dispatch({
       type: actions.SET_NEWS,
@@ -203,14 +231,14 @@ const Items = () => {
                     className="flex flex-1 px-8"
                     disableUnderline
                     fullWidth
-                    value={searchText}
-                    onChange={handleSearch}
+                    value={searchName}
+                    onChange={handleNameSearch}
                     inputProps={{
                       "aria-label": "Search",
                     }}
                   />
                 </Paper>
-                <Paper className="flex items-center min-w-full sm:min-w-0 w-full max-w-512 px-12 py-4 mx-12 rounded-16 shdaow">
+              {/*   <Paper className="flex items-center min-w-full sm:min-w-0 w-full max-w-512 px-12 py-4 mx-12 rounded-16 shdaow">
                   <Icon color="action">search</Icon>
                   <Input
                     placeholder="Search for Tag"
@@ -223,7 +251,7 @@ const Items = () => {
                       "aria-label": "Search",
                     }}
                   />
-                </Paper>
+                </Paper> */}
               </ThemeProvider>
             </div>
             <div className="flex items-center justify-end -mx-4 mt-24 md:mt-0">
@@ -231,6 +259,7 @@ const Items = () => {
                 variant="contained"
                 color="primary"
                 aria-label="Send Message"
+                onClick={()=>{searchItemByText(searchName)}}
               >
                 Search
               </Button>

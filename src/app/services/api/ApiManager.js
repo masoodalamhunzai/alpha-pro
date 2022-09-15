@@ -60,6 +60,17 @@ export const getItems = async (user) => {
     return null;
   }
 };
+export const searchItem = async (searchText, user) => {
+  try {
+    const response = await getData(
+      `${s.items.searchItem(searchText)}`,
+      user
+    );
+    return response;
+  } catch (err) {
+    return null;
+  }
+};
 
 export const saveItem = async (data, user) => {
   try {

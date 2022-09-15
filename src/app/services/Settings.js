@@ -19,7 +19,8 @@ export const settings = {
     getItemById: (itemId) => `/api/items/${itemId}`,
     addItems: "/api/items",
     deleteItem: (itemId) => `/api/items/${itemId}`,
-    deleteQuestion: (questionId) => `/api/questions/${questionId}`,
+    deleteQuestion: (questionId) => `/api/question/${questionId}`,
+    searchItem: (searchText) => `/api/items/search/${searchText}`,
   },
   sector: {
     addSector: "/api/AddSector",

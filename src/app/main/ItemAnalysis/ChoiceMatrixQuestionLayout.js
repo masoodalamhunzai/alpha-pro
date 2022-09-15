@@ -15,6 +15,8 @@ const defaultValues = { name: "", email: "", subject: "", message: "" };
 const ChoiceMatrixQuestionLayout = (props) => {
   const [{itemQuestionsList}] =useStateValue();
   // Choice Matrix start
+  const [trueFalseShuffleOption, setTrueFalseShuffleOption] = useState(false);
+  const [trueFalsemultipleResponse, setTrueFalsemultipleResponse] = useState(false);
   const [editorContent, setEditorContent] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
@@ -123,11 +125,23 @@ const ChoiceMatrixQuestionLayout = (props) => {
       const _editorValue = EditorState.createWithContent(convertedState);
       setEditorState(_editorValue);
 
-      setMultipleOptions(_filteredQuestion.options);
+      setMultipleChoices(_filteredQuestion.options);
       setEditorContent(_filteredQuestion.description);
 
       props.setEditorContent(_filteredQuestion.description);
       props.setMultipleChoices([..._filteredQuestion.options]);
+
+      if(_filteredQuestion.questionConfig)
+      {
+        const _config=JSON.parse(_filteredQuestion.questionConfig);
+        if(_config)
+        {
+          setMultipleOptions(_config.multipleOption);
+          setTrueFalseShuffleOption(_config.shuffleOptionRadio);
+          setTrueFalsemultipleResponse(_config.multipleResponseRadio);
+        }
+      }
+
     }
     }else{
       props.setMultipleChoices([...multipleChoices]);
@@ -166,13 +180,13 @@ const ChoiceMatrixQuestionLayout = (props) => {
               description: editorContent,
               options: multipleChoices,
               questionType: "choice-matrix-question",
-              questionConfig:JSON.stringify({multipleOption:multipleOptions,multipleResponseRadio:false,shuffleOptionRadio:false}),
+              questionConfig:JSON.stringify({multipleOption:multipleOptions,multipleResponseRadio:trueFalsemultipleResponse,shuffleOptionRadio:trueFalseShuffleOption}),
               position: props.questionIndex
             }:{
               description: editorContent,
               options: multipleChoices,
               questionType: "choice-matrix-question",
-              questionConfig:JSON.stringify({multipleOption:multipleOptions,multipleResponseRadio:false,shuffleOptionRadio:false}),
+              questionConfig:JSON.stringify({multipleOption:multipleOptions,multipleResponseRadio:trueFalsemultipleResponse,shuffleOptionRadio:trueFalseShuffleOption}),
               position: props.questionIndex
             };
             
@@ -205,7 +219,12 @@ const ChoiceMatrixQuestionLayout = (props) => {
 
         <Icon
           onClick={() => {
-            props.removeAnItem();
+            props.onRemoveQuestion(
+              props.sectionName,
+              props.tabName,
+              props.questionId,
+              props.questionIndex
+            );
           }}
           className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
           style={{
@@ -279,6 +298,11 @@ const ChoiceMatrixQuestionLayout = (props) => {
             setMultipleChoices={setMultipleChoices}
             optionsList={optionsList}
             setMultipleChoices_Main={props.setMultipleChoices}
+
+          trueFalseShuffleOption={trueFalseShuffleOption}
+           setTrueFalseShuffleOption={setTrueFalseShuffleOption}
+          trueFalsemultipleResponse={trueFalsemultipleResponse}
+          setTrueFalsemultipleResponse={setTrueFalsemultipleResponse}
            
           />
 

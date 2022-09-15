@@ -108,7 +108,45 @@ console.log('props.selectedQuestionId ',props.selectedQuestionId);
         <div className="text-right">
         <Icon
           onClick={() => {
-            props.onSaveQuestion(props.sectionName,props.tabName,props.questionId,props.questionIndex,"simple-mcqs");
+            if (editorContent === "" || editorContent === "<p></p>\n") {
+              swal({
+                title: "Error!",
+                text: "Question Description is Required!",
+                icon: "error",
+                button: "Ok!",
+              });
+            }
+            if (multipleChoices === [] || multipleChoices.length === 0) {
+              swal({
+                title: "Error!",
+                text: "Multiple Choice Options are Required!",
+                icon: "error",
+                button: "Ok!",
+              });
+            }else{
+            const itemObject =props.questionId!=null? {
+              id:props.questionId,
+              description: editorContent,
+              options: multipleChoices,
+              questionType: "simple-mcqs",
+              questionConfig:JSON.stringify({data:''}),
+              position: props.questionIndex
+            }:{
+              description: editorContent,
+              options: multipleChoices,
+              questionType: "simple-mcqs",
+              questionConfig:JSON.stringify({data:''}),
+              position: props.questionIndex
+            };
+            props.onSaveQuestion(
+              props.sectionName,
+              props.tabName,
+              props.questionId,
+              props.questionIndex,
+              "simple-mcqs",
+              itemObject
+            );
+          }
           }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
@@ -137,7 +175,12 @@ console.log('props.selectedQuestionId ',props.selectedQuestionId);
 
         <Icon
           onClick={() => {
-            props.onRemoveQuestion();
+            props.onRemoveQuestion(
+              props.sectionName,
+              props.tabName,
+              props.questionId,
+              props.questionIndex
+            );
           }}
           className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
           style={{

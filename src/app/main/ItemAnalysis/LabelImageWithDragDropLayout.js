@@ -34,6 +34,20 @@ const LabelImageWithDragDropLayout = (props) => {
   const [{ itemQuestionsList }] = useStateValue();
 
   // States start
+  const [trueFalseShuffleOption, setTrueFalseShuffleOption] = useState(false);
+  const [trueFalsemultipleResponse, setTrueFalsemultipleResponse] = useState(false);
+
+  const [trueFalseShowDragHandle, setTrueFalseShowDragHandle] = useState(false);
+  const [trueFalseDuplicateResponse, setTrueFalseDuplicateResponse] = useState(false);
+
+  const [trueFalseShowDashedBorder, setTrueFalseShowDashedBorder] = useState(false);
+  const [trueFalseEditAriaLabel, setTrueFalseEditAriaLabel] = useState(false);
+
+  const [imageAlternativeText, setImageAlternativeText] = useState("");
+  const [textOnHover, setTextOnHover] = useState("");
+  const [imageWidth, setImageWidth] = useState("");
+  const [fillColor, setFillColor] = useState(false);
+
   const [editorContent, setEditorContent] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
@@ -120,20 +134,7 @@ const LabelImageWithDragDropLayout = (props) => {
     });
     setOptionsList(temp);
   }, [annotations]);
-  /*  const optionsList = [
-    {
-      value: 1,
-      label: "Correct",
-    },
-    {
-      value: 2,
-      label: "Alternative",
-    },
-    {
-      value: 3,
-      label: "None",
-    },
-  ]; */
+
 
   function onNewOptionAdded(index) {
     const option = {
@@ -175,11 +176,36 @@ const LabelImageWithDragDropLayout = (props) => {
 
         props.setEditorContent(_filteredQuestion.description);
         props.setMultipleChoices([..._filteredQuestion.options]);
+
+        if (_filteredQuestion.questionConfig) {
+          const _config = JSON.parse(_filteredQuestion.questionConfig);
+          if (_config) {
+            setAnnotations(_config.annotations);
+            setMultipleOptions(_config.multipleOption);
+            setSelectedImageUrl(_config.imageUrl);
+
+            setTrueFalseShuffleOption(_config.shuffleOptionRadio);
+            setTrueFalsemultipleResponse(_config.multipleResponseRadio);
+            setTrueFalseShowDragHandle(_config.showDragHandleRadio);
+            setTrueFalseDuplicateResponse(_config.duplicateResponseRadio);
+            setTrueFalseShowDashedBorder(_config.showDashedBorder);
+            setTrueFalseEditAriaLabel(_config.editAriaLabel);
+            setImageAlternativeText(_config.imageAlternativeText);
+            setTextOnHover(_config.textOnHover);
+            setImageWidth(_config.imageWidth);
+            setFillColor(_config.filColor);
+            
+          }
+        }
       }
     } else {
       props.setMultipleChoices([...multipleChoices]);
     }
   }, []);
+
+  const handleFillColorChange = (event) => {
+    setFillColor(event.target.checked);
+  };
 
   return (
     <Paper
@@ -193,13 +219,77 @@ const LabelImageWithDragDropLayout = (props) => {
       <div className="text-right">
         <Icon
           onClick={() => {
-            props.onSaveQuestion(
-              props.sectionName,
-              props.tabName,
-              props.questionId,
-              props.questionIndex,
-              "true-false-question"
-            );
+            if (editorContent === "" || editorContent === "<p></p>\n") {
+              swal({
+                title: "Error!",
+                text: "Question Description is Required!",
+                icon: "error",
+                button: "Ok!",
+              });
+            }
+            if (multipleChoices === [] || multipleChoices.length === 0) {
+              swal({
+                title: "Error!",
+                text: "Multiple Choice Options are Required!",
+                icon: "error",
+                button: "Ok!",
+              });
+            } else {
+              const itemObject =
+                props.questionId != null
+                  ? {
+                      id: props.questionId,
+                      description: editorContent,
+                      options: multipleChoices,
+                      questionType: "label-image-with-drag-and-drop-question",
+                      questionConfig: JSON.stringify({
+                        multipleOption: multipleOptions,
+                        imageUrl: "",
+                        annotations: annotations,
+                        imageAlternativeText:imageAlternativeText,
+                        textOnHover: textOnHover,
+                        imageWidth: imageWidth,
+                        filColor: fillColor,
+                        showDashedBorder: trueFalseShowDashedBorder,
+                        editAriaLabel: trueFalseEditAriaLabel,
+                        multipleResponseRadio: trueFalsemultipleResponse,
+                        showDragHandleRadio: trueFalseShowDragHandle,
+                        duplicateResponseRadio: trueFalseDuplicateResponse,
+                        shuffleOptionRadio: trueFalseShuffleOption,
+                      }),
+                      position: props.questionIndex,
+                    }
+                  : {
+                      description: editorContent,
+                      options: multipleChoices,
+                      questionType: "label-image-with-drag-and-drop-question",
+                      questionConfig: JSON.stringify({
+                        multipleOption: multipleOptions,
+                        imageUrl: "",
+                        annotations: annotations,
+                        imageAlternativeText:imageAlternativeText,
+                        textOnHover: textOnHover,
+                        imageWidth: imageWidth,
+                        filColor: fillColor,
+                        showDashedBorder: trueFalseShowDashedBorder,
+                        editAriaLabel: trueFalseEditAriaLabel,
+                        multipleResponseRadio: trueFalsemultipleResponse,
+                        showDragHandleRadio: trueFalseShowDragHandle,
+                        duplicateResponseRadio: trueFalseDuplicateResponse,
+                        shuffleOptionRadio: trueFalseShuffleOption,
+                      }),
+                      position: props.questionIndex,
+                    };
+              console.log("Json going to save", itemObject);
+              props.onSaveQuestion(
+                props.sectionName,
+                props.tabName,
+                props.questionId,
+                props.questionIndex,
+                "label-image-with-drag-and-drop-question",
+                itemObject
+              );
+            }
           }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
@@ -227,7 +317,12 @@ const LabelImageWithDragDropLayout = (props) => {
 
         <Icon
           onClick={() => {
-            props.removeAnItem();
+            props.onRemoveQuestion(
+              props.sectionName,
+              props.tabName,
+              props.questionId,
+              props.questionIndex
+            );
           }}
           className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
           style={{
@@ -362,6 +457,8 @@ const LabelImageWithDragDropLayout = (props) => {
                           fontSize: "13px",
                         },
                       }}
+                      value={imageAlternativeText}
+                      onChange={(e)=>setImageAlternativeText(e.target.value)}
                       size="small"
                       required
                       id="outlined-required"
@@ -379,6 +476,8 @@ const LabelImageWithDragDropLayout = (props) => {
                           fontSize: "13px",
                         },
                       }}
+                      value={textOnHover}
+                      onChange={(e)=>setTextOnHover(e.target.value)}
                       size="small"
                       required
                       id="outlined-required"
@@ -396,6 +495,8 @@ const LabelImageWithDragDropLayout = (props) => {
                           fontSize: "13px",
                         },
                       }}
+                      value={imageWidth}
+                      onChange={(e)=>setImageWidth(e.target.value)}
                       size="small"
                       required
                       id="outlined-required"
@@ -406,19 +507,32 @@ const LabelImageWithDragDropLayout = (props) => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <label>Fill color</label>
-                      <Checkbox size="large" />
+                      <Checkbox
+                      checked={fillColor}
+                      onChange={handleFillColorChange}
+                      size="large" />
                     </div>
 
                     <div className="my-4 flex justify-between items-center">
                       <label>Show Dashed Border</label>
-                      <Switch />
+                      <Switch
+            checked={trueFalseShowDashedBorder}
+            onChange={() =>
+              setTrueFalseShowDashedBorder(!trueFalseShowDashedBorder)
+            }
+          />
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <div className="my-4 flex justify-between items-center">
                       <label>Edit ARIA Labels</label>
-                      <Switch />
+                      <Switch
+            checked={trueFalseEditAriaLabel}
+            onChange={() =>
+              setTrueFalseEditAriaLabel(!trueFalseEditAriaLabel)
+            }
+          />
                     </div>
                   </div>
 
@@ -514,22 +628,42 @@ const LabelImageWithDragDropLayout = (props) => {
           <div className="flex items-center flex-wrap">
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Duplicate Responses</label>
-              <Switch />
+              <Switch
+            checked={trueFalseDuplicateResponse}
+            onChange={() =>
+              setTrueFalseDuplicateResponse(!trueFalseDuplicateResponse)
+            }
+          />
             </div>
 
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Show drag handle</label>
-              <Switch />
+              <Switch
+            checked={trueFalseShowDragHandle}
+            onChange={() =>
+              setTrueFalseShowDragHandle(!trueFalseShowDragHandle)
+            }
+          />
             </div>
 
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Multiple Responses</label>
-              <Switch />
+              <Switch
+            checked={trueFalsemultipleResponse}
+            onChange={() =>
+              setTrueFalsemultipleResponse(!trueFalsemultipleResponse)
+            }
+          />
             </div>
 
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Shuffle options</label>
-              <Switch />
+              <Switch
+            checked={trueFalseShuffleOption}
+            onChange={() =>
+              setTrueFalseShuffleOption(!trueFalseShuffleOption)
+            }
+          />
             </div>
           </div>
         </div>

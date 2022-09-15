@@ -53,9 +53,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function SubjectList({ page, loading, subjects }) {
+function SubjectList({ page, setPage, loading, subjects }) {
   const history = useHistory();
   const classes = useStyles();
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [pageSize, setPageSize] = useState(10);
+  const [rowCount, setRowCount] = useState(1);
   const [{ user, defaultPageSize }, dispatch] = useStateValue();
   const [open, setOpen] = useState(false);
 
@@ -92,9 +95,16 @@ function SubjectList({ page, loading, subjects }) {
 
   async function handleArchiveUser(Id) {}
 
-  const handleChangePage = async (event, newPage) => {};
+  const handleChangePage = async (event, newPage) => {
+    setPage(newPage);
+    setRowCount(newPage);
+  };
 
-  function handleChangeRowsPerPage(event) {}
+  function handleChangeRowsPerPage(event) {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+    setPageSize(+event.target.value);
+  }
 
   const columns = [
     { field: "subject", headerName: "Subject", flex: 1 },
@@ -203,10 +213,12 @@ function SubjectList({ page, loading, subjects }) {
             hideFooterRowCount
             hideFooterPagination
             style={{ height: "70vh", border: "none", boxSizing: "unset" }}
-            pageSize={defaultPageSize}
             hideFooterSelectedRowCount
-            rowCount={10 /* pagination.totalItemsCount */}
+            rowCount={rowCount /* pagination.totalItemsCount */}
+            pageSize={pageSize}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
             rowsPerPageOptions={dataGridPageSizes}
+            pagination
           />
         ) : (
           ""
@@ -214,9 +226,9 @@ function SubjectList({ page, loading, subjects }) {
         <TablePagination
           page={page}
           component="div"
-          rowsPerPage={defaultPageSize}
+          rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
-          count={100 /* pagination.totalItemsCount */}
+          count={rowCount /* pagination.totalItemsCount */}
           className="flex-shrink-0 border-t-1"
           rowsPerPageOptions={dataGridPageSizes}
           onRowsPerPageChange={handleChangeRowsPerPage}
