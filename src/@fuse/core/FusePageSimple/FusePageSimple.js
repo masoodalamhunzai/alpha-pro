@@ -40,8 +40,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.default,
   },
   header: {
-    height: headerHeight,
+    // height: headerHeight,
     minHeight: headerHeight,
+    maxHeight: 260,
     // background: `linear-gradient(to right, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
     color: theme.palette.primary.contrastText,
     backgroundSize: "cover",

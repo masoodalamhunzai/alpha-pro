@@ -11,6 +11,7 @@ import { useLocation, useHistory } from "react-router-dom";
 import { primaryBlueColor, primaryGrayColor } from "app/services/Settings";
 import { useStateValue } from "app/services/state/State";
 import { actions } from "app/services/state/Reducer";
+import Divider from "@mui/material/Divider";
 import Alert from "@mui/material/Alert";
 import swal from "sweetalert";
 import Stack from "@mui/material/Stack";
@@ -20,7 +21,7 @@ const useStyles = makeStyles({
   root: {
     fontSize: "1rem",
     "&.MuiContainer-root": {
-      maxWidth: "55%",
+      maxWidth: "90%",
       margin: "2rem",
     },
     "& .MuiInputBase-input": {
@@ -199,10 +200,9 @@ const NewGrade = () => {
           marginTop: 2,
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
         }}
       >
-        <Box component="form" noValidate sx={{ my: 1, width: "80%" }}>
+        <Box component="form" noValidate sx={{ my: 1, width: "50%" }}>
           {error && (
             <Alert
               severity="error"
@@ -278,32 +278,34 @@ const NewGrade = () => {
               ))}
             </Stack>
           </Box>
-          <div className="h-0.5 w-ful text-slate-700 bg-slate-400 " />
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              my: 2,
-            }}
+        </Box>
+        <div className="mt-8 mb-5 w-full">
+          <Divider />
+        </div>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            my: 2,
+          }}
+        >
+          <Button
+            type="submit"
+            variant="contained"
+            className={classes.continueBtn}
+            onClick={handleGradeSubmit}
           >
-            <Button
-              type="submit"
-              variant="contained"
-              className={classes.continueBtn}
-              onClick={handleGradeSubmit}
-            >
-              Create
-            </Button>
-            <Button
-              type="cancel"
-              variant="contained"
-              className={classes.cancelBtn}
-              onClick={() => redirectTo("/grade")}
-            >
-              cancel
-            </Button>
-          </Box>
+            Create
+          </Button>
+          <Button
+            type="cancel"
+            variant="contained"
+            className={classes.cancelBtn}
+            onClick={() => redirectTo("/grade")}
+          >
+            cancel
+          </Button>
         </Box>
       </Box>
     </Container>

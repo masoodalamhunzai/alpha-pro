@@ -16,7 +16,7 @@ import Icon from "@material-ui/core/Icon";
 import { Add as AddIcon } from "@material-ui/icons";
 import Input from "@material-ui/core/Input";
 import Paper from "@material-ui/core/Paper";
-import { useHistory } from "react-router";
+import { Link, useHistory } from "react-router-dom";
 import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
 import TagTypeList from "./TagTypeList";
 
@@ -31,8 +31,9 @@ const useStyles = makeStyles({
       borderRadius: "1.6rem",
     },
     "& .MuiInputBase-input": {
-      textAlign: "start",
+      textAlign: "center",
       borderRadius: "1.6rem",
+      backgroundColor: "#fff",
     },
     "& .MuiInputLabel-root": {
       fontSize: "1.4rem",
@@ -85,21 +86,28 @@ const TagTypes = () => {
           >
             {pageTitle}
           </Typography>
-          <Button
-            variant="contained"
-            style={{ float: "right" }}
-            color="secondary"
-            startIcon={<AddIcon />}
-            onClick={() => redirectTo("/create-tag-type")}
+          <Link
+            to={{
+              pathname: "/tag-types/create-tag-type",
+              state: { selectedOrg: "", mode: "create-user" },
+            }}
           >
-            Create New
-          </Button>
+            <Button
+              variant="contained"
+              style={{ float: "right" }}
+              color="secondary"
+              startIcon={<AddIcon />}
+              // onClick={() => redirectTo("/tag-types/create-tag-type")}
+            >
+              Create New
+            </Button>
+          </Link>
         </div>
       }
       content={
         <div className="p-24">
           <div className="flex flex-wrap flex-1 items-center justify-between mb-10 p-8">
-            <div className="flex flex-1 items-center w-full sm:w-auto sm:px-6 mx-4">
+            <div className="flex flex-1 items-center w-11/12 sm:w-auto sm:px-6 mx-4">
               <ThemeProvider theme={theme}>
                 <Paper className="flex items-center min-w-full sm:min-w-0 w-full px-12 py-4 rounded-16 shadow">
                   <Icon color="action">search</Icon>
@@ -115,7 +123,7 @@ const TagTypes = () => {
                 </Paper>
               </ThemeProvider>
             </div>
-            <div className="flex w-1/6 mx-10 sm:min-w-0 justify-center rounded-16 bg-transparent">
+            <div className="flex w-2/6 mx-10 sm:min-w-0 justify-center rounded-16 bg-transparent">
               <FormControl
                 sx={{ width: "100%", margin: "0px 5px" }}
                 size="small"

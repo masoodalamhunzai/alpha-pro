@@ -21,7 +21,15 @@ const subRoutesConfig = {
       component: () => <CreateNewGrade />,
     },
     {
-      path: "/create-tag-type",
+      path: "/edit-grade",
+      component: () => <CreateNewGrade />,
+    },
+    {
+      path: "/tag-types/create-tag-type",
+      component: () => <NewTagType />,
+    },
+    {
+      path: "/tag-types/edit-tag-type",
       component: () => <NewTagType />,
     },
     {
@@ -29,9 +37,10 @@ const subRoutesConfig = {
       component: () => <NewTagHierarchy />,
     },
     {
-      path: "/edit-grade",
-      component: () => <CreateNewGrade />,
+      path: "/edit-tag-hierarchy",
+      component: () => <NewTagHierarchy />,
     },
+
     {
       path: "/create-subject",
       component: () => <CreateNewSubject />,

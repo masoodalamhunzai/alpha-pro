@@ -20,19 +20,19 @@ const useStyles = makeStyles({
   root: {
     fontSize: "1rem",
     "&.MuiContainer-root": {
-      maxWidth: "55%",
+      maxWidth: "90%",
       margin: "3rem",
     },
     "& .MuiInputBase-input": {
       backgroundColor: "#fff",
-      textAlign: "start",
+      textAlign: "center",
       fontSize: "1.5rem !important",
     },
     "& .MuiButton-root": {
       fontWeight: "700",
       borderRadius: "1.6rem",
       margin: "1rem 0.5rem",
-      padding: "0.5rem 2rem",
+      padding: "0.5rem 3rem",
     },
     "& .MuiFormControlLabel-label": {
       fontSize: "1.2rem",
@@ -47,21 +47,7 @@ const useStyles = makeStyles({
       top: "-5px",
     },
   },
-  buttonGrey: {
-    "&.MuiButton-root": {
-      backgroundColor: "grey",
-      color: "#fff",
-      "&:hover": { backgroundColor: primaryBlueColor },
-      textTransform: "capitalize",
-    },
-  },
-  buttonSelected: {
-    "&.MuiButton-root": {
-      backgroundColor: "#3287FB",
-      color: "#fff",
-      textTransform: "capitalize",
-    },
-  },
+
   continueBtn: {
     "&.MuiButton-root": {
       backgroundColor: "#3287FB",
@@ -74,14 +60,6 @@ const useStyles = makeStyles({
       backgroundColor: "#ACACAC",
       fontSize: "1.3rem",
       textTransform: "capitalize",
-    },
-  },
-  formInput: {
-    "&.MuiBox-root": {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      width: "100%",
     },
   },
 });
@@ -109,7 +87,7 @@ const NewTagType = () => {
   };
 
   const handleChangeInputs = (e) => {
-    setNewSubject(e.target.value);
+    // setNewSubject(e.target.value);
   };
 
   // const validation = () => {
@@ -170,10 +148,9 @@ const NewTagType = () => {
           marginTop: 2,
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
         }}
       >
-        <Box component="form" noValidate sx={{ my: 4, width: "80%" }}>
+        <Box component="form" noValidate sx={{ my: 2, width: "50%" }}>
           {error && (
             <Alert
               severity="error"
@@ -196,33 +173,32 @@ const NewTagType = () => {
               autoFocus
             />
           </FormControl>
-          <div className="mt-10 mb-5 w-full">
-            <Divider />
-          </div>
-          <div className="h-0.5 w-full text-slate-700 bg-slate-400 " />
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              my: 2,
-            }}
+        </Box>
+        <div className="mt-8 mb-5 w-full">
+          <Divider />
+        </div>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            my: 2,
+          }}
+        >
+          <Button
+            type="submit"
+            variant="contained"
+            className={classes.continueBtn}
           >
-            <Button
-              type="submit"
-              variant="contained"
-              className={classes.continueBtn}
-            >
-              Create
-            </Button>
-            <Button
-              type="cancel"
-              variant="contained"
-              className={classes.cancelBtn}
-            >
-              cancel
-            </Button>
-          </Box>
+            Create
+          </Button>
+          <Button
+            type="cancel"
+            variant="contained"
+            className={classes.cancelBtn}
+          >
+            cancel
+          </Button>
         </Box>
       </Box>
     </Container>

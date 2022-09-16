@@ -19,6 +19,7 @@ const useStyles = makeStyles({
 const Permissions = ({
   handleChangePermissions,
   permissions: {
+    omrManager,
     activityManager,
     alphaProd,
     alphaDev,
@@ -33,12 +34,16 @@ const Permissions = ({
     userManager,
     systemAdmin,
     insightAccess,
-    roleOmr,
     authorSiteSettingManager,
   },
 }) => {
   const classes = useStyles();
 
+  // const [checked, setChecked] = React.useState(true);
+
+  // const handleChange = (event) => {
+  //   setChecked(event.target.checked);
+  // };
   return (
     <div>
       <Box
@@ -200,8 +205,8 @@ const Permissions = ({
                     <FormControlLabel
                       control={
                         <Checkbox
-                          name="roleOmr"
-                          value={roleOmr}
+                          name="omrManager"
+                          value={omrManager}
                           onChange={handleChangePermissions}
                         />
                       }
@@ -362,7 +367,7 @@ const Permissions = ({
           }}
         >
           <Icon color="action" style={{ color: "#0078D2", margin: "0 0.8rem" }}>
-            infoicon
+            info_icon
           </Icon>
           The new user newuser@gmail.com will be sent an email with a set
           password link that will expire in 7 days.
