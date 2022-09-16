@@ -33,12 +33,33 @@ const useStyles = makeStyles({
     "& .MuiInputBase-input": {
       textAlign: "start",
       borderRadius: "1.6rem",
+      backgroundColor: "#fff",
     },
     "& .MuiInputLabel-root": {
       fontSize: "1.4rem",
       left: "-4px",
       top: "-5px",
     },
+  },
+  hederTitle: {
+    color: "#000 !important",
+    fontWeight: "700 !important",
+    margin: "2rem 0 !important",
+    textTransform: "capitalize",
+  },
+  pageDesc: {
+    fontSize: "13px !important",
+    textTransform: "capitalize",
+    lineHeight: 1.5,
+    marginLeft: "0.7rem !important",
+    color: "rgba(0, 0, 0, 0.6)",
+    fontWeight: 500,
+  },
+  guideBtn: {
+    width: "23%",
+    marginTop: "1rem",
+    textTransform: "capitalize",
+    backgroundColor: "#F4CD13",
   },
 });
 
@@ -74,33 +95,30 @@ const TagHierarchies = () => {
         <div className="p-24">
           <Breadcrumb />
           <div className="flex items-center justify-between">
-            <div className="flex flex-col w-3/4">
+            <div className="flex flex-col w-4/5">
               <Typography
                 variant="h3"
                 gutterBottom
-                sx={{
-                  color: "#000",
-                  fontWeight: 700,
-                  mt: 2,
-                  textTransform: "capitalize",
-                }}
+                className={classes.hederTitle}
               >
                 {pageTitle}
               </Typography>
-              <Typography
-                variant="paragraph"
-                sx={{
-                  color: "#000",
-                  fontSize: "11px",
-                  textTransform: "capitalize",
-                }}
-              >
+              <Typography variant="paragraph" className={classes.pageDesc}>
                 The Following lists the existing hierarchies which are used to
                 drive progress reporting. Use the create button above to
                 provision a new hierarchy. The reference is used when
                 initialising the relevent Reports API report types. For further
                 Information, see the Hierarchies section in our Aurthor Guide.
               </Typography>
+              <Button variant="contained" className={classes.guideBtn}>
+                <Icon
+                  color="action"
+                  style={{ color: "#000", margin: "0 0.8rem" }}
+                >
+                  infoicon
+                </Icon>{" "}
+                author guide
+              </Button>
             </div>
             <Button
               variant="contained"

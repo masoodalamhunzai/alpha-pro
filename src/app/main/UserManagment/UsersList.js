@@ -1,6 +1,6 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react/jsx-no-bind */
-import { memo, useState } from "react";
+import { memo, useState, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { TablePagination, Tooltip } from "@material-ui/core";
 import {
@@ -18,6 +18,7 @@ import {
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@mui/material/Typography";
 // import { actions } from "app/services/state/Reducer";
+import { useSnackbar } from "notistack";
 import swal from "sweetalert";
 // import moment from "moment";
 import StatusIcon from "app/shared-components/StatusIcon";
@@ -81,8 +82,14 @@ function UsersList({
   const history = useHistory();
   const classes = useStyles();
   const MODE = "edit-user";
+  const { enqueueSnackbar } = useSnackbar();
+  const anchorRef = useRef(null);
+  const [userId, setUserId] = useState(0);
   const [{ user, patients, defaultPageSize, organization }, dispatch] =
     useStateValue();
+  const [usersList, setUsersList] = useState([]);
+  const [pagination, setPagination] = useState([]);
+  const [open, setOpen] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [pageSize, setPageSize] = useState(10);
   const [rowCount, setRowCount] = useState(1);
@@ -110,20 +117,20 @@ function UsersList({
 
   async function handleArchiveUser(Id) {}
 
-  // async function onRestoreUser(Id) {
-  //   swal({
-  //     title: "Are you sure?",
-  //     text: "Are you sure you want to restore this User?",
-  //     icon: "warning",
-  //     buttons: true,
-  //     dangerMode: true,
-  //   }).then(async (willDelete) => {
-  //     if (willDelete) {
-  //       handleRestoreUser(Id);
-  //     }
-  //   });
-  // }
-  // async function handleRestoreUser(Id) {}
+  async function onRestoreUser(Id) {
+    swal({
+      title: "Are you sure?",
+      text: "Are you sure you want to restore this User?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        handleRestoreUser(Id);
+      }
+    });
+  }
+  async function handleRestoreUser(Id) {}
 
   // const showUserDetail = (id) => {};
 

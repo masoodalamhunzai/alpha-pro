@@ -110,7 +110,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ManageOrganization() {
+function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
   const location = useLocation();
   const history = useHistory();
   const pageTitle = location.pathname
@@ -125,7 +125,10 @@ function ManageOrganization() {
   const { editData, mode } = location?.state ? location?.state : "";
 
   const editOrganization = mode === EDIT_MODE ? editData : "";
+  console.log(editOrganization, "editOrganization");
+  const [loading, setLoading] = useState(true);
   const [organization, setOrganization] = useState(null);
+  const [serviceProviderDialog, setServiceProviderDialog] = useState(false);
   const [{ user }, dispatch] = useStateValue();
   const [statesArray, setStatesArray] = useState([]);
   const [countriesArray, setCountriesArray] = useState([]);
@@ -586,6 +589,7 @@ if(editOrganization?.state != ''){
                       style={{ marginLeft: "1%" }}
                     >
                       <Typography>Status</Typography>
+                      {console.log(values.isActive, "values.isActive")}
                       <FormControlLabel
                         control={
                           <Switch

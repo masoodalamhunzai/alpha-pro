@@ -1,7 +1,8 @@
 /* eslint-disable import/prefer-default-export */
 
 export const settings = {
-  baseUrl: "http://182.191.121.76",
+  // baseUrl: "http://182.191.121.76",
+  baseUrl: "http://localhost",
   //baseUrl: process.env.REACT_APP_API_BASEURL,
   auth0Domain: process.env.REACT_APP_AUTH0_DOMAIN,
   auth0ClientId: process.env.REACT_APP_AUTH0_CLIENT_ID,

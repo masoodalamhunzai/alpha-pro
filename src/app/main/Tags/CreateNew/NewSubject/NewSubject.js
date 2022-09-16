@@ -12,6 +12,7 @@ import { useStateValue } from "app/services/state/State";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import { useLocation, useHistory } from "react-router-dom";
+import Divider from "@mui/material/Divider";
 import swal from "sweetalert";
 import Alert from "@mui/material/Alert";
 import { primaryBlueColor, primaryGrayColor } from "app/services/Settings";
@@ -23,7 +24,7 @@ const useStyles = makeStyles({
   root: {
     fontSize: "1rem",
     "&.MuiContainer-root": {
-      maxWidth: "55%",
+      maxWidth: "90%",
       margin: "3rem",
     },
     "& .MuiInputBase-input": {
@@ -210,10 +211,9 @@ const NewSubject = () => {
           marginTop: 2,
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
         }}
       >
-        <Box component="form" noValidate sx={{ my: 4, width: "80%" }}>
+        <Box component="form" noValidate sx={{ my: 2, width: "50%" }}>
           {error && (
             <Alert
               severity="error"
@@ -294,31 +294,33 @@ const NewSubject = () => {
               ))}
             </Stack>
           </Box>
-          <div className="h-0.5 w-ful text-slate-700 bg-slate-400 " />
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              my: 2,
-            }}
+        </Box>
+        <div className="mt-8 mb-5 w-full">
+          <Divider />
+        </div>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            my: 2,
+          }}
+        >
+          <Button
+            type="submit"
+            variant="contained"
+            className={classes.continueBtn}
+            onClick={handleSubjectSubmit}
           >
-            <Button
-              type="submit"
-              variant="contained"
-              className={classes.continueBtn}
-              onClick={handleSubjectSubmit}
-            >
-              Create
-            </Button>
-            <Button
-              type="cancel"
-              variant="contained"
-              className={classes.cancelBtn}
-            >
-              cancel
-            </Button>
-          </Box>
+            Create
+          </Button>
+          <Button
+            type="cancel"
+            variant="contained"
+            className={classes.cancelBtn}
+          >
+            cancel
+          </Button>
         </Box>
       </Box>
     </Container>

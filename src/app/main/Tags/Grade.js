@@ -34,6 +34,7 @@ const useStyles = makeStyles({
     "& .MuiInputBase-input": {
       textAlign: "start",
       borderRadius: "1.6rem",
+      backgroundColor: "#fff",
     },
     "& .MuiInputLabel-root": {
       fontSize: "1.4rem",

@@ -1,10 +1,12 @@
+import { useDispatch, useSelector } from 'react-redux';
+
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { Link } from '@material-ui/core';
-import { actions } from 'app/services/state/Reducer';
 import { makeStyles } from '@material-ui/core/styles';
 import { switchAlphaEnvironments } from 'app/services/api/ApiManager';
+import { switchCurrentEnvironment } from 'app/store/alpha/userReducer';
 import { toUpper } from 'lodash';
-import { useStateValue } from 'app/services/state/State';
+import { useHistory } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
   envSwitchContainer: {
@@ -27,19 +29,23 @@ const useStyles = makeStyles((theme) => ({
 
 function EnvSwitch(props) {
   const classes = useStyles(props);
-  const [{ user, currentEnv }, dispatch] = useStateValue();
+  const history = useHistory();
+  const user = useSelector(({ alpha }) => alpha.user);
+  const { currentEnv = '' } = user || {};
+  const dispatch = useDispatch();
 
   const switchEnvironment = (env) => {
     switchAlphaEnvironments(env, user)
       .then((res) => {
         const { data = {} } = res || {};
-        const { status = '' } = data || {};
+        const { status = '', user: _user = {} } = data || {};
         if (status === 'success') {
-          dispatch({
-            type: actions.SET_CURRENT_ENV,
-            payload: env,
-          });
-          // window.location.reload();
+          const { current_env: currEnv } = _user || {};
+          console.log('currEnv', currEnv);
+          dispatch(switchCurrentEnvironment(currEnv));
+          setTimeout(() => {
+            history.push('/home');
+          }, 500);
         }
       })
       .catch((err) => {

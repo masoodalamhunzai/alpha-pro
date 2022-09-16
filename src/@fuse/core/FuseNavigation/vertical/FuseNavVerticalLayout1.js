@@ -1,8 +1,8 @@
-import List from '@material-ui/core/List';
-import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import { useDispatch } from 'react-redux';
 import FuseNavItem from '../FuseNavItem';
+import List from '@material-ui/core/List';
+import clsx from 'clsx';
+import { makeStyles } from '@material-ui/core/styles';
+import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   navigation: {
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: 0,
         paddingBottom: 0,
         height: 32,
-       },
+      },
     },
   },
 }));
@@ -48,6 +48,8 @@ function FuseNavVerticalLayout1(props) {
   function handleItemClick(item) {
     onItemClick?.(item);
   }
+
+  console.log('navigation', navigation);
 
   return (
     <List
