@@ -142,10 +142,10 @@ function TagHierarchyList({
           <Tooltip title="Edit">
             <Link
               to={{
-                // pathname: "/edit-tagtype",
+                pathname: "/edit-tag-hierarchy",
                 state: {
                   editData: params?.row,
-                  // mode: "edit-tagtype",
+                  mode: "edit-tag-hierarchy",
                 },
               }}
             >

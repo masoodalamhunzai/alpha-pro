@@ -22,10 +22,6 @@ import TagHierarchyList from "./TagHierarchyList";
 
 const useStyles = makeStyles({
   layoutRoot: {
-    header: {
-      height: "100%",
-      minHeight: "250px",
-    },
     fontSize: "1.5rem",
     "& .MuiFormControlLabel-label": {
       fontSize: "1.2rem",
@@ -75,7 +71,7 @@ const TagHierarchies = () => {
         root: classes.layoutRoot,
       }}
       header={
-        <div className="p-24 h-full">
+        <div className="p-24">
           <Breadcrumb />
           <div className="flex items-center justify-between">
             <div className="flex flex-col w-3/4">
@@ -95,7 +91,7 @@ const TagHierarchies = () => {
                 variant="paragraph"
                 sx={{
                   color: "#000",
-                  fontSize: "12px",
+                  fontSize: "11px",
                   textTransform: "capitalize",
                 }}
               >

@@ -143,10 +143,10 @@ function TagTypeList({
           <Tooltip title="Edit">
             <Link
               to={{
-                // pathname: "/edit-tagtype",
+                pathname: "/edit-tag-type",
                 state: {
                   editData: params?.row,
-                  // mode: "edit-tagtype",
+                  mode: "edit-tag-type",
                 },
               }}
             >
