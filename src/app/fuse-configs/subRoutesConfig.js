@@ -4,6 +4,8 @@ import {
   CreateNewSubject,
   NewTagType,
   NewTagHierarchy,
+  EditTagHierarchy,
+  EditTagType,
 } from "app/main";
 
 const subRoutesConfig = {
@@ -21,16 +23,12 @@ const subRoutesConfig = {
       component: () => <CreateNewGrade />,
     },
     {
-      path: "/edit-grade",
-      component: () => <CreateNewGrade />,
-    },
-    {
-      path: "/tag-types/create-tag-type",
+      path: "/create-tag-type",
       component: () => <NewTagType />,
     },
     {
-      path: "/tag-types/edit-tag-type",
-      component: () => <NewTagType />,
+      path: "/edit-tag-type",
+      component: () => <EditTagType />,
     },
     {
       path: "/create-tag-hierarchy",
@@ -38,9 +36,12 @@ const subRoutesConfig = {
     },
     {
       path: "/edit-tag-hierarchy",
-      component: () => <NewTagHierarchy />,
+      component: () => <EditTagHierarchy />,
     },
-
+    {
+      path: "/edit-grade",
+      component: () => <CreateNewGrade />,
+    },
     {
       path: "/create-subject",
       component: () => <CreateNewSubject />,

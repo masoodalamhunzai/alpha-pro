@@ -92,7 +92,7 @@ const TagHierarchies = () => {
         root: classes.layoutRoot,
       }}
       header={
-        <div className="p-24 h-full">
+        <div className="p-24">
           <Breadcrumb />
           <div className="flex items-center justify-between">
             <div className="flex flex-col w-4/5">
