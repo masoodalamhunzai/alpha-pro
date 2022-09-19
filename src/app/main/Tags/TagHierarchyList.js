@@ -15,12 +15,8 @@ import {
   settings as s,
   states,
 } from "app/services/Settings";
-import Icon from "@material-ui/core/Icon";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Typography from "@mui/material/Typography";
 import swal from "sweetalert";
 import StatusIcon from "app/shared-components/StatusIcon";
-import { deleteSubject } from "app/services/api/ApiManager";
 import { CustomToolbar } from "../../components";
 
 const useStyles = makeStyles((theme) => ({

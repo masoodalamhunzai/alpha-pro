@@ -44,17 +44,7 @@ const useStyles = makeStyles({
   },
 });
 const Subjects = () => {
-  const [
-    {
-      user,
-      subjects,
-      patients,
-      defaultPageSize,
-      organization,
-      organizationUsers,
-    },
-    dispatch,
-  ] = useStateValue();
+  const [{ user, subjects }, dispatch] = useStateValue();
   const location = useLocation();
   const history = useHistory();
   const pageTitle = location.pathname
