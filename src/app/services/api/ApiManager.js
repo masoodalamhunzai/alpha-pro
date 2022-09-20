@@ -1,3 +1,4 @@
+import { settings as s } from "app/services/Settings";
 import {
   deleteData,
   getData,
@@ -8,13 +9,40 @@ import {
 
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable max-len */
-import { settings as s } from "app/services/Settings";
 
 export const login = async (data) => {
   try {
-    const response = await postDataAnonymously(`${s.getToken}`, data);
+    const response = await postDataAnonymously(`${s.user.getToken}`, data);
+    if (response && response.status === 200) {
+      const { token } = response?.data || {};
+      if (token) {
+        localStorage.setItem("token", token);
+      }
+    }
     return response;
   } catch (err) {
+    return null;
+  }
+};
+
+export const getUserInfo = async () => {
+  try {
+    const response = await getData(`${s.user.getUserInfo}`);
+    if (response.status === 200 && response.data) {
+      return response.data;
+    }
+    return response;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const switchAlphaEnvironments = async (env) => {
+  try {
+    const response = await getData(`${s.alphaEnv.setEnvironment(env)}`);
+    return response;
+  } catch (err) {
+    console.log("err", err);
     return null;
   }
 };
@@ -30,21 +58,22 @@ export const getAllOrganizations = async () => {
   }
 };
 
-export const getOrganizations = async (user) => {
+export const getOrganizations = async (page = 1, items = 10) => {
   try {
-    const response = await getData(`${s.organization.getOrganizations}`, user);
+    const response = await getData(
+      `${s.organization.getOrganizations}`
+        .replace("$[items]", items)
+        .replace("$[page]", page)
+    );
+
     return response;
   } catch (err) {
     return null;
   }
 };
-export const AddOrganization = async (data, user) => {
+export const AddOrganization = async (data) => {
   try {
-    const response = await postData(
-      `${s.organization.addOrganizations}`,
-      user,
-      data
-    );
+    const response = await postData(`${s.organization.addOrganizations}`, data);
 
     return response;
   } catch (error) {
@@ -52,29 +81,26 @@ export const AddOrganization = async (data, user) => {
   }
 };
 
-export const getItems = async (user) => {
+export const getItems = async () => {
   try {
-    const response = await getData(`${s.items.getItems}`, user);
+    const response = await getData(`${s.items.getItems}`);
     return response;
   } catch (err) {
     return null;
   }
 };
-export const searchItem = async (searchText, user) => {
+export const searchItem = async (searchText) => {
   try {
-    const response = await getData(
-      `${s.items.searchItem(searchText)}`,
-      user
-    );
+    const response = await getData(`${s.items.searchItem(searchText)}`);
     return response;
   } catch (err) {
     return null;
   }
 };
 
-export const saveItem = async (data, user) => {
+export const saveItem = async (data) => {
   try {
-    const response = await postData(`${s.items.addItems}`, user, data);
+    const response = await postData(`${s.items.addItems}`, data);
 
     return response;
   } catch (error) {
@@ -82,38 +108,30 @@ export const saveItem = async (data, user) => {
   }
 };
 
-export const saveQuestion = async (data, id, user) => {
+export const saveQuestion = async (data, id) => {
   try {
-    console.log('api manager savequestion');
-    const response = await postData(
-      `${s.items.saveQuestion(id)}`,
-      user,
-      data
-    );
-    console.log('api manager savequestion response ', response);
+    console.log("api manager savequestion");
+    const response = await postData(`${s.items.saveQuestion(id)}`, data);
+    console.log("api manager savequestion response ", response);
     return response;
   } catch (error) {
-    console.log('api manager savequestion error ', error);
+    console.log("api manager savequestion error ", error);
     return null;
   }
 };
-export const getQuestionByItemId = async (itemId, user) => {
+
+export const getQuestionByItemId = async (itemId) => {
   try {
-    const response = await getData(
-      `${s.items.getQuestionByItemId(itemId)}`,
-      user
-    );
+    const response = await getData(`${s.items.getQuestionByItemId(itemId)}`);
     return response;
   } catch (err) {
     return null;
   }
 };
-export const getItemById = async (itemId, user) => {
+
+export const getItemById = async (itemId) => {
   try {
-    const response = await getData(
-      `${s.items.getItemById(itemId)}`,
-      user
-    );
+    const response = await getData(`${s.items.getItemById(itemId)}`);
     return response;
   } catch (err) {
     return null;
@@ -176,11 +194,12 @@ export const getOrganizationByFilter = async (data) => {
   }
 };
 
-export const getOrganizationUsers = async (orgId, user) => {
+export const getOrganizationUsers = async (orgId, page = 1, items = 10) => {
   try {
     const response = await getData(
-      `${s.organizationUsers.getOrganizationUser(orgId)}`,
-      user
+      `${s.organizationUsers.getOrganizationUser(orgId)}`
+        .replace("$[items]", items)
+        .replace("$[page]", page)
     );
     return response;
   } catch (err) {
@@ -188,68 +207,72 @@ export const getOrganizationUsers = async (orgId, user) => {
   }
 };
 
-export const getAllRoles = async (user) => {
+export const getAllRoles = async () => {
   try {
-    const response = await getData(`${s.roles}`, user);
-    return response;
-  } catch (err) {
-    return null;
-  }
-};
-export const getAllGrades = async (user) => {
-  try {
-    const response = await getData(`${s.grades.getGrades}`, user);
-    return response;
-  } catch (err) {
-    return null;
-  }
-};
-export const createUserGrade = async (user, data) => {
-  try {
-    const response = await postData(`${s.grades.addGrade}`, user, data);
-    return response;
-  } catch (err) {
-    return null;
-  }
-};
-export const deleteGrade = async (id, user) => {
-  try {
-    const response = await deleteData(`${s.grades.delete(id)}`, user);
-    return response;
-  } catch (err) {
-    return null;
-  }
-};
-export const getAllSubjects = async (user) => {
-  try {
-    const response = await getData(`${s.subjects.getSubjects}`, user);
-    return response;
-  } catch (err) {
-    return null;
-  }
-};
-export const createUserSubject = async (user, data) => {
-  try {
-    const response = await postData(`${s.subjects.addSubject}`, user, data);
-    return response;
-  } catch (err) {
-    return null;
-  }
-};
-export const deleteSubject = async (id, user) => {
-  try {
-    const response = await deleteData(`${s.subjects.delete(id)}`, user);
+    const response = await getData(`${s.roles}`);
     return response;
   } catch (err) {
     return null;
   }
 };
 
-export const createOrganizationUser = async (id, user, data) => {
+export const getAllGrades = async () => {
+  try {
+    const response = await getData(`${s.grades.getGrades}`);
+    return response;
+  } catch (err) {
+    return null;
+  }
+};
+
+export const createUserGrade = async (data) => {
+  try {
+    const response = await postData(`${s.grades.addGrade}`, data);
+    return response;
+  } catch (err) {
+    return null;
+  }
+};
+
+export const deleteGrade = async (id) => {
+  try {
+    const response = await deleteData(`${s.grades.delete(id)}`);
+    return response;
+  } catch (err) {
+    return null;
+  }
+};
+
+export const getAllSubjects = async () => {
+  try {
+    const response = await getData(`${s.subjects.getSubjects}`);
+    return response;
+  } catch (err) {
+    return null;
+  }
+};
+
+export const createUserSubject = async (data) => {
+  try {
+    const response = await postData(`${s.subjects.addSubject}`, data);
+    return response;
+  } catch (err) {
+    return null;
+  }
+};
+export const deleteSubject = async (id) => {
+  try {
+    const response = await deleteData(`${s.subjects.delete(id)}`);
+    return response;
+  } catch (err) {
+    return null;
+  }
+};
+
+export const createOrganizationUser = async (id, data) => {
   try {
     const response = await postData(
       `${s.organizationUsers.createOrganizationUser(id)}`,
-      user,
       data
     );
     return response;
@@ -258,11 +281,17 @@ export const createOrganizationUser = async (id, user, data) => {
   }
 };
 
-export const searchOrganizationUser = async (id, user, searchTerm) => {
+export const searchOrganizationUser = async (
+  id,
+  searchTerm,
+  page = 1,
+  items = 10
+) => {
   try {
     const response = await getData(
-      `${s.search.searchOrganizationUsers(id, searchTerm)}`,
-      user
+      `${s.search.searchOrganizationUsers(id, searchTerm)}`
+        .replace("$[items]", items)
+        .replace("$[page]", page)
     );
     return response;
   } catch (err) {
@@ -270,11 +299,10 @@ export const searchOrganizationUser = async (id, user, searchTerm) => {
   }
 };
 
-export const searchOrganizations = async (searchTerm, user) => {
+export const searchOrganizations = async (searchTerm) => {
   try {
     const response = await getData(
-      `${s.search.searchOrganizations(searchTerm)}`,
-      user
+      `${s.search.searchOrganizations(searchTerm)}`
     );
     return response;
   } catch (err) {
@@ -282,32 +310,22 @@ export const searchOrganizations = async (searchTerm, user) => {
   }
 };
 
-export const switchAlphaEnvironments = async (env, user) => {
+export const deleteItem = async (itemId) => {
   try {
-    const response = await getData(`${s.alphaEnv.setEnvironment(env)}`, user);
+    const response = await deleteData(`${s.items.deleteItem(itemId)}`);
     return response;
   } catch (err) {
-    console.log('err', err);
+    console.log("err", err);
     return null;
   }
 };
 
-export const deleteItem = async (itemId, user) => {
+export const deleteQuestion = async (questionId) => {
   try {
-    const response = await deleteData(`${s.items.deleteItem(itemId)}`, user);
+    const response = await deleteData(`${s.items.deleteQuestion(questionId)}`);
     return response;
   } catch (err) {
-    console.log('err', err);
-    return null;
-  }
-};
-
-export const deleteQuestion = async (questionId, user) => {
-  try {
-    const response = await deleteData(`${s.items.deleteQuestion(questionId)}`, user);
-    return response;
-  } catch (err) {
-    console.log('err', err);
+    console.log("err", err);
     return null;
   }
 };

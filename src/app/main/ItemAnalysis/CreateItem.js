@@ -26,9 +26,9 @@ import ItemConfiguration from "./ItemConfiguration";
 
 import TabbedSection from "./TabbedSection";
 import SimpleSection from "./SimpleSection";
-import ClozeWithDropDownLayout from "./ClozeWithDropDown/ClozeWithDropDownLayout";
-import ClozeWithDragAndDropLayout from "./ClozeWithDragAndDrop/ClozeWithDragAndDropLayout";
-import ClozeWithTextLayout from "./ClozeWithText/ClozeWithTextLayout";
+
+import { useDispatch, useSelector } from "react-redux";
+import { setQuestions } from "app/store/alpha/itemReducer";
 
 const useStyles = makeStyles({
   layoutRoot: {},
@@ -43,6 +43,8 @@ const defaultValues = { name: "", email: "", subject: "", message: "" };
 }); */
 
 const CreateItem = () => {
+  const dispatch = useDispatch();
+  const itemQuestionsList = useSelector(({ alpha }) => alpha.item.questions);
   const location = useLocation();
   const history = useHistory();
   const pageTitle = location.pathname
@@ -51,8 +53,7 @@ const CreateItem = () => {
     .split("-")
     .join(" ");
   const classes = useStyles();
-  const [{ user, news, itemQuestionsList, defaultPageSize }, dispatch] =
-    useStateValue();
+  const [{ user, news, defaultPageSize }] = useStateValue();
   const { itemIdProps, mode } = location?.state ? location?.state : "";
 
   console.log(itemIdProps, "itemIdProps");
@@ -82,7 +83,7 @@ const CreateItem = () => {
   const [componentsList, setComponentsList] = useState([]);
   const [componentsStructureList, setComponentsStructureList] = useState([]);
 
-  //Cloze With Text Layout starts
+  // Cloze With Text Layout starts
 
   const [clozeWithTextMatchAllResponses, setClozeWithTextMatchAllResponses] =
     useState(false);
@@ -107,9 +108,9 @@ const CreateItem = () => {
     },
   ]);
 
-  //Cloze With Texts Layout ends
+  // Cloze With Texts Layout ends
 
-  //trueFalse layout starts
+  // trueFalse layout starts
   const [trueFalseShuffleOption, setTrueFalseShuffleOption] = useState(false);
   const [trueFalseEditorContent, setTrueFalseEditorContent] = useState("");
   const [trueFalseMultipleChoices, setTrueFalseMultipleChoices] = useState([
@@ -128,9 +129,9 @@ const CreateItem = () => {
       isAlternate: false,
     },
   ]);
-  //trueFalse layout ends
+  // trueFalse layout ends
 
-  //ClozeWithDropDown starts
+  // ClozeWithDropDown starts
 
   const [clozeWithDropDownEditorContent, setClozeWithDropDownEditorContent] =
     useState("");
@@ -182,9 +183,9 @@ const CreateItem = () => {
     },
   ]);
 
-  //ClozeWithDropDown ends
+  // ClozeWithDropDown ends
 
-  //ClozeWithDragAndDrop starts
+  // ClozeWithDragAndDrop starts
   const [
     clozeWithDragAndDropEditorContent,
     setClozeWithDragAndDropEditorContent,
@@ -240,7 +241,7 @@ const CreateItem = () => {
       ],
     },
   ]);
-  //ClozeWithDragAndDrop ends
+  // ClozeWithDragAndDrop ends
 
   // Choice Matrix start
   const [choiceMatricEditorContent, setChoiceMatricEditorContent] =
@@ -295,7 +296,7 @@ const CreateItem = () => {
     ]);
   // Choice Matrix end
 
-  //EssayWithRichText Layout starts
+  // EssayWithRichText Layout starts
 
   const [essayWithRichTextEditorContent, setEssayWithRichTextEditorContent] =
     useState("");
@@ -304,9 +305,9 @@ const CreateItem = () => {
   const [essayWithRichTextWordLimitType, setEssayWithRichTextWordLimitType] =
     useState("");
 
-  //EssayWithRichText Layout ends
+  // EssayWithRichText Layout ends
 
-  //Audio recorder Layout starts
+  // Audio recorder Layout starts
 
   const [audioRecorderEditorContent, setAudioRecorderEditorContent] =
     useState("");
@@ -314,18 +315,18 @@ const CreateItem = () => {
     useState(1);
   const [audioRecorderPlayerType, setAudioRecorderPlayerType] = useState("");
 
-  //audio recorder Layout ends
+  // audio recorder Layout ends
 
-  //ShortText Layout starts
+  // ShortText Layout starts
 
   const [shortTextEditorContent, setShortTextEditorContent] = useState("");
   const [shortTextPoints, setShortTextPoints] = useState(1);
   const [shortTextAllow, setShortTextAllow] = useState("");
   const [shortTextValue, setShortTextValue] = useState("");
 
-  //ShortText Layout ends
+  // ShortText Layout ends
 
-  //EssayWithPlainTextLayout starts
+  // EssayWithPlainTextLayout starts
   const [
     essayWithPlainTextLayoutEditorContent,
     setEssayWithPlainTextLayoutEditorContent,
@@ -339,9 +340,9 @@ const CreateItem = () => {
     essayWithPlainTextLayoutWordType,
     setEssayWithPlainTextLayoutWordType,
   ] = useState("");
-  //EssayWithPlainTextLayout ends
+  // EssayWithPlainTextLayout ends
 
-  //OrderList Layout starts
+  // OrderList Layout starts
 
   const [orderListEditorContent, setOrderListEditorContent] = useState("");
   const [orderListList, setOrderListList] = useState([
@@ -368,9 +369,9 @@ const CreateItem = () => {
     },
   ]);
 
-  //OrderList Layout ends
+  // OrderList Layout ends
 
-  //MatchList Layout Starts
+  // MatchList Layout Starts
   const [matchListEditorContent, setMatchListEditorContent] = useState("");
   const [matchListPossibleResponses, setMatchListPossibleResponses] = useState([
     {
@@ -419,9 +420,9 @@ const CreateItem = () => {
     },
   ]);
 
-  //MatchList Layout Ends
+  // MatchList Layout Ends
 
-  //Classification Layout starts
+  // Classification Layout starts
   const [classificationColumnCount, setClassificationColumnCount] = useState(1);
   const [classificationRowCount, setClassificationRowCount] = useState(1);
   const [classificationEditorContent, setClassificationEditorContent] =
@@ -473,13 +474,7 @@ const CreateItem = () => {
       isAlternate: false,
     },
   ]);
-  //Classification Layout end
-  const setNews = async () => {
-    dispatch({
-      type: actions.SET_NEWS,
-      payload: { header: "new header text", des: "new description text" },
-    });
-  };
+  // Classification Layout end
 
   const { control, handleSubmit, watch, formState } = useForm({
     mode: "onChange",
@@ -504,14 +499,14 @@ const CreateItem = () => {
     itemObject
   ) => {
     try {
-      console.log('itemObject ',itemObject);
+      console.log("itemObject ", itemObject);
       if (questionId != null) {
         const finalItemObject = {
           id: questionId,
           description: editorContent,
           options: multipleChoices,
           // itemId: "1eff4c49-fcb1-432e-83c8-c5a0023ee5e0",
-          questionType: questiontype, //"simple-mcqs",
+          questionType: questiontype, // "simple-mcqs",
           questionConfig:
             '{"some_key_1": "some_val_1", "some_key_2": "some_value_2"}',
           position: 1,
@@ -534,12 +529,7 @@ const CreateItem = () => {
             button: "Ok!",
           });
         } else { */
-        const res = await saveQuestion(
-          // finalItemObject,
-          itemObject,
-          itemId,
-          user
-        );
+        const res = await saveQuestion(itemObject, itemId);
         console.log("onSaveQuestion res is ", res);
         if (res && res.data && res.data.status === "success") {
           swal({
@@ -583,12 +573,7 @@ const CreateItem = () => {
             button: "Ok!",
           });
         } else { */
-        const res = await saveQuestion(
-          //finalItemObject,
-          itemObject,
-          itemId,
-          user
-        );
+        const res = await saveQuestion(itemObject, itemId);
         console.log("onSaveQuestion res is ", res);
         if (res && res.data && res.data.status === "success") {
           swal({
@@ -605,7 +590,7 @@ const CreateItem = () => {
             //  redirectTo("/all-questions");
           });
 
-          //...here shuffles question to push new created question id in layout
+          // ...here shuffles question to push new created question id in layout
           const comp = componentsStructureList;
           comp.forEach((item) => {
             if (item.Section === sectionname) {
@@ -619,11 +604,9 @@ const CreateItem = () => {
                     }
                   }
                 });
-              } else {
-                if (item.QuestionsList && item.QuestionsList.length > 0) {
-                  item.QuestionsList[questionIndex].id = res.data.question.id;
-                  //item.QuestionsList.push(question);
-                }
+              } else if (item.QuestionsList && item.QuestionsList.length > 0) {
+                item.QuestionsList[questionIndex].id = res.data.question.id;
+                // item.QuestionsList.push(question);
               }
             }
           });
@@ -658,7 +641,7 @@ const CreateItem = () => {
         id: itemId,
         layout: JSON.stringify(componentsStructureList),
         status: statusButtonDetails,
-        scoringType: scoringType,
+        scoringType,
         difficultyLevel: difficultyButtonDetails,
         acknowledgement: contentAcknowledgements,
         notes: contentNotes,
@@ -689,7 +672,7 @@ const CreateItem = () => {
           button: "Ok!",
         });
       } else {
-        const res = await saveItem(itemObject, user);
+        const res = await saveItem(itemObject);
 
         if (res && res.data && res.data.status === "success") {
           swal({
@@ -776,7 +759,7 @@ const CreateItem = () => {
           },
         ]),
       };
-      const res = await saveItem(itemObject, user);
+      const res = await saveItem(itemObject);
       if (res && res.data && res.data.status === "success") {
         if (res.data.item) {
           setItemId(res.data.item.id);
@@ -802,10 +785,10 @@ const CreateItem = () => {
     }
   };
 
-  const getItem = async (itemId) => {
-    console.log("getItem called ", itemId);
+  const getItem = async (id) => {
+    console.log("getItem called ", id);
     try {
-      const res = await getItemById(itemId, user);
+      const res = await getItemById(id);
       console.log("getItem res on page load ", res);
       if (res && res.status === 200 && res.data) {
         if (res.data.description) {
@@ -833,7 +816,7 @@ const CreateItem = () => {
           setTagsList(res.data.tags);
         }
         if (res.data.title) {
-          //setNameDetails(res.data.title);
+          // setNameDetails(res.data.title);
         }
 
         if (res.data.layout) {
@@ -854,14 +837,15 @@ const CreateItem = () => {
     }
   };
 
-  const getItemQuestions = async (itemId) => {
+  const getItemQuestions = async (id) => {
     try {
-      const res = await getQuestionByItemId(itemId, user);
+      const res = await getQuestionByItemId(id);
       if (res && res.status === 200 && res.data && res.data.length > 0) {
-        dispatch({
+        dispatch(setQuestions([...res.data]));
+        /* dispatch({
           type: actions.SET_ITEM_QUESTIONS_LIST,
           payload: res.data,
-        });
+        }); */
       }
     } catch (error) {
       console.log("create item error on page load ", error);
@@ -1079,7 +1063,7 @@ const CreateItem = () => {
           // handleArchiveOrganization(Id);
           console.log("question id : ", questionId);
           if (questionId != null) {
-            const res = await deleteQuestion(questionId, user);
+            const res = await deleteQuestion(questionId);
             console.log("onSaveQuestion res is ", res);
             if (res && res.data && res.data.status === "success") {
               swal({
@@ -1094,7 +1078,7 @@ const CreateItem = () => {
               });
 
               {
-                //...here shuffles question to push new created question id in layout
+                // ...here shuffles question to push new created question id in layout
                 const comp = componentsStructureList;
                 console.log("before", componentsStructureList);
                 comp.forEach((item) => {
@@ -1111,20 +1095,21 @@ const CreateItem = () => {
                             );
 
                             console.log("length>0 ", questionIndex);
-                            //tab.QuestionsList[ questionIndex ].id = questionId;
+                            // tab.QuestionsList[ questionIndex ].id = questionId;
                             // tab.QuestionsList.push(question);
                           }
                         }
                       });
-                    } else {
-                      if (item.QuestionsList && item.QuestionsList.length > 0) {
-                        item.QuestionsList = item.QuestionsList.filter(
-                          (e, i) => e.id != questionId
-                        );
-                        console.log("length<0 index", questionIndex);
-                        //item.QuestionsList[ questionIndex ].id =questionId;
-                        //item.QuestionsList.push(question);
-                      }
+                    } else if (
+                      item.QuestionsList &&
+                      item.QuestionsList.length > 0
+                    ) {
+                      item.QuestionsList = item.QuestionsList.filter(
+                        (e, i) => e.id != questionId
+                      );
+                      console.log("length<0 index", questionIndex);
+                      // item.QuestionsList[ questionIndex ].id =questionId;
+                      // item.QuestionsList.push(question);
                     }
                   }
                 });
@@ -1133,7 +1118,7 @@ const CreateItem = () => {
               }
             }
           } else {
-            //...here shuffles question to push new created question id in layout
+            // ...here shuffles question to push new created question id in layout
             const comp = componentsStructureList;
             console.log("before", componentsStructureList);
             comp.forEach((item) => {
@@ -1147,20 +1132,21 @@ const CreateItem = () => {
                         );
 
                         console.log("length>0 ", questionIndex);
-                        //tab.QuestionsList[ questionIndex ].id = questionId;
+                        // tab.QuestionsList[ questionIndex ].id = questionId;
                         // tab.QuestionsList.push(question);
                       }
                     }
                   });
-                } else {
-                  if (item.QuestionsList && item.QuestionsList.length > 0) {
-                    item.QuestionsList = item.QuestionsList.filter(
-                      (e, i) => i != questionIndex
-                    );
-                    console.log("length<0 index", questionIndex);
-                    //item.QuestionsList[ questionIndex ].id =questionId;
-                    //item.QuestionsList.push(question);
-                  }
+                } else if (
+                  item.QuestionsList &&
+                  item.QuestionsList.length > 0
+                ) {
+                  item.QuestionsList = item.QuestionsList.filter(
+                    (e, i) => i != questionIndex
+                  );
+                  console.log("length<0 index", questionIndex);
+                  // item.QuestionsList[ questionIndex ].id =questionId;
+                  // item.QuestionsList.push(question);
                 }
               }
             });
@@ -1337,7 +1323,7 @@ const CreateItem = () => {
                           setTrueFalseShuffleOptiontrueFalse={
                             setTrueFalseShuffleOption
                           }
-                          //ubaid
+                          // ubaid
                           clozeWithDropDownMultipleChoices={
                             clozeWithDropDownMultipleChoices
                           }
@@ -1540,7 +1526,7 @@ const CreateItem = () => {
                           setTrueFalseShuffleOptiontrueFalse={
                             setTrueFalseShuffleOption
                           }
-                          //ubaid
+                          // ubaid
                           clozeWithDropDownMultipleChoices={
                             clozeWithDropDownMultipleChoices
                           }

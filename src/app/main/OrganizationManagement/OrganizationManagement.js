@@ -1,53 +1,50 @@
-import { useState } from "react";
-import FusePageSimple from "@fuse/core/FusePageSimple";
-import Typography from "@mui/material/Typography";
-import { makeStyles, ThemeProvider, useTheme } from "@material-ui/core/styles";
-import { useStateValue } from "app/services/state/State";
-import { actions } from "app/services/state/Reducer";
-import { useLocation } from "react-router-dom";
-import { Add as AddIcon } from "@material-ui/icons";
-import Button from "@material-ui/core/Button";
-import Icon from "@material-ui/core/Icon";
-import Input from "@material-ui/core/Input";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import Paper from "@material-ui/core/Paper";
-import { useHistory } from "react-router";
-import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
-import {
-  searchOrganizations,
-  getOrganizations,
-} from "app/services/api/ApiManager";
-import OrganizationsList from "./OrganizationsList";
+import { useState } from 'react';
+import FusePageSimple from '@fuse/core/FusePageSimple';
+import Typography from '@mui/material/Typography';
+import { makeStyles, ThemeProvider, useTheme } from '@material-ui/core/styles';
+import { useStateValue } from 'app/services/state/State';
+import { actions } from 'app/services/state/Reducer';
+import { useLocation } from 'react-router-dom';
+import { Add as AddIcon } from '@material-ui/icons';
+import Button from '@material-ui/core/Button';
+import Icon from '@material-ui/core/Icon';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import Paper from '@material-ui/core/Paper';
+import { useHistory } from 'react-router';
+import { searchOrganizations, getOrganizations } from 'app/services/api/ApiManager';
+import Breadcrumb from '../../fuse-layouts/shared-components/Breadcrumbs';
+import OrganizationsList from './OrganizationsList';
 
 const useStyles = makeStyles({
   layoutRoot: {
-    "& .MuiFormControlLabel-label": {
-      fontSize: "1.2rem",
-      margin: "1rem 0",
+    '& .MuiFormControlLabel-label': {
+      fontSize: '1.2rem',
+      margin: '1rem 0',
     },
-    "& .MuiOutlinedInput-root": {
-      borderRadius: "1.6rem",
+    '& .MuiOutlinedInput-root': {
+      borderRadius: '1.6rem',
     },
-    "& .MuiInputBase-input": {
-      borderRadius: "1.6rem",
-      textAlign: "start",
-      backgroundColor: "#fff",
+    '& .MuiInputBase-input': {
+      borderRadius: '1.6rem',
+      textAlign: 'start',
+      backgroundColor: '#fff',
     },
-    "& .MuiInputLabel-root": {
-      fontSize: "1.4rem",
-      left: "-4px",
-      top: "-5px",
+    '& .MuiInputLabel-root': {
+      fontSize: '1.4rem',
+      left: '-4px',
+      top: '-5px',
     },
   },
   refreshButton: {
-    backgroundColor: "#0d870d",
-    color: "white",
-    padding: "0.5rem 4rem",
-    display: "flex",
-    justifyContent: "center",
+    backgroundColor: '#0d870d',
+    color: 'white',
+    padding: '0.5rem 4rem',
+    display: 'flex',
+    justifyContent: 'center',
   },
 });
 
@@ -55,15 +52,15 @@ const OrganizationManagement = () => {
   const location = useLocation();
   const history = useHistory();
   const pageTitle = location.pathname
-    .split("/")
+    .split('/')
     .filter((x) => x)[0]
-    .split("-")
-    .join(" ");
+    .split('-')
+    .join(' ');
   const classes = useStyles();
   const [{ user, news }, dispatch] = useStateValue();
   const [count, setCount] = useState(0);
   const theme = useTheme();
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState('');
   const [page, setPage] = useState(0);
 
   function handleSearch(event) {
@@ -83,10 +80,10 @@ const OrganizationManagement = () => {
     }
   };
   const handleSearchOrganizations = async () => {
-    if (searchText.trim() === "") {
+    if (searchText.trim() === '') {
       loadOrganizations();
     } else {
-      const res = await searchOrganizations(searchText, user);
+      const res = await searchOrganizations(searchText);
       if (res && res.status === 200 && res.data) {
         dispatch({
           type: actions.SET_SEARCH_ORGANIZATION,
@@ -96,7 +93,7 @@ const OrganizationManagement = () => {
     }
   };
   const loadOrganizations = async () => {
-    const res = await getOrganizations(user);
+    const res = await getOrganizations();
 
     if (res && res.status === 200 && res.data && res.data.length > 0) {
       dispatch({
@@ -109,19 +106,19 @@ const OrganizationManagement = () => {
     const { value } = e.target;
   };
   const columns = [
-    { field: "id", headerName: "ID", width: 70 },
-    { field: "name", headerName: "Name", width: 70 },
-    { field: "contactperson", headerName: "Contact Person", width: 130 },
-    { field: "email", headerName: "Email", width: 130 },
+    { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'name', headerName: 'Name', width: 70 },
+    { field: 'contactperson', headerName: 'Contact Person', width: 130 },
+    { field: 'email', headerName: 'Email', width: 130 },
     {
-      field: "phonenumber",
-      headerName: "Phone Number",
+      field: 'phonenumber',
+      headerName: 'Phone Number',
       width: 90,
     },
     {
-      field: "address",
-      headerName: "Address",
-      description: "",
+      field: 'address',
+      headerName: 'Address',
+      description: '',
       sortable: false,
       width: 160,
     },
@@ -146,20 +143,20 @@ const OrganizationManagement = () => {
             variant="h3"
             gutterBottom
             sx={{
-              color: "#000",
+              color: '#000',
               fontWeight: 700,
               mt: 2,
-              textTransform: "capitalize",
+              textTransform: 'capitalize',
             }}
           >
             {pageTitle}
           </Typography>
           <Button
             variant="contained"
-            style={{ float: "right" }}
+            style={{ float: 'right' }}
             color="secondary"
             aria-label="Send Message"
-            onClick={() => redirectTo("/manage-organization")}
+            onClick={() => redirectTo('/manage-organization')}
             startIcon={<AddIcon />}
           >
             Create Organization
@@ -184,7 +181,7 @@ const OrganizationManagement = () => {
                     value={searchText}
                     onChange={handleSearch}
                     inputProps={{
-                      "aria-label": "Search",
+                      'aria-label': 'Search',
                     }}
                   />
                 </Paper>
@@ -195,12 +192,12 @@ const OrganizationManagement = () => {
                 variant="contained"
                 color="secondary"
                 aria-label="Send Message"
-                style={{ padding: "0.5rem 3rem" }}
+                style={{ padding: '0.5rem 3rem' }}
                 onClick={handleSearchOrganizations}
               >
                 Search
               </Button>
-              <FormControl sx={{ width: "100%", mx: 2 }} size="small">
+              <FormControl sx={{ width: '100%', mx: 2 }} size="small">
                 <InputLabel id="archive-dropdown">Archive</InputLabel>
                 <Select
                   labelId="archive-dropdown"
@@ -217,12 +214,9 @@ const OrganizationManagement = () => {
                 className={classes.refreshButton}
                 onClick={loadOrganizations}
               >
-                <Icon
-                  color="white"
-                  style={{ marginRight: "0.6rem", fontSize: "1.6rem" }}
-                >
+                <Icon color="white" style={{ marginRight: '0.6rem', fontSize: '1.6rem' }}>
                   refresh
-                </Icon>{" "}
+                </Icon>{' '}
                 Refresh
               </Button>
             </div>

@@ -1,55 +1,46 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react/jsx-no-bind */
-import { memo, useState, useRef } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { TablePagination, Tooltip } from "@material-ui/core";
-import {
-  DeleteSweep as DeleteIcon,
-  BorderColor as EditIcon,
-} from "@material-ui/icons";
-import { useHistory, Link } from "react-router-dom";
-import { DataGrid } from "@mui/x-data-grid";
-import { useStateValue } from "app/services/state/State";
-import {
-  dataGridPageSizes,
-  settings as s,
-  states,
-} from "app/services/Settings";
-import Icon from "@material-ui/core/Icon";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Typography from "@mui/material/Typography";
-import swal from "sweetalert";
-import StatusIcon from "app/shared-components/StatusIcon";
-import { deleteSubject } from "app/services/api/ApiManager";
-import { CustomToolbar } from "../../components";
+import { memo, useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import { TablePagination, Tooltip } from '@material-ui/core';
+import { DeleteSweep as DeleteIcon, BorderColor as EditIcon } from '@material-ui/icons';
+import { useHistory, Link } from 'react-router-dom';
+import { DataGrid } from '@mui/x-data-grid';
+import { useStateValue } from 'app/services/state/State';
+import { dataGridPageSizes } from 'app/services/Settings';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@mui/material/Typography';
+import swal from 'sweetalert';
+import { deleteSubject } from 'app/services/api/ApiManager';
+import { CustomToolbar } from '../../components';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    fontSize: "1.2rem",
+    fontSize: '1.2rem',
     backgroundColor: theme.palette.background.paper,
     padding: 20,
   },
 
   icon: {
-    color: "grey",
-    cursor: "pointer",
+    color: 'grey',
+    cursor: 'pointer',
   },
   row: {
-    display: "flex",
+    display: 'flex',
     marginBottom: 10,
-    alignItems: "center",
-    justifyContent: "space-between",
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   buttonsContainer: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-evenly",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
   },
-  "& .MuiDataGrid-cell": {
-    fontSize: "16px",
+  '& .MuiDataGrid-cell': {
+    fontSize: '16px',
   },
-  "& .MuiDataGrid-root": {
-    fontSize: "16px",
+  '& .MuiDataGrid-root': {
+    fontSize: '16px',
   },
 }));
 
@@ -71,22 +62,22 @@ function SubjectList({ page, setPage, loading, subjects }) {
   };
   async function onArchiveSubject(id) {
     swal({
-      title: "Are you sure?",
-      text: "Are you sure you want to archive this subject?",
-      icon: "warning",
+      title: 'Are you sure?',
+      text: 'Are you sure you want to archive this subject?',
+      icon: 'warning',
       buttons: true,
       dangerMode: true,
     }).then(async (willDelete) => {
       if (willDelete) {
-        const res = await deleteSubject(id, user);
-        if (res && res.data && res.data.status === "success") {
+        const res = await deleteSubject(id);
+        if (res && res.data && res.data.status === 'success') {
           swal({
-            title: "Good job!",
-            text: "subject archive successfully!",
-            icon: "success",
-            button: "Ok!",
+            title: 'Good job!',
+            text: 'subject archive successfully!',
+            icon: 'success',
+            button: 'Ok!',
           }).then((value) => {
-            redirectTo("/subject");
+            redirectTo('/subject');
           });
         }
       }
@@ -107,8 +98,8 @@ function SubjectList({ page, setPage, loading, subjects }) {
   }
 
   const columns = [
-    { field: "subject", headerName: "Subject", flex: 1 },
-    { field: "grade", headerName: "Grade", flex: 1 },
+    { field: 'subject', headerName: 'Subject', flex: 1 },
+    { field: 'grade', headerName: 'Grade', flex: 1 },
     // {
     //   field: "status",
     //   headerName: "Status",
@@ -126,9 +117,9 @@ function SubjectList({ page, setPage, loading, subjects }) {
     //   ),
     // },
     {
-      field: "action",
-      headerName: "Action",
-      description: "This column has a value getter and is not sortable.",
+      field: 'action',
+      headerName: 'Action',
+      description: 'This column has a value getter and is not sortable.',
       sortable: false,
       width: 160,
       renderCell: (params) => (
@@ -136,10 +127,10 @@ function SubjectList({ page, setPage, loading, subjects }) {
           <Tooltip title="Edit">
             <Link
               to={{
-                pathname: "/edit-subject",
+                pathname: '/edit-subject',
                 state: {
                   editData: params?.row,
-                  mode: "edit-subject",
+                  mode: 'edit-subject',
                 },
               }}
             >
@@ -171,35 +162,27 @@ function SubjectList({ page, setPage, loading, subjects }) {
       <div className={classes.root}>
         {loading && (
           <div className="flex justify-center flex-col items-center py-12">
-            <Typography
-              variant="body1"
-              gutterBottom
-              color="textSecondary"
-              align="center"
-            >
+            <Typography variant="body1" gutterBottom color="textSecondary" align="center">
               Loading...
             </Typography>
-            <CircularProgress
-              className="w-192 sm:w-320 max-w-full rounded-2"
-              color="secondary"
-            />
+            <CircularProgress className="w-192 sm:w-320 max-w-full rounded-2" color="secondary" />
           </div>
         )}
         {rows ? (
           <DataGrid
             sx={{
-              "& .MuiDataGrid-columnHeaders": {
-                border: "none",
+              '& .MuiDataGrid-columnHeaders': {
+                border: 'none',
               },
-              "& .MuiDataGrid-columnHeaderTitle": {
-                fontSize: "14px",
-                fontWeight: "600",
-                color: "#189AF5",
-                border: "none",
+              '& .MuiDataGrid-columnHeaderTitle': {
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#189AF5',
+                border: 'none',
               },
-              "& .MuiDataGrid-cell": {
-                fontSize: "12px",
-                border: "none",
+              '& .MuiDataGrid-cell': {
+                fontSize: '12px',
+                border: 'none',
               },
             }}
             rows={rows}
@@ -212,7 +195,7 @@ function SubjectList({ page, setPage, loading, subjects }) {
             checkboxSelection
             hideFooterRowCount
             hideFooterPagination
-            style={{ height: "70vh", border: "none", boxSizing: "unset" }}
+            style={{ height: '70vh', border: 'none', boxSizing: 'unset' }}
             hideFooterSelectedRowCount
             rowCount={rowCount /* pagination.totalItemsCount */}
             pageSize={pageSize}
@@ -221,7 +204,7 @@ function SubjectList({ page, setPage, loading, subjects }) {
             pagination
           />
         ) : (
-          ""
+          ''
         )}
         <TablePagination
           page={page}
@@ -232,8 +215,8 @@ function SubjectList({ page, setPage, loading, subjects }) {
           className="flex-shrink-0 border-t-1"
           rowsPerPageOptions={dataGridPageSizes}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          nextIconButtonProps={{ "aria-label": "Next Page" }}
-          backIconButtonProps={{ "aria-label": "Previous Page" }}
+          nextIconButtonProps={{ 'aria-label': 'Next Page' }}
+          backIconButtonProps={{ 'aria-label': 'Previous Page' }}
         />
       </div>
     </>

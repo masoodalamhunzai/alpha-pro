@@ -20,6 +20,7 @@ import { DeleteSweep, ToggleOff, Upload } from "@mui/icons-material";
 import { primaryBlueColor } from "app/services/Settings";
 import LabelImageWithTextDraggableItem from "./LabelImageWithTextDraggableItem";
 import { useStateValue } from "app/services/state/State";
+import { useSelector } from "react-redux";
 
 import { EditorState, convertFromRaw } from "draft-js";
 
@@ -31,12 +32,13 @@ const LabelImageWithTextLayout = (props) => {
     mode: "onChange",
     defaultValues,
   });
-  const [{ itemQuestionsList }] = useStateValue();
+  const itemQuestionsList = useSelector(({ alpha }) => alpha.item.questions);
   const [annotations, setAnnotations] = useState([]);
   const [annotation, setAnnotation] = useState({});
 
   // States start
-  const [trueFalseShowDashedBorder, setTrueFalseShowDashedBorder] = useState(false);
+  const [trueFalseShowDashedBorder, setTrueFalseShowDashedBorder] =
+    useState(false);
   const [trueFalseEditAriaLabel, setTrueFalseEditAriaLabel] = useState(false);
 
   const [imageAlternativeText, setImageAlternativeText] = useState("");
@@ -146,9 +148,10 @@ const LabelImageWithTextLayout = (props) => {
 
   useEffect(() => {
     if (props.questionId != null) {
-      const _filteredQuestion = itemQuestionsList.find(
-        (q) => q.id == props.questionId
-      );
+      const _filteredQuestion =
+        itemQuestionsList &&
+        itemQuestionsList.length > 0 &&
+        itemQuestionsList.find((q) => q.id == props.questionId);
       console.log(
         "filteredQuestion in Label Image With Text ",
         _filteredQuestion
@@ -177,14 +180,12 @@ const LabelImageWithTextLayout = (props) => {
             setMultipleOptions(_config.multipleOption);
             setSelectedImageUrl(_config.imageUrl);
 
-      
             setTrueFalseShowDashedBorder(_config.showDashedBorder);
             setTrueFalseEditAriaLabel(_config.editAriaLabel);
             setImageAlternativeText(_config.imageAlternativeText);
             setTextOnHover(_config.textOnHover);
             setImageWidth(_config.imageWidth);
             setFillColor(_config.fillColor);
-
           }
         }
       }
@@ -223,7 +224,6 @@ const LabelImageWithTextLayout = (props) => {
                 button: "Ok!",
               });
             } else {
-
               const itemObject =
                 props.questionId != null
                   ? {
@@ -238,7 +238,7 @@ const LabelImageWithTextLayout = (props) => {
                         imageAlternativeText: imageAlternativeText,
                         textOnHover: textOnHover,
                         imageWidth: imageWidth,
-                        fillColor:fillColor,
+                        fillColor: fillColor,
                         showDashedBorder: trueFalseShowDashedBorder,
                         editAriaLabel: trueFalseEditAriaLabel,
                       }),
@@ -448,7 +448,7 @@ const LabelImageWithTextLayout = (props) => {
                         },
                       }}
                       value={imageAlternativeText}
-                      onChange={(e)=>setImageAlternativeText(e.target.value)}
+                      onChange={(e) => setImageAlternativeText(e.target.value)}
                       size="small"
                       required
                       id="outlined-required"
@@ -467,7 +467,7 @@ const LabelImageWithTextLayout = (props) => {
                         },
                       }}
                       value={textOnHover}
-                      onChange={(e)=>setTextOnHover(e.target.value)}
+                      onChange={(e) => setTextOnHover(e.target.value)}
                       size="small"
                       required
                       id="outlined-required"
@@ -486,7 +486,7 @@ const LabelImageWithTextLayout = (props) => {
                         },
                       }}
                       value={imageWidth}
-                      onChange={(e)=>setImageWidth(e.target.value)}
+                      onChange={(e) => setImageWidth(e.target.value)}
                       size="small"
                       required
                       id="outlined-required"
@@ -498,19 +498,22 @@ const LabelImageWithTextLayout = (props) => {
                     <div className="flex items-center">
                       <label>Fill color</label>
                       <Checkbox
-                      checked={fillColor}
-                      onChange={handleFillColorChange}
-                      size="large" />
+                        checked={fillColor}
+                        onChange={handleFillColorChange}
+                        size="large"
+                      />
                     </div>
 
                     <div className="my-4 flex justify-between items-center">
                       <label>Show Dashed Border</label>
                       <Switch
-            checked={trueFalseShowDashedBorder}
-            onChange={() =>
-              setTrueFalseShowDashedBorder(!trueFalseShowDashedBorder)
-            }
-          />
+                        checked={trueFalseShowDashedBorder}
+                        onChange={() =>
+                          setTrueFalseShowDashedBorder(
+                            !trueFalseShowDashedBorder
+                          )
+                        }
+                      />
                     </div>
                   </div>
 
@@ -518,11 +521,11 @@ const LabelImageWithTextLayout = (props) => {
                     <div className="my-4 flex justify-between items-center">
                       <label>Edit ARIA Labels</label>
                       <Switch
-            checked={trueFalseEditAriaLabel}
-            onChange={() =>
-              setTrueFalseEditAriaLabel(!trueFalseEditAriaLabel)
-            }
-          />
+                        checked={trueFalseEditAriaLabel}
+                        onChange={() =>
+                          setTrueFalseEditAriaLabel(!trueFalseEditAriaLabel)
+                        }
+                      />
                     </div>
                   </div>
                   {annotations &&

@@ -7,16 +7,18 @@ import { Controller, useForm } from "react-hook-form";
 import _ from "@lodash";
 import ChoiceMatrixDraggableItem from "./ChoiceMatrixDraggableItem";
 import ChoiceMatrixDraggableOption from "./ChoiceMatrixDraggableOption";
-import { useStateValue } from 'app/services/state/State';
-import { EditorState,convertFromRaw } from "draft-js";
+import { useStateValue } from "app/services/state/State";
+import { EditorState, convertFromRaw } from "draft-js";
+import { useSelector } from "react-redux";
 
 const defaultValues = { name: "", email: "", subject: "", message: "" };
 
 const ChoiceMatrixQuestionLayout = (props) => {
-  const [{itemQuestionsList}] =useStateValue();
+  const itemQuestionsList = useSelector(({ alpha }) => alpha.item.questions);
   // Choice Matrix start
   const [trueFalseShuffleOption, setTrueFalseShuffleOption] = useState(false);
-  const [trueFalsemultipleResponse, setTrueFalsemultipleResponse] = useState(false);
+  const [trueFalsemultipleResponse, setTrueFalsemultipleResponse] =
+    useState(false);
   const [editorContent, setEditorContent] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
@@ -110,43 +112,46 @@ const ChoiceMatrixQuestionLayout = (props) => {
     choices = multipleOptions;
     choices.push(option);
     setMultipleOptions([...choices]);
-  //  props.setMultipleChoices([...choices]);
+    //  props.setMultipleChoices([...choices]);
   }
 
-  useEffect(()=>{
-    if(props.questionId!=null)
-    {
-    const _filteredQuestion=itemQuestionsList.find(q => q.id==props.questionId);
-    console.log('filteredQuestion inchoice matrix ',_filteredQuestion);
-    if(_filteredQuestion)
-    {
-      console.log('_filteredQuestion.description in choice matrixe ',_filteredQuestion.description);
-      const convertedState = convertFromRaw(JSON.parse(_filteredQuestion.description));
-      const _editorValue = EditorState.createWithContent(convertedState);
-      setEditorState(_editorValue);
+  useEffect(() => {
+    if (props.questionId != null) {
+      const _filteredQuestion =
+        itemQuestionsList &&
+        itemQuestionsList.length > 0 &&
+        itemQuestionsList.find((q) => q.id == props.questionId);
+      console.log("filteredQuestion inchoice matrix ", _filteredQuestion);
+      if (_filteredQuestion) {
+        console.log(
+          "_filteredQuestion.description in choice matrixe ",
+          _filteredQuestion.description
+        );
+        const convertedState = convertFromRaw(
+          JSON.parse(_filteredQuestion.description)
+        );
+        const _editorValue = EditorState.createWithContent(convertedState);
+        setEditorState(_editorValue);
 
-      setMultipleChoices(_filteredQuestion.options);
-      setEditorContent(_filteredQuestion.description);
+        setMultipleChoices(_filteredQuestion.options);
+        setEditorContent(_filteredQuestion.description);
 
-      props.setEditorContent(_filteredQuestion.description);
-      props.setMultipleChoices([..._filteredQuestion.options]);
+        props.setEditorContent(_filteredQuestion.description);
+        props.setMultipleChoices([..._filteredQuestion.options]);
 
-      if(_filteredQuestion.questionConfig)
-      {
-        const _config=JSON.parse(_filteredQuestion.questionConfig);
-        if(_config)
-        {
-          setMultipleOptions(_config.multipleOption);
-          setTrueFalseShuffleOption(_config.shuffleOptionRadio);
-          setTrueFalsemultipleResponse(_config.multipleResponseRadio);
+        if (_filteredQuestion.questionConfig) {
+          const _config = JSON.parse(_filteredQuestion.questionConfig);
+          if (_config) {
+            setMultipleOptions(_config.multipleOption);
+            setTrueFalseShuffleOption(_config.shuffleOptionRadio);
+            setTrueFalsemultipleResponse(_config.multipleResponseRadio);
+          }
         }
       }
-
-    }
-    }else{
+    } else {
       props.setMultipleChoices([...multipleChoices]);
     }
-  },[]);
+  }, []);
   return (
     <Paper
       style={{
@@ -174,24 +179,42 @@ const ChoiceMatrixQuestionLayout = (props) => {
                 icon: "error",
                 button: "Ok!",
               });
-            }else{
-            const itemObject =props.questionId!=null? {
-              id:props.questionId,
-              description: editorContent,
-              options: multipleChoices,
-              questionType: "choice-matrix-question",
-              questionConfig:JSON.stringify({multipleOption:multipleOptions,multipleResponseRadio:trueFalsemultipleResponse,shuffleOptionRadio:trueFalseShuffleOption}),
-              position: props.questionIndex
-            }:{
-              description: editorContent,
-              options: multipleChoices,
-              questionType: "choice-matrix-question",
-              questionConfig:JSON.stringify({multipleOption:multipleOptions,multipleResponseRadio:trueFalsemultipleResponse,shuffleOptionRadio:trueFalseShuffleOption}),
-              position: props.questionIndex
-            };
-            
-            props.onSaveQuestion(props.sectionName,props.tabName,props.questionId,props.questionIndex,"choice-matrix-question",itemObject);
-          }
+            } else {
+              const itemObject =
+                props.questionId != null
+                  ? {
+                      id: props.questionId,
+                      description: editorContent,
+                      options: multipleChoices,
+                      questionType: "choice-matrix-question",
+                      questionConfig: JSON.stringify({
+                        multipleOption: multipleOptions,
+                        multipleResponseRadio: trueFalsemultipleResponse,
+                        shuffleOptionRadio: trueFalseShuffleOption,
+                      }),
+                      position: props.questionIndex,
+                    }
+                  : {
+                      description: editorContent,
+                      options: multipleChoices,
+                      questionType: "choice-matrix-question",
+                      questionConfig: JSON.stringify({
+                        multipleOption: multipleOptions,
+                        multipleResponseRadio: trueFalsemultipleResponse,
+                        shuffleOptionRadio: trueFalseShuffleOption,
+                      }),
+                      position: props.questionIndex,
+                    };
+
+              props.onSaveQuestion(
+                props.sectionName,
+                props.tabName,
+                props.questionId,
+                props.questionIndex,
+                "choice-matrix-question",
+                itemObject
+              );
+            }
           }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
@@ -271,10 +294,13 @@ const ChoiceMatrixQuestionLayout = (props) => {
           <Controller
             className="mt-8 mb-16"
             render={({ field }) => (
-              <WYSIWYGEditor setEditorContent={setEditorContent}
-              editorState={editorState} setEditorState={setEditorState}
-              setEditorContentMain={props.setEditorContent}
-              {...field} />
+              <WYSIWYGEditor
+                setEditorContent={setEditorContent}
+                editorState={editorState}
+                setEditorState={setEditorState}
+                setEditorContentMain={props.setEditorContent}
+                {...field}
+              />
             )}
             name="message"
             control={control}
@@ -298,12 +324,10 @@ const ChoiceMatrixQuestionLayout = (props) => {
             setMultipleChoices={setMultipleChoices}
             optionsList={optionsList}
             setMultipleChoices_Main={props.setMultipleChoices}
-
-          trueFalseShuffleOption={trueFalseShuffleOption}
-           setTrueFalseShuffleOption={setTrueFalseShuffleOption}
-          trueFalsemultipleResponse={trueFalsemultipleResponse}
-          setTrueFalsemultipleResponse={setTrueFalsemultipleResponse}
-           
+            trueFalseShuffleOption={trueFalseShuffleOption}
+            setTrueFalseShuffleOption={setTrueFalseShuffleOption}
+            trueFalsemultipleResponse={trueFalsemultipleResponse}
+            setTrueFalsemultipleResponse={setTrueFalsemultipleResponse}
           />
 
           <ChoiceMatrixDraggableOption
@@ -311,7 +335,6 @@ const ChoiceMatrixQuestionLayout = (props) => {
             multipleChoices={multipleOptions}
             setMultipleChoices={setMultipleOptions}
             setMultipleChoices_Main={props.setMultipleChoices}
-            
           />
         </div>
       </form>

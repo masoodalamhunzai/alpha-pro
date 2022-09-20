@@ -2,11 +2,8 @@ import { useEffect, useState } from "react";
 // import DemoContent from "@fuse/core/DemoContent";
 import FusePageSimple from "@fuse/core/FusePageSimple";
 import Typography from "@mui/material/Typography";
-import { useStateValue } from "app/services/state/State";
-import { actions } from "app/services/state/Reducer";
 import { useLocation } from "react-router-dom";
-import { ThemeProvider, useTheme } from "@material-ui/core/styles";
-import { makeStyles } from "@material-ui/core/styles";
+import { ThemeProvider, useTheme, makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -17,9 +14,11 @@ import { Add as AddIcon } from "@material-ui/icons";
 import Input from "@material-ui/core/Input";
 import Paper from "@material-ui/core/Paper";
 import { useHistory } from "react-router";
+import { getAllGrades } from "app/services/api/ApiManager";
 import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
 import GradeList from "./GradeList";
-import { getAllGrades } from "app/services/api/ApiManager";
+import { useDispatch, useSelector } from "react-redux";
+import { setGrade } from "app/store/alpha/gradesReducer";
 
 const useStyles = makeStyles({
   layoutRoot: {
@@ -44,7 +43,8 @@ const useStyles = makeStyles({
   },
 });
 const Grade = () => {
-  const [{ user, grades }, dispatch] = useStateValue();
+  const dispatch = useDispatch();
+  const grades = useSelector(({ alpha }) => alpha.grades.grade);
   const location = useLocation();
   const history = useHistory();
   const pageTitle = location.pathname
@@ -67,13 +67,14 @@ const Grade = () => {
     }
   };
   const handleGetGrade = async () => {
-    const res = await getAllGrades(user);
+    const res = await getAllGrades();
     if (res && res.status === 200 && res.data) {
       setLoading(false);
-      dispatch({
+      dispatch(setGrade(res.data));
+      /* dispatch({
         type: actions.SET_GRADES,
         payload: res.data,
-      });
+      }); */
     }
   };
 
@@ -114,7 +115,7 @@ const Grade = () => {
       }
       content={
         <div className="p-24">
-          {/*start*/}
+          {/* start */}
           <div className="flex flex-wrap flex-1 items-center justify-between mb-10 p-8">
             <div className="flex flex-1 items-center w-full sm:w-auto sm:px-6 mx-4">
               <ThemeProvider theme={theme}>
@@ -156,7 +157,7 @@ const Grade = () => {
               </Button>
             </div>
           </div>
-          {/*end*/}
+          {/* end */}
           <GradeList
             page={page}
             setPage={setPage}

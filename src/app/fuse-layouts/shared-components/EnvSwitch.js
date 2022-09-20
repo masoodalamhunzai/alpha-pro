@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { switchAlphaEnvironments } from 'app/services/api/ApiManager';
-import { switchCurrentEnvironment } from 'app/store/alpha/userReducer';
 import { toUpper } from 'lodash';
+import { updateUserInfo } from 'app/store/alpha/userReducer';
 import { useHistory } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
@@ -30,21 +30,21 @@ const useStyles = makeStyles((theme) => ({
 function EnvSwitch(props) {
   const classes = useStyles(props);
   const history = useHistory();
-  const user = useSelector(({ alpha }) => alpha.user);
-  const { currentEnv = '' } = user || {};
+  const _user = useSelector(({ alpha }) => alpha.user);
+  const { user = {} } = _user || {};
+  const { current_env: currentEnv = '' } = user || {};
   const dispatch = useDispatch();
 
   const switchEnvironment = (env) => {
     switchAlphaEnvironments(env, user)
       .then((res) => {
         const { data = {} } = res || {};
-        const { status = '', user: _user = {} } = data || {};
+        const { status = '', user: u = {} } = data || {};
         if (status === 'success') {
-          const { current_env: currEnv } = _user || {};
-          console.log('currEnv', currEnv);
-          dispatch(switchCurrentEnvironment(currEnv));
+          dispatch(updateUserInfo(u));
           setTimeout(() => {
             history.push('/home');
+            window.location.reload(true);
           }, 500);
         }
       })

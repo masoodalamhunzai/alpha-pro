@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import WYSIWYGEditor from "app/shared-components/WYSIWYGEditor";
@@ -7,9 +7,9 @@ import Paper from "@mui/material/Paper";
 import { Controller, useForm } from "react-hook-form";
 import _ from "@lodash";
 import TrueFalseDraggableItem from "./TrueFalseDraggableItem";
-import { useStateValue } from 'app/services/state/State';
-
-import { EditorState,convertFromRaw } from "draft-js";
+import { useStateValue } from "app/services/state/State";
+import { useSelector } from "react-redux";
+import { EditorState, convertFromRaw } from "draft-js";
 
 const useStyles = makeStyles({
   layoutRoot: {},
@@ -18,7 +18,7 @@ const useStyles = makeStyles({
 const defaultValues = { name: "", email: "", subject: "", message: "" };
 
 const TrueFalseQuestionLayout = (props) => {
-  const [{itemQuestionsList}] =useStateValue();
+  const itemQuestionsList = useSelector(({ alpha }) => alpha.item.questions);
   //trueFalse layout starts
   const [trueFalseShuffleOption, setTrueFalseShuffleOption] = useState(false);
   const [editorContent, setEditorContent] = useState("");
@@ -65,37 +65,41 @@ const TrueFalseQuestionLayout = (props) => {
     console.log("choices are here: ", choices);
   }
 
-  useEffect(()=>{
-    if(props.questionId!=null)
-    {
-    const _filteredQuestion=itemQuestionsList.find(q => q.id==props.questionId);
-    console.log('filteredQuestion in true false ',_filteredQuestion);
-    if(_filteredQuestion)
-    {
-      console.log('_filteredQuestion.description in true false ',_filteredQuestion.description);
-      const convertedState = convertFromRaw(JSON.parse(_filteredQuestion.description));
-      const _editorValue = EditorState.createWithContent(convertedState);
-      setEditorState(_editorValue);
+  useEffect(() => {
+    if (props.questionId != null) {
+      const _filteredQuestion =
+        itemQuestionsList &&
+        itemQuestionsList.length > 0 &&
+        itemQuestionsList.find((q) => q.id == props.questionId);
+      console.log("filteredQuestion in true false ", _filteredQuestion);
+      if (_filteredQuestion) {
+        console.log(
+          "_filteredQuestion.description in true false ",
+          _filteredQuestion.description
+        );
+        const convertedState = convertFromRaw(
+          JSON.parse(_filteredQuestion.description)
+        );
+        const _editorValue = EditorState.createWithContent(convertedState);
+        setEditorState(_editorValue);
 
-      setMultipleChoices(_filteredQuestion.options);
-      setEditorContent(_filteredQuestion.description);
+        setMultipleChoices(_filteredQuestion.options);
+        setEditorContent(_filteredQuestion.description);
 
-      props.setEditorContent(_filteredQuestion.description);
-      props.setMultipleChoices([..._filteredQuestion.options]);
+        props.setEditorContent(_filteredQuestion.description);
+        props.setMultipleChoices([..._filteredQuestion.options]);
 
-      if (_filteredQuestion.questionConfig) {
-        const _config = JSON.parse(_filteredQuestion.questionConfig);
-        if (_config) {
-          setTrueFalseShuffleOption(_config.shuffleOptionRadio);
+        if (_filteredQuestion.questionConfig) {
+          const _config = JSON.parse(_filteredQuestion.questionConfig);
+          if (_config) {
+            setTrueFalseShuffleOption(_config.shuffleOptionRadio);
+          }
         }
       }
-
-    }
-    }else{
+    } else {
       props.setMultipleChoices([...multipleChoices]);
     }
-  },[]);
-
+  }, []);
 
   return (
     <>
@@ -125,30 +129,37 @@ const TrueFalseQuestionLayout = (props) => {
                   icon: "error",
                   button: "Ok!",
                 });
-              }else{
-              const itemObject =props.questionId!=null? {
-                id:props.questionId,
-                description: editorContent,
-                options: multipleChoices,
-                questionType: "true-false-question",
-                questionConfig:JSON.stringify({shuffleOptionRadio:trueFalseShuffleOption}),
-                position: props.questionIndex
-              }:{
-                description: editorContent,
-                options: multipleChoices,
-                questionType: "true-false-question",
-                questionConfig:JSON.stringify({shuffleOptionRadio:trueFalseShuffleOption}),
-                position: props.questionIndex
-              };
-              props.onSaveQuestion(
-                props.sectionName,
-                props.tabName,
-                props.questionId,
-                props.questionIndex,
-                "true-false-question",
-                itemObject
-              );
-            }
+              } else {
+                const itemObject =
+                  props.questionId != null
+                    ? {
+                        id: props.questionId,
+                        description: editorContent,
+                        options: multipleChoices,
+                        questionType: "true-false-question",
+                        questionConfig: JSON.stringify({
+                          shuffleOptionRadio: trueFalseShuffleOption,
+                        }),
+                        position: props.questionIndex,
+                      }
+                    : {
+                        description: editorContent,
+                        options: multipleChoices,
+                        questionType: "true-false-question",
+                        questionConfig: JSON.stringify({
+                          shuffleOptionRadio: trueFalseShuffleOption,
+                        }),
+                        position: props.questionIndex,
+                      };
+                props.onSaveQuestion(
+                  props.sectionName,
+                  props.tabName,
+                  props.questionId,
+                  props.questionIndex,
+                  "true-false-question",
+                  itemObject
+                );
+              }
             }}
             className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
             style={{
@@ -226,10 +237,13 @@ const TrueFalseQuestionLayout = (props) => {
             <Controller
               className="mt-8 mb-16"
               render={({ field }) => (
-                <WYSIWYGEditor setEditorContent={setEditorContent}
-                editorState={editorState} setEditorState={setEditorState}
-                setEditorContentMain={props.setEditorContent}
-                {...field} />
+                <WYSIWYGEditor
+                  setEditorContent={setEditorContent}
+                  editorState={editorState}
+                  setEditorState={setEditorState}
+                  setEditorContentMain={props.setEditorContent}
+                  {...field}
+                />
               )}
               name="message"
               control={control}
@@ -253,7 +267,6 @@ const TrueFalseQuestionLayout = (props) => {
               setMultipleChoices={setMultipleChoices}
               trueFalseShuffleOption={trueFalseShuffleOption}
               setTrueFalseShuffleOption={setTrueFalseShuffleOption}
-              
               setMultipleChoices_Main={props.setMultipleChoices}
             />
           </div>

@@ -2,11 +2,8 @@ import { useEffect, useState } from "react";
 // import DemoContent from "@fuse/core/DemoContent";
 import FusePageSimple from "@fuse/core/FusePageSimple";
 import Typography from "@mui/material/Typography";
-import { useStateValue } from "app/services/state/State";
-import { actions } from "app/services/state/Reducer";
 import { useLocation } from "react-router-dom";
-import { ThemeProvider, useTheme } from "@material-ui/core/styles";
-import { makeStyles } from "@material-ui/core/styles";
+import { ThemeProvider, useTheme, makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -20,6 +17,8 @@ import { useHistory } from "react-router";
 import { getAllSubjects } from "app/services/api/ApiManager";
 import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
 import SubjectList from "./SubjectList";
+import { useDispatch, useSelector } from "react-redux";
+import { setSubjects } from "app/store/alpha/subjectsReducer";
 
 const useStyles = makeStyles({
   layoutRoot: {
@@ -44,7 +43,10 @@ const useStyles = makeStyles({
   },
 });
 const Subjects = () => {
-  const [{ user, subjects }, dispatch] = useStateValue();
+  const dispatch = useDispatch();
+  const subjects = useSelector(({ alpha }) => alpha.subjects.subjects);
+  /* const [{ user, subjects, patients, defaultPageSize, organization, organizationUsers }, dispatch] =
+    useStateValue(); */
   const location = useLocation();
   const history = useHistory();
   const pageTitle = location.pathname
@@ -68,13 +70,14 @@ const Subjects = () => {
   };
 
   const handleGetSubjects = async () => {
-    const res = await getAllSubjects(user);
+    const res = await getAllSubjects();
     if (res && res.status === 200 && res.data) {
       setLoading(false);
-      dispatch({
+      dispatch(setSubjects(res.data));
+      /*  dispatch({
         type: actions.SET_SUBJECTS,
         payload: res.data,
-      });
+      }); */
     }
   };
   useEffect(() => {
@@ -115,7 +118,7 @@ const Subjects = () => {
       }
       content={
         <div className="p-24">
-          {/*start*/}
+          {/* start */}
           <div className="flex flex-wrap flex-1 items-center justify-between mb-10 p-8">
             <div className="flex flex-1 items-center w-full sm:w-auto sm:px-6 mx-4">
               <ThemeProvider theme={theme}>
@@ -157,7 +160,7 @@ const Subjects = () => {
               </Button>
             </div>
           </div>
-          {/*end*/}
+          {/* end */}
           <SubjectList
             page={page}
             setPage={setPage}

@@ -88,7 +88,7 @@ const TagTypes = () => {
           </Typography>
           <Link
             to={{
-              pathname: "/tag-types/create-tag-type",
+              pathname: "create-tag-type",
               state: { selectedOrg: "", mode: "create-user" },
             }}
           >

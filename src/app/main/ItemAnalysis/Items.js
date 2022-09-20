@@ -5,21 +5,24 @@ import { makeStyles, ThemeProvider, useTheme } from "@material-ui/core/styles";
 import { useStateValue } from "app/services/state/State";
 import { actions } from "app/services/state/Reducer";
 import { useLocation } from "react-router-dom";
-import { searchItem,getItems } from 'app/services/api/ApiManager';
+import { searchItem, getItems } from "app/services/api/ApiManager";
 import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
 import Input from "@material-ui/core/Input";
 import Paper from "@material-ui/core/Paper";
 import { useHistory } from "react-router";
+import { Add as AddIcon } from "@material-ui/icons";
 import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
 import ItemsList from "./ItemsList";
-import { Add as AddIcon } from "@material-ui/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { setItems } from "app/store/alpha/itemReducer";
 
 const useStyles = makeStyles({
   layoutRoot: {},
 });
 
 const Items = () => {
+  const dispatch = useDispatch();
   const location = useLocation();
   const history = useHistory();
   const pageTitle = location.pathname
@@ -28,7 +31,7 @@ const Items = () => {
     .split("-")
     .join(" ");
   const classes = useStyles();
-  const [{ user, news }, dispatch] = useStateValue();
+  const [{ user, news }] = useStateValue();
   const [count, setCount] = useState(0);
   const theme = useTheme();
   const [searchText, setSearchText] = useState("");
@@ -43,34 +46,31 @@ const Items = () => {
     setSearchName(event.target.value);
   }
 
-    const searchItemByText = async (text) => {
-console.log('')
-//..below is search item call
-      let res =null;
-      if(text)
-      {
-       res = await searchItem(text,user);
-      }else
-      {
-       res = await getItems(user);
-      }
-      console.log('searchItem are here: ', res);
-      if (res && res.status == 200 && res.data) {
-        dispatch({
-          type: actions.SET_ITEMS,
-          payload: res.data,  
-        });
-      }
+  const searchItemByText = async (text) => {
+    console.log("");
+    // ..below is search item call
+    let res = null;
+    if (text) {
+      res = await searchItem(text);
+    } else {
+      res = await getItems();
     }
+    console.log("searchItem are here: ", res);
+    if (res && res.status === 200 && res.data) {
+      dispatch(setItems(res.data));
+      /* dispatch({
+        type: actions.SET_ITEMS,
+        payload: res.data,
+      }); */
+    }
+  };
 
-  
-
-  const setNews = async () => {
+  /* const setNews = async () => {
     dispatch({
       type: actions.SET_NEWS,
       payload: { header: "new header text", des: "new description text" },
     });
-  };
+  }; */
   const redirectTo = async (goTo) => {
     try {
       history.push(goTo);
@@ -238,7 +238,7 @@ console.log('')
                     }}
                   />
                 </Paper>
-              {/*   <Paper className="flex items-center min-w-full sm:min-w-0 w-full max-w-512 px-12 py-4 mx-12 rounded-16 shdaow">
+                {/*   <Paper className="flex items-center min-w-full sm:min-w-0 w-full max-w-512 px-12 py-4 mx-12 rounded-16 shdaow">
                   <Icon color="action">search</Icon>
                   <Input
                     placeholder="Search for Tag"
@@ -259,7 +259,9 @@ console.log('')
                 variant="contained"
                 color="primary"
                 aria-label="Send Message"
-                onClick={()=>{searchItemByText(searchName)}}
+                onClick={() => {
+                  searchItemByText(searchName);
+                }}
               >
                 Search
               </Button>

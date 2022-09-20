@@ -12,7 +12,7 @@ import ClassificationPossibleResponsesDraggableItem from "./ClassificationPossib
 import ClassificationRowDraggableItem from "./ClassificationRowDraggableItem";
 import ClassificationColumnDraggableItem from "./ClassificationColumnDraggableItem";
 import { useStateValue } from "app/services/state/State";
-
+import { useSelector } from "react-redux";
 import { EditorState, convertFromRaw } from "draft-js";
 
 const defaultValues = { name: "", email: "", subject: "", message: "" };
@@ -31,12 +31,13 @@ const propsType = [
 ];
 
 const ClassificationLayout = (props) => {
-  const [{ itemQuestionsList }] = useStateValue();
+  const itemQuestionsList = useSelector(({ alpha }) => alpha.item.questions);
   //Classification Layout starts
   const [groupPossibleResponses, setGroupPossibleResponses] = useState(false);
   const [trueFalseShuffleOption, setTrueFalseShuffleOption] = useState(false);
   const [trueFalseShowDragHandle, setTrueFalseShowDragHandle] = useState(false);
-  const [trueFalseDuplicateResponse, setTrueFalseDuplicateResponse] = useState(false);
+  const [trueFalseDuplicateResponse, setTrueFalseDuplicateResponse] =
+    useState(false);
 
   const [columnCount, setColumnCount] = useState(1);
   const [rowCount, setRowCount] = useState(1);
@@ -175,9 +176,10 @@ const ClassificationLayout = (props) => {
 
   useEffect(() => {
     if (props.questionId != null) {
-      const _filteredQuestion = itemQuestionsList.find(
-        (q) => q.id == props.questionId
-      );
+      const _filteredQuestion =
+        itemQuestionsList &&
+        itemQuestionsList.length > 0 &&
+        itemQuestionsList.find((q) => q.id == props.questionId);
       console.log("filteredQuestion in Classification ", _filteredQuestion);
       if (_filteredQuestion) {
         console.log(
@@ -243,7 +245,6 @@ const ClassificationLayout = (props) => {
                 button: "Ok!",
               });
             } else {
-
               const itemObject =
                 props.questionId != null
                   ? {
@@ -455,11 +456,11 @@ const ClassificationLayout = (props) => {
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Group possible responses</label>
               <Switch
-            checked={groupPossibleResponses}
-            onChange={() =>
-              setGroupPossibleResponses(!groupPossibleResponses)
-            }
-          />
+                checked={groupPossibleResponses}
+                onChange={() =>
+                  setGroupPossibleResponses(!groupPossibleResponses)
+                }
+              />
             </div>
           </div>
 
@@ -488,31 +489,31 @@ const ClassificationLayout = (props) => {
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Show drag handle</label>
               <Switch
-            checked={trueFalseShowDragHandle}
-            onChange={() =>
-              setTrueFalseShowDragHandle(!trueFalseShowDragHandle)
-            }
-          />
+                checked={trueFalseShowDragHandle}
+                onChange={() =>
+                  setTrueFalseShowDragHandle(!trueFalseShowDragHandle)
+                }
+              />
             </div>
 
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Duplicate responses</label>
               <Switch
-            checked={trueFalseDuplicateResponse}
-            onChange={() =>
-              setTrueFalseDuplicateResponse(!trueFalseDuplicateResponse)
-            }
-          />
+                checked={trueFalseDuplicateResponse}
+                onChange={() =>
+                  setTrueFalseDuplicateResponse(!trueFalseDuplicateResponse)
+                }
+              />
             </div>
 
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Shuffle options</label>
               <Switch
-            checked={trueFalseShuffleOption}
-            onChange={() =>
-              setTrueFalseShuffleOption(!trueFalseShuffleOption)
-            }
-          />
+                checked={trueFalseShuffleOption}
+                onChange={() =>
+                  setTrueFalseShuffleOption(!trueFalseShuffleOption)
+                }
+              />
             </div>
           </div>
         </div>

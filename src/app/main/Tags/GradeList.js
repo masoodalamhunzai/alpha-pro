@@ -9,17 +9,10 @@ import {
 } from "@material-ui/icons";
 import { useHistory, Link } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
-import { useStateValue } from "app/services/state/State";
-import {
-  dataGridPageSizes,
-  settings as s,
-  states,
-} from "app/services/Settings";
+import { dataGridPageSizes } from "app/services/Settings";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@mui/material/Typography";
 import swal from "sweetalert";
-import Icon from "@material-ui/core/Icon";
-import StatusIcon from "app/shared-components/StatusIcon";
 import { deleteGrade } from "app/services/api/ApiManager";
 import { CustomToolbar } from "../../components";
 
@@ -60,8 +53,6 @@ function GradeList({ page, setPage, loading, grades }) {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [pageSize, setPageSize] = useState(10);
   const [rowCount, setRowCount] = useState(1);
-  const [{ user, patients, defaultPageSize, organization }, dispatch] =
-    useStateValue();
   const [open, setOpen] = useState(false);
 
   const redirectTo = async (goTo) => {
@@ -81,7 +72,7 @@ function GradeList({ page, setPage, loading, grades }) {
       dangerMode: true,
     }).then(async (willDelete) => {
       if (willDelete) {
-        const res = await deleteGrade(id, user);
+        const res = await deleteGrade(id);
         if (res && res.data && res.data.status === "success") {
           swal({
             title: "Good job!",

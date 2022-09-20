@@ -90,7 +90,6 @@ function JWTLoginTab(props) {
         authService.setUser(loggedInUser);
         authService.setSession(res.data.token);
         dispatch(setToken(res.data.token));
-        console.log('loggedInUser', loggedInUser);
         dispatch(updateUserInfo({ ...res.data.user, role }));
         setTimeout(() => {
           history.push('/home');

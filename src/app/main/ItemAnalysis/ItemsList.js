@@ -3,24 +3,26 @@ import {
   DeleteSweep as DeleteIcon,
   BorderColor as EditIcon,
   LocalOffer as TagIcon,
-} from '@material-ui/icons';
-import { Link, useHistory } from 'react-router-dom';
-import { TablePagination, Tooltip } from '@material-ui/core';
-import { deleteItem, getItems } from 'app/services/api/ApiManager';
+} from "@material-ui/icons";
+import { Link, useHistory } from "react-router-dom";
+import { TablePagination, Tooltip } from "@material-ui/core";
+import { deleteItem, getItems } from "app/services/api/ApiManager";
 /* eslint-disable no-shadow */
 /* eslint-disable react/jsx-no-bind */
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from "react";
 
-import { CustomToolbar } from '../../components';
-import { DataGrid } from '@mui/x-data-grid';
-import FuseLoading from '@fuse/core/FuseLoading';
-import { actions } from 'app/services/state/Reducer';
-import { dataGridPageSizes } from 'app/services/Settings';
-import { makeStyles } from '@material-ui/core/styles';
-import swal from 'sweetalert';
-import { useSnackbar } from 'notistack';
+import { DataGrid } from "@mui/x-data-grid";
+import FuseLoading from "@fuse/core/FuseLoading";
+import { actions } from "app/services/state/Reducer";
+import { dataGridPageSizes } from "app/services/Settings";
+import { makeStyles } from "@material-ui/core/styles";
+import swal from "sweetalert";
+import { useSnackbar } from "notistack";
 // import { DataGrid } from '@material-ui/data-grid';
-import { useStateValue } from 'app/services/state/State';
+import { useStateValue } from "app/services/state/State";
+import { CustomToolbar } from "../../components";
+import { useDispatch, useSelector } from "react-redux";
+import { setItems } from "app/store/alpha/itemReducer";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,19 +30,19 @@ const useStyles = makeStyles((theme) => ({
     padding: 20,
   },
   icon: {
-    color: 'grey',
-    cursor: 'pointer',
+    color: "grey",
+    cursor: "pointer",
   },
   row: {
-    display: 'flex',
+    display: "flex",
     marginBottom: 10,
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   buttonsContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-evenly",
   },
   types: {
     zIndex: 1,
@@ -51,40 +53,44 @@ const useStyles = makeStyles((theme) => ({
     border: `1px solid ${theme.palette.background.default}`,
   },
   cardRow: {
-    display: 'flex',
-    alignItems: 'center',
-    width: '100%',
+    display: "flex",
+    alignItems: "center",
+    width: "100%",
   },
   rowLabel: {
-    width: '40%',
+    width: "40%",
     fontWeight: 500,
     fontSize: 16,
   },
   rowValue: {
-    color: '#01619b',
-    width: '60%',
-    fontWeight: 'bold',
+    color: "#01619b",
+    width: "60%",
+    fontWeight: "bold",
     fontSize: 16,
   },
 }));
 
 function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
+  const dispatch = useDispatch();
+  const items = useSelector(({ alpha }) => alpha.item.items);
+
   const classes = useStyles();
   const history = useHistory();
+  const user = useSelector(({ alpha }) => alpha.user);
   const { enqueueSnackbar } = useSnackbar();
   const anchorRef = useRef(null);
   const [organizationId, setOrganizationId] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [{ user, items, defaultPageSize }, dispatch] = useStateValue();
+  const [{ defaultPageSize }] = useStateValue();
   const [open, setOpen] = useState(false);
   // const { payload: organizationsListList, pagination } = organizations;
   const [pagination, setPagination] = useState([]);
 
   async function onArchiveOrganization(id) {
     swal({
-      title: 'Are you sure?',
-      text: 'Are you sure you want to delete this Organization?',
-      icon: 'warning',
+      title: "Are you sure?",
+      text: "Are you sure you want to delete this Organization?",
+      icon: "warning",
       buttons: true,
       dangerMode: true,
     }).then(async (willDelete) => {
@@ -95,20 +101,20 @@ function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
   }
 
   async function handleArchiveOrganization(id) {
-    deleteItem(id, user)
+    deleteItem(id)
       .then((res) => {
-        console.log('res for delete', res);
+        console.log("res for delete", res);
       })
       .catch((err) => {
-        console.error('error', err);
+        console.error("error", err);
       });
   }
 
   async function onRestoreOrganization(Id) {
     swal({
-      title: 'Are you sure?',
-      text: 'Are you sure you want to restore this Organization?',
-      icon: 'warning',
+      title: "Are you sure?",
+      text: "Are you sure you want to restore this Organization?",
+      icon: "warning",
       buttons: true,
       dangerMode: true,
     }).then(async (willDelete) => {
@@ -118,52 +124,63 @@ function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
     });
   }
 
-  async function handleRestoreOrganization(Id) { }
+  async function handleRestoreOrganization(Id) {
+    //
+  }
 
-  const showOrganizationDetail = (id) => { };
+  const showOrganizationDetail = (id) => {};
 
-  async function handleEditOrganization(Id) { }
+  async function handleEditOrganization(Id) {
+    //
+  }
 
-  const handleChangePage = async (event, newPage) => { };
+  const handleChangePage = async (event, newPage) => {};
 
-  function handleChangeRowsPerPage(event) { }
+  function handleChangeRowsPerPage(event) {}
 
-  const loadOrganizations = async () => {
-    const res = await getItems(user);
-    console.log('items are here: ', res);
-    if (res && res.status == 200 && res.data && res.data.length > 0) {
-      dispatch({
+  const loadItems = async () => {
+    const res = await getItems();
+    console.log("items are here: ", res);
+    if (res && res.status === 200 && res.data) {
+      dispatch(setItems(res.data));
+      /* dispatch({
         type: actions.SET_ITEMS,
         payload: res.data,
-      });
+      }); */
     }
   };
   useEffect(() => {
-    loadOrganizations();
+    loadItems();
   }, []);
   const columns = [
-    { field: 'title', headerName: 'Item Name', flex: 1 },
-    { field: 'type', headerName: 'Type', flex: 0.5 },
-    { field: 'createdby', headerName: 'Created By', flex: 0.5 },
+    { field: "title", headerName: "Item Name", flex: 1 },
+    { field: "type", headerName: "Type", flex: 0.5 },
+    { field: "createdby", headerName: "Created By", flex: 0.5 },
     {
-      field: 'tags',
-      headerName: 'Tag',
+      field: "tags",
+      headerName: "Tag",
       flex: 1,
       renderCell: (params) => (
-        <div className="flex wrap flex-wrap" style={{ paddingTop: '3px', paddingBottom: '2px' }}>
+        <div
+          className="flex wrap flex-wrap"
+          style={{ paddingTop: "3px", paddingBottom: "2px" }}
+        >
           {console.log(params)}
           {params.row.tag &&
             params.row.tag.map((tg) => {
               return (
                 <span
                   style={{
-                    backgroundColor: 'lightgray',
-                    margin: '0px 2px 2px 2px',
-                    padding: '2px 4px',
-                    borderRadius: '3px',
+                    backgroundColor: "lightgray",
+                    margin: "0px 2px 2px 2px",
+                    padding: "2px 4px",
+                    borderRadius: "3px",
                   }}
                 >
-                  <TagIcon style={{ marginRight: 2 }} className={classes.icon} />
+                  <TagIcon
+                    style={{ marginRight: 2 }}
+                    className={classes.icon}
+                  />
                   {tg}
                 </span>
               );
@@ -172,22 +189,25 @@ function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
       ),
     },
     {
-      field: 'status',
-      headerName: 'Status',
+      field: "status",
+      headerName: "Status",
       flex: 0.3,
       renderCell: (params) => (
-        <div className="flex wrap flex-wrap" style={{ paddingTop: '3px', paddingBottom: '2px' }}>
+        <div
+          className="flex wrap flex-wrap"
+          style={{ paddingTop: "3px", paddingBottom: "2px" }}
+        >
           <CheckIcon
-            style={{ marginLeft: 2, color: 'green', fill: 'green' }}
+            style={{ marginLeft: 2, color: "green", fill: "green" }}
             className={classes.icon}
           />
         </div>
       ),
     },
     {
-      field: 'action',
-      headerName: 'Action',
-      description: 'This column has a value getter and is not sortable.',
+      field: "action",
+      headerName: "Action",
+      description: "This column has a value getter and is not sortable.",
       sortable: false,
       flex: 0.3,
       renderCell: (params) => (
@@ -200,10 +220,10 @@ function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
           </Tooltip> */}
           <Link
             to={{
-              pathname: '/create-new-question',
+              pathname: "/create-new-question",
               state: {
                 itemIdProps: params.id,
-                mode: 'edit-item',
+                mode: "edit-item",
               },
             }}
           >
@@ -234,10 +254,10 @@ function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
       return {
         id: org.id,
         title: org.title,
-        type: 'Multiple Choice',
-        createdby: 'Ranjith Pattu',
-        tag: ['Grade 1', 'Mathematics', 'aritficial Intelligence'],
-        status: 'Waiting',
+        type: "Multiple Choice",
+        createdby: "Ranjith Pattu",
+        tag: ["Grade 1", "Mathematics", "aritficial Intelligence"],
+        status: "Waiting",
         description: org.description,
         created_at: org.created_at,
         updated_at: org.updated_at,
@@ -321,7 +341,7 @@ function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
     <>
       {/*  <button
         onClick={() => {
-          loadOrganizations();
+          loadItems();
         }}
       >
         Load Organizations
@@ -330,18 +350,18 @@ function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
         {rows && (
           <DataGrid
             sx={{
-              '& .MuiDataGrid-columnHeaders': {
-                border: 'none',
+              "& .MuiDataGrid-columnHeaders": {
+                border: "none",
               },
-              '& .MuiDataGrid-columnHeaderTitle': {
-                fontSize: '14px',
-                fontWeight: '600',
-                color: '#189AF5',
-                border: 'none',
+              "& .MuiDataGrid-columnHeaderTitle": {
+                fontSize: "14px",
+                fontWeight: "600",
+                color: "#189AF5",
+                border: "none",
               },
-              '& .MuiDataGrid-cell': {
-                fontSize: '12px',
-                border: 'none',
+              "& .MuiDataGrid-cell": {
+                fontSize: "12px",
+                border: "none",
               },
             }}
             rowHeight="auto"
@@ -354,7 +374,7 @@ function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
             }}
             hideFooterRowCount
             hideFooterPagination
-            style={{ height: '70vh', border: 'none', boxSizing: 'unset' }}
+            style={{ height: "70vh", border: "none", boxSizing: "unset" }}
             pageSize={defaultPageSize}
             hideFooterSelectedRowCount
             rowCount={100 /* pagination.totalItemsCount */}
@@ -370,8 +390,8 @@ function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
           className="flex-shrink-0 border-t-1"
           rowsPerPageOptions={dataGridPageSizes}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          nextIconButtonProps={{ 'aria-label': 'Next Page' }}
-          backIconButtonProps={{ 'aria-label': 'Previous Page' }}
+          nextIconButtonProps={{ "aria-label": "Next Page" }}
+          backIconButtonProps={{ "aria-label": "Previous Page" }}
         />
         {loading && (
           <div className={classes.progress} align="center">

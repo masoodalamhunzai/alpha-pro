@@ -1,16 +1,19 @@
 /* eslint-disable import/prefer-default-export */
 
 export const settings = {
-  // baseUrl: "http://182.191.121.76",
-  baseUrl: "http://localhost",
-  //baseUrl: process.env.REACT_APP_API_BASEURL,
+  baseUrl: "http://182.191.121.76",
+  // baseUrl: "http://localhost",
+  // baseUrl: process.env.REACT_APP_API_BASEURL,
   auth0Domain: process.env.REACT_APP_AUTH0_DOMAIN,
   auth0ClientId: process.env.REACT_APP_AUTH0_CLIENT_ID,
   auth0RedirectUrl: process.env.REACT_APP_AUTH0_REDIRECT_URL,
-  login: "/api/login",
-  getToken: "/api/token",
+  user: {
+    login: "/api/login",
+    getToken: "/api/token",
+    getUserInfo: "/api/me",
+  },
   organization: {
-    getOrganizations: "/api/organizations",
+    getOrganizations: "/api/organizations?items=$[items]&page=$[page]",
     addOrganizations: "/api/organizations",
   },
   items: {
@@ -31,12 +34,13 @@ export const settings = {
     getSectorById: "/api/getSectorById/$[id]",
   },
   organizationUsers: {
-    getOrganizationUser: (orgId) => `/api/organizations/${orgId}/users`,
+    getOrganizationUser: (orgId) =>
+      `/api/organizations/${orgId}/users?items=$[items]&page=$[page]`,
     createOrganizationUser: (orgId) => `/api/organizations/${orgId}/users`,
   },
   search: {
     searchOrganizationUsers: (orgId, searchTerm) =>
-      `/api/organizations/${orgId}/search-users/${searchTerm}`,
+      `/api/organizations/${orgId}/search-users/${searchTerm}?items=$[items]&page=$[page]`,
     searchOrganizations: (searchTerm) =>
       `/api/organizations/search/${searchTerm}`,
   },

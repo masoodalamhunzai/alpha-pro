@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@mui/material/TextField";
@@ -118,7 +118,7 @@ function AddUserDetailsTab({
   } = formData;
 
   const getAllUserRoles = async () => {
-    const res = await getAllRoles(user);
+    const res = await getAllRoles();
     if (res && res?.status === 200 && res?.data && res?.data?.length > 0) {
       dispatch({
         type: actions.SET_ROLES,
@@ -145,7 +145,7 @@ function AddUserDetailsTab({
       }}
       component="main"
       maxWidth="xs"
-      className="shadow rounded-md"
+      className="shadow-sm rounded-md"
     >
       <Box
         sx={{
@@ -272,7 +272,7 @@ function AddUserDetailsTab({
                 name="isActive"
                 onChange={handleChangeInputs}
               >
-                <MenuItem value={true}>Active</MenuItem>
+                <MenuItem value>Active</MenuItem>
                 <MenuItem value={false}>InActive</MenuItem>
               </Select>
             </FormControl>

@@ -10,9 +10,9 @@ import { TextField, Checkbox } from "@mui/material";
 import Switch from "app/shared-components/Switch";
 import { primaryBlueColor } from "app/services/Settings";
 import MenuItem from "@mui/material/MenuItem";
-import { useStateValue } from 'app/services/state/State';
-
-import { EditorState,convertFromRaw } from "draft-js";
+import { useStateValue } from "app/services/state/State";
+import { useSelector } from "react-redux";
+import { EditorState, convertFromRaw } from "draft-js";
 
 const defaultValues = { name: "", email: "", subject: "", message: "" };
 
@@ -33,7 +33,8 @@ const EssayWithRichTextLayout = (props) => {
     mode: "onChange",
     defaultValues,
   });
-  const [{itemQuestionsList}] =useStateValue();
+
+  const itemQuestionsList = useSelector(({ alpha }) => alpha.item.questions);
   //EssayWithRichText Layout starts
 
   const [editorContent, setEditorContent] = useState("");
@@ -59,36 +60,43 @@ const EssayWithRichTextLayout = (props) => {
     },
   ];
 
-  useEffect(()=>{
-    if(props.questionId!=null)
-    {
-    const _filteredQuestion=itemQuestionsList.find(q => q.id==props.questionId);
-    console.log('filteredQuestion in essay with rich text ',_filteredQuestion);
-    if(_filteredQuestion)
-    {
-      console.log('_filteredQuestion.description in essay with rich text ',_filteredQuestion.description);
-      const convertedState = convertFromRaw(JSON.parse(_filteredQuestion.description));
-      const _editorValue = EditorState.createWithContent(convertedState);
-      setEditorState(_editorValue);
+  useEffect(() => {
+    if (props.questionId != null) {
+      const _filteredQuestion =
+        itemQuestionsList &&
+        itemQuestionsList.length > 0 &&
+        itemQuestionsList.find((q) => q.id == props.questionId);
+      console.log(
+        "filteredQuestion in essay with rich text ",
+        _filteredQuestion
+      );
+      if (_filteredQuestion) {
+        console.log(
+          "_filteredQuestion.description in essay with rich text ",
+          _filteredQuestion.description
+        );
+        const convertedState = convertFromRaw(
+          JSON.parse(_filteredQuestion.description)
+        );
+        const _editorValue = EditorState.createWithContent(convertedState);
+        setEditorState(_editorValue);
 
-      setEditorContent(_filteredQuestion.description);
+        setEditorContent(_filteredQuestion.description);
 
-      props.setEditorContent(_filteredQuestion.description);
-      props.setMultipleChoices([{data:'no data found'}]);
-      if(_filteredQuestion.questionConfig)
-      {
-        const _config=JSON.parse(_filteredQuestion.questionConfig);
-        if(_config)
-        {
-        setWordLimit(_config.wordLimit);
-        setWordLimitType(_config.wordLimitType);
+        props.setEditorContent(_filteredQuestion.description);
+        props.setMultipleChoices([{ data: "no data found" }]);
+        if (_filteredQuestion.questionConfig) {
+          const _config = JSON.parse(_filteredQuestion.questionConfig);
+          if (_config) {
+            setWordLimit(_config.wordLimit);
+            setWordLimitType(_config.wordLimitType);
+          }
         }
       }
+    } else {
+      props.setMultipleChoices([{ data: "no data found" }]);
     }
-    }else{
-      props.setMultipleChoices([{data:'no data found'}]);
-    }
-  },[]);
+  }, []);
 
   return (
     <Paper
@@ -102,7 +110,6 @@ const EssayWithRichTextLayout = (props) => {
       <div className="text-right">
         <Icon
           onClick={() => {
-
             if (editorContent === "" || editorContent === "<p></p>\n") {
               swal({
                 title: "Error!",
@@ -110,30 +117,39 @@ const EssayWithRichTextLayout = (props) => {
                 icon: "error",
                 button: "Ok!",
               });
-            }else{
-            const itemObject =props.questionId!=null? {
-              id:props.questionId,
-              description: editorContent,
-              options: [{}],
-              questionType: "essay-with-rich-text-question",
-              questionConfig:JSON.stringify({wordLimit:wordLimit,wordLimitType:wordLimitType}),
-              position: props.questionIndex
-            }:{
-              description: editorContent,
-              options: [{}],
-              questionType: "essay-with-rich-text-question",
-              questionConfig:JSON.stringify({wordLimit:wordLimit,wordLimitType:wordLimitType}),
-              position: props.questionIndex
-            };
-            props.onSaveQuestion(
-              props.sectionName,
-              props.tabName,
-              props.questionId,
-              props.questionIndex,
-              "essay-with-rich-text-question",
-              itemObject
-            );
-          }
+            } else {
+              const itemObject =
+                props.questionId != null
+                  ? {
+                      id: props.questionId,
+                      description: editorContent,
+                      options: [{}],
+                      questionType: "essay-with-rich-text-question",
+                      questionConfig: JSON.stringify({
+                        wordLimit: wordLimit,
+                        wordLimitType: wordLimitType,
+                      }),
+                      position: props.questionIndex,
+                    }
+                  : {
+                      description: editorContent,
+                      options: [{}],
+                      questionType: "essay-with-rich-text-question",
+                      questionConfig: JSON.stringify({
+                        wordLimit: wordLimit,
+                        wordLimitType: wordLimitType,
+                      }),
+                      position: props.questionIndex,
+                    };
+              props.onSaveQuestion(
+                props.sectionName,
+                props.tabName,
+                props.questionId,
+                props.questionIndex,
+                "essay-with-rich-text-question",
+                itemObject
+              );
+            }
           }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
@@ -213,10 +229,13 @@ const EssayWithRichTextLayout = (props) => {
           <Controller
             className="mt-8 mb-16"
             render={({ field }) => (
-              <WYSIWYGEditor setEditorContent={setEditorContent}
-              editorState={editorState} setEditorState={setEditorState}
-              setEditorContentMain={props.setEditorContent}
-              {...field} />
+              <WYSIWYGEditor
+                setEditorContent={setEditorContent}
+                editorState={editorState}
+                setEditorState={setEditorState}
+                setEditorContentMain={props.setEditorContent}
+                {...field}
+              />
             )}
             name="message"
             control={control}

@@ -11,7 +11,7 @@ import { primaryBlueColor } from "app/services/Settings";
 import StimulusListDraggableItem from "./StimulusListDraggableItem";
 import ListDraggableItem from "./ListDraggableItem";
 import { useStateValue } from "app/services/state/State";
-
+import { useSelector } from "react-redux";
 import { EditorState, convertFromRaw } from "draft-js";
 
 const defaultValues = { name: "", email: "", subject: "", message: "" };
@@ -24,7 +24,7 @@ const propsType = [
 ];
 
 const OrderListLayout = (props) => {
-  const [{ itemQuestionsList }] = useStateValue();
+  const itemQuestionsList = useSelector(({ alpha }) => alpha.item.questions);
   //OrderList Layout starts
   const [trueFalseShuffleOption, setTrueFalseShuffleOption] = useState(false);
   const [trueFalseShowDragHandle, setTrueFalseShowDragHandle] = useState(false);
@@ -119,9 +119,10 @@ const OrderListLayout = (props) => {
 
   useEffect(() => {
     if (props.questionId != null) {
-      const _filteredQuestion = itemQuestionsList.find(
-        (q) => q.id == props.questionId
-      );
+      const _filteredQuestion =
+        itemQuestionsList &&
+        itemQuestionsList.length > 0 &&
+        itemQuestionsList.find((q) => q.id == props.questionId);
       console.log("filteredQuestion in order list ", _filteredQuestion);
       if (_filteredQuestion) {
         console.log(
@@ -146,7 +147,6 @@ const OrderListLayout = (props) => {
             // setMultipleOptions(_config.multipleOption);
             setTrueFalseShuffleOption(_config.shuffleOptionRadio);
             setTrueFalseShowDragHandle(_config.showDragHandleRadio);
-  
           }
         }
       }
@@ -330,21 +330,21 @@ const OrderListLayout = (props) => {
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Show drag handle</label>
               <Switch
-            checked={trueFalseShowDragHandle}
-            onChange={() =>
-              setTrueFalseShowDragHandle(!trueFalseShowDragHandle)
-            }
-          />
+                checked={trueFalseShowDragHandle}
+                onChange={() =>
+                  setTrueFalseShowDragHandle(!trueFalseShowDragHandle)
+                }
+              />
             </div>
 
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Shuffle options</label>
               <Switch
-            checked={trueFalseShuffleOption}
-            onChange={() =>
-              setTrueFalseShuffleOption(!trueFalseShuffleOption)
-            }
-          />
+                checked={trueFalseShuffleOption}
+                onChange={() =>
+                  setTrueFalseShuffleOption(!trueFalseShuffleOption)
+                }
+              />
             </div>
           </div>
         </div>

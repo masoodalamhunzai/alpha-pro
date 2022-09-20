@@ -20,7 +20,7 @@ import { DeleteSweep, ToggleOff, Upload } from "@mui/icons-material";
 import { primaryBlueColor } from "app/services/Settings";
 import LabelImageWithDropDownDraggableItem from "./LabelImageWithDropDownDraggableItem";
 import { useStateValue } from "app/services/state/State";
-
+import { useSelector } from "react-redux";
 import { EditorState, convertFromRaw } from "draft-js";
 
 const defaultValues = { name: "", email: "", subject: "", message: "" };
@@ -31,13 +31,17 @@ const LabelImageWithDropDownLayout = (props) => {
     mode: "onChange",
     defaultValues,
   });
-  const [{ itemQuestionsList }] = useStateValue();
+  const itemQuestionsList = useSelector(({ alpha }) => alpha.item.questions);
 
   // States start
   const [trueFalseShuffleOption, setTrueFalseShuffleOption] = useState(false);
-  const [trueFalseMatchAllPossibleResponses, setTrueFalseMatchAllPossibleResponses] = useState(false);
+  const [
+    trueFalseMatchAllPossibleResponses,
+    setTrueFalseMatchAllPossibleResponses,
+  ] = useState(false);
 
-  const [trueFalseShowDashedBorder, setTrueFalseShowDashedBorder] = useState(false);
+  const [trueFalseShowDashedBorder, setTrueFalseShowDashedBorder] =
+    useState(false);
   const [trueFalseEditAriaLabel, setTrueFalseEditAriaLabel] = useState(false);
 
   const [imageAlternativeText, setImageAlternativeText] = useState("");
@@ -139,9 +143,10 @@ const LabelImageWithDropDownLayout = (props) => {
 
   useEffect(() => {
     if (props.questionId != null) {
-      const _filteredQuestion = itemQuestionsList.find(
-        (q) => q.id == props.questionId
-      );
+      const _filteredQuestion =
+        itemQuestionsList &&
+        itemQuestionsList.length > 0 &&
+        itemQuestionsList.find((q) => q.id == props.questionId);
       console.log(
         "filteredQuestion in Lable Image with Drop Down ",
         _filteredQuestion
@@ -163,16 +168,16 @@ const LabelImageWithDropDownLayout = (props) => {
         props.setEditorContent(_filteredQuestion.description);
         props.setMultipleChoices([..._filteredQuestion.options]);
 
-        if(_filteredQuestion.questionConfig)
-        {
-          const _config=JSON.parse(_filteredQuestion.questionConfig);
-          if(_config)
-          {
+        if (_filteredQuestion.questionConfig) {
+          const _config = JSON.parse(_filteredQuestion.questionConfig);
+          if (_config) {
             setAnnotations(_config.annotation);
             setSelectedImageUrl(_config.selectedImageUrl);
 
             setTrueFalseShuffleOption(_config.shuffleOptionRadio);
-            setTrueFalseMatchAllPossibleResponses(_config.matchAllPossibleResponsesRadio);
+            setTrueFalseMatchAllPossibleResponses(
+              _config.matchAllPossibleResponsesRadio
+            );
             setTrueFalseShowDashedBorder(_config.showDashedBorderRadio);
             setTrueFalseEditAriaLabel(_config.editARIALabelsRadio);
             setImageAlternativeText(_config.imageAlternativeText);
@@ -181,7 +186,6 @@ const LabelImageWithDropDownLayout = (props) => {
             setFillColor(_config.fillColor);
           }
         }
-
       }
     } else {
       props.setMultipleChoices([...multipleChoices]);
@@ -201,7 +205,7 @@ const LabelImageWithDropDownLayout = (props) => {
     >
       <div className="text-right">
         <Icon
-          onClick={() => {            
+          onClick={() => {
             if (editorContent === "" || editorContent === "<p></p>\n") {
               swal({
                 title: "Error!",
@@ -217,38 +221,57 @@ const LabelImageWithDropDownLayout = (props) => {
                 icon: "error",
                 button: "Ok!",
               });
-            }else{         
-            const itemObject =props.questionId!=null? {
-              id:props.questionId,
-              description: editorContent,
-              options: multipleChoices,
-              questionType: "label-image-with-drop-down-question",
-              questionConfig:JSON.stringify({annotation:annotations,selectedImageUrl:'',fillColor:fillColor,
-              showDashedBorderRadio:trueFalseShowDashedBorder,editARIALabelsRadio:trueFalseEditAriaLabel,matchAllPossibleResponsesRadio:trueFalseMatchAllPossibleResponses,shuffleOptionRadio:trueFalseShuffleOption,
-              imageAlternativeText:imageAlternativeText,textOnHover:textOnHover,imageWidth:imageWidth
-            }),
-              position: props.questionIndex
-            }:{
-              description: editorContent,
-              options: multipleChoices,
-              questionType: "label-image-with-drop-down-question",
-              questionConfig:JSON.stringify({annotation:annotations,selectedImageUrl:'',fillColor:fillColor,
-              showDashedBorderRadio:trueFalseShowDashedBorder,editARIALabelsRadio:trueFalseEditAriaLabel,matchAllPossibleResponsesRadio:trueFalseMatchAllPossibleResponses,shuffleOptionRadio:trueFalseShuffleOption,
-              imageAlternativeText:imageAlternativeText,textOnHover:textOnHover,imageWidth:imageWidth
-            }),
-              position: props.questionIndex
-            };
-            props.onSaveQuestion(
-              props.sectionName,
-              props.tabName,
-              props.questionId,
-              props.questionIndex,
-              "label-image-with-drop-down-question",
-              itemObject
-            );
-          }
-
-
+            } else {
+              const itemObject =
+                props.questionId != null
+                  ? {
+                      id: props.questionId,
+                      description: editorContent,
+                      options: multipleChoices,
+                      questionType: "label-image-with-drop-down-question",
+                      questionConfig: JSON.stringify({
+                        annotation: annotations,
+                        selectedImageUrl: "",
+                        fillColor: fillColor,
+                        showDashedBorderRadio: trueFalseShowDashedBorder,
+                        editARIALabelsRadio: trueFalseEditAriaLabel,
+                        matchAllPossibleResponsesRadio:
+                          trueFalseMatchAllPossibleResponses,
+                        shuffleOptionRadio: trueFalseShuffleOption,
+                        imageAlternativeText: imageAlternativeText,
+                        textOnHover: textOnHover,
+                        imageWidth: imageWidth,
+                      }),
+                      position: props.questionIndex,
+                    }
+                  : {
+                      description: editorContent,
+                      options: multipleChoices,
+                      questionType: "label-image-with-drop-down-question",
+                      questionConfig: JSON.stringify({
+                        annotation: annotations,
+                        selectedImageUrl: "",
+                        fillColor: fillColor,
+                        showDashedBorderRadio: trueFalseShowDashedBorder,
+                        editARIALabelsRadio: trueFalseEditAriaLabel,
+                        matchAllPossibleResponsesRadio:
+                          trueFalseMatchAllPossibleResponses,
+                        shuffleOptionRadio: trueFalseShuffleOption,
+                        imageAlternativeText: imageAlternativeText,
+                        textOnHover: textOnHover,
+                        imageWidth: imageWidth,
+                      }),
+                      position: props.questionIndex,
+                    };
+              props.onSaveQuestion(
+                props.sectionName,
+                props.tabName,
+                props.questionId,
+                props.questionIndex,
+                "label-image-with-drop-down-question",
+                itemObject
+              );
+            }
           }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
@@ -417,7 +440,7 @@ const LabelImageWithDropDownLayout = (props) => {
                         },
                       }}
                       value={imageAlternativeText}
-                      onChange={(e)=>setImageAlternativeText(e.target.value)}
+                      onChange={(e) => setImageAlternativeText(e.target.value)}
                       size="small"
                       required
                       id="outlined-required"
@@ -436,7 +459,7 @@ const LabelImageWithDropDownLayout = (props) => {
                         },
                       }}
                       value={textOnHover}
-                      onChange={(e)=>setTextOnHover(e.target.value)}
+                      onChange={(e) => setTextOnHover(e.target.value)}
                       size="small"
                       required
                       id="outlined-required"
@@ -455,7 +478,7 @@ const LabelImageWithDropDownLayout = (props) => {
                         },
                       }}
                       value={imageWidth}
-                      onChange={(e)=>setImageWidth(e.target.value)}
+                      onChange={(e) => setImageWidth(e.target.value)}
                       size="small"
                       required
                       id="outlined-required"
@@ -467,19 +490,22 @@ const LabelImageWithDropDownLayout = (props) => {
                     <div className="flex items-center">
                       <label>Fill color</label>
                       <Checkbox
-                      checked={fillColor}
-                      onChange={handleFillColorChange}
-                      size="large" />
+                        checked={fillColor}
+                        onChange={handleFillColorChange}
+                        size="large"
+                      />
                     </div>
 
                     <div className="my-4 flex justify-between items-center">
                       <label>Show Dashed Border</label>
                       <Switch
-            checked={trueFalseShowDashedBorder}
-            onChange={() =>
-              setTrueFalseShowDashedBorder(!trueFalseShowDashedBorder)
-            }
-          />
+                        checked={trueFalseShowDashedBorder}
+                        onChange={() =>
+                          setTrueFalseShowDashedBorder(
+                            !trueFalseShowDashedBorder
+                          )
+                        }
+                      />
                     </div>
                   </div>
 
@@ -487,11 +513,11 @@ const LabelImageWithDropDownLayout = (props) => {
                     <div className="my-4 flex justify-between items-center">
                       <label>Edit ARIA Labels</label>
                       <Switch
-            checked={trueFalseEditAriaLabel}
-            onChange={() =>
-              setTrueFalseEditAriaLabel(!trueFalseEditAriaLabel)
-            }
-          />
+                        checked={trueFalseEditAriaLabel}
+                        onChange={() =>
+                          setTrueFalseEditAriaLabel(!trueFalseEditAriaLabel)
+                        }
+                      />
                     </div>
                   </div>
 
@@ -657,21 +683,23 @@ const LabelImageWithDropDownLayout = (props) => {
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Match All Possible Responses</label>
               <Switch
-            checked={trueFalseMatchAllPossibleResponses}
-            onChange={() =>
-              setTrueFalseMatchAllPossibleResponses(!trueFalseMatchAllPossibleResponses)
-            }
-          />
+                checked={trueFalseMatchAllPossibleResponses}
+                onChange={() =>
+                  setTrueFalseMatchAllPossibleResponses(
+                    !trueFalseMatchAllPossibleResponses
+                  )
+                }
+              />
             </div>
 
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Shuffle option</label>
               <Switch
-            checked={trueFalseShuffleOption}
-            onChange={() =>
-              setTrueFalseShuffleOption(!trueFalseShuffleOption)
-            }
-          />
+                checked={trueFalseShuffleOption}
+                onChange={() =>
+                  setTrueFalseShuffleOption(!trueFalseShuffleOption)
+                }
+              />
             </div>
           </div>
         </div>

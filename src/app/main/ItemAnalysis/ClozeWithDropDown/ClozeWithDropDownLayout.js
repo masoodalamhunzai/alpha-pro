@@ -12,7 +12,7 @@ import { primaryBlueColor } from "app/services/Settings";
 import ClozeWithDropDownDraggableItem from "./ClozeWithDropDownDraggableItem";
 import { defaultProps } from "velocity-react/velocity-component";
 import { useStateValue } from "app/services/state/State";
-
+import { useSelector } from "react-redux";
 import { EditorState, convertFromRaw } from "draft-js";
 
 const defaultValues = { name: "", email: "", subject: "", message: "" };
@@ -27,10 +27,13 @@ const props = [
 ];
 
 const ClozeWithDropDownLayout = (props) => {
-  const [{ itemQuestionsList }] = useStateValue();
+  const itemQuestionsList = useSelector(({ alpha }) => alpha.item.questions);
   //ClozeWithDropDown starts
   const [trueFalseShuffleOption, setTrueFalseShuffleOption] = useState(false);
-  const [trueFalseMatchAllPossibleResponse, setTrueFalseMatchAllPossibleResponse] = useState(false);
+  const [
+    trueFalseMatchAllPossibleResponse,
+    setTrueFalseMatchAllPossibleResponse,
+  ] = useState(false);
 
   const [editorContent, setEditorContent] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -131,9 +134,10 @@ const ClozeWithDropDownLayout = (props) => {
 
   useEffect(() => {
     if (props.questionId != null) {
-      const _filteredQuestion = itemQuestionsList.find(
-        (q) => q.id == props.questionId
-      );
+      const _filteredQuestion =
+        itemQuestionsList &&
+        itemQuestionsList.length > 0 &&
+        itemQuestionsList.find((q) => q.id == props.questionId);
       console.log(
         "filteredQuestion in close with drop down ",
         _filteredQuestion
@@ -155,15 +159,14 @@ const ClozeWithDropDownLayout = (props) => {
         props.setEditorContent(_filteredQuestion.description);
         props.setMultipleChoices([..._filteredQuestion.options]);
 
-        if(_filteredQuestion.questionConfig)
-        {
-          const _config=JSON.parse(_filteredQuestion.questionConfig);
-          if(_config)
-          {
+        if (_filteredQuestion.questionConfig) {
+          const _config = JSON.parse(_filteredQuestion.questionConfig);
+          if (_config) {
             setTemplateMarkup(_config.templatemarkup);
             setTrueFalseShuffleOption(_config.shuffleOptionRadio);
-            setTrueFalseMatchAllPossibleResponse(_config.matchAllPossibleResponsesRadio);
-          
+            setTrueFalseMatchAllPossibleResponse(
+              _config.matchAllPossibleResponsesRadio
+            );
           }
         }
       }
@@ -184,7 +187,6 @@ const ClozeWithDropDownLayout = (props) => {
       <div className="text-right">
         <Icon
           onClick={() => {
-
             if (editorContent === "" || editorContent === "<p></p>\n") {
               swal({
                 title: "Error!",
@@ -200,33 +202,43 @@ const ClozeWithDropDownLayout = (props) => {
                 icon: "error",
                 button: "Ok!",
               });
-            }else{
-            const itemObject =props.questionId!=null? {
-              id:props.questionId,
-              description: editorContent,
-              options: multipleChoices,
-              questionType: "close-with-drop-down-question",
-              questionConfig:JSON.stringify({templatemarkup:templateMarkup,matchAllPossibleResponsesRadio:trueFalseMatchAllPossibleResponse,shuffleOptionRadio:trueFalseShuffleOption,
-            }),
-              position: props.questionIndex
-            }:{
-              description: editorContent,
-              options: multipleChoices,
-              questionType: "close-with-drop-down-question",
-              questionConfig:JSON.stringify({templatemarkup:templateMarkup,matchAllPossibleResponsesRadio:trueFalseMatchAllPossibleResponse,shuffleOptionRadio:trueFalseShuffleOption,
-              }),
-              position: props.questionIndex
-            };
-            props.onSaveQuestion(
-              props.sectionName,
-              props.tabName,
-              props.questionId,
-              props.questionIndex,
-              "close-with-drop-down-question",
-              itemObject
-            );
-          }
-
+            } else {
+              const itemObject =
+                props.questionId != null
+                  ? {
+                      id: props.questionId,
+                      description: editorContent,
+                      options: multipleChoices,
+                      questionType: "close-with-drop-down-question",
+                      questionConfig: JSON.stringify({
+                        templatemarkup: templateMarkup,
+                        matchAllPossibleResponsesRadio:
+                          trueFalseMatchAllPossibleResponse,
+                        shuffleOptionRadio: trueFalseShuffleOption,
+                      }),
+                      position: props.questionIndex,
+                    }
+                  : {
+                      description: editorContent,
+                      options: multipleChoices,
+                      questionType: "close-with-drop-down-question",
+                      questionConfig: JSON.stringify({
+                        templatemarkup: templateMarkup,
+                        matchAllPossibleResponsesRadio:
+                          trueFalseMatchAllPossibleResponse,
+                        shuffleOptionRadio: trueFalseShuffleOption,
+                      }),
+                      position: props.questionIndex,
+                    };
+              props.onSaveQuestion(
+                props.sectionName,
+                props.tabName,
+                props.questionId,
+                props.questionIndex,
+                "close-with-drop-down-question",
+                itemObject
+              );
+            }
           }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
@@ -380,21 +392,23 @@ const ClozeWithDropDownLayout = (props) => {
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Match All Possible Responses</label>
               <Switch
-            checked={trueFalseMatchAllPossibleResponse}
-            onChange={() =>
-              setTrueFalseMatchAllPossibleResponse(!trueFalseMatchAllPossibleResponse)
-            }
-          />
+                checked={trueFalseMatchAllPossibleResponse}
+                onChange={() =>
+                  setTrueFalseMatchAllPossibleResponse(
+                    !trueFalseMatchAllPossibleResponse
+                  )
+                }
+              />
             </div>
 
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Shuffle options</label>
               <Switch
-            checked={trueFalseShuffleOption}
-            onChange={() =>
-              setTrueFalseShuffleOption(!trueFalseShuffleOption)
-            }
-          />
+                checked={trueFalseShuffleOption}
+                onChange={() =>
+                  setTrueFalseShuffleOption(!trueFalseShuffleOption)
+                }
+              />
             </div>
           </div>
         </div>

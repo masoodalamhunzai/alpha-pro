@@ -9,9 +9,9 @@ import { TextField, Checkbox } from "@mui/material";
 import Switch from "app/shared-components/Switch";
 import { primaryBlueColor } from "app/services/Settings";
 import MenuItem from "@mui/material/MenuItem";
-import { useStateValue } from 'app/services/state/State';
-
-import { EditorState,convertFromRaw } from "draft-js";
+import { useStateValue } from "app/services/state/State";
+import { useSelector } from "react-redux";
+import { EditorState, convertFromRaw } from "draft-js";
 
 const defaultValues = { name: "", email: "", subject: "", message: "" };
 
@@ -25,7 +25,7 @@ const propsType = [
 ];
 
 const EssayWithPlainTextLayout = (props) => {
-  const [{itemQuestionsList}] =useStateValue();
+  const itemQuestionsList = useSelector(({ alpha }) => alpha.item.questions);
   //EssayWithPlainTextLayout starts
   const [trueFalseCopy, setTrueFalseCopy] = useState(false);
   const [trueFalseCut, setTrueFalseCut] = useState(false);
@@ -58,43 +58,46 @@ const EssayWithPlainTextLayout = (props) => {
     },
   ];
 
+  useEffect(() => {
+    if (props.questionId != null) {
+      const _filteredQuestion =
+        itemQuestionsList &&
+        itemQuestionsList.length > 0 &&
+        itemQuestionsList.find((q) => q.id == props.questionId);
+      console.log(
+        "filteredQuestion in essay with plain text ",
+        _filteredQuestion
+      );
+      if (_filteredQuestion) {
+        console.log(
+          "_filteredQuestion.description in essay with plain text ",
+          _filteredQuestion.description
+        );
+        const convertedState = convertFromRaw(
+          JSON.parse(_filteredQuestion.description)
+        );
+        const _editorValue = EditorState.createWithContent(convertedState);
+        setEditorState(_editorValue);
 
-  useEffect(()=>{
-    if(props.questionId!=null)
-    {
-    const _filteredQuestion=itemQuestionsList.find(q => q.id==props.questionId);
-    console.log('filteredQuestion in essay with plain text ',_filteredQuestion);
-    if(_filteredQuestion)
-    {
-      console.log('_filteredQuestion.description in essay with plain text ',_filteredQuestion.description);
-      const convertedState = convertFromRaw(JSON.parse(_filteredQuestion.description));
-      const _editorValue = EditorState.createWithContent(convertedState);
-      setEditorState(_editorValue);
+        setEditorContent(_filteredQuestion.description);
 
-      setEditorContent(_filteredQuestion.description);
-
-      props.setEditorContent(_filteredQuestion.description);
-      props.setMultipleChoices([{data:'no data found'}]);
-      if(_filteredQuestion.questionConfig)
-      {
-        const _config=JSON.parse(_filteredQuestion.questionConfig);
-        if(_config)
-        {
-          setWordLimit(_config.wordlimit);
-          setWordType(_config.wordtype);
-          setTrueFalseCopy(_config.copy);
-          setTrueFalseCut(_config.cut);
-          setTrueFalsePaste(_config.paste);
-       
+        props.setEditorContent(_filteredQuestion.description);
+        props.setMultipleChoices([{ data: "no data found" }]);
+        if (_filteredQuestion.questionConfig) {
+          const _config = JSON.parse(_filteredQuestion.questionConfig);
+          if (_config) {
+            setWordLimit(_config.wordlimit);
+            setWordType(_config.wordtype);
+            setTrueFalseCopy(_config.copy);
+            setTrueFalseCut(_config.cut);
+            setTrueFalsePaste(_config.paste);
+          }
         }
       }
+    } else {
+      props.setMultipleChoices([{ data: "no data found" }]);
     }
-    }else{
-      props.setMultipleChoices([{data:'no data found'}]);
-    }
-  },[]);
-
-
+  }, []);
 
   return (
     <Paper
@@ -108,7 +111,6 @@ const EssayWithPlainTextLayout = (props) => {
       <div className="text-right">
         <Icon
           onClick={() => {
-
             if (editorContent === "" || editorContent === "<p></p>\n") {
               swal({
                 title: "Error!",
@@ -116,32 +118,46 @@ const EssayWithPlainTextLayout = (props) => {
                 icon: "error",
                 button: "Ok!",
               });
-            }else{
-            const itemObject =props.questionId!=null? {
-              id:props.questionId,
-              description: editorContent,
-              options: [{}],
-              questionType: "essay-with-plain-text-question",
-              questionConfig:JSON.stringify({copy:trueFalseCopy,cut:trueFalseCut,paste:trueFalsePaste,wordlimit:wordLimit,wordtype:wordType}),
-              position: props.questionIndex
-            }:{
-              description: editorContent,
-              options: [{}],
-              questionType: "essay-with-plain-text-question",
-              questionConfig:JSON.stringify({copy:trueFalseCopy,cut:trueFalseCut,paste:trueFalsePaste,wordlimit:wordLimit,wordtype:wordType}),
-              position: props.questionIndex
-            };
-            props.onSaveQuestion(
-              props.sectionName,
-              props.tabName,
-              props.questionId,
-              props.questionIndex,
-              "essay-with-plain-text-question",
-              itemObject
-            );
-          }
-
-           }}
+            } else {
+              const itemObject =
+                props.questionId != null
+                  ? {
+                      id: props.questionId,
+                      description: editorContent,
+                      options: [{}],
+                      questionType: "essay-with-plain-text-question",
+                      questionConfig: JSON.stringify({
+                        copy: trueFalseCopy,
+                        cut: trueFalseCut,
+                        paste: trueFalsePaste,
+                        wordlimit: wordLimit,
+                        wordtype: wordType,
+                      }),
+                      position: props.questionIndex,
+                    }
+                  : {
+                      description: editorContent,
+                      options: [{}],
+                      questionType: "essay-with-plain-text-question",
+                      questionConfig: JSON.stringify({
+                        copy: trueFalseCopy,
+                        cut: trueFalseCut,
+                        paste: trueFalsePaste,
+                        wordlimit: wordLimit,
+                        wordtype: wordType,
+                      }),
+                      position: props.questionIndex,
+                    };
+              props.onSaveQuestion(
+                props.sectionName,
+                props.tabName,
+                props.questionId,
+                props.questionIndex,
+                "essay-with-plain-text-question",
+                itemObject
+              );
+            }
+          }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
             padding: "2px 24px 24px 4px",
@@ -220,10 +236,13 @@ const EssayWithPlainTextLayout = (props) => {
           <Controller
             className="mt-8 mb-16"
             render={({ field }) => (
-              <WYSIWYGEditor setEditorContent={setEditorContent}
-              editorState={editorState} setEditorState={setEditorState}
-              setEditorContentMain={props.setEditorContent}
-              {...field} />
+              <WYSIWYGEditor
+                setEditorContent={setEditorContent}
+                editorState={editorState}
+                setEditorState={setEditorState}
+                setEditorContentMain={props.setEditorContent}
+                {...field}
+              />
             )}
             name="message"
             control={control}
@@ -232,31 +251,25 @@ const EssayWithPlainTextLayout = (props) => {
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Copy</label>
               <Switch
-            checked={trueFalseCopy}
-            onChange={() =>
-              setTrueFalseCopy(!trueFalseCopy)
-            }
-          />
+                checked={trueFalseCopy}
+                onChange={() => setTrueFalseCopy(!trueFalseCopy)}
+              />
             </div>
 
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Cut</label>
               <Switch
-            checked={trueFalseCut}
-            onChange={() =>
-              setTrueFalseCut(!trueFalseCut)
-            }
-          />
+                checked={trueFalseCut}
+                onChange={() => setTrueFalseCut(!trueFalseCut)}
+              />
             </div>
 
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Paste</label>
               <Switch
-            checked={trueFalsePaste}
-            onChange={() =>
-              setTrueFalsePaste(!trueFalsePaste)
-            }
-          />
+                checked={trueFalsePaste}
+                onChange={() => setTrueFalsePaste(!trueFalsePaste)}
+              />
             </div>
           </div>
 

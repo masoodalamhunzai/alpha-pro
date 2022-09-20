@@ -20,6 +20,7 @@ import { DeleteSweep, ToggleOff, Upload } from "@mui/icons-material";
 import { primaryBlueColor } from "app/services/Settings";
 import LabelImageWithDragDropDraggableItem from "./LabelImageWithDragDropDraggableItem";
 import { useStateValue } from "app/services/state/State";
+import { useSelector } from "react-redux";
 
 import { EditorState, convertFromRaw } from "draft-js";
 
@@ -31,16 +32,19 @@ const LabelImageWithDragDropLayout = (props) => {
     mode: "onChange",
     defaultValues,
   });
-  const [{ itemQuestionsList }] = useStateValue();
+  const itemQuestionsList = useSelector(({ alpha }) => alpha.item.questions);
 
   // States start
   const [trueFalseShuffleOption, setTrueFalseShuffleOption] = useState(false);
-  const [trueFalsemultipleResponse, setTrueFalsemultipleResponse] = useState(false);
+  const [trueFalsemultipleResponse, setTrueFalsemultipleResponse] =
+    useState(false);
 
   const [trueFalseShowDragHandle, setTrueFalseShowDragHandle] = useState(false);
-  const [trueFalseDuplicateResponse, setTrueFalseDuplicateResponse] = useState(false);
+  const [trueFalseDuplicateResponse, setTrueFalseDuplicateResponse] =
+    useState(false);
 
-  const [trueFalseShowDashedBorder, setTrueFalseShowDashedBorder] = useState(false);
+  const [trueFalseShowDashedBorder, setTrueFalseShowDashedBorder] =
+    useState(false);
   const [trueFalseEditAriaLabel, setTrueFalseEditAriaLabel] = useState(false);
 
   const [imageAlternativeText, setImageAlternativeText] = useState("");
@@ -135,7 +139,6 @@ const LabelImageWithDragDropLayout = (props) => {
     setOptionsList(temp);
   }, [annotations]);
 
-
   function onNewOptionAdded(index) {
     const option = {
       id: `item-${index + 1}`,
@@ -153,9 +156,10 @@ const LabelImageWithDragDropLayout = (props) => {
 
   useEffect(() => {
     if (props.questionId != null) {
-      const _filteredQuestion = itemQuestionsList.find(
-        (q) => q.id == props.questionId
-      );
+      const _filteredQuestion =
+        itemQuestionsList &&
+        itemQuestionsList.length > 0 &&
+        itemQuestionsList.find((q) => q.id == props.questionId);
       console.log(
         "filteredQuestion in Label with iamge drag and drop ",
         _filteredQuestion
@@ -194,7 +198,6 @@ const LabelImageWithDragDropLayout = (props) => {
             setTextOnHover(_config.textOnHover);
             setImageWidth(_config.imageWidth);
             setFillColor(_config.filColor);
-            
           }
         }
       }
@@ -246,7 +249,7 @@ const LabelImageWithDragDropLayout = (props) => {
                         multipleOption: multipleOptions,
                         imageUrl: "",
                         annotations: annotations,
-                        imageAlternativeText:imageAlternativeText,
+                        imageAlternativeText: imageAlternativeText,
                         textOnHover: textOnHover,
                         imageWidth: imageWidth,
                         filColor: fillColor,
@@ -267,7 +270,7 @@ const LabelImageWithDragDropLayout = (props) => {
                         multipleOption: multipleOptions,
                         imageUrl: "",
                         annotations: annotations,
-                        imageAlternativeText:imageAlternativeText,
+                        imageAlternativeText: imageAlternativeText,
                         textOnHover: textOnHover,
                         imageWidth: imageWidth,
                         filColor: fillColor,
@@ -458,7 +461,7 @@ const LabelImageWithDragDropLayout = (props) => {
                         },
                       }}
                       value={imageAlternativeText}
-                      onChange={(e)=>setImageAlternativeText(e.target.value)}
+                      onChange={(e) => setImageAlternativeText(e.target.value)}
                       size="small"
                       required
                       id="outlined-required"
@@ -477,7 +480,7 @@ const LabelImageWithDragDropLayout = (props) => {
                         },
                       }}
                       value={textOnHover}
-                      onChange={(e)=>setTextOnHover(e.target.value)}
+                      onChange={(e) => setTextOnHover(e.target.value)}
                       size="small"
                       required
                       id="outlined-required"
@@ -496,7 +499,7 @@ const LabelImageWithDragDropLayout = (props) => {
                         },
                       }}
                       value={imageWidth}
-                      onChange={(e)=>setImageWidth(e.target.value)}
+                      onChange={(e) => setImageWidth(e.target.value)}
                       size="small"
                       required
                       id="outlined-required"
@@ -508,19 +511,22 @@ const LabelImageWithDragDropLayout = (props) => {
                     <div className="flex items-center">
                       <label>Fill color</label>
                       <Checkbox
-                      checked={fillColor}
-                      onChange={handleFillColorChange}
-                      size="large" />
+                        checked={fillColor}
+                        onChange={handleFillColorChange}
+                        size="large"
+                      />
                     </div>
 
                     <div className="my-4 flex justify-between items-center">
                       <label>Show Dashed Border</label>
                       <Switch
-            checked={trueFalseShowDashedBorder}
-            onChange={() =>
-              setTrueFalseShowDashedBorder(!trueFalseShowDashedBorder)
-            }
-          />
+                        checked={trueFalseShowDashedBorder}
+                        onChange={() =>
+                          setTrueFalseShowDashedBorder(
+                            !trueFalseShowDashedBorder
+                          )
+                        }
+                      />
                     </div>
                   </div>
 
@@ -528,11 +534,11 @@ const LabelImageWithDragDropLayout = (props) => {
                     <div className="my-4 flex justify-between items-center">
                       <label>Edit ARIA Labels</label>
                       <Switch
-            checked={trueFalseEditAriaLabel}
-            onChange={() =>
-              setTrueFalseEditAriaLabel(!trueFalseEditAriaLabel)
-            }
-          />
+                        checked={trueFalseEditAriaLabel}
+                        onChange={() =>
+                          setTrueFalseEditAriaLabel(!trueFalseEditAriaLabel)
+                        }
+                      />
                     </div>
                   </div>
 
@@ -629,41 +635,41 @@ const LabelImageWithDragDropLayout = (props) => {
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Duplicate Responses</label>
               <Switch
-            checked={trueFalseDuplicateResponse}
-            onChange={() =>
-              setTrueFalseDuplicateResponse(!trueFalseDuplicateResponse)
-            }
-          />
+                checked={trueFalseDuplicateResponse}
+                onChange={() =>
+                  setTrueFalseDuplicateResponse(!trueFalseDuplicateResponse)
+                }
+              />
             </div>
 
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Show drag handle</label>
               <Switch
-            checked={trueFalseShowDragHandle}
-            onChange={() =>
-              setTrueFalseShowDragHandle(!trueFalseShowDragHandle)
-            }
-          />
+                checked={trueFalseShowDragHandle}
+                onChange={() =>
+                  setTrueFalseShowDragHandle(!trueFalseShowDragHandle)
+                }
+              />
             </div>
 
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Multiple Responses</label>
               <Switch
-            checked={trueFalsemultipleResponse}
-            onChange={() =>
-              setTrueFalsemultipleResponse(!trueFalsemultipleResponse)
-            }
-          />
+                checked={trueFalsemultipleResponse}
+                onChange={() =>
+                  setTrueFalsemultipleResponse(!trueFalsemultipleResponse)
+                }
+              />
             </div>
 
             <div className="my-4 mr-12 flex justify-between items-center">
               <label>Shuffle options</label>
               <Switch
-            checked={trueFalseShuffleOption}
-            onChange={() =>
-              setTrueFalseShuffleOption(!trueFalseShuffleOption)
-            }
-          />
+                checked={trueFalseShuffleOption}
+                onChange={() =>
+                  setTrueFalseShuffleOption(!trueFalseShuffleOption)
+                }
+              />
             </div>
           </div>
         </div>

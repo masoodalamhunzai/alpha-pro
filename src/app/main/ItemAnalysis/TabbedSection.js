@@ -28,6 +28,7 @@ import OrderListLayout from "./OrderListQuestion/OrderListLayout";
 import ClozeWithDragAndDropLayout from "./ClozeWithDragAndDrop/ClozeWithDragAndDropLayout";
 import ClozeWithDropDownLayout from "./ClozeWithDropDown/ClozeWithDropDownLayout";
 import ClozeWithTextLayout from "./ClozeWithText/ClozeWithTextLayout";
+import { useSelector } from "react-redux";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -65,7 +66,9 @@ function a11yProps(index) {
 function TabbedSection(props) {
   const [value, setValue] = useState(0);
   const [sectionTitle, setSectionTitle] = useState("Settings");
-  const [{ itemQuestionsList }, dispatch] = useStateValue();
+  const [{}, dispatch] = useStateValue();
+
+  const itemQuestionsList = useSelector(({ alpha }) => alpha.item.questions);
 
   const handleChange = (event, newValue, tabTitle) => {
     setValue(newValue);
@@ -152,40 +155,47 @@ function TabbedSection(props) {
                               return (
                                 <>
                                   {ques.component === "CreateQuestion" ? (
-                                    <CreateQuestion key={i}
-                                    questionIndex={i}
-                                    questionId={ques.id}
-                                    sectionName={props.sectionName}
-                                    tabName={item.TabName}
-                                    onSaveQuestion={props.onSaveQuestion}
-                                    onRemoveQuestion={props.onRemoveQuestion}
-                                    onEditQuestion={props.onEditQuestion}
-                                    onNewOptionAdded={props.onNewOptionAdded}
-        
-                          multipleChoices={props.multipleChoices }
-                          setMultipleChoices={props.setMultipleChoices}
-                          editorContent={ props.editorContent}
-                          setEditorContent={props.setEditorContent}
+                                    <CreateQuestion
+                                      key={i}
+                                      questionIndex={i}
+                                      questionId={ques.id}
+                                      sectionName={props.sectionName}
+                                      tabName={item.TabName}
+                                      onSaveQuestion={props.onSaveQuestion}
+                                      onRemoveQuestion={props.onRemoveQuestion}
+                                      onEditQuestion={props.onEditQuestion}
+                                      onNewOptionAdded={props.onNewOptionAdded}
+                                      multipleChoices={props.multipleChoices}
+                                      setMultipleChoices={
+                                        props.setMultipleChoices
+                                      }
+                                      editorContent={props.editorContent}
+                                      setEditorContent={props.setEditorContent}
                                     />
                                   ) : ques.component ===
                                     "TrueFalseQuestionLayout" ? (
                                     <TrueFalseQuestionLayout
                                       key={i}
                                       questionIndex={i}
-                                    questionId={ques.id}
-                                    sectionName={props.sectionName}
-                                    tabName={item.TabName}
-                                    onSaveQuestion={props.onSaveQuestion}
-                                    onRemoveQuestion={props.onRemoveQuestion}
-                                    onEditQuestion={props.onEditQuestion}
-                                    onNewOptionAdded={props.onNewOptionAdded}
-
+                                      questionId={ques.id}
+                                      sectionName={props.sectionName}
+                                      tabName={item.TabName}
+                                      onSaveQuestion={props.onSaveQuestion}
+                                      onRemoveQuestion={props.onRemoveQuestion}
+                                      onEditQuestion={props.onEditQuestion}
+                                      onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={props.setMultipleChoices}
+                                      setMultipleChoices={
+                                        props.setMultipleChoices
+                                      }
                                       editorContent={props.editorContent}
                                       setEditorContent={props.setEditorContent}
-                                      trueFalseShuffleOption={props.trueFalseShuffleOptiontrueFalse}
-                                      setTrueFalseShuffleOption={props.setTrueFalseShuffleOptiontrueFalse}
+                                      trueFalseShuffleOption={
+                                        props.trueFalseShuffleOptiontrueFalse
+                                      }
+                                      setTrueFalseShuffleOption={
+                                        props.setTrueFalseShuffleOptiontrueFalse
+                                      }
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
@@ -195,18 +205,23 @@ function TabbedSection(props) {
                                     <ChoiceMatrixQuestionLayout
                                       key={i}
                                       questionIndex={i}
-                                    questionId={ques.id}
-                                    sectionName={props.sectionName}
-                                    tabName={item.TabName}
-                                    onSaveQuestion={props.onSaveQuestion}
-                                    onRemoveQuestion={props.onRemoveQuestion}
-                                    onEditQuestion={props.onEditQuestion}
-                                    onNewOptionAdded={props.onNewOptionAdded}
-
+                                      questionId={ques.id}
+                                      sectionName={props.sectionName}
+                                      tabName={item.TabName}
+                                      onSaveQuestion={props.onSaveQuestion}
+                                      onRemoveQuestion={props.onRemoveQuestion}
+                                      onEditQuestion={props.onEditQuestion}
+                                      onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={ props.setMultipleChoices}
-                                      multipleOptions={props.multipleOptionschoiceMatric}
-                                      setMultipleOptions={props.setMultipleOptionschoiceMatric}
+                                      setMultipleChoices={
+                                        props.setMultipleChoices
+                                      }
+                                      multipleOptions={
+                                        props.multipleOptionschoiceMatric
+                                      }
+                                      setMultipleOptions={
+                                        props.setMultipleOptionschoiceMatric
+                                      }
                                       editorContent={props.editorContent}
                                       setEditorContent={props.setEditorContent}
                                       removeAnItem={props.removeAnItem}
@@ -218,20 +233,25 @@ function TabbedSection(props) {
                                     <LabelImageWithDragDropLayout
                                       key={i}
                                       questionIndex={i}
-                                    questionId={ques.id}
-                                    sectionName={props.sectionName}
-                                    tabName={item.TabName}
-                                    onSaveQuestion={props.onSaveQuestion}
-                                    onRemoveQuestion={props.onRemoveQuestion}
-                                    onEditQuestion={props.onEditQuestion}
-                                    onNewOptionAdded={props.onNewOptionAdded}
-
+                                      questionId={ques.id}
+                                      sectionName={props.sectionName}
+                                      tabName={item.TabName}
+                                      onSaveQuestion={props.onSaveQuestion}
+                                      onRemoveQuestion={props.onRemoveQuestion}
+                                      onEditQuestion={props.onEditQuestion}
+                                      onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={props.setMultipleChoices }
-                                      multipleOptions={ props.multipleOptionschoiceMatric}
-                                      setMultipleOptions={props.setMultipleOptionschoiceMatric}
-                                      editorContent={ props.editorContent}
-                                      setEditorContent={ props.setEditorContent}
+                                      setMultipleChoices={
+                                        props.setMultipleChoices
+                                      }
+                                      multipleOptions={
+                                        props.multipleOptionschoiceMatric
+                                      }
+                                      setMultipleOptions={
+                                        props.setMultipleOptionschoiceMatric
+                                      }
+                                      editorContent={props.editorContent}
+                                      setEditorContent={props.setEditorContent}
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
@@ -241,20 +261,25 @@ function TabbedSection(props) {
                                     <LabelImageWithDropDownLayout
                                       key={i}
                                       questionIndex={i}
-                                    questionId={ques.id}
-                                    sectionName={props.sectionName}
-                                    tabName={item.TabName}
-                                    onSaveQuestion={props.onSaveQuestion}
-                                    onRemoveQuestion={props.onRemoveQuestion}
-                                    onEditQuestion={props.onEditQuestion}
-                                    onNewOptionAdded={props.onNewOptionAdded}
-
+                                      questionId={ques.id}
+                                      sectionName={props.sectionName}
+                                      tabName={item.TabName}
+                                      onSaveQuestion={props.onSaveQuestion}
+                                      onRemoveQuestion={props.onRemoveQuestion}
+                                      onEditQuestion={props.onEditQuestion}
+                                      onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={props.setMultipleChoices}
-                                      multipleOptions={ props.multipleOptionschoiceMatric }
-                                      setMultipleOptions={props.setMultipleOptionschoiceMatric}
-                                      editorContent={ props.editorContent }
-                                      setEditorContent={ props.setEditorContent }
+                                      setMultipleChoices={
+                                        props.setMultipleChoices
+                                      }
+                                      multipleOptions={
+                                        props.multipleOptionschoiceMatric
+                                      }
+                                      setMultipleOptions={
+                                        props.setMultipleOptionschoiceMatric
+                                      }
+                                      editorContent={props.editorContent}
+                                      setEditorContent={props.setEditorContent}
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
@@ -264,20 +289,25 @@ function TabbedSection(props) {
                                     <LabelImageWithTextLayout
                                       key={i}
                                       questionIndex={i}
-                                    questionId={ques.id}
-                                    sectionName={props.sectionName}
-                                    tabName={item.TabName}
-                                    onSaveQuestion={props.onSaveQuestion}
-                                    onRemoveQuestion={props.onRemoveQuestion}
-                                    onEditQuestion={props.onEditQuestion}
-                                    onNewOptionAdded={props.onNewOptionAdded}
-
-                                      multipleChoices={ props.multipleChoices }
-                                      setMultipleChoices={ props.setMultipleChoices }
-                                      multipleOptions={ props.multipleOptionschoiceMatric }
-                                      setMultipleOptions={ props.setMultipleOptionschoiceMatric }
-                                      editorContent={ props.editorContent }
-                                      setEditorContent={ props.setEditorContent }
+                                      questionId={ques.id}
+                                      sectionName={props.sectionName}
+                                      tabName={item.TabName}
+                                      onSaveQuestion={props.onSaveQuestion}
+                                      onRemoveQuestion={props.onRemoveQuestion}
+                                      onEditQuestion={props.onEditQuestion}
+                                      onNewOptionAdded={props.onNewOptionAdded}
+                                      multipleChoices={props.multipleChoices}
+                                      setMultipleChoices={
+                                        props.setMultipleChoices
+                                      }
+                                      multipleOptions={
+                                        props.multipleOptionschoiceMatric
+                                      }
+                                      setMultipleOptions={
+                                        props.setMultipleOptionschoiceMatric
+                                      }
+                                      editorContent={props.editorContent}
+                                      setEditorContent={props.setEditorContent}
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
@@ -285,24 +315,33 @@ function TabbedSection(props) {
                                   ) : ques.component ===
                                     "EssayWithRichTextLayout" ? (
                                     <EssayWithRichTextLayout
-                                    key={i}
-                                    questionIndex={i}
-                                    questionId={ques.id}
-                                    sectionName={props.sectionName}
-                                    tabName={item.TabName}
-                                    onSaveQuestion={props.onSaveQuestion}
-                                    onRemoveQuestion={props.onRemoveQuestion}
-                                    onEditQuestion={props.onEditQuestion}
-                                    onNewOptionAdded={props.onNewOptionAdded}
-                                    multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={props.setMultipleChoices}
-
-                                      editorContent={props.editorContent }
-                                      setEditorContent={ props.setEditorContent}
-                                      wordLimit={ props.essayWithRichTextWordLimit }
-                                      setWordLimit={ props.setEssayWithRichTextWordLimit}
-                                      wordLimitType={ props.essayWithRichTextWordLimitType }
-                                      setWordLimitType={ props.setEssayWithRichTextWordLimitType}
+                                      key={i}
+                                      questionIndex={i}
+                                      questionId={ques.id}
+                                      sectionName={props.sectionName}
+                                      tabName={item.TabName}
+                                      onSaveQuestion={props.onSaveQuestion}
+                                      onRemoveQuestion={props.onRemoveQuestion}
+                                      onEditQuestion={props.onEditQuestion}
+                                      onNewOptionAdded={props.onNewOptionAdded}
+                                      multipleChoices={props.multipleChoices}
+                                      setMultipleChoices={
+                                        props.setMultipleChoices
+                                      }
+                                      editorContent={props.editorContent}
+                                      setEditorContent={props.setEditorContent}
+                                      wordLimit={
+                                        props.essayWithRichTextWordLimit
+                                      }
+                                      setWordLimit={
+                                        props.setEssayWithRichTextWordLimit
+                                      }
+                                      wordLimitType={
+                                        props.essayWithRichTextWordLimitType
+                                      }
+                                      setWordLimitType={
+                                        props.setEssayWithRichTextWordLimitType
+                                      }
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
@@ -310,43 +349,51 @@ function TabbedSection(props) {
                                   ) : ques.component ===
                                     "AudioRecorderLayout" ? (
                                     <AudioRecorderLayout
-                                    key={i}
-                                    questionIndex={i}
-                                    questionId={ques.id}
-                                    sectionName={props.sectionName}
-                                    tabName={item.TabName}
-                                    onSaveQuestion={props.onSaveQuestion}
-                                    onRemoveQuestion={props.onRemoveQuestion}
-                                    onEditQuestion={props.onEditQuestion}
-                                    onNewOptionAdded={props.onNewOptionAdded}
-                                    multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={props.setMultipleChoices}
-
-                                      editorContent={ props.editorContent}
-                                      setEditorContent={ props.setEditorContent }
-                                      maximumSecond={props.audioRecorderMaximumSecond}
-                                      setMaximumSecond={props.setAudioRecorderMaximumSecond}
+                                      key={i}
+                                      questionIndex={i}
+                                      questionId={ques.id}
+                                      sectionName={props.sectionName}
+                                      tabName={item.TabName}
+                                      onSaveQuestion={props.onSaveQuestion}
+                                      onRemoveQuestion={props.onRemoveQuestion}
+                                      onEditQuestion={props.onEditQuestion}
+                                      onNewOptionAdded={props.onNewOptionAdded}
+                                      multipleChoices={props.multipleChoices}
+                                      setMultipleChoices={
+                                        props.setMultipleChoices
+                                      }
+                                      editorContent={props.editorContent}
+                                      setEditorContent={props.setEditorContent}
+                                      maximumSecond={
+                                        props.audioRecorderMaximumSecond
+                                      }
+                                      setMaximumSecond={
+                                        props.setAudioRecorderMaximumSecond
+                                      }
                                       playerType={props.audioRecorderPlayerType}
-                                      setPlayerType={props.setAudioRecorderPlayerType}
+                                      setPlayerType={
+                                        props.setAudioRecorderPlayerType
+                                      }
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
                                     />
                                   ) : ques.component === "ShortTextLayout" ? (
                                     <ShortTextLayout
-                                    key={i}
-                                    questionIndex={i}
-                                    questionId={ques.id}
-                                    sectionName={props.sectionName}
-                                    tabName={item.TabName}
-                                    onSaveQuestion={props.onSaveQuestion}
-                                    onRemoveQuestion={props.onRemoveQuestion}
-                                    onEditQuestion={props.onEditQuestion}
-                                    onNewOptionAdded={props.onNewOptionAdded}
-                                    multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={props.setMultipleChoices}
-
-                                      editorContent={ props.editorContent}
+                                      key={i}
+                                      questionIndex={i}
+                                      questionId={ques.id}
+                                      sectionName={props.sectionName}
+                                      tabName={item.TabName}
+                                      onSaveQuestion={props.onSaveQuestion}
+                                      onRemoveQuestion={props.onRemoveQuestion}
+                                      onEditQuestion={props.onEditQuestion}
+                                      onNewOptionAdded={props.onNewOptionAdded}
+                                      multipleChoices={props.multipleChoices}
+                                      setMultipleChoices={
+                                        props.setMultipleChoices
+                                      }
+                                      editorContent={props.editorContent}
                                       setEditorContent={props.setEditorContent}
                                       points={props.shortTextPoints}
                                       setPoints={props.setShortTextPoints}
@@ -361,23 +408,32 @@ function TabbedSection(props) {
                                   ) : ques.component ===
                                     "EssayWithPlainTextLayout" ? (
                                     <EssayWithPlainTextLayout
-                                    key={i}
-                                    questionIndex={i}
-                                    questionId={ques.id}
-                                    sectionName={props.sectionName}
-                                    tabName={item.TabName}
-                                    onSaveQuestion={props.onSaveQuestion}
-                                    onRemoveQuestion={props.onRemoveQuestion}
-                                    onEditQuestion={props.onEditQuestion}
-                                    onNewOptionAdded={props.onNewOptionAdded}
-                                    multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={props.setMultipleChoices}
-
-                                      wordLimit={ props.essayWithPlainTextLayoutWordLimit}
-                                      setWordLimit={ props.setEssayWithPlainTextLayoutWordLimit}
-                                      wordType={ props.essayWithPlainTextLayoutWordType}
-                                      setWordType={ props.setEssayWithPlainTextLayoutWordType}
-                                      editorContent={ props.editorContent}
+                                      key={i}
+                                      questionIndex={i}
+                                      questionId={ques.id}
+                                      sectionName={props.sectionName}
+                                      tabName={item.TabName}
+                                      onSaveQuestion={props.onSaveQuestion}
+                                      onRemoveQuestion={props.onRemoveQuestion}
+                                      onEditQuestion={props.onEditQuestion}
+                                      onNewOptionAdded={props.onNewOptionAdded}
+                                      multipleChoices={props.multipleChoices}
+                                      setMultipleChoices={
+                                        props.setMultipleChoices
+                                      }
+                                      wordLimit={
+                                        props.essayWithPlainTextLayoutWordLimit
+                                      }
+                                      setWordLimit={
+                                        props.setEssayWithPlainTextLayoutWordLimit
+                                      }
+                                      wordType={
+                                        props.essayWithPlainTextLayoutWordType
+                                      }
+                                      setWordType={
+                                        props.setEssayWithPlainTextLayoutWordType
+                                      }
+                                      editorContent={props.editorContent}
                                       setEditorContent={props.setEditorContent}
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
@@ -386,69 +442,85 @@ function TabbedSection(props) {
                                   ) : ques.component ===
                                     "ClassificationLayout" ? (
                                     <ClassificationLayout
-                                    key={i}
-                                    questionIndex={i}
-                                    questionId={ques.id}
-                                    sectionName={props.sectionName}
-                                    tabName={item.TabName}
-                                    onSaveQuestion={props.onSaveQuestion}
-                                    onRemoveQuestion={props.onRemoveQuestion}
-                                    onEditQuestion={props.onEditQuestion}
-                                    onNewOptionAdded={props.onNewOptionAdded}
-
+                                      key={i}
+                                      questionIndex={i}
+                                      questionId={ques.id}
+                                      sectionName={props.sectionName}
+                                      tabName={item.TabName}
+                                      onSaveQuestion={props.onSaveQuestion}
+                                      onRemoveQuestion={props.onRemoveQuestion}
+                                      onEditQuestion={props.onEditQuestion}
+                                      onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={props.setMultipleChoices}
-                                      multipleOptions={ props.classificationColumnTitles}
-                                      setMultipleOptions={  props.setClassificationColumnTitles }
-                                      editorContent={ props.editorContent }
-                                      setEditorContent={  props.setEditorContent }
-                                      columnCount={ props.classificationColumnCount }
-                                      setColumnCount={ props.setClassificationColumnCount }
+                                      setMultipleChoices={
+                                        props.setMultipleChoices
+                                      }
+                                      multipleOptions={
+                                        props.classificationColumnTitles
+                                      }
+                                      setMultipleOptions={
+                                        props.setClassificationColumnTitles
+                                      }
+                                      editorContent={props.editorContent}
+                                      setEditorContent={props.setEditorContent}
+                                      columnCount={
+                                        props.classificationColumnCount
+                                      }
+                                      setColumnCount={
+                                        props.setClassificationColumnCount
+                                      }
                                       rowCount={props.classificationRowCount}
-                                      setRowCount={ props.setClassificationRowCount }
+                                      setRowCount={
+                                        props.setClassificationRowCount
+                                      }
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
                                     />
                                   ) : ques.component === "MatchListLayout" ? (
                                     <MatchListLayout
-                                    key={i}
-                                    questionIndex={i}
-                                    questionId={ques.id}
-                                    sectionName={props.sectionName}
-                                    tabName={item.TabName}
-                                    onSaveQuestion={props.onSaveQuestion}
-                                    onRemoveQuestion={props.onRemoveQuestion}
-                                    onEditQuestion={props.onEditQuestion}
-                                    onNewOptionAdded={props.onNewOptionAdded}
-
+                                      key={i}
+                                      questionIndex={i}
+                                      questionId={ques.id}
+                                      sectionName={props.sectionName}
+                                      tabName={item.TabName}
+                                      onSaveQuestion={props.onSaveQuestion}
+                                      onRemoveQuestion={props.onRemoveQuestion}
+                                      onEditQuestion={props.onEditQuestion}
+                                      onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={ props.setMultipleChoices }
-                                      multipleOptions={ props.matchListStimulusList }
-                                      setMultipleOptions={ props.setMatchListStimulusList }
-                                      editorContent={ props.editorContent }
-                                      setEditorContent={ props.setEditorContent }
+                                      setMultipleChoices={
+                                        props.setMultipleChoices
+                                      }
+                                      multipleOptions={
+                                        props.matchListStimulusList
+                                      }
+                                      setMultipleOptions={
+                                        props.setMatchListStimulusList
+                                      }
+                                      editorContent={props.editorContent}
+                                      setEditorContent={props.setEditorContent}
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
                                     />
                                   ) : ques.component === "OrderListLayout" ? (
                                     <OrderListLayout
-                                    key={i}
-                                    questionIndex={i}
-                                    questionId={ques.id}
-                                    sectionName={props.sectionName}
-                                    tabName={item.TabName}
-                                    onSaveQuestion={props.onSaveQuestion}
-                                    onRemoveQuestion={props.onRemoveQuestion}
-                                    onEditQuestion={props.onEditQuestion}
-                                    onNewOptionAdded={props.onNewOptionAdded}
-
-
+                                      key={i}
+                                      questionIndex={i}
+                                      questionId={ques.id}
+                                      sectionName={props.sectionName}
+                                      tabName={item.TabName}
+                                      onSaveQuestion={props.onSaveQuestion}
+                                      onRemoveQuestion={props.onRemoveQuestion}
+                                      onEditQuestion={props.onEditQuestion}
+                                      onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={ props.setMultipleChoices}
-                                      editorContent={ props.editorContent }
-                                      setEditorContent={ props.setEditorContent}
+                                      setMultipleChoices={
+                                        props.setMultipleChoices
+                                      }
+                                      editorContent={props.editorContent}
+                                      setEditorContent={props.setEditorContent}
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
@@ -456,22 +528,27 @@ function TabbedSection(props) {
                                   ) : ques.component ===
                                     "ClozeWithDragAndDropLayout" ? (
                                     <ClozeWithDragAndDropLayout
-                                    key={i}
-                                    questionIndex={i}
-                                    questionId={ques.id}
-                                    sectionName={props.sectionName}
-                                    tabName={item.TabName}
-                                    onSaveQuestion={props.onSaveQuestion}
-                                    onRemoveQuestion={props.onRemoveQuestion}
-                                    onEditQuestion={props.onEditQuestion}
-                                    onNewOptionAdded={props.onNewOptionAdded}
-
+                                      key={i}
+                                      questionIndex={i}
+                                      questionId={ques.id}
+                                      sectionName={props.sectionName}
+                                      tabName={item.TabName}
+                                      onSaveQuestion={props.onSaveQuestion}
+                                      onRemoveQuestion={props.onRemoveQuestion}
+                                      onEditQuestion={props.onEditQuestion}
+                                      onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={props.setMultipleChoices}
-                                      editorContent={ props.editorContent}
-                                      setEditorContent={ props.setEditorContent }
-                                      templateMarkup={props.clozeWithDragAndDropTemplateMarkup }
-                                      setTemplateMarkup={props.setClozeWithDragAndDropTemplateMarkup}
+                                      setMultipleChoices={
+                                        props.setMultipleChoices
+                                      }
+                                      editorContent={props.editorContent}
+                                      setEditorContent={props.setEditorContent}
+                                      templateMarkup={
+                                        props.clozeWithDragAndDropTemplateMarkup
+                                      }
+                                      setTemplateMarkup={
+                                        props.setClozeWithDragAndDropTemplateMarkup
+                                      }
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
@@ -479,22 +556,27 @@ function TabbedSection(props) {
                                   ) : ques.component ===
                                     "ClozeWithDropDownLayout" ? (
                                     <ClozeWithDropDownLayout
-                                    key={i}
-                                    questionIndex={i}
-                                    questionId={ques.id}
-                                    sectionName={props.sectionName}
-                                    tabName={item.TabName}
-                                    onSaveQuestion={props.onSaveQuestion}
-                                    onRemoveQuestion={props.onRemoveQuestion}
-                                    onEditQuestion={props.onEditQuestion}
-                                    onNewOptionAdded={props.onNewOptionAdded}
-
+                                      key={i}
+                                      questionIndex={i}
+                                      questionId={ques.id}
+                                      sectionName={props.sectionName}
+                                      tabName={item.TabName}
+                                      onSaveQuestion={props.onSaveQuestion}
+                                      onRemoveQuestion={props.onRemoveQuestion}
+                                      onEditQuestion={props.onEditQuestion}
+                                      onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={props.setMultipleChoices }
-                                      editorContent={ props.editorContent }
-                                      setEditorContent={ props.setEditorContent}
-                                      templateMarkup={props.clozeWithDropDownTemplateMarkup}
-                                      setTemplateMarkup={ props.setClozeWithDropDownTemplateMarkup}
+                                      setMultipleChoices={
+                                        props.setMultipleChoices
+                                      }
+                                      editorContent={props.editorContent}
+                                      setEditorContent={props.setEditorContent}
+                                      templateMarkup={
+                                        props.clozeWithDropDownTemplateMarkup
+                                      }
+                                      setTemplateMarkup={
+                                        props.setClozeWithDropDownTemplateMarkup
+                                      }
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
@@ -502,32 +584,39 @@ function TabbedSection(props) {
                                   ) : ques.component ===
                                     "ClozeWithTextLayout" ? (
                                     <ClozeWithTextLayout
-                                    key={i}
-                                    questionIndex={i}
-                                    questionId={ques.id}
-                                    sectionName={props.sectionName}
-                                    tabName={item.TabName}
-                                    onSaveQuestion={props.onSaveQuestion}
-                                    onRemoveQuestion={props.onRemoveQuestion}
-                                    onEditQuestion={props.onEditQuestion}
-                                    onNewOptionAdded={props.onNewOptionAdded}
-                                    
-                                      editorContent={ props.editorContent}
-                                      setEditorContent={ props.setEditorContent }
-                                      templateMarkup={ props.clozeWithTextTemplateMarkup}
-                                      setTemplateMarkup={ props.setClozeWithTextTemplateMarkup}
-                                      matchAllResponses={ props.clozeWithTextMatchAllResponses }
-                                      setMatchAllResponses={ props.setClozeWithTextMatchAllResponses}
-                                      multipleChoices={ props.multipleChoices}
-                                      setMultipleChoices={props.setMultipleChoices }
+                                      key={i}
+                                      questionIndex={i}
+                                      questionId={ques.id}
+                                      sectionName={props.sectionName}
+                                      tabName={item.TabName}
+                                      onSaveQuestion={props.onSaveQuestion}
+                                      onRemoveQuestion={props.onRemoveQuestion}
+                                      onEditQuestion={props.onEditQuestion}
+                                      onNewOptionAdded={props.onNewOptionAdded}
+                                      editorContent={props.editorContent}
+                                      setEditorContent={props.setEditorContent}
+                                      templateMarkup={
+                                        props.clozeWithTextTemplateMarkup
+                                      }
+                                      setTemplateMarkup={
+                                        props.setClozeWithTextTemplateMarkup
+                                      }
+                                      matchAllResponses={
+                                        props.clozeWithTextMatchAllResponses
+                                      }
+                                      setMatchAllResponses={
+                                        props.setClozeWithTextMatchAllResponses
+                                      }
+                                      multipleChoices={props.multipleChoices}
+                                      setMultipleChoices={
+                                        props.setMultipleChoices
+                                      }
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
                                     />
                                   ) : (
-                                    <p>
-                                      This Component doesn't exist...
-                                    </p>
+                                    <p>This Component doesn't exist...</p>
                                   )}
                                   <br />
                                 </>

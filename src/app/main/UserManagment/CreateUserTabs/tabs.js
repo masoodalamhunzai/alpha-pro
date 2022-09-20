@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -200,7 +200,7 @@ const CreateUserTabs = () => {
     userRoles,
     password,
     confirmPassword,
-    isActive
+    isActive,
   } = formData;
   const {
     alphaProd,
@@ -307,14 +307,14 @@ const CreateUserTabs = () => {
       ],
     };
     if (mode === CREATE_NEW_MODE) {
-      payload["password"] = password;
+      payload.password = password;
     }
     if (validation()) {
       const id =
         user?.role === USER_ROLE_SUPER_ADMIN
           ? organizations
           : user?.user?.organizationId;
-      const res = await createOrganizationUser(id, user, payload);
+      const res = await createOrganizationUser(id, payload);
 
       if (res && res.data && res.data.status === "success") {
         swal({

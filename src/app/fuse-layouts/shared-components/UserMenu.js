@@ -1,5 +1,6 @@
 import { Link, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -9,16 +10,32 @@ import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
+import { getUserInfo } from 'app/services/api/ApiManager';
+import { getUserRole } from 'app/services/utils/utils';
 import { logoutUser } from 'app/auth/store/userSlice';
-import { useState } from 'react';
+import { updateUserInfo } from 'app/store/alpha/userReducer';
 
-function UserMenu(props) {
-  const dispatcher = useDispatch();
+function UserMenu() {
+  const dispatch = useDispatch();
   const history = useHistory();
+  // const user = useSelector((state) => state.alpha.user);
   const user = useSelector(({ alpha }) => alpha.user);
-  console.log('user in menu', user);
-  const role = user && user.user && user.user.role;
+  const role = getUserRole(user);
   const [userMenu, setUserMenu] = useState(null);
+
+  useEffect(() => {
+    const { user: _user = {} } = user || {};
+
+    if (!_user) {
+      getUserInfo()
+        .then((res) => {
+          dispatch(updateUserInfo(res));
+        })
+        .catch((err) => {
+          console.error('error', err);
+        });
+    }
+  }, [dispatch, user]);
 
   const userMenuClick = (event) => {
     setUserMenu(event.currentTarget);
@@ -102,9 +119,10 @@ function UserMenu(props) {
             </MenuItem>
             <MenuItem
               onClick={() => {
-                dispatcher(logoutUser());
+                dispatch(logoutUser());
                 userMenuClose();
                 history.push('/logout');
+                window.location.reload(true);
               }}
             >
               <ListItemIcon className="min-w-40">

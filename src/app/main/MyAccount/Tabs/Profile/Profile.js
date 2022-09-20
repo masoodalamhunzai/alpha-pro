@@ -109,7 +109,7 @@ const ProfileTab = () => {
       }}
       component="main"
       maxWidth="xs"
-      className="shadow-md rounded-md"
+      className="shadow-sm rounded-md"
     >
       <CssBaseline />
       <Box
@@ -254,6 +254,7 @@ const ProfileTab = () => {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
+              ml: 4,
             }}
           >
             <Button

@@ -1,28 +1,29 @@
-/* eslint-disable no-shadow */
-/* eslint-disable react/jsx-no-bind */
-import { memo, useState, useRef } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { TablePagination, Tooltip } from "@material-ui/core";
 import {
   DeleteSweep as DeleteIcon,
   BorderColor as EditIcon,
 } from "@material-ui/icons";
-import { useHistory, Link } from "react-router-dom";
-import { DataGrid } from "@mui/x-data-grid";
-import { useStateValue } from "app/services/state/State";
-import {
-  dataGridPageSizes,
-  settings as s,
-  states,
-} from "app/services/Settings";
+import { Link, useHistory } from "react-router-dom";
+import { TablePagination, Tooltip } from "@material-ui/core";
+/* eslint-disable no-shadow */
+/* eslint-disable react/jsx-no-bind */
+import { memo, useRef, useState } from "react";
+
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Typography from "@mui/material/Typography";
-// import { actions } from "app/services/state/Reducer";
-import { useSnackbar } from "notistack";
-import swal from "sweetalert";
+import { DataGrid } from "@mui/x-data-grid";
 // import moment from "moment";
 import StatusIcon from "app/shared-components/StatusIcon";
+import Typography from "@mui/material/Typography";
+import { dataGridPageSizes } from "app/services/Settings";
+import { makeStyles } from "@material-ui/core/styles";
+import swal from "sweetalert";
+// import { actions } from "app/services/state/Reducer";
+import { useSnackbar } from "notistack";
+import { useStateValue } from "app/services/state/State";
 import { CustomToolbar } from "../../components";
+
+import { useDispatch, useSelector } from "react-redux";
+import { setOrgsNameList, setOrgUsers } from "app/store/alpha/orgReducer";
+import { getUserRole } from "app/services/utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -78,6 +79,12 @@ function UsersList({
   loading,
   organizationUsers,
   organizationSelected,
+  rowsPerPage,
+  setRowsPerPage,
+  pageSize,
+  setPageSize,
+  handleChangePage,
+  handleChangeRowsPerPage,
 }) {
   const history = useHistory();
   const classes = useStyles();
@@ -90,8 +97,6 @@ function UsersList({
   const [usersList, setUsersList] = useState([]);
   const [pagination, setPagination] = useState([]);
   const [open, setOpen] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [pageSize, setPageSize] = useState(10);
   const [rowCount, setRowCount] = useState(1);
 
   async function onArchiveUser(Id) {
@@ -115,7 +120,9 @@ function UsersList({
     }
   };
 
-  async function handleArchiveUser(Id) {}
+  async function handleArchiveUser(Id) {
+    //
+  }
 
   async function onRestoreUser(Id) {
     swal({
@@ -130,22 +137,19 @@ function UsersList({
       }
     });
   }
-  async function handleRestoreUser(Id) {}
+  async function handleRestoreUser(Id) {
+    //
+  }
 
-  // const showUserDetail = (id) => {};
-
-  // async function handleEditUser(Id) {}
-
-  const handleChangePage = async (event, newPage) => {
+  /* const handleChangePage = async (event, newPage) => {
     setPage(newPage);
-    setRowCount(newPage);
   };
 
   function handleChangeRowsPerPage(event) {
     setRowsPerPage(+event.target.value);
     setPage(0);
     setPageSize(+event.target.value);
-  }
+  } */
 
   const columns = [
     { field: "firstName", headerName: "First Name", flex: 1 },
@@ -204,18 +208,21 @@ function UsersList({
     },
   ];
 
-  const rows = organizationUsers?.map((user) => {
-    return {
-      id: user?.id,
-      firstName: user?.firstName,
-      lastName: user?.lastName,
-      email: user?.email,
-      phoneNumber: user?.phoneNumber,
-      isActive: user?.isActive,
-      organizationId: user?.organizationId,
-      roles: user?.roles[0]?.name,
-    };
-  });
+  const rows =
+    organizationUsers &&
+    organizationUsers.data &&
+    organizationUsers.data.map((user) => {
+      return {
+        id: user?.id,
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        email: user?.email,
+        phoneNumber: user?.phoneNumber,
+        isActive: user?.isActive,
+        organizationId: user?.organizationId,
+        roles: user?.roles[0]?.name,
+      };
+    });
 
   return (
     <>
@@ -264,7 +271,11 @@ function UsersList({
             hideFooterPagination
             style={{ height: "70vh", border: "none", boxSizing: "unset" }}
             hideFooterSelectedRowCount
-            rowCount={rowCount /* pagination.totalItemsCount */}
+            rowCount={
+              organizationUsers && organizationUsers.total
+                ? organizationUsers.total
+                : 0 /*rowCount /* pagination.totalItemsCount */
+            }
             pageSize={pageSize}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
             rowsPerPageOptions={dataGridPageSizes}
@@ -278,7 +289,11 @@ function UsersList({
           component="div"
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
-          count={rowCount /* pagination.totalItemsCount */}
+          count={
+            organizationUsers && organizationUsers.total
+              ? organizationUsers.total
+              : 0 /* pagination.totalItemsCount */
+          }
           className="flex-shrink-0 border-t-1"
           rowsPerPageOptions={dataGridPageSizes}
           onRowsPerPageChange={handleChangeRowsPerPage}

@@ -26,11 +26,11 @@ const useStyles = makeStyles({
     "&.MuiContainer-root": {
       maxWidth: "90%",
       margin: "3rem",
-    },
-    "& .MuiInputBase-input": {
-      backgroundColor: "#fff",
-      textAlign: "start",
-      fontSize: "1.5rem !important",
+      "& .MuiInputBase-input": {
+        backgroundColor: "#fff",
+        textAlign: "start",
+        fontSize: "1.5rem !important",
+      },
     },
     "& .MuiButton-root": {
       fontWeight: "700",
@@ -118,7 +118,9 @@ const NewSubject = () => {
   const redirectTo = async (goTo) => {
     try {
       history.push(goTo);
-    } catch (err) {}
+    } catch (err) {
+      console.error("error", err);
+    }
   };
 
   const slugify = (text) => {
@@ -157,7 +159,7 @@ const NewSubject = () => {
       gradeId: selectGrade,
     };
     if (validation()) {
-      const res = await createUserSubject(user, payload);
+      const res = await createUserSubject(payload);
       if (res && res.data && res.data.status === "success") {
         swal({
           title: "Good job!",
@@ -183,7 +185,7 @@ const NewSubject = () => {
   };
 
   const handleGetGrade = async () => {
-    const res = await getAllGrades(user);
+    const res = await getAllGrades();
     if (res && res.status === 200 && res.data) {
       dispatch({
         type: actions.SET_GRADES,

@@ -7,7 +7,7 @@ import Container from "@mui/material/Container";
 import FormControl from "@mui/material/FormControl";
 import CssBaseline from "@mui/material/CssBaseline";
 import { useLocation, useHistory } from "react-router-dom";
-import { primaryBlueColor, primaryGrayColor } from "app/services/Settings";
+import { primaryBlueColor } from "app/services/Settings";
 import { useStateValue } from "app/services/state/State";
 import Divider from "@mui/material/Divider";
 import Alert from "@mui/material/Alert";
@@ -161,7 +161,7 @@ const NewGrade = () => {
           : "fad64cae-edff-41c3-bbcb-ca3c77b54087",
     };
     if (validation()) {
-      const res = await createUserGrade(user, payload);
+      const res = await createUserGrade(payload);
       if (res && res.data && res.data.status === "success") {
         swal({
           title: "Good job!",

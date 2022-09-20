@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
-import { Button } from "@material-ui/core";
-import { primaryBlueColor, primaryGrayColor } from "app/services/Settings";
-import { getAllGrades } from "app/services/api/ApiManager";
-import { useStateValue } from "app/services/state/State";
+import { useEffect, useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
+import { Button } from '@material-ui/core';
+import { primaryBlueColor } from 'app/services/Settings';
+import { getAllGrades } from 'app/services/api/ApiManager';
+import { useStateValue } from 'app/services/state/State';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,44 +20,44 @@ const useStyles = makeStyles((theme) => ({
     border: `1px solid ${theme.palette.background.default}`,
   },
   uploadIcon: {
-    color: "#01619b",
-    cursor: "pointer",
+    color: '#01619b',
+    cursor: 'pointer',
   },
   icon: {
-    color: "white",
-    cursor: "pointer",
-    float: "right",
+    color: 'white',
+    cursor: 'pointer',
+    float: 'right',
   },
   row: {
-    display: "flex",
+    display: 'flex',
     marginBottom: 10,
-    alignItems: "center",
-    justifyContent: "space-between",
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   buttonsContainer: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-evenly",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
   },
   button: {
     background: theme.palette.primary.main,
-    color: "#fff",
+    color: '#fff',
     marginLeft: 5,
   },
   dialogHeader: {
     height: 150,
     backgroundColor: theme.palette.primary.main,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "column",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
   },
   dialogTitle: {
-    color: "#fff",
-    backgroundColor: "#01619b",
+    color: '#fff',
+    backgroundColor: '#01619b',
   },
   name: {
-    color: "#fff",
+    color: '#fff',
     marginTop: 10,
     fontSize: 16,
   },
@@ -65,60 +65,60 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1,
   },
   buttonGrey: {
-    background: "grey",
-    color: "#fff",
+    background: 'grey',
+    color: '#fff',
     marginLeft: 5,
-    "&:hover": { backgroundColor: primaryBlueColor },
+    '&:hover': { backgroundColor: primaryBlueColor },
   },
   buttonSelected: {
-    background: "lightblue",
-    color: "#fff",
+    background: 'lightblue',
+    color: '#fff',
     marginLeft: 5,
   },
   activeText: {
-    color: "green",
+    color: 'green',
   },
   inActiveText: {
-    color: "red",
+    color: 'red',
   },
   btnSelected: {
     backgroundColor: primaryBlueColor,
-    color: "#fff",
+    color: '#fff',
     marginLeft: 5,
   },
   plusButton: {
-    alignSelf: "center",
-    marginLeft: "-10px",
+    alignSelf: 'center',
+    marginLeft: '-10px',
   },
 }));
 
 const scoringTypesList = [
   {
-    value: "per question",
-    label: "Per Question",
+    value: 'per question',
+    label: 'Per Question',
   },
   {
-    value: "dichotomous",
-    label: "Dichotomous",
+    value: 'dichotomous',
+    label: 'Dichotomous',
   },
   {
-    value: "dependent (ebsr)",
-    label: "Dependent (EBSR)",
+    value: 'dependent (ebsr)',
+    label: 'Dependent (EBSR)',
   },
 ];
 
 const subjectsList = [
   {
     value: 1,
-    label: "English",
+    label: 'English',
   },
   {
     value: 2,
-    label: "Physics",
+    label: 'Physics',
   },
   {
     value: 3,
-    label: "Mathmatics",
+    label: 'Mathmatics',
   },
 ];
 
@@ -126,7 +126,7 @@ function DetailsConfiguration(props) {
   const [{ user }, dispatch] = useStateValue();
   const [gradesList, setGradesList] = useState([]);
   const getGrades = async () => {
-    const res = await getAllGrades(user);
+    const res = await getAllGrades();
     if (res && res.status && res.status === 200 && res.data) {
       const temp = [];
       res.data.map((g) => {
@@ -134,7 +134,7 @@ function DetailsConfiguration(props) {
       });
       setGradesList(temp);
     }
-    console.log("Grades are here", res);
+    console.log('Grades are here', res);
   };
   useEffect(() => {
     getGrades();
@@ -160,15 +160,15 @@ function DetailsConfiguration(props) {
 
   return (
     <>
-      <div className="space-y-32 flex" style={{ width: "100%" }}>
+      <div className="space-y-32 flex" style={{ width: '100%' }}>
         <Box sx={{ flexGrow: 1 }}>
           <TextField
             className="mx-6"
-            style={{ width: "100%" }}
+            style={{ width: '100%' }}
             inputProps={{
               style: {
-                backgroundColor: "white",
-                fontSize: "13px",
+                backgroundColor: 'white',
+                fontSize: '13px',
               },
             }}
             size="small"
@@ -183,34 +183,31 @@ function DetailsConfiguration(props) {
           <Typography
             gutterBottom
             sx={{
-              color: "gray",
+              color: 'gray',
               fontWeight: 720,
-              padding: "2%",
+              padding: '2%',
             }}
           >
             The unique identifying code for an item
           </Typography>
 
           <TextField
-            style={{ backgroundColor: "white", width: "100%", marginTop: "3%" }}
+            style={{ backgroundColor: 'white', width: '100%', marginTop: '3%' }}
             id="outlined-select-currency"
             size="small"
             inputProps={{
               style: {
-                backgroundColor: "white",
-                fontSize: "13px",
+                backgroundColor: 'white',
+                fontSize: '13px',
               },
             }}
             select
             label="Grade"
             // value={answer}
-            //value={props.scoringType}
+            // value={props.scoringType}
             onChange={(e) => {
-              console.log(
-                "score type",
-                e.target.value + " vs" + props.scoringType
-              );
-              //props.setScoringType(e.target.value);
+              console.log('score type', `${e.target.value} vs${props.scoringType}`);
+              // props.setScoringType(e.target.value);
             }}
             // helperText="Correct Ans"
           >
@@ -222,25 +219,22 @@ function DetailsConfiguration(props) {
           </TextField>
 
           <TextField
-            style={{ backgroundColor: "white", width: "100%", marginTop: "5%" }}
+            style={{ backgroundColor: 'white', width: '100%', marginTop: '5%' }}
             id="outlined-select-currency"
             size="small"
             inputProps={{
               style: {
-                backgroundColor: "white",
-                fontSize: "13px",
+                backgroundColor: 'white',
+                fontSize: '13px',
               },
             }}
             select
             label="Subject"
             // value={answer}
-            //value={props.scoringType}
+            // value={props.scoringType}
             onChange={(e) => {
-              console.log(
-                "score type",
-                e.target.value + " vs" + props.scoringType
-              );
-              //props.setScoringType(e.target.value);
+              console.log('score type', `${e.target.value} vs${props.scoringType}`);
+              // props.setScoringType(e.target.value);
             }}
             // helperText="Correct Ans"
           >
@@ -255,7 +249,7 @@ function DetailsConfiguration(props) {
             variant="h6"
             gutterBottom
             sx={{
-              color: "gray",
+              color: 'gray',
               fontWeight: 700,
               mt: 2,
             }}
@@ -265,12 +259,10 @@ function DetailsConfiguration(props) {
           <div>
             <Button
               className={
-                props.statusButtonDetails == "published"
-                  ? classes.btnSelected
-                  : classes.buttonGrey
+                props.statusButtonDetails == 'published' ? classes.btnSelected : classes.buttonGrey
               }
               onClick={() => {
-                props.setStatusButtonDetails("published");
+                props.setStatusButtonDetails('published');
               }}
               variant="contained"
               color="secondary"
@@ -279,12 +271,12 @@ function DetailsConfiguration(props) {
             </Button>
             <Button
               className={
-                props.statusButtonDetails == "unpublished"
+                props.statusButtonDetails == 'unpublished'
                   ? classes.btnSelected
                   : classes.buttonGrey
               }
               onClick={() => {
-                props.setStatusButtonDetails("unpublished");
+                props.setStatusButtonDetails('unpublished');
               }}
               variant="contained"
               color="secondary"
@@ -293,12 +285,10 @@ function DetailsConfiguration(props) {
             </Button>
             <Button
               className={
-                props.statusButtonDetails == "archive"
-                  ? classes.btnSelected
-                  : classes.buttonGrey
+                props.statusButtonDetails == 'archive' ? classes.btnSelected : classes.buttonGrey
               }
               onClick={() => {
-                props.setStatusButtonDetails("archive");
+                props.setStatusButtonDetails('archive');
               }}
               variant="contained"
               color="secondary"
@@ -308,13 +298,13 @@ function DetailsConfiguration(props) {
           </div>
 
           <TextField
-            style={{ backgroundColor: "white", width: "100%", marginTop: "7%" }}
+            style={{ backgroundColor: 'white', width: '100%', marginTop: '7%' }}
             id="outlined-select-currency"
             size="small"
             inputProps={{
               style: {
-                backgroundColor: "white",
-                fontSize: "13px",
+                backgroundColor: 'white',
+                fontSize: '13px',
               },
             }}
             select
@@ -322,10 +312,7 @@ function DetailsConfiguration(props) {
             // value={answer}
             value={props.scoringType}
             onChange={(e) => {
-              console.log(
-                "score type",
-                e.target.value + " vs" + props.scoringType
-              );
+              console.log('score type', `${e.target.value} vs${props.scoringType}`);
               props.setScoringType(e.target.value);
             }}
             // helperText="Correct Ans"
@@ -338,7 +325,7 @@ function DetailsConfiguration(props) {
           </TextField>
           <TextField
             focused
-            style={{ backgroundColor: "white", width: "100%", marginTop: "7%" }}
+            style={{ backgroundColor: 'white', width: '100%', marginTop: '7%' }}
             multiline
             rows={3}
             className="mx-6"
@@ -350,8 +337,8 @@ function DetailsConfiguration(props) {
             size="large"
             inputProps={{
               style: {
-                backgroundColor: "white",
-                fontSize: "13px",
+                backgroundColor: 'white',
+                fontSize: '13px',
               },
             }}
             required
@@ -365,9 +352,9 @@ function DetailsConfiguration(props) {
           <Typography
             gutterBottom
             sx={{
-              color: "gray",
+              color: 'gray',
               fontWeight: 720,
-              padding: "2%",
+              padding: '2%',
             }}
           >
             Describe the item for other authors
@@ -376,7 +363,7 @@ function DetailsConfiguration(props) {
             variant="h6"
             gutterBottom
             sx={{
-              color: "gray",
+              color: 'gray',
               fontWeight: 700,
               mt: 2,
             }}
@@ -387,12 +374,10 @@ function DetailsConfiguration(props) {
           <div>
             <Button
               className={
-                props.difficultyButtonDetails == "easy"
-                  ? classes.btnSelected
-                  : classes.buttonGrey
+                props.difficultyButtonDetails == 'easy' ? classes.btnSelected : classes.buttonGrey
               }
               onClick={() => {
-                props.setDifficultyButtonDetails("easy");
+                props.setDifficultyButtonDetails('easy');
               }}
               variant="contained"
               color="secondary"
@@ -401,12 +386,10 @@ function DetailsConfiguration(props) {
             </Button>
             <Button
               className={
-                props.difficultyButtonDetails == "medium"
-                  ? classes.btnSelected
-                  : classes.buttonGrey
+                props.difficultyButtonDetails == 'medium' ? classes.btnSelected : classes.buttonGrey
               }
               onClick={() => {
-                props.setDifficultyButtonDetails("medium");
+                props.setDifficultyButtonDetails('medium');
               }}
               variant="contained"
               color="secondary"
@@ -415,12 +398,10 @@ function DetailsConfiguration(props) {
             </Button>
             <Button
               className={
-                props.difficultyButtonDetails == "hard"
-                  ? classes.btnSelected
-                  : classes.buttonGrey
+                props.difficultyButtonDetails == 'hard' ? classes.btnSelected : classes.buttonGrey
               }
               onClick={() => {
-                props.setDifficultyButtonDetails("hard");
+                props.setDifficultyButtonDetails('hard');
               }}
               variant="contained"
               color="secondary"
@@ -431,7 +412,7 @@ function DetailsConfiguration(props) {
 
           <TextField
             focused
-            style={{ backgroundColor: "white", width: "100%", marginTop: "7%" }}
+            style={{ backgroundColor: 'white', width: '100%', marginTop: '7%' }}
             multiline
             rows={3}
             className="mx-6"
@@ -454,9 +435,9 @@ function DetailsConfiguration(props) {
           <Typography
             gutterBottom
             sx={{
-              color: "gray",
+              color: 'gray',
               fontWeight: 720,
-              padding: "2%",
+              padding: '2%',
             }}
           >
             Capture the source of the item content
@@ -464,7 +445,7 @@ function DetailsConfiguration(props) {
 
           <TextField
             focused
-            style={{ backgroundColor: "white", width: "100%", marginTop: "3%" }}
+            style={{ backgroundColor: 'white', width: '100%', marginTop: '3%' }}
             multiline
             rows={3}
             className="mx-6"
@@ -487,9 +468,9 @@ function DetailsConfiguration(props) {
           <Typography
             gutterBottom
             sx={{
-              color: "gray",
+              color: 'gray',
               fontWeight: 720,
-              padding: "2%",
+              padding: '2%',
             }}
           >
             Makes notes against the item
@@ -497,7 +478,7 @@ function DetailsConfiguration(props) {
 
           <TextField
             focused
-            style={{ backgroundColor: "white", width: "100%", marginTop: "3%" }}
+            style={{ backgroundColor: 'white', width: '100%', marginTop: '3%' }}
             multiline
             rows={3}
             className="mx-6"
@@ -519,9 +500,9 @@ function DetailsConfiguration(props) {
           <Typography
             gutterBottom
             sx={{
-              color: "gray",
+              color: 'gray',
               fontWeight: 720,
-              padding: "2%",
+              padding: '2%',
             }}
           >
             Acknowledgements to contributors of the item content

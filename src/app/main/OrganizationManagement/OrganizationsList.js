@@ -11,15 +11,15 @@ import {
 import { useHistory, Link } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 // import { DataGrid } from '@material-ui/data-grid';
-import { useStateValue } from "app/services/state/State";
 import { dataGridPageSizes } from "app/services/Settings";
 import FuseLoading from "@fuse/core/FuseLoading";
-import { actions } from "app/services/state/Reducer";
 import { useSnackbar } from "notistack";
 import swal from "sweetalert";
 import { getOrganizations } from "app/services/api/ApiManager";
 import ViewModal from "app/main/OrganizationManagement/ViewModal";
 import { CustomToolbar } from "../../components";
+import { useDispatch, useSelector } from "react-redux";
+import { setOrgs } from "app/store/alpha/orgReducer";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -74,13 +74,14 @@ function OrganizationsList({
   setLoading,
   fetchOrganizations,
 }) {
+  const dispatch = useDispatch();
+  // const user = useSelector((state) => state.alpha.user);
+  const organizations = useSelector(({ alpha }) => alpha.org.orgs);
   const classes = useStyles();
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
   const anchorRef = useRef(null);
   const [organizationId, setOrganizationId] = useState(0);
-  const [{ user, organization, patients, defaultPageSize }, dispatch] =
-    useStateValue();
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [pageSize, setPageSize] = useState(10);
   const [rowCount, setRowCount] = useState(1);
@@ -134,28 +135,30 @@ function OrganizationsList({
   }
 
   const handleChangePage = async (event, newPage) => {
+    loadOrganizations(newPage + 1, pageSize);
     setPage(newPage);
     setRowCount(newPage);
   };
 
   function handleChangeRowsPerPage(event) {
+    loadOrganizations(page, +event.target.value);
     setRowsPerPage(+event.target.value);
-    setPage(0);
+    //setPage(0);
     setPageSize(+event.target.value);
   }
 
-  const loadOrganizations = async () => {
-    const res = await getOrganizations(user);
-
-    if (res && res.status === 200 && res.data && res.data.length > 0) {
-      dispatch({
+  const loadOrganizations = async (page = 1, items = 10) => {
+    const res = await getOrganizations(page, items);
+    if (res && res.status === 200 && res.data) {
+      dispatch(setOrgs({ ...res.data }));
+      /* dispatch({
         type: actions.SET_ORGANIZATION,
         payload: res.data,
-      });
+      }); */
     }
   };
   useEffect(() => {
-    loadOrganizations();
+    loadOrganizations(1, 10);
   }, []);
   const columns = [
     { field: "name", headerName: "Name", flex: 1 },
@@ -203,8 +206,9 @@ function OrganizationsList({
   ];
 
   const rows =
-    organization &&
-    organization.map((org) => {
+    organizations &&
+    organizations.data &&
+    organizations.data.map((org) => {
       return {
         id: org.id,
         name: org.name,
@@ -222,7 +226,7 @@ function OrganizationsList({
     });
 
   useEffect(() => {
-    setRowCount(rows !== null ? rows.length : 0);
+    setRowCount(rows && rows !== null ? rows.length : 0);
   }, [rows]);
 
   return (
@@ -263,7 +267,11 @@ function OrganizationsList({
             hideFooterPagination
             style={{ height: "70vh", border: "none", boxSizing: "unset" }}
             hideFooterSelectedRowCount
-            rowCount={rowCount /* pagination.totalItemsCount */}
+            rowCount={
+              organizations && organizations.total
+                ? organizations.total
+                : 0 /* pagination.totalItemsCount */
+            }
             pageSize={pageSize}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
             rowsPerPageOptions={dataGridPageSizes}
@@ -275,7 +283,7 @@ function OrganizationsList({
           component="div"
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
-          count={rowCount /* pagination.totalItemsCount */}
+          count={organizations && organizations.total ? organizations.total : 0}
           className="flex-shrink-0 border-t-1"
           rowsPerPageOptions={dataGridPageSizes}
           onRowsPerPageChange={handleChangeRowsPerPage}

@@ -1,4 +1,3 @@
-import i18next from "i18next";
 import {
   Home,
   OrganizationManagement,
@@ -24,8 +23,7 @@ import {
   ItemBanks,
   Settings,
   MyAccount,
-  Logout,
-} from "../main";
+} from '.';
 
 // import en from './i18n/en';
 // import tr from './i18n/tr';
@@ -43,104 +41,104 @@ const RouteConfigs = {
   },
   routes: [
     {
-      path: "/home",
+      path: '/home',
       component: Home,
     },
     {
-      path: "/organization-management",
+      path: '/organization-management',
       component: OrganizationManagement,
     },
     {
-      path: "/manage-organization",
+      path: '/manage-organization',
       component: ManageOrganization,
     },
     {
-      path: "/user-managment",
+      path: '/user-managment',
       component: UserManagment,
     },
     {
-      path: "/create-new-question",
+      path: '/create-new-question',
       component: CreateItem,
     },
     {
-      path: "/all-questions",
+      path: '/all-questions',
       component: Items,
     },
     {
-      path: "/item-analysis",
+      path: '/item-analysis',
       component: ItemAnalysis,
     },
 
     {
-      path: "/author-site-settings",
+      path: '/author-site-settings',
       component: AuthorSiteSettings,
     },
     {
-      path: "/session-details",
+      path: '/session-details',
       component: SessionDetails,
     },
     {
-      path: "/item-bank-details",
+      path: '/item-bank-details',
       component: ItemBankDetails,
     },
     {
-      path: "/item-banks",
+      path: '/item-banks',
       component: ItemBanks,
     },
     {
-      path: "/question-bulk-update",
+      path: '/question-bulk-update',
       component: ItemsBulkUpdate,
     },
 
     {
-      path: "/grade",
+      path: '/grade',
       component: Grade,
     },
     {
-      path: "/subject",
+      path: '/subject',
       component: Subject,
     },
     {
-      path: "/tag-hierarchies",
+      path: '/tag-hierarchies',
       component: TagHierarchies,
     },
     {
-      path: "/tag-types",
+      path: '/tag-types',
       component: TagTypes,
     },
 
     {
-      path: "/consumers",
+      path: '/consumers',
       component: Consumers,
     },
 
     {
-      path: "/all-assessments",
+      path: '/all-assessments',
       component: Activities,
     },
     {
-      path: "/new-assessment",
+      path: '/new-assessment',
       component: NewActivity,
     },
     {
-      path: "/base-templates",
+      path: '/base-templates',
       component: BaseTemplates,
     },
     {
-      path: "/assessments-bulk-updates",
+      path: '/assessments-bulk-updates',
       component: ActivitiesBulkUpdates,
     },
 
     {
-      path: "/custom-questions",
+      path: '/custom-questions',
       component: CustomQuestions,
     },
     {
-      path: "/my-account",
+      path: '/my-account',
       component: MyAccount,
     },
     {
-      path: "/settings",
+      path: '/settings',
       component: Settings,
     },
     /* {

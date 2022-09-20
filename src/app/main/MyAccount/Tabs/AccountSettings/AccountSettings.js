@@ -75,7 +75,8 @@ const AccountSettingsTab = () => {
   };
 
   const classes = useStyles();
-  const { email } = user.user;
+  const { email } = user?.user ? user?.user : "";
+  console.log(user, "user");
   return (
     <Container
       classes={{
@@ -83,7 +84,7 @@ const AccountSettingsTab = () => {
       }}
       component="main"
       maxWidth="xs"
-      className="shadow-md rounded-md"
+      className="shadow-sm rounded-md"
     >
       <CssBaseline />
       <Box
@@ -100,7 +101,28 @@ const AccountSettingsTab = () => {
           noValidate
           sx={{ my: 4, width: "100%" }}
         >
-         
+          <Box className={classes.formInput}>
+            <Icon color="action" className="text-gray-600 mr-8 mb-16">
+              email
+            </Icon>
+            <div className="flex flex-col w-full items-center mb-7">
+              <TextField
+                sx={{ width: "100%" }}
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Username/Email"
+                name="email"
+                autoComplete="email"
+                defaultValue={email}
+                autoFocus
+              />
+              <span className="text-gray-600 w-full text-start mb-7 px-5">
+                Used for login to eAlpha apps (Community,Console,Author site)
+              </span>
+            </div>
+          </Box>
           <Box className={classes.formInput}>
             <PasswordIcon className="text-gray-600 mr-16" />
             <TextField
@@ -127,33 +149,13 @@ const AccountSettingsTab = () => {
               autoComplete="current-password"
             />
           </Box>
-          <Box className={classes.formInput}>
-            <Icon color="action" className="text-gray-600 mr-8 mb-16">
-              email
-            </Icon>
-            <div className="flex flex-col w-full items-center mb-7">
-              <TextField
-                sx={{ width: "100%" }}
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Username/Email"
-                name="email"
-                autoComplete="email"
-                defaultValue={email}
-                autoFocus
-              />
-              <span className="text-gray-600 w-full text-start mb-7 px-5">
-                Used for login to eAlpha apps (Community,Console,Author site)
-              </span>
-            </div>
-          </Box>
+
           <Box
             sx={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
+              ml: 4,
             }}
           >
             <Button
