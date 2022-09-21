@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -35,11 +36,14 @@ const useStyles = makeStyles({
     border: "1px dashed black",
     background: "white",
     minHeight: "25%",
+    marginTop: "20px",
   },
   availableTagWrapper: {
     padding: "10px",
     border: "1px dashed",
     background: "white",
+    marginTop: "20px",
+    height: "fit-content",
   },
   listItemSelected: {
     width: "100%",
@@ -90,14 +94,29 @@ const useStyles = makeStyles({
 
 const EditTagHierarchy = () => {
   const classes = useStyles();
+  const [availableTags, setAvailableTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+
+  const onDragEnd = (result) => {
+    const { source, destination } = result;
+    if (!result.destination) {
+      return;
+    }
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+  };
 
   const availableListArr = [
-    { id: 1, name: "Artifical" },
-    { id: 2, name: "Boy" },
-    { id: 3, name: "CSS Mathematic" },
-    { id: 4, name: "Artifical" },
-    { id: 5, name: "BIY" },
-    { id: 6, name: "CSS Mathematic" },
+    { id: 0, name: "Artifical" },
+    { id: 1, name: "Boy" },
+    { id: 2, name: "CSS Mathematic" },
+    { id: 3, name: "Artifical" },
+    { id: 4, name: "BIY" },
+    { id: 5, name: "CSS Mathematic" },
   ];
 
   return (
@@ -109,73 +128,106 @@ const EditTagHierarchy = () => {
       maxWidth="xs"
       className="shadow-sm rounded-md"
     >
-      <Grid spacing={2} className={classes.EditGridWrapper}>
-        <Grid xs={6} className={classes.EditWrapper}>
-          <Typography variant="h4">Selected Tag Types</Typography>
-          <Box className={classes.selectedTagWrapper}></Box>
-        </Grid>
-        <Grid xs={6} className={classes.EditWrapper}>
-          <Typography variant="h4">Available Tag Types</Typography>
-          <Box className={classes.availableTagWrapper}>
-            <Stack
-              spacing={3}
-              direction="column"
-              alignItems="center"
-              display="flex"
-              className="w-full"
-              justifyContent="center"
-            >
-              {availableListArr?.map((item) => (
-                <Box
-                  key={item.id}
-                  variant="contained"
-                  className={classes.listItemSelected}
-                >
-                  <div>
-                    <FormatListBulletedIcon
-                      style={{ margin: 5 }}
-                      className={classes.icon}
-                    />
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Grid className={classes.EditGridWrapper}>
+          <Droppable droppableId="selectedTags">
+            {(provided) => (
+              <Grid
+                className={classes.EditWrapper}
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                <Typography variant="h4">Selected Tag Types</Typography>
+                <Box className={classes.selectedTagWrapper}></Box>
+              </Grid>
+            )}
+          </Droppable>
+          <Droppable droppableId="availableTags">
+            {(provided) => (
+              <Grid
+                className={classes.EditWrapper}
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                <Typography variant="h4">Available Tag Types</Typography>
+                <Box className={classes.availableTagWrapper}>
+                  <Stack
+                    spacing={2}
+                    direction="column"
+                    alignItems="center"
+                    display="flex"
+                    className="w-full"
+                    justifyContent="center"
+                  >
+                    {availableListArr?.map((item, index) => (
+                      <Draggable
+                        key={item.id}
+                        draggableId={item.id.toString()}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <Box
+                            variant="contained"
+                            className={classes.listItemSelected}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            ref={provided.innerRef}
+                          >
+                            <div>
+                              <FormatListBulletedIcon
+                                style={{ margin: 5 }}
+                                className={classes.icon}
+                              />
 
-                    {item.name}
-                  </div>
-                  <EditIcon
-                    style={{ marginLeft: 5 }}
-                    className={classes.icon}
-                  />
+                              {item.name}
+                            </div>
+                            <EditIcon
+                              style={{ marginLeft: 5 }}
+                              className={classes.icon}
+                            />
+                            {provided.placeholder}
+                          </Box>
+                        )}
+                      </Draggable>
+                    ))}
+                  </Stack>
                 </Box>
-              ))}
-            </Stack>
-          </Box>
+              </Grid>
+            )}
+          </Droppable>
         </Grid>
-      </Grid>
-      <div className="mx-12">
-        <Divider />
-      </div>
-      <Box sx={{ marginLeft: "20px", marginTop: "15px" }}>
-        <Stack
-          spacing={3}
-          direction="row"
-          alignItems="center"
-          display="flex"
-          justifyContent="space-around"
-          width="40%"
-        >
-          <Button type="submit" variant="contained" className={classes.saveBtn}>
-            Save Changes
-          </Button>
-          <Button variant="contained" className={classes.editButtonGrey}>
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            className={classes.deleteBtn}
+        <div className="mx-12">
+          <Divider />
+        </div>
+        <Box sx={{ marginLeft: "20px", marginTop: "15px" }}>
+          <Stack
+            spacing={3}
+            direction="row"
+            alignItems="center"
+            display="flex"
+            justifyContent="space-around"
+            width="40%"
           >
-            Delete
-          </Button>
-        </Stack>
-      </Box>
+            <Button
+              type="submit"
+              variant="contained"
+              className={classes.saveBtn}
+            >
+              Save Changes
+            </Button>
+            <Button variant="contained" className={classes.editButtonGrey}>
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              className={classes.deleteBtn}
+            >
+              Delete
+            </Button>
+          </Stack>
+        </Box>
+      </DragDropContext>
     </Container>
   );
 };
