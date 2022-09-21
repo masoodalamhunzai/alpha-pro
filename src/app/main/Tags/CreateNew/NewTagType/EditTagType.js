@@ -138,11 +138,6 @@ const EditTagType = () => {
     { id: 1, status: "item" },
     { id: 2, status: "activities" },
   ];
-  const editTagArry = [
-    { id: 1, value: "saveDraft" },
-    { id: 2, value: "UnPublished" },
-    { id: 3, value: "Cancel" },
-  ];
 
   const redirectTo = async (goTo) => {
     try {
