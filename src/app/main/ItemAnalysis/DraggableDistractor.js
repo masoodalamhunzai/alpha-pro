@@ -1,13 +1,10 @@
-import { useState } from "react";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
-import MenuIcon from "@mui/icons-material/Menu";
-import { DeleteSweep as DeleteIcon } from "@material-ui/icons";
-import Fab from "@mui/material/Fab";
-import AddIcon from "@mui/icons-material/Add";
-import { Button } from "@material-ui/core";
-import { primaryBlueColor } from "app/services/Settings";
+import { useState } from 'react';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import TextField from '@mui/material/TextField';
+import MenuIcon from '@mui/icons-material/Menu';
+import { DeleteSweep as DeleteIcon } from '@material-ui/icons';
+import AddIcon from '@mui/icons-material/Add';
+import { primaryBlueColor } from 'app/services/Settings';
 
 // fake data generator
 const getItems = (count) =>
@@ -29,36 +26,36 @@ const grid = 8;
 
 const getItemStyle = (isDragging, draggableStyle) => ({
   // some basic styles to make the items look a bit nicer
-  userSelect: "none",
+  userSelect: 'none',
   /* padding: grid * 2,
   margin: `0 0 ${grid}px 0`, */
-  padding: "0px",
+  padding: '0px',
   margin: `0 0 ${0}px 0`,
 
   // change background colour if dragging
-  background: isDragging ? "lightgreen" : "white",
+  background: isDragging ? 'lightgreen' : 'white',
 
   // styles we need to apply on draggables
   ...draggableStyle,
 });
 
 const getListStyle = (isDraggingOver) => ({
-  background: isDraggingOver ? "lightblue" : "white",
-  padding: "0px",
-  width: "100%", // 250
+  background: isDraggingOver ? 'lightblue' : 'white',
+  padding: '0px',
+  width: '100%', // 250
 });
 const optionsList = [
   {
     value: 1,
-    label: "Correct",
+    label: 'Correct',
   },
   {
     value: 2,
-    label: "Alternative",
+    label: 'Alternative',
   },
   {
     value: 3,
-    label: "None",
+    label: 'None',
   },
 ];
 
@@ -74,24 +71,20 @@ function DraggableDistractor(props) {
   const [itemCount, setItemCount] = useState(0);
   const [items, setItem] = useState(props.multipleChoices); //  useState(getItems(itemCount));
   const [answer, setAnswer] = useState(3);
-  console.log("getItems(itemCount) ", getItems(1));
+  console.log('getItems(itemCount) ', getItems(1));
   const onDragEnd = (result) => {
     // dropped outside the list
     if (!result.destination) {
       return;
     }
 
-    const item = reorder(
-      props.multipleChoices,
-      result.source.index,
-      result.destination.index
-    );
+    const item = reorder(props.multipleChoices, result.source.index, result.destination.index);
     props.setMultipleChoices(item);
     // setItem(item);
   };
   const handleTitleChange = (e, index) => {
-    console.log("title is ", e.target.value);
-    console.log("index is ", index);
+    console.log('title is ', e.target.value);
+    console.log('index is ', index);
     const tempState = [...props.multipleChoices];
     const tempElement = { ...tempState[index] };
     tempElement.title = e.target.value;
@@ -127,7 +120,7 @@ function DraggableDistractor(props) {
     const tempState = [...props.multipleChoices];
     const tempElement = { ...tempState[index] };
     props.setMultipleChoices(tempState.filter((x) => x.id !== tempElement.id));
-    //setItemCount(itemCount - 1);
+    // setItemCount(itemCount - 1);
     setItem(getItems(itemCount - 1));
   };
   return (
@@ -148,28 +141,25 @@ function DraggableDistractor(props) {
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
-                        style={getItemStyle(
-                          snapshot.isDragging,
-                          provided.draggableProps.style
-                        )}
+                        style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
                       >
-                        <div style={{ marginTop: "10px" }}>
+                        <div style={{ marginTop: '10px' }}>
                           <label>{`Distractor ${index + 1}`}</label>
                         </div>
                         <div className="space-y-32 flex">
                           <div
                             className="flex items-center align-center"
-                            style={{ width: "auto", margin: "0% 0% 0%" }}
+                            style={{ width: 'auto', margin: '0% 0% 0%' }}
                           >
                             <MenuIcon size="large" />
                           </div>
-                          <div style={{ width: "100%", margin: "0% 2%" }}>
+                          <div style={{ width: '100%', margin: '0% 2%' }}>
                             <TextField
                               className="mx-6"
-                              style={{ width: "100%" }}
+                              style={{ width: '100%' }}
                               inputProps={{
                                 style: {
-                                  height: "5",
+                                  height: '5',
                                 },
                               }}
                               size="small"
@@ -182,7 +172,7 @@ function DraggableDistractor(props) {
                           </div>
                           <div
                             className="flex items-center align-center"
-                            style={{ width: "auto", margin: "0% 0% 0%" }}
+                            style={{ width: 'auto', margin: '0% 0% 0%' }}
                             onClick={() => RemoveOption(index)}
                           >
                             <DeleteIcon />
@@ -204,9 +194,9 @@ function DraggableDistractor(props) {
         onClick={() => AddNewOption()}
         style={{
           backgroundColor: primaryBlueColor,
-          padding: "2px 5px",
-          color: "white",
-          marginTop: "10px",
+          padding: '2px 5px',
+          color: 'white',
+          marginTop: '10px',
         }}
       >
         <AddIcon /> Add

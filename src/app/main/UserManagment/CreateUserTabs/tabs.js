@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -17,6 +17,8 @@ import Alert from "@mui/material/Alert";
 import AddUserDetails from "./AddUserDetails/AddUserDetails";
 import Permissions from "./Permissions/Permissions";
 import Breadcrumb from "../../../fuse-layouts/shared-components/Breadcrumbs";
+import { getUserRole } from "app/services/utils/utils";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles({
   layoutRoot: {
@@ -118,6 +120,8 @@ function a11yProps(index) {
 }
 
 const CreateUserTabs = () => {
+  const user = useSelector(({ alpha }) => alpha.user);
+  const role = getUserRole(user);
   const location = useLocation();
   const classes = useStyles();
   const history = useHistory();
@@ -130,7 +134,6 @@ const CreateUserTabs = () => {
 
   const [tabValue, setTabValue] = useState(0);
 
-  const [{ user }, dispatch] = useStateValue();
   const USER_ROLE_CLIENT_ADMIN = "client-admin";
   const USER_ROLE_SUPER_ADMIN = "super-admin";
   const EDIT_MODE = "edit-user";
@@ -145,7 +148,7 @@ const CreateUserTabs = () => {
     firstName: editData?.firstName?.length > 0 ? editData?.firstName : "",
     lastName: editData?.lastName?.length > 0 ? editData?.lastName : "",
     phone: editData?.phoneNumber?.length > 0 ? editData?.phoneNumber : "",
-    organizations: selectedOrg?.trim() !== "" ? selectedOrg : "",
+    organizations: selectedOrg ? selectedOrg : "",
     userRoles: editData?.roles !== "" ? editData?.roles : "",
     isActive: editData?.isActive ? editData?.isActive : "",
     password: "",
@@ -169,6 +172,53 @@ const CreateUserTabs = () => {
     insightAccess: false,
     authorSiteSettingManager: false,
   });
+  useEffect(() => {
+    console.log("EDIT DATA PERMISSIONS: ", editData?.permissions);
+    if (
+      editData &&
+      editData.permissions &&
+      Array.isArray(editData.permissions)
+    ) {
+      const temp = permissions;
+      editData.permissions.map((perm) => {
+        if (perm.name == "alpha-publishing-prod") {
+          temp.alphaProd = true;
+        } else if (perm.name == "alpha-publishing-dev") {
+          temp.alphaDev = true;
+        } else if (perm.name == "bulk-update-manager") {
+          temp.bulkUpdateManager = true;
+        } else if (perm.name == "activity-manager") {
+          temp.activityManager = true;
+        } else if (perm.name == "tag-manager") {
+          temp.tagManager = true;
+        } else if (perm.name == "tag-hierarchy-manager") {
+          temp.tagHierarchyManager = true;
+        } else if (perm.name == "omr-manager") {
+          temp.omrManager = true;
+        } else if (perm.name == "role-users") {
+          temp.roleUsers = true;
+        } else if (perm.name == "access-edit-profile") {
+          temp.accessEditProfile = true;
+        } else if (perm.name == "role-admin") {
+          temp.roleAdmin = true;
+        } else if (perm.name == "role-user") {
+          temp.roleUser = true;
+        } else if (perm.name == "management-admin") {
+          temp.managementAdmin = true;
+        } else if (perm.name == "system-admin") {
+          temp.systemAdmin = true;
+        } else if (perm.name == "insight-access") {
+          temp.insightAccess = true;
+        } else if (perm.name == "author-site-setting-manager") {
+          temp.authorSiteSettingManager = true;
+        } else if (perm.name == "user-manager") {
+          temp.userManager = true;
+        }
+      });
+
+      setPermissions({ ...temp });
+    }
+  }, []);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -262,11 +312,11 @@ const CreateUserTabs = () => {
       setError(true);
       return setErrorMessage("Phone is required");
     }
-    if (organizations === "" && user?.role === USER_ROLE_SUPER_ADMIN) {
+    if (organizations === "" && role === USER_ROLE_SUPER_ADMIN) {
       setError(true);
       return setErrorMessage("Organizations is required");
     }
-    if (userRoles === "" && user?.role === USER_ROLE_SUPER_ADMIN) {
+    if (userRoles === "" && role === USER_ROLE_SUPER_ADMIN) {
       setError(true);
       return setErrorMessage("user Roles is required");
     }
@@ -300,23 +350,21 @@ const CreateUserTabs = () => {
       phone,
       isActive,
       permissions: [...result],
-      roles: [
-        {
-          name: userRoles,
-        },
-      ],
+      roles: [userRoles],
     };
     if (mode === CREATE_NEW_MODE) {
       payload.password = password;
     }
     if (validation()) {
       const id =
-        user?.role === USER_ROLE_SUPER_ADMIN
+        role === USER_ROLE_SUPER_ADMIN
           ? organizations
           : user?.user?.organizationId;
       const res = await createOrganizationUser(id, payload);
 
-      if (res && res.data && res.data.status === "success") {
+      console.log("save user res", res);
+
+      if (res && res.status && res.status === "success") {
         swal({
           title: "Good job!",
           text:
@@ -424,7 +472,7 @@ const CreateUserTabs = () => {
                 }
                 className={classes.createBtn}
               >
-                {tabValue === 1 ? "Create user" : "Next"}
+                {tabValue === 1 ? "Save User" : "Next"}
               </Button>
               <Button
                 className={classes.cancelBtn}

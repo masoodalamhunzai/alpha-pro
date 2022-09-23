@@ -9,20 +9,21 @@ import { TablePagination, Tooltip } from "@material-ui/core";
 import { deleteItem, getItems } from "app/services/api/ApiManager";
 /* eslint-disable no-shadow */
 /* eslint-disable react/jsx-no-bind */
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { memo, useEffect, useRef, useState } from "react";
-
+import Typography from "@mui/material/Typography";
 import { DataGrid } from "@mui/x-data-grid";
 import FuseLoading from "@fuse/core/FuseLoading";
-import { actions } from "app/services/state/Reducer";
 import { dataGridPageSizes } from "app/services/Settings";
 import { makeStyles } from "@material-ui/core/styles";
 import swal from "sweetalert";
 import { useSnackbar } from "notistack";
 // import { DataGrid } from '@material-ui/data-grid';
 import { useStateValue } from "app/services/state/State";
-import { CustomToolbar } from "../../components";
 import { useDispatch, useSelector } from "react-redux";
 import { setItems } from "app/store/alpha/itemReducer";
+import { CustomToolbar } from "../../components";
+import _ from '@lodash';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -70,10 +71,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
+function ItemList({ page, setPage, pageSize, setPageSize }) {
   const dispatch = useDispatch();
   const items = useSelector(({ alpha }) => alpha.item.items);
-
+  const [loading, setLoading] = useState(false);
   const classes = useStyles();
   const history = useHistory();
   const user = useSelector(({ alpha }) => alpha.user);
@@ -81,6 +82,7 @@ function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
   const anchorRef = useRef(null);
   const [organizationId, setOrganizationId] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
   const [{ defaultPageSize }] = useStateValue();
   const [open, setOpen] = useState(false);
   // const { payload: organizationsListList, pagination } = organizations;
@@ -134,57 +136,78 @@ function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
     //
   }
 
-  const handleChangePage = async (event, newPage) => {};
+  const handleChangePage = async (event, newPage) => {
+    loadItems(newPage + 1, pageSize);
+    setPage(newPage);
+  };
 
-  function handleChangeRowsPerPage(event) {}
+  function handleChangeRowsPerPage(event) {
+    loadItems(0, +event.target.value);
+    setPage(0);
+    setRowsPerPage(+event.target.value);
+    setPageSize(+event.target.value);
+  }
 
-  const loadItems = async () => {
-    const res = await getItems();
-    console.log("items are here: ", res);
+  const loadItems = async (page = 1, pageSize = 10) => {
+    setLoading(true);
+    const res = await getItems(page, pageSize);
     if (res && res.status === 200 && res.data) {
       dispatch(setItems(res.data));
-      /* dispatch({
-        type: actions.SET_ITEMS,
-        payload: res.data,
-      }); */
     }
+    setLoading(false);
   };
   useEffect(() => {
-    loadItems();
+    if (!items) {
+      loadItems(1, 10);
+    }
   }, []);
+
   const columns = [
     { field: "title", headerName: "Item Name", flex: 1 },
-    { field: "type", headerName: "Type", flex: 0.5 },
+    { field: "type", headerName: "Scoring Type", flex: 0.5,
+    renderCell: (params) => (
+        <div
+          style={{
+            height: "100%",
+          }}
+          className="flex items-center"
+        >
+          <text>{params.row.type && _.startCase(_.toLower(params.row.type))}</text>
+        </div>  
+    ),
+   },
     { field: "createdby", headerName: "Created By", flex: 0.5 },
     {
-      field: "tags",
+      field: "tagsCount",
       headerName: "Tag",
-      flex: 1,
+      flex: 0.3,
       renderCell: (params) => (
         <div
-          className="flex wrap flex-wrap"
-          style={{ paddingTop: "3px", paddingBottom: "2px" }}
-        >
-          {console.log(params)}
-          {params.row.tag &&
-            params.row.tag.map((tg) => {
-              return (
-                <span
-                  style={{
-                    backgroundColor: "lightgray",
-                    margin: "0px 2px 2px 2px",
-                    padding: "2px 4px",
-                    borderRadius: "3px",
-                  }}
-                >
-                  <TagIcon
-                    style={{ marginRight: 2 }}
-                    className={classes.icon}
-                  />
-                  {tg}
-                </span>
+          onClick={() => {
+            var text = "";
+            const tagArray =
+              params.row.tag.length == 0 ? [] : JSON.parse(params.row.tag);
+            tagArray &&
+              Array.isArray(tagArray) &&
+              tagArray.map(
+                (t) => (text = text == "" ? t.title : text + ", " + t.title)
               );
-            })}
+            swal(text != "" ? text : "No tag found!");
+          }}
+          style={{
+            width: "100%",
+            height: "98%",
+            cursor: "pointer",
+          }}
+        >
+          <div
+            style={{
+              height: "100%",
+            }}
+            className="flex items-center"
+          >
+            <text>{params.row.tagsCount==0?"No tag found":params.row.tagsCount}</text>
+          </div>
         </div>
       ),
     },
@@ -223,6 +246,7 @@ function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
               pathname: "/create-new-question",
               state: {
                 itemIdProps: params.id,
+                itemuuIdProps: params.row.itemId,
                 mode: "edit-item",
               },
             }}
@@ -247,105 +271,47 @@ function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
       ),
     },
   ];
-
   const rows =
     items &&
-    items.map((org) => {
+    items.data &&
+    items.data.map((org, index) => {
       return {
         id: org.id,
+        itemId: org.itemId,
         title: org.title,
-        type: "Multiple Choice",
-        createdby: "Ranjith Pattu",
-        tag: ["Grade 1", "Mathematics", "aritficial Intelligence"],
-        status: "Waiting",
+        type: org.scoringType,
+        createdby:
+          org.created_by &&
+          (org.created_by.firstName && org.created_by.firstName) +
+            " " +
+            (org.created_by.lastName && org.created_by.lastName),
+        tag: org.tags && org.tags.length > 0 ? org.tags : [], //['Grade 1', 'Mathematics', 'aritficial Intelligence'],
+        tagsCount:
+          org.tags && org.tags.length > 0 ? JSON.parse(org.tags).length : 0,
+        status: org.status,
         description: org.description,
         created_at: org.created_at,
         updated_at: org.updated_at,
       };
-    }); /*  [
-    {
-      id: 1,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "123123",
-      address: "test address",
-    },
-    {
-      id: 2,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "143123",
-      address: "test address",
-    },
-    {
-      id: 3,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "153123",
-      address: "test address",
-    },
-    {
-      id: 4,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "163123",
-      address: "test address",
-    },
-    {
-      id: 5,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "173123",
-      address: "test address",
-    },
-    {
-      id: 6,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "183123",
-      address: "test address",
-    },
-    {
-      id: 7,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "193123",
-      address: "test address",
-    },
-    {
-      id: 8,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "103123",
-      address: "test address",
-    },
-    {
-      id: 9,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "153123",
-      address: "test address",
-    },
-  ];
- */
+    });
   return (
     <>
-      {/*  <button
-        onClick={() => {
-          loadItems();
-        }}
-      >
-        Load Organizations
-      </button> */}
+      {loading && (
+        <div className="flex justify-center flex-col items-center py-12">
+          <Typography
+            variant="body1"
+            gutterBottom
+            color="textSecondary"
+            align="center"
+          >
+            Loading...
+          </Typography>
+          <CircularProgress
+            className="w-192 sm:w-320 max-w-full rounded-2"
+            color="secondary"
+          />
+        </div>
+      )}
       <div className={classes.root}>
         {rows && (
           <DataGrid
@@ -364,9 +330,7 @@ function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
                 border: "none",
               },
             }}
-            rowHeight="auto"
             rows={rows}
-            page={page}
             hideFooter
             columns={columns}
             components={{
@@ -375,29 +339,29 @@ function ItemList({ page, setPage, loading, setLoading, fetchOrganizations }) {
             hideFooterRowCount
             hideFooterPagination
             style={{ height: "70vh", border: "none", boxSizing: "unset" }}
-            pageSize={defaultPageSize}
             hideFooterSelectedRowCount
-            rowCount={100 /* pagination.totalItemsCount */}
-            rowsPerPageOptions={dataGridPageSizes}
+            pageSize={pageSize}
           />
         )}
         <TablePagination
           page={page}
           component="div"
-          rowsPerPage={defaultPageSize}
+          rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
-          count={100 /* pagination.totalItemsCount */}
+          count={items && items.total ? items.total : 0}
           className="flex-shrink-0 border-t-1"
           rowsPerPageOptions={dataGridPageSizes}
           onRowsPerPageChange={handleChangeRowsPerPage}
           nextIconButtonProps={{ "aria-label": "Next Page" }}
           backIconButtonProps={{ "aria-label": "Previous Page" }}
         />
-        {loading && (
+        {/*
+      it is because if we need to change loading type
+      {loading && (
           <div className={classes.progress} align="center">
             <FuseLoading />
           </div>
-        )}
+        )} */}
       </div>
     </>
   );

@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
-import MenuIcon from "@mui/icons-material/Menu";
-import { DeleteSweep as DeleteIcon } from "@material-ui/icons";
-import Fab from "@mui/material/Fab";
-import AddIcon from "@mui/icons-material/Add";
-import { primaryBlueColor } from "app/services/Settings";
+import { useState } from 'react';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
+import MenuIcon from '@mui/icons-material/Menu';
+import { DeleteSweep as DeleteIcon } from '@material-ui/icons';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
+import { primaryBlueColor } from 'app/services/Settings';
 
 // fake data generator
 const getItems = (count) =>
@@ -28,36 +28,36 @@ const grid = 8;
 
 const getItemStyle = (isDragging, draggableStyle) => ({
   // some basic styles to make the items look a bit nicer
-  userSelect: "none",
+  userSelect: 'none',
   /* padding: grid * 2,
   margin: `0 0 ${grid}px 0`, */
   padding: grid * 1,
   margin: `0 0 ${0}px 0`,
 
   // change background colour if dragging
-  background: isDragging ? primaryBlueColor : "white",
+  background: isDragging ? primaryBlueColor : 'white',
 
   // styles we need to apply on draggables
   ...draggableStyle,
 });
 
 const getListStyle = (isDraggingOver) => ({
-  background: isDraggingOver ? "#ebebeb" : "white",
+  background: isDraggingOver ? '#ebebeb' : 'white',
   padding: grid,
-  width: "100%", // 250
+  width: '100%', // 250
 });
 const optionsList = [
   {
     value: 1,
-    label: "Correct",
+    label: 'Correct',
   },
   {
     value: 2,
-    label: "Alternative",
+    label: 'Alternative',
   },
   {
     value: 3,
-    label: "None",
+    label: 'None',
   },
 ];
 
@@ -72,23 +72,19 @@ function LabelImageWithDropDownDraggableItem(props) {
       return;
     }
 
-    const item = reorder(
-      props.object.responses,
-      result.source.index,
-      result.destination.index
-    );
-    console.log("item result", item);
-    var tempState = [...props.multipleChoices];
+    const item = reorder(props.object.responses, result.source.index, result.destination.index);
+    console.log('item result', item);
+    const tempState = [...props.multipleChoices];
     tempState[currentIndex].responses = item;
 
     props.setMultipleChoices(tempState);
     // setItem(item);
   };
   const handleTitleChange = (e, index) => {
-    console.log("index is " + index + " current Index = " + currentIndex);
-    var tempState = [...props.multipleChoices];
-    var tempObject = [...tempState[currentIndex].responses];
-    var tempElement = { ...tempObject[index] };
+    console.log(`index is ${index} current Index = ${currentIndex}`);
+    const tempState = [...props.multipleChoices];
+    const tempObject = [...tempState[currentIndex].responses];
+    const tempElement = { ...tempObject[index] };
     tempElement.title = e.target.value;
     tempObject[index] = tempElement;
     tempState[currentIndex].responses = tempObject;
@@ -115,9 +111,9 @@ function LabelImageWithDropDownDraggableItem(props) {
     tempElement.choice = event.target.value;
     tempObject[index] = tempElement;
     tempState[currentIndex].responses = tempObject;
-    console.log("element", tempElement);
-    console.log("object", tempObject);
-    console.log("state", tempState);
+    console.log('element', tempElement);
+    console.log('object', tempObject);
+    console.log('state', tempState);
 
     props.setMultipleChoices(tempState);
   };
@@ -128,8 +124,8 @@ function LabelImageWithDropDownDraggableItem(props) {
     const option = {
       id: `item-${itemCount + 1}`,
       position: itemCount,
-      choice: "",
-      title: "",
+      choice: '',
+      title: '',
       isCorrect: false,
       isAlternate: false,
     };
@@ -137,12 +133,12 @@ function LabelImageWithDropDownDraggableItem(props) {
 
     choices = props.multipleChoices.slice();
     choices[currentIndex].responses.push(option);
-    console.log("dragable objects: ", choices);
+    console.log('dragable objects: ', choices);
     props.setMultipleChoices(choices);
   };
 
   const RemoveOption = (index) => {
-    var tempState = [...props.multipleChoices];
+    const tempState = [...props.multipleChoices];
     const tempObject = [...tempState[currentIndex].responses];
     const tempElement = { ...tempObject[index] };
     const temp = tempObject.filter((x) => x.id !== tempElement.id);
@@ -152,7 +148,7 @@ function LabelImageWithDropDownDraggableItem(props) {
     console.log(tempState);
 
     console.log(props.multipleChoices);
-    //props.setMultipleChoices( );
+    // props.setMultipleChoices( );
     setItem(getItems(itemCount - 1));
   };
   return (
@@ -165,7 +161,7 @@ function LabelImageWithDropDownDraggableItem(props) {
               ref={provided.innerRef}
               style={getListStyle(snapshot.isDraggingOver)}
             >
-              {console.log("maping object is here: ", props.object.responses)}
+              {console.log('maping object is here: ', props.object.responses)}
               {props.object.responses.map((item, index) => (
                 <Draggable key={item.id} draggableId={item.id} index={index}>
                   {(provided, snapshot) => (
@@ -173,28 +169,25 @@ function LabelImageWithDropDownDraggableItem(props) {
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
-                      style={getItemStyle(
-                        snapshot.isDragging,
-                        provided.draggableProps.style
-                      )}
+                      style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
                     >
                       <div className="space-y-32 flex">
                         <div
                           className="flex items-center align-center"
-                          style={{ width: "auto", margin: "0% 0% 0%" }}
+                          style={{ width: 'auto', margin: '0% 0% 0%' }}
                         >
                           <MenuIcon size="large" />
                         </div>
-                        <div style={{ width: "100%", margin: "0% 2%" }}>
+                        <div style={{ width: '100%', margin: '0% 2%' }}>
                           <TextField
                             className="mx-6"
                             style={{
-                              width: "100%",
-                              backgroundColor: "white",
+                              width: '100%',
+                              backgroundColor: 'white',
                             }}
                             inputProps={{
                               style: {
-                                height: "5",
+                                height: '5',
                               },
                             }}
                             size="large"
@@ -208,12 +201,9 @@ function LabelImageWithDropDownDraggableItem(props) {
                           />
                         </div>
 
-                        <div
-                          className=""
-                          style={{ width: "25%", margin: "0%" }}
-                        >
+                        <div className="" style={{ width: '25%', margin: '0%' }}>
                           <TextField
-                            style={{ width: "95%", backgroundColor: "white" }}
+                            style={{ width: '95%', backgroundColor: 'white' }}
                             id="outlined-select-currency"
                             select
                             label="Correct Ans"
@@ -233,7 +223,7 @@ function LabelImageWithDropDownDraggableItem(props) {
                         </div>
                         <div
                           className="flex items-center align-center"
-                          style={{ width: "auto", margin: "0% 0% 0%" }}
+                          style={{ width: 'auto', margin: '0% 0% 0%' }}
                           onClick={() => RemoveOption(index)}
                         >
                           <DeleteIcon />

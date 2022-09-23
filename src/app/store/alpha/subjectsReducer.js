@@ -1,7 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 const subjectSlice = createSlice({
-  name: "subjects",
+  name: 'subjects',
   initialState: {
     subjects: null,
   },

@@ -1,20 +1,14 @@
-import { useState, useEffect } from "react";
-import Typography from "@mui/material/Typography";
-import WYSIWYGEditor from "app/shared-components/WYSIWYGEditor";
-import Icon from "@material-ui/core/Icon";
-import Paper from "@mui/material/Paper";
-import { Save, Close } from "@mui/icons-material";
-import { Controller, useForm } from "react-hook-form";
-import _ from "@lodash";
-import { TextField, Checkbox } from "@mui/material";
-import Switch from "app/shared-components/Switch";
-import { primaryBlueColor } from "app/services/Settings";
-import MenuItem from "@mui/material/MenuItem";
-import { useStateValue } from "app/services/state/State";
-import { useSelector } from "react-redux";
-import { EditorState, convertFromRaw } from "draft-js";
+import { useState, useEffect } from 'react';
+import WYSIWYGEditor from 'app/shared-components/WYSIWYGEditor';
+import Icon from '@material-ui/core/Icon';
+import Paper from '@mui/material/Paper';
+import { Controller, useForm } from 'react-hook-form';
+import { TextField } from '@mui/material';
+import MenuItem from '@mui/material/MenuItem';
+import { useSelector } from 'react-redux';
+import { EditorState, convertFromRaw } from 'draft-js';
 
-const defaultValues = { name: "", email: "", subject: "", message: "" };
+const defaultValues = { name: '', email: '', subject: '', message: '' };
 
 const propsType = [
   /*  "editorContent={audioRecorderEditorContent}",
@@ -23,40 +17,40 @@ const propsType = [
   "setMaximumSecond={setAudioRecorderMaximumSecond}",
   "playerType={audioRecorderPlayerType}",
   "setPlayerType={setAudioRecorderPlayerType}", */
-  "removeAnItem={removeAnItem}",
-  "editAnItem={removeAnItem}",
-  "saveAnItem={saveAnItem}",
+  'removeAnItem={removeAnItem}',
+  'editAnItem={removeAnItem}',
+  'saveAnItem={saveAnItem}',
 ];
 
 const AudioRecorderLayout = (props) => {
   const itemQuestionsList = useSelector(({ alpha }) => alpha.item.questions);
-  //Audio recorder Layout starts
+  // Audio recorder Layout starts
 
-  const [editorContent, setEditorContent] = useState("");
+  const [editorContent, setEditorContent] = useState('');
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
   const [maximumSecond, setMaximumSecond] = useState(1);
-  const [playerType, setPlayerType] = useState("");
+  const [playerType, setPlayerType] = useState('');
 
-  //audio recorder Layout ends
+  // audio recorder Layout ends
 
   const { control } = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues,
   });
 
   const optionsList = [
     {
       value: 1,
-      label: "Always visible",
+      label: 'Always visible',
     },
     {
       value: 2,
-      label: "On limit",
+      label: 'On limit',
     },
     {
       value: 3,
-      label: "Off",
+      label: 'Off',
     },
   ];
 
@@ -66,22 +60,20 @@ const AudioRecorderLayout = (props) => {
         itemQuestionsList &&
         itemQuestionsList.length > 0 &&
         itemQuestionsList.find((q) => q.id == props.questionId);
-      console.log("filteredQuestion in audio recorder  ", _filteredQuestion);
+      console.log('filteredQuestion in audio recorder  ', _filteredQuestion);
       if (_filteredQuestion) {
         console.log(
-          "_filteredQuestion.description in audio recorder ",
+          '_filteredQuestion.description in audio recorder ',
           _filteredQuestion.description
         );
-        const convertedState = convertFromRaw(
-          JSON.parse(_filteredQuestion.description)
-        );
+        const convertedState = convertFromRaw(JSON.parse(_filteredQuestion.description));
         const _editorValue = EditorState.createWithContent(convertedState);
         setEditorState(_editorValue);
 
         setEditorContent(_filteredQuestion.description);
 
         props.setEditorContent(_filteredQuestion.description);
-        props.setMultipleChoices([{ data: "no data found" }]);
+        props.setMultipleChoices([{ data: 'no data found' }]);
         if (_filteredQuestion.questionConfig) {
           const _config = JSON.parse(_filteredQuestion.questionConfig);
           if (_config) {
@@ -91,28 +83,28 @@ const AudioRecorderLayout = (props) => {
         }
       }
     } else {
-      props.setMultipleChoices([{ data: "no data found" }]);
+      props.setMultipleChoices([{ data: 'no data found' }]);
     }
   }, []);
 
   return (
     <Paper
       style={{
-        paddingTop: "0px",
-        paddingLeft: "0px",
-        paddingRight: "0px",
+        paddingTop: '0px',
+        paddingLeft: '0px',
+        paddingRight: '0px',
       }}
       className="border border-blue border-2 pb-28 sm:pb-28 rounded-2xl border-blue-600"
     >
       <div className="text-right">
         <Icon
           onClick={() => {
-            if (editorContent === "" || editorContent === "<p></p>\n") {
+            if (editorContent === '' || editorContent === '<p></p>\n') {
               swal({
-                title: "Error!",
-                text: "Question Description is Required!",
-                icon: "error",
-                button: "Ok!",
+                title: 'Error!',
+                text: 'Question Description is Required!',
+                icon: 'error',
+                button: 'Ok!',
               });
             } else {
               const itemObject =
@@ -121,20 +113,20 @@ const AudioRecorderLayout = (props) => {
                       id: props.questionId,
                       description: editorContent,
                       options: [{}],
-                      questionType: "audio-recorder-question",
+                      questionType: 'audio-recorder-question',
                       questionConfig: JSON.stringify({
-                        maximumSecond: maximumSecond,
-                        playerType: playerType,
+                        maximumSecond,
+                        playerType,
                       }),
                       position: props.questionIndex,
                     }
                   : {
                       description: editorContent,
                       options: [{}],
-                      questionType: "audio-recorder-question",
+                      questionType: 'audio-recorder-question',
                       questionConfig: JSON.stringify({
-                        maximumSecond: maximumSecond,
-                        playerType: playerType,
+                        maximumSecond,
+                        playerType,
                       }),
                       position: props.questionIndex,
                     };
@@ -143,15 +135,15 @@ const AudioRecorderLayout = (props) => {
                 props.tabName,
                 props.questionId,
                 props.questionIndex,
-                "audio-recorder-question",
+                'audio-recorder-question',
                 itemObject
               );
             }
           }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
-            padding: "2px 24px 24px 4px",
-            color: "white",
+            padding: '2px 24px 24px 4px',
+            color: 'white',
           }}
           size="small"
         >
@@ -164,8 +156,8 @@ const AudioRecorderLayout = (props) => {
           }}
           className="p-3 bg bg-blue bg-blue-500 hover:bg-blue-700"
           style={{
-            padding: "2px 24px 24px 4px",
-            color: "white",
+            padding: '2px 24px 24px 4px',
+            color: 'white',
           }}
           size="small"
         >
@@ -183,8 +175,8 @@ const AudioRecorderLayout = (props) => {
           }}
           className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
           style={{
-            padding: "2px 24px 24px 4px",
-            color: "white",
+            padding: '2px 24px 24px 4px',
+            color: 'white',
           }}
           size="small"
         >
@@ -198,7 +190,7 @@ const AudioRecorderLayout = (props) => {
             <button className="border border-gray border-gray-300 bg-white hover:bg-gray-100 text-gray-800 text-white font-bold py-2 px-6 rounded-full mx-4">
               <Icon
                 style={{
-                  fontSize: "10px",
+                  fontSize: '10px',
                 }}
                 size="small"
               >
@@ -239,7 +231,7 @@ const AudioRecorderLayout = (props) => {
           <div className="grid gap-4 grid-cols-2">
             <div className="pr-12">
               <TextField
-                style={{ width: "100%" }}
+                style={{ width: '100%' }}
                 id="outlined-select-currency"
                 select
                 label="Player type"
@@ -260,16 +252,16 @@ const AudioRecorderLayout = (props) => {
             <div className="pl-12">
               <TextField
                 className="mx-6"
-                style={{ width: "100%" }}
+                style={{ width: '100%' }}
                 inputProps={{
                   style: {
-                    height: "5",
+                    height: '5',
                   },
                 }}
                 size="large"
                 required
                 id="outlined-required"
-                label={"Maximum length (seconds)"}
+                label="Maximum length (seconds)"
                 value={maximumSecond}
                 onChange={(e) => {
                   setMaximumSecond(e.target.value);

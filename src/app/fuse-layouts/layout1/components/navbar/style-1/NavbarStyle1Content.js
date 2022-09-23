@@ -12,12 +12,14 @@ const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: '#fff',
     '& ::-webkit-scrollbar-thumb': {
-      boxShadow: `inset 0 0 0 20px ${theme.palette.type === 'light' ? 'rgba(0, 0, 0, 0.24)' : 'rgba(255, 255, 255, 0.24)'
-        }`,
+      boxShadow: `inset 0 0 0 20px ${
+        theme.palette.type === 'light' ? 'rgba(0, 0, 0, 0.24)' : 'rgba(255, 255, 255, 0.24)'
+      }`,
     },
     '& ::-webkit-scrollbar-thumb:active': {
-      boxShadow: `inset 0 0 0 20px ${theme.palette.type === 'light' ? 'rgba(0, 0, 0, 0.37)' : 'rgba(255, 255, 255, 0.37)'
-        }`,
+      boxShadow: `inset 0 0 0 20px ${
+        theme.palette.type === 'light' ? 'rgba(0, 0, 0, 0.37)' : 'rgba(255, 255, 255, 0.37)'
+      }`,
     },
   },
   content: {

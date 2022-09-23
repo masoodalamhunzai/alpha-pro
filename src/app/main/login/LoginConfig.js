@@ -1,5 +1,4 @@
-import { authRoles } from "app/auth";
-import Login from "./Login";
+import Login from './Login';
 
 const LoginConfig = {
   settings: {
@@ -26,7 +25,7 @@ const LoginConfig = {
   /* auth: authRoles.onlyGuest, */
   routes: [
     {
-      path: "/login",
+      path: '/login',
       component: Login,
     },
   ],

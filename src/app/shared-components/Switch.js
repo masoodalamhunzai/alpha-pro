@@ -1,19 +1,19 @@
-import * as React from "react";
-import clsx from "clsx";
-import { styled } from "@mui/system";
-import { useSwitch } from "@mui/base/SwitchUnstyled";
-import { primaryBlueColor } from "app/services/Settings";
+import * as React from 'react';
+import clsx from 'clsx';
+import { styled } from '@mui/system';
+import { useSwitch } from '@mui/base/SwitchUnstyled';
+import { primaryBlueColor } from 'app/services/Settings';
 
 const blue = {
   500: primaryBlueColor,
 };
 
 const grey = {
-  400: "#BFC7CF",
-  500: "#AAB4BE",
+  400: '#BFC7CF',
+  500: '#AAB4BE',
 };
 
-const BasicSwitchRoot = styled("span")`
+const BasicSwitchRoot = styled('span')`
   font-size: 0;
   position: relative;
   display: inline-block;
@@ -34,7 +34,7 @@ const BasicSwitchRoot = styled("span")`
   }
 `;
 
-const BasicSwitchInput = styled("input")`
+const BasicSwitchInput = styled('input')`
   cursor: inherit;
   position: absolute;
   width: 100%;
@@ -46,7 +46,7 @@ const BasicSwitchInput = styled("input")`
   margin: 0;
 `;
 
-const BasicSwitchThumb = styled("span")`
+const BasicSwitchThumb = styled('span')`
   display: block;
   width: 14px;
   height: 14px;
@@ -73,9 +73,9 @@ export default function BasicSwitch(props) {
   const { getInputProps, checked, disabled, focusVisible } = useSwitch(props);
 
   const stateClasses = {
-    "Switch-checked": checked,
-    "Switch-disabled": disabled,
-    "Switch-focusVisible": focusVisible,
+    'Switch-checked': checked,
+    'Switch-disabled': disabled,
+    'Switch-focusVisible': focusVisible,
   };
 
   return (

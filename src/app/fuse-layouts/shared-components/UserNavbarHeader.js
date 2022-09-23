@@ -1,8 +1,6 @@
 import AppBar from "@material-ui/core/AppBar";
-import Avatar from "@material-ui/core/Avatar";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import clsx from "clsx";
 import { useSelector } from "react-redux";
 import { useStateValue } from "app/services/state/State";
 
@@ -31,8 +29,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function UserNavbarHeader(props) {
-  const users = useSelector(({ auth }) => auth.user);
-  const [{ user }, dispatch] = useStateValue();
+  const user = useSelector(({ alpha }) => alpha.user);
   const classes = useStyles();
 
   return (
@@ -62,7 +59,7 @@ function UserNavbarHeader(props) {
             {user.user.firstName} {user.user.lastName}
           </>
         ) : (
-          <>John Doe</>
+          <>{/* John Doe */}</>
         )}
       </Typography>
       <Typography
@@ -72,7 +69,7 @@ function UserNavbarHeader(props) {
         {user && user.user && user.user.email ? (
           <>{user.user.email}</>
         ) : (
-          <>johndoe@withinpixels.com</>
+          <>{/* johndoe@withinpixels.com */}</>
         )}
       </Typography>
     </AppBar>

@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 // import DemoContent from "@fuse/core/DemoContent";
 import FusePageSimple from "@fuse/core/FusePageSimple";
-import Typography from "@mui/material/Typography";
-import { useLocation } from "react-router-dom";
 import { ThemeProvider, useTheme, makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -10,15 +8,13 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
-import { Add as AddIcon } from "@material-ui/icons";
 import Input from "@material-ui/core/Input";
 import Paper from "@material-ui/core/Paper";
-import { useHistory } from "react-router";
+import Header from "app/shared-components/Header";
 import { getAllGrades } from "app/services/api/ApiManager";
-import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
-import GradeList from "./GradeList";
 import { useDispatch, useSelector } from "react-redux";
 import { setGrade } from "app/store/alpha/gradesReducer";
+import GradeList from "./GradeList";
 
 const useStyles = makeStyles({
   layoutRoot: {
@@ -41,77 +37,47 @@ const useStyles = makeStyles({
       top: "-5px",
     },
   },
+  refreshButton: {
+    backgroundColor: "#0d870d",
+    color: "white",
+    padding: "0.5rem 3rem",
+    display: "flex",
+    justifyContent: "center",
+    marginLeft: "1rem",
+  },
 });
 const Grade = () => {
   const dispatch = useDispatch();
   const grades = useSelector(({ alpha }) => alpha.grades.grade);
-  const location = useLocation();
-  const history = useHistory();
-  const pageTitle = location.pathname
-    .split("/")
-    .filter((x) => x)
-    .pop()
-    .split("-")
-    .join(" ");
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const classes = useStyles();
   const theme = useTheme();
   const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
 
-  const redirectTo = async (goTo) => {
-    try {
-      history.push(goTo);
-    } catch (err) {
-      // console.log(err);
+  const handleGetGrade = async (page = 1, pageSize = 10) => {
+    setLoading(true);
+    const res = await getAllGrades(page, pageSize);
+    if (res && res.data) {
+      dispatch(setGrade(res));
     }
-  };
-  const handleGetGrade = async () => {
-    const res = await getAllGrades();
-    if (res && res.status === 200 && res.data) {
-      setLoading(false);
-      dispatch(setGrade(res.data));
-      /* dispatch({
-        type: actions.SET_GRADES,
-        payload: res.data,
-      }); */
-    }
+    setLoading(false);
   };
 
-  useEffect(() => {
-    handleGetGrade();
-  }, []);
   return (
     <FusePageSimple
       classes={{
         root: classes.layoutRoot,
       }}
       header={
-        <div className="p-24">
-          <Breadcrumb />
-          <Typography
-            variant="h3"
-            gutterBottom
-            sx={{
-              color: "#000",
-              fontWeight: 700,
-              mt: 2,
-              textTransform: "capitalize",
-            }}
-          >
-            {pageTitle}
-          </Typography>
-          <Button
-            variant="contained"
-            style={{ float: "right" }}
-            color="secondary"
-            aria-label="Send Message"
-            startIcon={<AddIcon />}
-            onClick={() => redirectTo("/create-grade")}
-          >
-            Create New
-          </Button>
-        </div>
+        <Header
+          redirectTo={{
+            pathname: "create-grade",
+            state: { data: "", mode: "" },
+          }}
+          buttonTitle="create new"
+        />
       }
       content={
         <div className="p-24">
@@ -155,14 +121,35 @@ const Grade = () => {
               >
                 Search
               </Button>
+              <Button
+                variant="contained"
+                className={classes.refreshButton}
+                onClick={() => {
+                  setPage(0);
+                  handleGetGrade(1, pageSize);
+                }}
+              >
+                <Icon
+                  color="white"
+                  style={{
+                    marginRight: "0.6rem",
+                    fontSize: "1.6rem",
+                  }}
+                >
+                  refresh
+                </Icon>{" "}
+                Refresh
+              </Button>
             </div>
           </div>
           {/* end */}
           <GradeList
             page={page}
             setPage={setPage}
+            pageSize={pageSize}
+            setPageSize={setPageSize}
             loading={loading}
-            grades={grades}
+            setLoading={setLoading}
           />
         </div>
       }

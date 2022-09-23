@@ -2,7 +2,7 @@
 
 export const settings = {
   baseUrl: "http://182.191.121.76",
-  // baseUrl: "http://localhost",
+  // baseUrl: 'http://localhost',
   // baseUrl: process.env.REACT_APP_API_BASEURL,
   auth0Domain: process.env.REACT_APP_AUTH0_DOMAIN,
   auth0ClientId: process.env.REACT_APP_AUTH0_CLIENT_ID,
@@ -13,18 +13,25 @@ export const settings = {
     getUserInfo: "/api/me",
   },
   organization: {
-    getOrganizations: "/api/organizations?items=$[items]&page=$[page]",
+    getOrganizations: (items, page) =>
+      `/api/organizations?items=${items}&page=${page}`,
     addOrganizations: "/api/organizations",
+    getOrganizationList: "/api/organizations?pagination=false",
   },
   items: {
-    getItems: "/api/items",
+    getItems: "/api/items?items=$[items]&page=$[page]",
     saveQuestion: (itemId) => `/api/items/${itemId}/questions`,
     getQuestionByItemId: (itemId) => `/api/items/${itemId}/questions`,
     getItemById: (itemId) => `/api/items/${itemId}`,
     addItems: "/api/items",
     deleteItem: (itemId) => `/api/items/${itemId}`,
     deleteQuestion: (questionId) => `/api/question/${questionId}`,
-    searchItem: (searchText) => `/api/items/search/${searchText}`,
+    searchItem: (searchText,grade,tags) => `/api/items/search/${searchText}?tags=${grade}&grade=${tags}`,
+    searchItem1: (searchText,grade) => `/api/items/search/${searchText}?grade=${grade}`,
+    searchItem2: (searchText,tags) => `/api/items/search/${searchText}?tags=${tags}`,
+    searchItem3: (searchText) => `/api/items/search/${searchText}`,
+    getTagsList:'/api/taglists',
+    getTagsByTagList: (tagListId) => `/api/taglists/${tagListId}/tags`,
   },
   sector: {
     addSector: "/api/AddSector",
@@ -34,8 +41,8 @@ export const settings = {
     getSectorById: "/api/getSectorById/$[id]",
   },
   organizationUsers: {
-    getOrganizationUser: (orgId) =>
-      `/api/organizations/${orgId}/users?items=$[items]&page=$[page]`,
+    getOrganizationUsers: (orgId, items, page) =>
+      `/api/organizations/${orgId}/users?items=${items}&page=${page}`,
     createOrganizationUser: (orgId) => `/api/organizations/${orgId}/users`,
   },
   search: {
@@ -46,7 +53,7 @@ export const settings = {
   },
   roles: "/api/roles",
   grades: {
-    getGrades: "/api/grades",
+    getGrades: "/api/grades?items=$[items]&page=$[page]",
     addGrade: "/api/grades",
     delete: (id) => `/api/grades/${id}`,
   },

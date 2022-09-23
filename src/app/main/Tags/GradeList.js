@@ -1,6 +1,6 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react/jsx-no-bind */
-import { memo, useState, useRef } from "react";
+import { memo, useState, useRef, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { TablePagination, Tooltip } from "@material-ui/core";
 import {
@@ -13,7 +13,9 @@ import { dataGridPageSizes } from "app/services/Settings";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@mui/material/Typography";
 import swal from "sweetalert";
-import { deleteGrade } from "app/services/api/ApiManager";
+import { deleteGrade, getAllGrades } from "app/services/api/ApiManager";
+import { useDispatch, useSelector } from "react-redux";
+import { setGrade } from "app/store/alpha/gradesReducer";
 import { CustomToolbar } from "../../components";
 
 const useStyles = makeStyles((theme) => ({
@@ -46,34 +48,50 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function GradeList({ page, setPage, loading, grades }) {
+function GradeList({
+  page,
+  setPage,
+  loading,
+  setLoading,
+  pageSize,
+  setPageSize,
+}) {
+  const dispatch = useDispatch();
+  const grades = useSelector(({ alpha }) => alpha.grades.grade);
   const history = useHistory();
   const classes = useStyles();
   const anchorRef = useRef(null);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [pageSize, setPageSize] = useState(10);
+
   const [rowCount, setRowCount] = useState(1);
   const [open, setOpen] = useState(false);
+
+  const handleGetGrade = async (page = 1, pageSize = 10) => {
+    setLoading(true);
+    const res = await getAllGrades(page, pageSize);
+    if (res && res.data) {
+      dispatch(setGrade(res));
+    }
+    setLoading(false);
+  };
 
   const redirectTo = async (goTo) => {
     try {
       history.push(goTo);
-    } catch (err) {
-      // console.log(err);
-    }
+    } catch (err) {}
   };
 
   async function onArchiveGrade(id) {
     swal({
       title: "Are you sure?",
-      text: "Are you sure you want to archive this grade?",
+      text: "Are you sure yo u want to arc hi ve this grade?",
       icon: "warning",
       buttons: true,
       dangerMode: true,
     }).then(async (willDelete) => {
       if (willDelete) {
         const res = await deleteGrade(id);
-        if (res && res.data && res.data.status === "success") {
+        if (res?.status === "success") {
           swal({
             title: "Good job!",
             text: "grade archive successfully!",
@@ -90,11 +108,13 @@ function GradeList({ page, setPage, loading, grades }) {
   async function handleArchiveUser(Id) {}
 
   const handleChangePage = async (event, newPage) => {
+    handleGetGrade(newPage + 1, pageSize);
     setPage(newPage);
     setRowCount(newPage);
   };
 
   function handleChangeRowsPerPage(event) {
+    handleGetGrade(1, +event.target.value);
     setRowsPerPage(+event.target.value);
     setPage(0);
     setPageSize(+event.target.value);
@@ -134,7 +154,7 @@ function GradeList({ page, setPage, loading, grades }) {
     },
   ];
 
-  const rows = grades?.map((grade, id) => {
+  const rows = grades?.data?.map((grade, id) => {
     const createdAt = new Date(grade?.created_at);
     return {
       id: grade?.id,
@@ -145,6 +165,12 @@ function GradeList({ page, setPage, loading, grades }) {
       createAt: createdAt.toLocaleString("en-US"),
     };
   });
+
+  useEffect(() => {
+    if (!grades) {
+      handleGetGrade(1, pageSize);
+    }
+  }, []);
 
   return (
     <>
@@ -183,7 +209,6 @@ function GradeList({ page, setPage, loading, grades }) {
               },
             }}
             rows={rows}
-            page={page}
             hideFooter
             columns={columns}
             components={{
@@ -194,11 +219,7 @@ function GradeList({ page, setPage, loading, grades }) {
             hideFooterPagination
             style={{ height: "70vh", border: "none", boxSizing: "unset" }}
             hideFooterSelectedRowCount
-            rowCount={rowCount /* pagination.totalItemsCount */}
             pageSize={pageSize}
-            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            rowsPerPageOptions={dataGridPageSizes}
-            pagination
           />
         ) : (
           ""
@@ -208,7 +229,11 @@ function GradeList({ page, setPage, loading, grades }) {
           component="div"
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
-          count={rowCount /* pagination.totalItemsCount */}
+          count={
+            grades && grades.total
+              ? grades.total
+              : 0 /* rowCount /* pagination.totalItemsCount */
+          }
           className="flex-shrink-0 border-t-1"
           rowsPerPageOptions={dataGridPageSizes}
           onRowsPerPageChange={handleChangeRowsPerPage}

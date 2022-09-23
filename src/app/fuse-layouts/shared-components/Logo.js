@@ -1,25 +1,26 @@
-import Typography from "@material-ui/core/Typography";
-import clsx from "clsx";
-import { makeStyles } from "@material-ui/core/styles";
+import clsx from 'clsx';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    "& .logo-icon": {
-      transition: theme.transitions.create(["width", "height"], {
+    '& .logo-icon': {
+      height: '70px',
+      marginTop: '10px',
+      transition: theme.transitions.create(['width', 'height'], {
         duration: theme.transitions.duration.shortest,
         easing: theme.transitions.easing.easeInOut,
       }),
     },
-    "& .react-badge, & .logo-text": {
-      transition: theme.transitions.create("opacity", {
+    '& .react-badge, & .logo-text': {
+      transition: theme.transitions.create('opacity', {
         duration: theme.transitions.duration.shortest,
         easing: theme.transitions.easing.easeInOut,
       }),
     },
   },
   reactBadge: {
-    backgroundColor: "#121212",
-    color: "#61DAFB",
+    backgroundColor: '#121212',
+    color: '#61DAFB',
   },
 }));
 
@@ -27,10 +28,10 @@ function Logo() {
   const classes = useStyles();
 
   return (
-    <div className={clsx(classes.root, "flex items-center")}>
+    <div className={clsx(classes.root, 'flex items-center')}>
       <img
         className="logo-icon w-full h-full"
-        src="assets/images/logos/eAlpha_09c.svg"
+        src="assets/images/logos/OBEASSES_logos_black.png"
         alt="logo"
       />
       {/* <div className={clsx(classes.reactBadge, 'react-badge flex items-center py-4 px-8 rounded')}>

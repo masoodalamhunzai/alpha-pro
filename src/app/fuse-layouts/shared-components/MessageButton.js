@@ -1,39 +1,38 @@
-import { useState } from "react";
-import Slider from "@material-ui/core/Slider";
-import Icon from "@material-ui/core/Icon";
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
-import Menu from "@material-ui/core/Menu";
-import clsx from "clsx";
+import { useState } from 'react';
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+import Menu from '@material-ui/core/Menu';
+import clsx from 'clsx';
 
 const marks = [
   {
     value: 0.7,
-    label: "70%",
+    label: '70%',
   },
   {
     value: 0.8,
-    label: "80%",
+    label: '80%',
   },
   {
     value: 0.9,
-    label: "90%",
+    label: '90%',
   },
   {
     value: 1,
-    label: "100%",
+    label: '100%',
   },
   {
     value: 1.1,
-    label: "110%",
+    label: '110%',
   },
   {
     value: 1.2,
-    label: "120%",
+    label: '120%',
   },
   {
     value: 1.3,
-    label: "130%",
+    label: '130%',
   },
 ];
 
@@ -42,7 +41,7 @@ function MessageButton(props) {
   const [fontSize, setFontSize] = useState(1);
 
   function changeHtmlFontSize() {
-    const html = document.getElementsByTagName("html")[0];
+    const html = document.getElementsByTagName('html')[0];
     html.style.fontSize = `${fontSize * 62.5}%`;
   }
 
@@ -57,7 +56,7 @@ function MessageButton(props) {
   return (
     <div>
       <IconButton
-        className={clsx("w-40 h-40", props.className)}
+        className={clsx('w-40 h-40', props.className)}
         aria-controls="font-size-menu"
         aria-haspopup="true"
         onClick={handleClick}
@@ -65,7 +64,7 @@ function MessageButton(props) {
         <Icon>message</Icon>
       </IconButton>
       <Menu
-        classes={{ paper: "w-320" }}
+        classes={{ paper: 'w-320' }}
         id="font-size-menu"
         anchorEl={anchorEl}
         keepMounted
@@ -73,12 +72,12 @@ function MessageButton(props) {
         onClose={handleClose}
         getContentAnchorEl={null}
         anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
+          vertical: 'bottom',
+          horizontal: 'center',
         }}
         transformOrigin={{
-          vertical: "top",
-          horizontal: "center",
+          vertical: 'top',
+          horizontal: 'center',
         }}
       >
         <div className="py-12 px-24">

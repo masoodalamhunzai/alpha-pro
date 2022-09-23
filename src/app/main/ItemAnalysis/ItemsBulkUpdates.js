@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react";
-import DemoContent from "@fuse/core/DemoContent";
-import FusePageSimple from "@fuse/core/FusePageSimple";
-import Typography from "@mui/material/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import { useStateValue } from "app/services/state/State";
-import { actions } from "app/services/state/Reducer";
-import { useLocation } from "react-router-dom";
-import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
-import Error500 from "app/shared-components/Error500";
+import { useState } from 'react';
+import FusePageSimple from '@fuse/core/FusePageSimple';
+import Typography from '@mui/material/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+import { useStateValue } from 'app/services/state/State';
+import { actions } from 'app/services/state/Reducer';
+import { useLocation } from 'react-router-dom';
+import Error500 from 'app/shared-components/Error500';
+import Breadcrumb from '../../fuse-layouts/shared-components/Breadcrumbs';
 
 const useStyles = makeStyles({
   layoutRoot: {},
@@ -16,10 +15,10 @@ const useStyles = makeStyles({
 const ItemsBulkUpdate = () => {
   const location = useLocation();
   const pageTitle = location.pathname
-    .split("/")
+    .split('/')
     .filter((x) => x)[0]
-    .split("-")
-    .join(" ");
+    .split('-')
+    .join(' ');
   const classes = useStyles();
   const [{ news }, dispatch] = useStateValue();
   const [count, setCount] = useState(0);
@@ -27,7 +26,7 @@ const ItemsBulkUpdate = () => {
   const setNews = async () => {
     dispatch({
       type: actions.SET_NEWS,
-      payload: { header: "new header text", des: "new description text" },
+      payload: { header: 'new header text', des: 'new description text' },
     });
   };
   /* useEffect(() => {
@@ -49,10 +48,10 @@ const ItemsBulkUpdate = () => {
             variant="h3"
             gutterBottom
             sx={{
-              color: "#000",
+              color: '#000',
               fontWeight: 700,
               mt: 2,
-              textTransform: "capitalize",
+              textTransform: 'capitalize',
             }}
           >
             {pageTitle}

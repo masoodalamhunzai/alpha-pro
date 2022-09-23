@@ -10,6 +10,7 @@ import { useLocation, useHistory } from "react-router-dom";
 import { primaryBlueColor } from "app/services/Settings";
 import { useStateValue } from "app/services/state/State";
 import Divider from "@mui/material/Divider";
+import Header from "app/shared-components/Header";
 import Alert from "@mui/material/Alert";
 import swal from "sweetalert";
 import Stack from "@mui/material/Stack";
@@ -96,7 +97,7 @@ const NewGrade = () => {
   const history = useHistory();
   const location = useLocation();
   const EDIT_MODE = "edit-grade";
-  const CREATE_NEW_MODE = "create-grade";
+  // const CREATE_NEW_MODE = "create-grade";
   const { editData, mode } = location?.state ? location?.state : "";
   const [{ user }, dispatch] = useStateValue();
   const [error, setError] = useState(false);
@@ -155,14 +156,11 @@ const NewGrade = () => {
       slug: slugify(grade),
       description,
       org_search_key: mode === EDIT_MODE ? editData?.org_search_key : 1,
-      curriculumId:
-        mode === EDIT_MODE
-          ? editData?.curriculumId
-          : "fad64cae-edff-41c3-bbcb-ca3c77b54087",
+      curriculumId: mode === EDIT_MODE ? editData?.curriculumId : 1,
     };
     if (validation()) {
       const res = await createUserGrade(payload);
-      if (res && res.data && res.data.status === "success") {
+      if (res?.status === "success") {
         swal({
           title: "Good job!",
           text:
@@ -184,129 +182,135 @@ const NewGrade = () => {
 
   const classes = useStyles();
   return (
-    <Container
-      classes={{
-        root: classes.root,
-      }}
-      component="main"
-      maxWidth="xs"
-    >
-      <CssBaseline />
-
-      <Box
-        sx={{
-          marginTop: 2,
-          display: "flex",
-          flexDirection: "column",
+    <>
+      <Header />
+      <Container
+        classes={{
+          root: classes.root,
         }}
+        component="main"
+        maxWidth="xs"
       >
-        <Box component="form" noValidate sx={{ my: 1, width: "50%" }}>
-          {error && (
-            <Alert
-              severity="error"
-              sx={{ fontSize: "1.3rem", width: "100%", m: 0 }}
-            >
-              {errorMessage}
-            </Alert>
-          )}
-          <FormControl fullWidth>
-            <TextField
-              fullWidth
-              margin="normal"
-              required
-              onChange={handleChangeInputs}
-              label="Grade"
-              name="grade"
-              defaultValue={grade}
-              autoComplete="grade"
-              autoFocus
-            />
-          </FormControl>
-          <FormControl fullWidth>
-            <TextField
-              fullWidth
-              id="outlined-multiline-flexible"
-              label="Description"
-              multiline
-              rows={4}
-              placeholder="Description"
-              defaultValue={description}
-              onChange={handleChangeDescription}
-            />
-          </FormControl>
-          {grade && (
+        <CssBaseline />
+
+        <Box
+          sx={{
+            marginTop: 2,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Box component="form" noValidate sx={{ my: 1, width: "50%" }}>
+            {error && (
+              <Alert
+                severity="error"
+                sx={{ fontSize: "1.3rem", width: "100%", m: 0 }}
+              >
+                {errorMessage}
+              </Alert>
+            )}
+            <FormControl fullWidth>
+              <TextField
+                fullWidth
+                margin="normal"
+                required
+                onChange={handleChangeInputs}
+                label="Grade"
+                name="grade"
+                defaultValue={grade}
+                autoComplete="grade"
+                autoFocus
+              />
+            </FormControl>
+            <FormControl fullWidth>
+              <TextField
+                fullWidth
+                id="outlined-multiline-flexible"
+                label="Description"
+                multiline
+                rows={4}
+                placeholder="Description"
+                defaultValue={description}
+                onChange={handleChangeDescription}
+              />
+            </FormControl>
+            {grade && (
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <span className="text-gray-500 text-base">Slug:</span>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  display="flex"
+                  className="w-full"
+                  justifyContent="start"
+                >
+                  <Button
+                    variant="contained"
+                    sx={{ textTransform: "lowercase" }}
+                  >
+                    {slugify(grade)}
+                  </Button>
+                </Stack>
+              </Box>
+            )}
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <span className="text-gray-500 text-base">Slug:</span>
+              <span className="text-gray-500 text-base">Status:</span>
               <Stack
+                spacing={3}
                 direction="row"
                 alignItems="center"
                 display="flex"
                 className="w-full"
-                justifyContent="start"
+                justifyContent="center"
               >
-                <Button variant="contained" sx={{ textTransform: "lowercase" }}>
-                  {slugify(grade)}
-                </Button>
+                {gradeStatusArr?.map((item) => (
+                  <Button
+                    key={item.id}
+                    variant="contained"
+                    className={
+                      item.id === gradeStatus
+                        ? classes.buttonSelected
+                        : classes.buttonGrey
+                    }
+                    onClick={() => handleChangeStatus(item.id)}
+                  >
+                    {item.status}
+                  </Button>
+                ))}
               </Stack>
             </Box>
-          )}
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <span className="text-gray-500 text-base">Status:</span>
-            <Stack
-              spacing={3}
-              direction="row"
-              alignItems="center"
-              display="flex"
-              className="w-full"
-              justifyContent="center"
+          </Box>
+          <div className="mt-8 mb-5 w-full">
+            <Divider />
+          </div>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              my: 2,
+            }}
+          >
+            <Button
+              type="submit"
+              variant="contained"
+              className={classes.continueBtn}
+              onClick={handleGradeSubmit}
             >
-              {gradeStatusArr?.map((item) => (
-                <Button
-                  key={item.id}
-                  variant="contained"
-                  className={
-                    item.id === gradeStatus
-                      ? classes.buttonSelected
-                      : classes.buttonGrey
-                  }
-                  onClick={() => handleChangeStatus(item.id)}
-                >
-                  {item.status}
-                </Button>
-              ))}
-            </Stack>
+              Save
+            </Button>
+            <Button
+              type="cancel"
+              variant="contained"
+              className={classes.cancelBtn}
+              onClick={() => redirectTo("/grade")}
+            >
+              cancel
+            </Button>
           </Box>
         </Box>
-        <div className="mt-8 mb-5 w-full">
-          <Divider />
-        </div>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            my: 2,
-          }}
-        >
-          <Button
-            type="submit"
-            variant="contained"
-            className={classes.continueBtn}
-            onClick={handleGradeSubmit}
-          >
-            Create
-          </Button>
-          <Button
-            type="cancel"
-            variant="contained"
-            className={classes.cancelBtn}
-            onClick={() => redirectTo("/grade")}
-          >
-            cancel
-          </Button>
-        </Box>
-      </Box>
-    </Container>
+      </Container>
+    </>
   );
 };
 

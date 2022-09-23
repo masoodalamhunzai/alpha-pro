@@ -2,12 +2,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/jsx-no-bind */
 
-import { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import FusePageSimple from '@fuse/core/FusePageSimple';
-import Typography from '@mui/material/Typography';
-import swal from 'sweetalert';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import FusePageSimple from "@fuse/core/FusePageSimple";
+import Typography from "@mui/material/Typography";
+import swal from "sweetalert";
+import { useHistory, useLocation } from "react-router-dom";
+import { getOrganizations } from "app/services/api/ApiManager";
+import { useDispatch, useSelector } from "react-redux";
+import { setOrgs } from "app/store/alpha/orgReducer";
 import {
   DialogActions,
   DialogContent,
@@ -16,27 +19,27 @@ import {
   TextField,
   FormControlLabel,
   Switch,
-} from '@material-ui/core';
+} from "@material-ui/core";
 // import { PlusCircle as PlusCircleIcon } from 'react-feather';
 /* import {
   CloudUpload as CloudUploadIcon,
   Cancel as CancelIcon,
   CalendarToday as DateIcon,
 } from '@material-ui/icons'; */
-import { AddOrganization } from 'app/services/api/ApiManager';
-import { useStateValue } from 'app/services/state/State';
+import { AddOrganization } from "app/services/api/ApiManager";
+import { useStateValue } from "app/services/state/State";
 // import * as Yup from 'yup';
-import { countriesState } from 'app/services/Settings';
+import { countriesState } from "app/services/Settings";
 
-import { Formik } from 'formik';
-import { useSnackbar } from 'notistack';
-import { Autocomplete } from '@material-ui/lab';
+import { Formik } from "formik";
+import { useSnackbar } from "notistack";
+import { Autocomplete } from "@material-ui/lab";
 // import AddProviderDialog from 'app/main/providers/CreateProviderDialog';
-import PhoneInput from 'react-phone-input-2';
-import Breadcrumb from '../../fuse-layouts/shared-components/Breadcrumbs';
+import PhoneInput from "react-phone-input-2";
+import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
 // import "react-phone-input-2/lib/style.css";
 
-import 'react-phone-input-2/lib/material.css';
+import "react-phone-input-2/lib/material.css";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,44 +52,44 @@ const useStyles = makeStyles((theme) => ({
     border: `1px solid ${theme.palette.background.default}`,
   },
   uploadIcon: {
-    color: '#01619b',
-    cursor: 'pointer',
+    color: "#01619b",
+    cursor: "pointer",
   },
   icon: {
-    color: 'white',
-    cursor: 'pointer',
-    float: 'right',
+    color: "white",
+    cursor: "pointer",
+    float: "right",
   },
   row: {
-    display: 'flex',
+    display: "flex",
     marginBottom: 10,
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   buttonsContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-evenly",
   },
   button: {
     background: theme.palette.primary.main,
-    color: '#fff',
+    color: "#fff",
     marginLeft: 5,
   },
   dialogHeader: {
     height: 150,
     backgroundColor: theme.palette.primary.main,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
   },
   dialogTitle: {
-    color: '#fff',
-    backgroundColor: '#01619b',
+    color: "#fff",
+    backgroundColor: "#01619b",
   },
   name: {
-    color: '#fff',
+    color: "#fff",
     marginTop: 10,
     fontSize: 16,
   },
@@ -94,19 +97,19 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1,
   },
   buttonGrey: {
-    background: 'grey',
-    color: '#fff',
+    background: "grey",
+    color: "#fff",
     marginLeft: 5,
   },
   activeText: {
-    color: 'green',
+    color: "green",
   },
   inActiveText: {
-    color: 'red',
+    color: "red",
   },
   plusButton: {
-    alignSelf: 'center',
-    marginLeft: '-10px',
+    alignSelf: "center",
+    marginLeft: "-10px",
   },
 }));
 
@@ -114,24 +117,31 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
   const location = useLocation();
   const history = useHistory();
   const pageTitle = location.pathname
-    .split('/')
+    .split("/")
     .filter((x) => x)
     .pop()
-    .split('-')
-    .join(' ');
+    .split("-")
+    .join(" ");
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const EDIT_MODE = 'edit-org';
-  const { editData, mode } = location?.state ? location?.state : '';
+  const EDIT_MODE = "edit-org";
+  const { editData, mode } = location?.state ? location?.state : "";
 
-  const editOrganization = mode === EDIT_MODE ? editData : '';
-  console.log(editOrganization, 'editOrganization');
+  const editOrganization = mode === EDIT_MODE ? editData : "";
+  console.log(editOrganization, "editOrganization");
   const [loading, setLoading] = useState(true);
   const [organization, setOrganization] = useState(null);
   const [serviceProviderDialog, setServiceProviderDialog] = useState(false);
-  const [{ user }, dispatch] = useStateValue();
+  const dispatch = useDispatch();
   const [statesArray, setStatesArray] = useState([]);
   const [countriesArray, setCountriesArray] = useState([]);
+
+  const loadOrganizations = async (page = 1, items = 10) => {
+    const res = await getOrganizations(page, items);
+    if (res) {
+      dispatch(setOrgs(res));
+    }
+  };
 
   useEffect(() => {
     const temp = [];
@@ -140,7 +150,7 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
     });
     setCountriesArray(temp);
 
-    if (editOrganization?.state != '') {
+    if (editOrganization?.state != "") {
       countriesState.map((s) => {
         if (s.alpha2Code === editOrganization?.country) {
           setStatesArray(s.states);
@@ -168,13 +178,13 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
             <Breadcrumb />
             <Typography
               variant="h3"
-              style={{ color: '#000' }}
+              style={{ color: "#000" }}
               gutterBottom
               sx={{
-                color: '#000',
+                color: "#000",
                 fontWeight: 700,
                 mt: 2,
-                textTransform: 'capitalize',
+                textTransform: "capitalize",
               }}
             >
               Manage Organization
@@ -184,29 +194,57 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
         content={
           <Formik
             initialValues={{
-              name: (organization && organization.name) || editOrganization?.name || '',
+              name:
+                (organization && organization.name) ||
+                editOrganization?.name ||
+                "",
               contactperson:
                 (organization && organization.contactperson) ||
                 editOrganization?.contactperson ||
-                '',
-              email: (organization && organization.email) || editOrganization?.email || '',
+                "",
+              email:
+                (organization && organization.email) ||
+                editOrganization?.email ||
+                "",
               phonenumber:
-                (organization && organization.phonenumber) || editOrganization?.phonenumber || '',
-              address: (organization && organization.address) || editOrganization?.address || '',
-              city: (organization && organization.city) || editOrganization?.city || '',
-              state: (organization && organization.state) || editOrganization?.state || '',
-              country: (organization && organization.country) || editOrganization?.country || '',
-              website: (organization && organization.website) || editOrganization?.website || '',
+                (organization && organization.phonenumber) ||
+                editOrganization?.phonenumber ||
+                "",
+              address:
+                (organization && organization.address) ||
+                editOrganization?.address ||
+                "",
+              city:
+                (organization && organization.city) ||
+                editOrganization?.city ||
+                "",
+              state:
+                (organization && organization.state) ||
+                editOrganization?.state ||
+                "",
+              country:
+                (organization && organization.country) ||
+                editOrganization?.country ||
+                "",
+              website:
+                (organization && organization.website) ||
+                editOrganization?.website ||
+                "",
               isActive:
-                (organization && organization.isActive) || editOrganization?.isActive || false,
+                (organization && organization.isActive) ||
+                editOrganization?.isActive ||
+                false,
             }}
-            onSubmit={async (values, { resetForm, setErrors, setStatus, setSubmitting }) => {
+            onSubmit={async (
+              values,
+              { resetForm, setErrors, setStatus, setSubmitting }
+            ) => {
               try {
                 const orgReq = {
                   name: values.name.trim(),
-                  description: 'This is test organization 1',
+                  description: "This is test organization 1",
                   contactFullName: values.contactperson.trim(),
-                  contactDesignation: 'Developer',
+                  contactDesignation: "Developer",
                   contactNumber: values.phonenumber.trim(),
                   contactEmail: values.email.trim(),
                   country: values.country.trim(),
@@ -221,17 +259,18 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                 console.log(`orgReq: ${orgReq.isActive}`);
                 const res = await AddOrganization(orgReq);
 
-                if (res && res.data && res.data.status === 'success') {
+                if (res && res.status && res.status === "success") {
+                  loadOrganizations(1, 10);
                   swal({
-                    title: 'Good job!',
+                    title: "Good job!",
                     text:
                       mode === EDIT_MODE
-                        ? 'Organization Updated Successfully!'
-                        : 'Organization Saved Successfully!',
-                    icon: 'success',
-                    button: 'Ok!',
+                        ? "Organization Updated Successfully!"
+                        : "Organization Saved Successfully!",
+                    icon: "success",
+                    button: "Ok!",
                   }).then((value) => {
-                    redirectTo('/organization-management');
+                    redirectTo("/organization-management");
                   });
                 }
 
@@ -265,7 +304,7 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
             }) => (
               <form onSubmit={handleSubmit}>
                 <DialogContent>
-                  <Grid container spacing={2} style={{ display: 'flex' }}>
+                  <Grid container spacing={2} style={{ display: "flex" }}>
                     <Grid item lg={6} md={6} sm={6}>
                       <TextField
                         error={Boolean(touched.name && errors.name)}
@@ -279,14 +318,18 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                         required
                         value={values.name}
                         variant="outlined"
-                        style={{ background: '#fff' }}
+                        style={{ background: "#fff" }}
                       />
                     </Grid>
                     <Grid item lg={6} md={6} sm={6}>
                       <TextField
-                        error={Boolean(touched.contactperson && errors.contactperson)}
+                        error={Boolean(
+                          touched.contactperson && errors.contactperson
+                        )}
                         fullWidth
-                        helperText={touched.contactperson && errors.contactperson}
+                        helperText={
+                          touched.contactperson && errors.contactperson
+                        }
                         label="Contact Person"
                         name="contactperson"
                         color="secondary"
@@ -295,7 +338,7 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                         required
                         value={values.contactperson}
                         variant="outlined"
-                        style={{ background: '#fff' }}
+                        style={{ background: "#fff" }}
                       />
                     </Grid>
                     <Grid item lg={6} md={6} sm={6}>
@@ -311,7 +354,7 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                         value={values.email}
                         variant="outlined"
                         type="email"
-                        style={{ background: '#fff' }}
+                        style={{ background: "#fff" }}
                       />
                     </Grid>
                     {/* <Grid item lg={6} md={6} sm={6}>
@@ -333,16 +376,16 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                     </Grid> */}
                     <Grid item lg={6} md={6} sm={6} className="ph-no-field">
                       <PhoneInput
-                        style={{ width: '100%', background: '#fff' }}
+                        style={{ width: "100%", background: "#fff" }}
                         country="us"
                         inputProps={{
-                          name: 'phonenumber',
+                          name: "phonenumber",
                           required: true,
                           autoFocus: true,
                         }}
                         placeholder="Phone Number"
                         name="phonenumber"
-                        onChange={(e) => setFieldValue('phonenumber', e)}
+                        onChange={(e) => setFieldValue("phonenumber", e)}
                         value={values.phonenumber}
                       />
                     </Grid>
@@ -399,17 +442,19 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                         freeSolo
                         multiple={false}
                         options={countriesArray || []}
-                        getOptionLabel={(o) => o.name || ''}
+                        getOptionLabel={(o) => o.name || ""}
                         value={
                           (countriesArray &&
                             countriesArray.length > 0 &&
-                            countriesArray.find((s) => s.code === values.country)) ||
-                          ''
+                            countriesArray.find(
+                              (s) => s.code === values.country
+                            )) ||
+                          ""
                         }
                         onChange={(event, newValue) => {
                           if (newValue && newValue.code) {
-                            setFieldValue('country', newValue.code);
-                            setFieldValue('state', '');
+                            setFieldValue("country", newValue.code);
+                            setFieldValue("state", "");
                             console.log(newValue);
                             console.log(
                               countriesState.map((s) => {
@@ -419,7 +464,7 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                               })
                             );
                           } else {
-                            setFieldValue('country', '');
+                            setFieldValue("country", "");
                           }
                         }}
                         renderInput={(params) => (
@@ -435,7 +480,7 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                             onBlur={handleBlur}
                             variant="outlined"
                             required
-                            style={{ background: '#fff' }}
+                            style={{ background: "#fff" }}
                           />
                         )}
                       />
@@ -487,13 +532,13 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                           (statesArray &&
                             statesArray.length > 0 &&
                             statesArray.find((s) => s === values.state)) ||
-                          ''
+                          ""
                         }
                         onChange={(event, newValue) => {
                           if (newValue && newValue) {
-                            setFieldValue('state', newValue);
+                            setFieldValue("state", newValue);
                           } else {
-                            setFieldValue('state', '');
+                            setFieldValue("state", "");
                           }
                         }}
                         renderInput={(params) => (
@@ -508,7 +553,7 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                             color="secondary"
                             onBlur={handleBlur}
                             variant="outlined"
-                            style={{ background: '#fff' }}
+                            style={{ background: "#fff" }}
                             required
                           />
                         )}
@@ -527,7 +572,7 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                         onChange={handleChange}
                         value={values.city}
                         variant="outlined"
-                        style={{ background: '#fff' }}
+                        style={{ background: "#fff" }}
                         required
                       />
                     </Grid>
@@ -544,31 +589,47 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                         // required
                         value={values.website}
                         variant="outlined"
-                        style={{ background: '#fff' }}
+                        style={{ background: "#fff" }}
                       />
                     </Grid>
 
-                    <Grid item lg={6} md={6} sm={6} align="left" style={{ marginLeft: '1%' }}>
+                    <Grid
+                      item
+                      lg={6}
+                      md={6}
+                      sm={6}
+                      align="left"
+                      style={{ marginLeft: "1%" }}
+                    >
                       <Typography>Status</Typography>
-                      {console.log(values.isActive, 'values.isActive')}
+                      {console.log(values.isActive, "values.isActive")}
                       <FormControlLabel
                         control={
                           <Switch
                             checked={values.isActive}
-                            onChange={(_, v) => setFieldValue('isActive', v)}
+                            onChange={(_, v) => setFieldValue("isActive", v)}
                           />
                         }
                         classes={{
-                          label: values.isActive ? classes.activeText : classes.inActiveText,
+                          label: values.isActive
+                            ? classes.activeText
+                            : classes.inActiveText,
                         }}
-                        label={values.isActive ? 'Active' : 'InActive'}
+                        label={values.isActive ? "Active" : "InActive"}
                       />
                     </Grid>
                   </Grid>
                 </DialogContent>
                 <DialogActions>
                   <Grid container>
-                    <Grid item lg={12} md={12} sm={12} align="right" style={{ marginRight: '2%' }}>
+                    <Grid
+                      item
+                      lg={12}
+                      md={12}
+                      sm={12}
+                      align="right"
+                      style={{ marginRight: "2%" }}
+                    >
                       <Button
                         type="submit"
                         color="secondary"
@@ -582,7 +643,7 @@ function ManageOrganization({ open, onClose, organizationId, onAddedUpdated }) {
                         className={classes.buttonGrey}
                         variant="contained"
                         color="secondary"
-                        onClick={() => redirectTo('/organization-management')}
+                        onClick={() => redirectTo("/organization-management")}
                       >
                         <Typography>Cancel</Typography>
                       </Button>

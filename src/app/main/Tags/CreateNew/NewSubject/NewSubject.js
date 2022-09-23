@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -8,16 +8,18 @@ import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { useStateValue } from "app/services/state/State";
+// import { useStateValue } from "app/services/state/State";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import { useLocation, useHistory } from "react-router-dom";
 import Divider from "@mui/material/Divider";
+import Header from "app/shared-components/Header";
 import swal from "sweetalert";
 import Alert from "@mui/material/Alert";
-import { primaryBlueColor, primaryGrayColor } from "app/services/Settings";
+import { primaryBlueColor } from "app/services/Settings";
 import Stack from "@mui/material/Stack";
-import { actions } from "app/services/state/Reducer";
+// import { actions } from "app/services/state/Reducer";
+import { setGradeNameList } from "app/store/alpha/gradesReducer";
 import { createUserSubject, getAllGrades } from "app/services/api/ApiManager";
 
 const useStyles = makeStyles({
@@ -98,9 +100,9 @@ const NewSubject = () => {
   const history = useHistory();
   const location = useLocation();
   const EDIT_MODE = "edit-subject";
-  const CREATE_NEW_MODE = "create-subject";
+  // const CREATE_NEW_MODE = "create-subject";
   const { editData, mode } = location?.state ? location?.state : "";
-  const [{ user, grades }, dispatch] = useStateValue();
+
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [subjectStatus, setSubjectStatus] = useState(0);
@@ -111,6 +113,8 @@ const NewSubject = () => {
   const [selectGrade, setSelectGrade] = useState(
     mode === EDIT_MODE ? editData.gradeId : ""
   );
+  const dispatch = useDispatch();
+  const grades = useSelector(({ alpha }) => alpha.grades.gradeNameList);
 
   const handleChangeStatus = (key) => {
     setSubjectStatus(key);
@@ -153,14 +157,17 @@ const NewSubject = () => {
   const handleSubjectSubmit = async (e) => {
     e.preventDefault();
     const payload = {
-      id: mode === EDIT_MODE ? editData?.id : "",
+      // id: mode === EDIT_MODE ? editData?.id : "",
       title: newSubject,
       slug: slugify(newSubject),
       gradeId: selectGrade,
     };
+    if (mode === EDIT_MODE) {
+      payload["id"] = editData?.id;
+    }
     if (validation()) {
       const res = await createUserSubject(payload);
-      if (res && res.data && res.data.status === "success") {
+      if (res?.status === "success") {
         swal({
           title: "Good job!",
           text:
@@ -186,11 +193,10 @@ const NewSubject = () => {
 
   const handleGetGrade = async () => {
     const res = await getAllGrades();
-    if (res && res.status === 200 && res.data) {
-      dispatch({
-        type: actions.SET_GRADES,
-        payload: res.data,
-      });
+    if (res && res.data && res.data) {
+      var arr = [];
+      res.data.map((item) => arr.push({ id: item.id, title: item.title }));
+      dispatch(setGradeNameList(arr));
     }
   };
 
@@ -200,132 +206,138 @@ const NewSubject = () => {
 
   const classes = useStyles();
   return (
-    <Container
-      classes={{
-        root: classes.root,
-      }}
-      component="main"
-      maxWidth="xs"
-    >
-      <CssBaseline />
-      <Box
-        sx={{
-          marginTop: 2,
-          display: "flex",
-          flexDirection: "column",
+    <>
+      <Header />
+      <Container
+        classes={{
+          root: classes.root,
         }}
+        component="main"
+        maxWidth="xs"
       >
-        <Box component="form" noValidate sx={{ my: 2, width: "50%" }}>
-          {error && (
-            <Alert
-              severity="error"
-              sx={{ fontSize: "1.3rem", m: 0, width: "100%" }}
-            >
-              {errorMessage}
-            </Alert>
-          )}
-          <FormControl fullWidth>
-            <TextField
-              fullWidth
-              margin="normal"
-              required
-              onChange={handleChangeInputs}
-              id="subject"
-              label="subject"
-              name="subject"
-              defaultValue={newSubject}
-              autoComplete="subject"
-              autoFocus
-            />
-          </FormControl>
-          <FormControl fullWidth>
-            <InputLabel id="organization-dropdown">Grade Name</InputLabel>
-            <Select
-              labelId="organization-dropdown"
-              id="organizationDropdown"
-              label="organization"
-              value={selectGrade}
-              onChange={handleChangeGrade}
-            >
-              {grades?.map((grade) => (
-                <MenuItem value={grade?.id} key={grade?.id}>
-                  {grade?.title}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          {newSubject && (
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 2,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Box component="form" noValidate sx={{ my: 2, width: "50%" }}>
+            {error && (
+              <Alert
+                severity="error"
+                sx={{ fontSize: "1.3rem", m: 0, width: "100%" }}
+              >
+                {errorMessage}
+              </Alert>
+            )}
+            <FormControl fullWidth>
+              <TextField
+                fullWidth
+                margin="normal"
+                required
+                onChange={handleChangeInputs}
+                id="subject"
+                label="subject"
+                name="subject"
+                defaultValue={newSubject}
+                autoComplete="subject"
+                autoFocus
+              />
+            </FormControl>
+            <FormControl fullWidth>
+              <InputLabel id="organization-dropdown">Grade Name</InputLabel>
+              <Select
+                labelId="organization-dropdown"
+                id="organizationDropdown"
+                label="organization"
+                value={selectGrade}
+                onChange={handleChangeGrade}
+              >
+                {grades?.map((grade) => (
+                  <MenuItem value={grade?.id} key={grade?.id}>
+                    {grade?.title}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            {newSubject && (
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <span className="text-gray-500 text-base">Slug:</span>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  display="flex"
+                  className="w-full"
+                  justifyContent="start"
+                >
+                  <Button
+                    variant="contained"
+                    sx={{ textTransform: "lowercase" }}
+                  >
+                    {slugify(newSubject)}
+                  </Button>
+                </Stack>
+              </Box>
+            )}
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <span className="text-gray-500 text-base">Slug:</span>
+              <span className="text-gray-500 text-base">Status:</span>
               <Stack
+                spacing={3}
                 direction="row"
                 alignItems="center"
                 display="flex"
                 className="w-full"
-                justifyContent="start"
+                justifyContent="center"
               >
-                <Button variant="contained" sx={{ textTransform: "lowercase" }}>
-                  {slugify(newSubject)}
-                </Button>
+                {subjectStatusArr?.map((item) => (
+                  <Button
+                    key={item.id}
+                    variant="contained"
+                    className={
+                      item.id === subjectStatus
+                        ? classes.buttonSelected
+                        : classes.buttonGrey
+                    }
+                    onClick={() => handleChangeStatus(item.id)}
+                  >
+                    {item.status}
+                  </Button>
+                ))}
               </Stack>
             </Box>
-          )}
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <span className="text-gray-500 text-base">Status:</span>
-            <Stack
-              spacing={3}
-              direction="row"
-              alignItems="center"
-              display="flex"
-              className="w-full"
-              justifyContent="center"
+          </Box>
+          <div className="mt-8 mb-5 w-full">
+            <Divider />
+          </div>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              my: 2,
+            }}
+          >
+            <Button
+              type="submit"
+              variant="contained"
+              className={classes.continueBtn}
+              onClick={handleSubjectSubmit}
             >
-              {subjectStatusArr?.map((item) => (
-                <Button
-                  key={item.id}
-                  variant="contained"
-                  className={
-                    item.id === subjectStatus
-                      ? classes.buttonSelected
-                      : classes.buttonGrey
-                  }
-                  onClick={() => handleChangeStatus(item.id)}
-                >
-                  {item.status}
-                </Button>
-              ))}
-            </Stack>
+              Save
+            </Button>
+            <Button
+              type="cancel"
+              variant="contained"
+              className={classes.cancelBtn}
+            >
+              cancel
+            </Button>
           </Box>
         </Box>
-        <div className="mt-8 mb-5 w-full">
-          <Divider />
-        </div>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            my: 2,
-          }}
-        >
-          <Button
-            type="submit"
-            variant="contained"
-            className={classes.continueBtn}
-            onClick={handleSubjectSubmit}
-          >
-            Create
-          </Button>
-          <Button
-            type="cancel"
-            variant="contained"
-            className={classes.cancelBtn}
-          >
-            cancel
-          </Button>
-        </Box>
-      </Box>
-    </Container>
+      </Container>
+    </>
   );
 };
 

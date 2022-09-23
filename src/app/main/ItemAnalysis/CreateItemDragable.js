@@ -187,7 +187,6 @@ const CreateItemDraggable = () => {
       // setSubmitting(false);
     }
   };
-  console.log('user in create item ', user);
   if (_.isEmpty(form)) {
     return null;
   }

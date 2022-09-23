@@ -1,6 +1,6 @@
-import jwtDecode from "jwt-decode";
-import axios from "axios";
-import { settings as s } from "../Settings";
+import jwtDecode from 'jwt-decode';
+import axios from 'axios';
+import { settings as s } from '../Settings';
 
 class AuthService {
   setAxiosInterceptors = ({ onLogout }) => {
@@ -42,12 +42,12 @@ class AuthService {
   loginWithEmailAndPassword = (email, password) =>
     new Promise((resolve, reject) => {
       fetch(`${s.baseUrl}${s.account.login}`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
-          Accept: "*/*",
+          'Content-Type': 'application/json',
+          Accept: '*/*',
         },
-        body: JSON.stringify({ email: email, password }),
+        body: JSON.stringify({ email, password }),
       })
         .then((response) => response.json())
         .then((response) => {
@@ -84,27 +84,27 @@ class AuthService {
 
   setSession = (accessToken) => {
     if (accessToken) {
-      localStorage.setItem("jwt_access_token", accessToken);
+      localStorage.setItem('jwt_access_token', accessToken);
       axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
     } else {
-      localStorage.removeItem("jwt_access_token");
+      localStorage.removeItem('jwt_access_token');
       delete axios.defaults.headers.common.Authorization;
     }
   };
 
   setUser = (user) => {
     if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem('user', JSON.stringify(user));
       axios.defaults.headers.common.Authorization = `Bearer ${user}`;
     } else {
-      localStorage.removeItem("user");
+      localStorage.removeItem('user');
       delete axios.defaults.headers.common.Authorization;
     }
   };
 
-  getAccessToken = () => localStorage.getItem("jwt_access_token");
+  getAccessToken = () => localStorage.getItem('jwt_access_token');
 
-  getUser = () => localStorage.getItem("user");
+  getUser = () => localStorage.getItem('user');
 
   isValidToken = (accessToken) => {
     if (!accessToken) {

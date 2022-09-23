@@ -1,6 +1,5 @@
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import JWTLoginTab from './tabs/JWTLoginTab';
 // import moment from "moment";
 import { Link } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
@@ -9,6 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { motion } from 'framer-motion';
 import { useHistory } from 'react-router';
 import { useState } from 'react';
+import JWTLoginTab from './tabs/JWTLoginTab';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -94,7 +94,11 @@ function Login() {
               animate={{ opacity: 1, transition: { delay: 0.2 } }}
             >
               <div className="flex items-center mb-48">
-                <img className={classes.logo} src="assets/images/logos/logo.png" alt="logo" />
+                <img
+                  className={classes.logo}
+                  src="assets/images/logos/OBEASSES_logos_black.png"
+                  alt="logo"
+                />
               </div>
             </motion.div>
 
@@ -128,7 +132,7 @@ function Login() {
 
             <div>
               <span className="font-normal mr-8 pr-8 pb-8">
-                Visit <Link href="https://www.ealpha.info/"> Alpha Publishing</Link>
+                Visit <Link href="https://www.ealpha.info/"> OBEASSES</Link>
               </span>
             </div>
 
@@ -137,7 +141,7 @@ function Login() {
             </div>
 
             <div>
-              <span className="font-normal mr-8 pr-8 pb-8">Copyright © 2022 Alpha Publishing</span>
+              <span className="font-normal mr-8 pr-8 pb-8">Copyright © 2022 OBEASSES</span>
             </div>
           </div>
         </Card>

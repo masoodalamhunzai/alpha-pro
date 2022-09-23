@@ -17,9 +17,9 @@ import { useSnackbar } from "notistack";
 import swal from "sweetalert";
 import { getOrganizations } from "app/services/api/ApiManager";
 import ViewModal from "app/main/OrganizationManagement/ViewModal";
-import { CustomToolbar } from "../../components";
 import { useDispatch, useSelector } from "react-redux";
 import { setOrgs } from "app/store/alpha/orgReducer";
+import { CustomToolbar } from "../../components";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -70,6 +70,8 @@ const useStyles = makeStyles((theme) => ({
 function OrganizationsList({
   page,
   setPage,
+  pageSize,
+  setPageSize,
   loading,
   setLoading,
   fetchOrganizations,
@@ -83,12 +85,10 @@ function OrganizationsList({
   const anchorRef = useRef(null);
   const [organizationId, setOrganizationId] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [pageSize, setPageSize] = useState(10);
-  const [rowCount, setRowCount] = useState(1);
+
   const [currentPage, setCurrentPage] = useState(0);
   const [openViewModal, setOpenViewModal] = useState(false);
   const [organizationDetailsView, setOrganizationDetailsView] = useState(null);
-  // const { payload: organizationsListList, pagination } = organizations;
   const [pagination, setPagination] = useState([]);
 
   async function onArchiveOrganization(Id) {
@@ -105,7 +105,9 @@ function OrganizationsList({
     });
   }
 
-  async function handleArchiveOrganization(Id) {}
+  async function handleArchiveOrganization(Id) {
+    //
+  }
 
   async function onRestoreOrganization(Id) {
     swal({
@@ -121,7 +123,9 @@ function OrganizationsList({
     });
   }
 
-  async function handleRestoreOrganization(Id) {}
+  async function handleRestoreOrganization(Id) {
+    //
+  }
 
   const handleModalClose = () => setOpenViewModal(false);
 
@@ -137,29 +141,28 @@ function OrganizationsList({
   const handleChangePage = async (event, newPage) => {
     loadOrganizations(newPage + 1, pageSize);
     setPage(newPage);
-    setRowCount(newPage);
   };
 
   function handleChangeRowsPerPage(event) {
     loadOrganizations(page, +event.target.value);
     setRowsPerPage(+event.target.value);
-    //setPage(0);
+    // setPage(0);
     setPageSize(+event.target.value);
   }
 
   const loadOrganizations = async (page = 1, items = 10) => {
     const res = await getOrganizations(page, items);
-    if (res && res.status === 200 && res.data) {
-      dispatch(setOrgs({ ...res.data }));
-      /* dispatch({
-        type: actions.SET_ORGANIZATION,
-        payload: res.data,
-      }); */
+    if (res) {
+      dispatch(setOrgs(res));
     }
   };
+
   useEffect(() => {
-    loadOrganizations(1, 10);
+    if (!organizations) {
+      loadOrganizations(1, 10);
+    }
   }, []);
+
   const columns = [
     { field: "name", headerName: "Name", flex: 1 },
     { field: "contactperson", headerName: "Contact Person", flex: 0.5 },
@@ -225,10 +228,6 @@ function OrganizationsList({
       };
     });
 
-  useEffect(() => {
-    setRowCount(rows && rows !== null ? rows.length : 0);
-  }, [rows]);
-
   return (
     <>
       <div className={classes.root}>
@@ -257,7 +256,6 @@ function OrganizationsList({
               },
             }}
             rows={rows}
-            page={page}
             hideFooter
             columns={columns}
             components={{
@@ -267,15 +265,7 @@ function OrganizationsList({
             hideFooterPagination
             style={{ height: "70vh", border: "none", boxSizing: "unset" }}
             hideFooterSelectedRowCount
-            rowCount={
-              organizations && organizations.total
-                ? organizations.total
-                : 0 /* pagination.totalItemsCount */
-            }
             pageSize={pageSize}
-            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            rowsPerPageOptions={dataGridPageSizes}
-            pagination
           />
         )}
         <TablePagination

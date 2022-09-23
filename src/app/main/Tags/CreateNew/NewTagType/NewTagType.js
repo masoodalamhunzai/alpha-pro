@@ -1,101 +1,99 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
-import Box from "@mui/material/Box";
-import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-import CssBaseline from "@mui/material/CssBaseline";
-import FormControl from "@mui/material/FormControl";
-import Divider from "@mui/material/Divider";
+import React, { useState } from 'react';
+import Box from '@mui/material/Box';
+import { makeStyles } from '@material-ui/core/styles';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
+import FormControl from '@mui/material/FormControl';
+import Divider from '@mui/material/Divider';
 // import { useStateValue } from "app/services/state/State";
-import { useLocation, useHistory } from "react-router-dom";
+import { useLocation, useHistory } from 'react-router-dom';
 // import swal from "sweetalert";
-import Alert from "@mui/material/Alert";
-import { primaryBlueColor } from "app/services/Settings";
-import Stack from "@mui/material/Stack";
-import { actions } from "app/services/state/Reducer";
+import Alert from '@mui/material/Alert';
+import { primaryBlueColor } from 'app/services/Settings';
+import Stack from '@mui/material/Stack';
 
 const useStyles = makeStyles({
   root: {
-    fontSize: "1rem",
-    "&.MuiContainer-root": {
-      maxWidth: "90%",
-      margin: "3rem",
+    fontSize: '1rem',
+    '&.MuiContainer-root': {
+      maxWidth: '90%',
+      margin: '3rem',
     },
-    "& .MuiInputBase-input": {
-      backgroundColor: "#fff",
-      textAlign: "center",
-      fontSize: "1.5rem !important",
+    '& .MuiInputBase-input': {
+      backgroundColor: '#fff',
+      textAlign: 'center',
+      fontSize: '1.5rem !important',
     },
-    "& .MuiButton-root": {
-      fontWeight: "700",
-      borderRadius: "1.6rem",
-      margin: "1rem 0.5rem",
-      padding: "0.5rem 3rem",
+    '& .MuiButton-root': {
+      fontWeight: '700',
+      borderRadius: '1.6rem',
+      margin: '1rem 0.5rem',
+      padding: '0.5rem 3rem',
     },
-    "& .MuiFormControlLabel-label": {
-      fontSize: "1.2rem",
-      margin: "1rem 0",
+    '& .MuiFormControlLabel-label': {
+      fontSize: '1.2rem',
+      margin: '1rem 0',
     },
-    "& .MuiFormControl-root": {
-      margin: "1rem 0",
+    '& .MuiFormControl-root': {
+      margin: '1rem 0',
     },
-    "& .MuiInputLabel-root": {
-      fontSize: "1.4rem",
-      left: "-4px",
-      top: "-5px",
+    '& .MuiInputLabel-root': {
+      fontSize: '1.4rem',
+      left: '-4px',
+      top: '-5px',
     },
   },
   buttonGrey: {
-    "&.MuiButton-root": {
-      backgroundColor: "grey",
-      color: "#fff",
-      fontSize: "11px",
-      "&:hover": { backgroundColor: primaryBlueColor },
-      textTransform: "capitalize",
+    '&.MuiButton-root': {
+      backgroundColor: 'grey',
+      color: '#fff',
+      fontSize: '11px',
+      '&:hover': { backgroundColor: primaryBlueColor },
+      textTransform: 'capitalize',
     },
   },
   buttonSelected: {
-    "&.MuiButton-root": {
-      fontSize: "11px",
-      backgroundColor: "#3287FB",
-      color: "#fff",
-      textTransform: "capitalize",
+    '&.MuiButton-root': {
+      fontSize: '11px',
+      backgroundColor: '#3287FB',
+      color: '#fff',
+      textTransform: 'capitalize',
     },
   },
   continueBtn: {
-    "&.MuiButton-root": {
-      backgroundColor: "#3287FB",
-      fontSize: "1.3rem",
-      textTransform: "capitalize",
+    '&.MuiButton-root': {
+      backgroundColor: '#3287FB',
+      fontSize: '1.3rem',
+      textTransform: 'capitalize',
     },
   },
   cancelBtn: {
-    "&.MuiButton-root": {
-      backgroundColor: "#ACACAC",
-      fontSize: "1.3rem",
-      textTransform: "capitalize",
+    '&.MuiButton-root': {
+      backgroundColor: '#ACACAC',
+      fontSize: '1.3rem',
+      textTransform: 'capitalize',
     },
   },
   formInput: {
-    "&.MuiBox-root": {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      width: "100%",
+    '&.MuiBox-root': {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '100%',
     },
   },
 });
 const tagTypeStatusArr = [
-  { id: 1, status: "Items" },
-  { id: 2, status: "Activities" },
+  { id: 1, status: 'Items' },
+  { id: 2, status: 'Activities' },
 ];
 const NewTagType = () => {
   const history = useHistory();
   const location = useLocation();
   const [error, setError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
   const [tagTypeStatus, setTagTypeStatus] = useState(0);
 
   const handleChangeStatus = (key) => {
@@ -119,16 +117,13 @@ const NewTagType = () => {
       <Box
         sx={{
           marginTop: 2,
-          display: "flex",
-          flexDirection: "column",
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
-        <Box component="form" noValidate sx={{ my: 2, width: "50%" }}>
+        <Box component="form" noValidate sx={{ my: 2, width: '50%' }}>
           {error && (
-            <Alert
-              severity="error"
-              sx={{ fontSize: "1.3rem", m: 0, width: "100%" }}
-            >
+            <Alert severity="error" sx={{ fontSize: '1.3rem', m: 0, width: '100%' }}>
               {errorMessage}
             </Alert>
           )}
@@ -159,7 +154,7 @@ const NewTagType = () => {
               autoFocus
             />
           </FormControl>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <span className="text-gray-500 text-base w-1/2">Used In * :</span>
             <Stack
               spacing={3}
@@ -175,9 +170,7 @@ const NewTagType = () => {
                   variant="contained"
                   size="medium"
                   className={
-                    item.id === tagTypeStatus
-                      ? classes.buttonSelected
-                      : classes.buttonGrey
+                    item.id === tagTypeStatus ? classes.buttonSelected : classes.buttonGrey
                   }
                   onClick={() => handleChangeStatus(item.id)}
                 >
@@ -192,9 +185,9 @@ const NewTagType = () => {
         </div>
         <Box
           sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
             my: 2,
           }}
         >

@@ -1,11 +1,8 @@
 import { useState } from 'react';
-import Slider from '@material-ui/core/Slider';
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
 import Menu from '@material-ui/core/Menu';
 import clsx from 'clsx';
-
 
 function Notifications(props) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -51,9 +48,7 @@ function Notifications(props) {
           horizontal: 'center',
         }}
       >
-        <div className="py-12 px-24">
-       Notifications
-        </div>
+        <div className="py-12 px-24">Notifications</div>
       </Menu>
     </div>
   );

@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
-import DemoContent from "@fuse/core/DemoContent";
-import FusePageSimple from "@fuse/core/FusePageSimple";
-import { makeStyles } from "@material-ui/core/styles";
-import { useStateValue } from "app/services/state/State";
-import { actions } from "app/services/state/Reducer";
+import { useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import { useStateValue } from 'app/services/state/State';
+import { actions } from 'app/services/state/Reducer';
 
 const useStyles = makeStyles({
   layoutRoot: {},
@@ -17,7 +15,7 @@ function HomeContent() {
   const setNews = async () => {
     dispatch({
       type: actions.SET_NEWS,
-      payload: { header: "new header text", des: "new description text" },
+      payload: { header: 'new header text', des: 'new description text' },
     });
   };
   /* useEffect(() => {
@@ -32,7 +30,7 @@ function HomeContent() {
       src="assets/images/Home-1.png"
       alt="beach"
       style={{
-        width: "100%",
+        width: '100%',
       }}
       className="rounded-6"
     />

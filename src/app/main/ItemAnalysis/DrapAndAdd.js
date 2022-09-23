@@ -1,28 +1,28 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react/jsx-no-bind */
-import { memo, useRef, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { Folder } from "@material-ui/icons";
-import Fab from "@mui/material/Fab";
-import AddIcon from "@mui/icons-material/Add";
-import { useHistory } from "react-router-dom";
+import { memo, useRef } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import { Folder } from '@material-ui/icons';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
+import { useHistory } from 'react-router-dom';
 // import { DataGrid } from '@material-ui/data-grid';
-import { useStateValue } from "app/services/state/State";
-import { useSnackbar } from "notistack";
-import { useDrop } from "react-dnd";
+import { useStateValue } from 'app/services/state/State';
+import { useSnackbar } from 'notistack';
+import { useDrop } from 'react-dnd';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     paddingTop: 20,
-    border: "1px dashed gray",
-    minHeight: "150px",
+    border: '1px dashed gray',
+    minHeight: '150px',
   },
   container: {
-    height: "100%",
+    height: '100%',
   },
   textCenter: {
-    textAlign: "center",
+    textAlign: 'center',
   },
 }));
 
@@ -34,13 +34,9 @@ function DropAndAdd(props) {
   const [{ user, items, defaultPageSize }, dispatch] = useStateValue();
 
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
-    accept: "box",
+    accept: 'box',
     drop: (item, monitor) => {
-      props.handleQuestionDragDrop(
-        props.SectionName,
-        props.TabName,
-        item.component
-      );
+      props.handleQuestionDragDrop(props.SectionName, props.TabName, item.component);
     },
     collect: (monitor) => ({
       isOver: monitor.isOver(),
@@ -48,14 +44,14 @@ function DropAndAdd(props) {
     }),
   }));
   const isActive = canDrop && isOver;
-  let backgroundColor = "#fff";
-  let textColor = "gray";
+  let backgroundColor = '#fff';
+  let textColor = 'gray';
   if (isActive) {
-    backgroundColor = "#1976d2";
-    textColor = "white";
+    backgroundColor = '#1976d2';
+    textColor = 'white';
   } else if (canDrop) {
-    backgroundColor = "#8baccd";
-    textColor = "white";
+    backgroundColor = '#8baccd';
+    textColor = 'white';
   }
 
   /*   useEffect(() => {
@@ -66,12 +62,9 @@ function DropAndAdd(props) {
 
   return (
     <>
-      <div
-        ref={drop}
-        /* style={{ ...style, backgroundColor }} */ data-testid="dustbin"
-      >
+      <div ref={drop} /* style={{ ...style, backgroundColor }} */ data-testid="dustbin">
         <div className={classes.root} style={{ backgroundColor }}>
-          <div className={`${"mt-32" + " "}${classes.textCenter}`}>
+          <div className={`${'mt-32' + ' '}${classes.textCenter}`}>
             <span className="p-12">
               <Fab color="primary" aria-label="add">
                 <AddIcon />
@@ -81,8 +74,8 @@ function DropAndAdd(props) {
             <span className="p-12" />
 
             <span className="p-12">
-              <Fab style={{ backgroundColor: "lightgray" }} aria-label="folder">
-                <Folder style={{ color: "white" }} />
+              <Fab style={{ backgroundColor: 'lightgray' }} aria-label="folder">
+                <Folder style={{ color: 'white' }} />
               </Fab>
             </span>
           </div>
@@ -91,10 +84,10 @@ function DropAndAdd(props) {
             <h5
               style={{
                 color: textColor,
-                padding: "2%",
+                padding: '2%',
               }}
             >
-              {isActive ? "Release to drop" : " Drag question here"}
+              {isActive ? 'Release to drop' : ' Drag question here'}
             </h5>
           </div>
         </div>

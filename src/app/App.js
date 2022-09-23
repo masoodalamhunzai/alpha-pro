@@ -25,8 +25,6 @@ import withAppProviders from './withAppProviders';
 
 const state = store.getState();
 
-console.log('state', state);
-
 const App = () => {
   return (
     <Provider store={store}>

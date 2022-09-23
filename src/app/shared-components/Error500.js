@@ -1,7 +1,6 @@
-import Typography from "@mui/material/Typography";
-import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import Box from "@mui/material/Box";
+import Typography from '@mui/material/Typography';
+import { motion } from 'framer-motion';
+import Box from '@mui/material/Box';
 
 function Error500() {
   return (
@@ -19,7 +18,7 @@ function Error500() {
             fill="none"
             preserveAspectRatio="xMidYMax slice"
             xmlns="http://www.w3.org/2000/svg"
-            sx={{ color: "secondary.main" }}
+            sx={{ color: 'secondary.main' }}
           >
             <g clipPath="url(#clip0)">
               <path
@@ -168,48 +167,15 @@ function Error500() {
                 className="text-gray-800"
                 fill="currentColor"
               />
-              <path
-                opacity="0.4"
-                d="M277.609 150H261.609V166H277.609V150Z"
-                fill="currentColor"
-              />
-              <path
-                opacity="0.8"
-                d="M300.609 150H284.609V166H300.609V150Z"
-                fill="currentColor"
-              />
-              <path
-                d="M323.609 150H307.609V166H323.609V150Z"
-                fill="currentColor"
-              />
-              <path
-                opacity="0.4"
-                d="M277.609 251H261.609V267H277.609V251Z"
-                fill="currentColor"
-              />
-              <path
-                opacity="0.8"
-                d="M300.609 251H284.609V267H300.609V251Z"
-                fill="currentColor"
-              />
-              <path
-                d="M323.609 251H307.609V267H323.609V251Z"
-                fill="currentColor"
-              />
-              <path
-                opacity="0.4"
-                d="M277.609 352H261.609V368H277.609V352Z"
-                fill="currentColor"
-              />
-              <path
-                opacity="0.8"
-                d="M300.609 352H284.609V368H300.609V352Z"
-                fill="currentColor"
-              />
-              <path
-                d="M323.609 352H307.609V368H323.609V352Z"
-                fill="currentColor"
-              />
+              <path opacity="0.4" d="M277.609 150H261.609V166H277.609V150Z" fill="currentColor" />
+              <path opacity="0.8" d="M300.609 150H284.609V166H300.609V150Z" fill="currentColor" />
+              <path d="M323.609 150H307.609V166H323.609V150Z" fill="currentColor" />
+              <path opacity="0.4" d="M277.609 251H261.609V267H277.609V251Z" fill="currentColor" />
+              <path opacity="0.8" d="M300.609 251H284.609V267H300.609V251Z" fill="currentColor" />
+              <path d="M323.609 251H307.609V267H323.609V251Z" fill="currentColor" />
+              <path opacity="0.4" d="M277.609 352H261.609V368H277.609V352Z" fill="currentColor" />
+              <path opacity="0.8" d="M300.609 352H284.609V368H300.609V352Z" fill="currentColor" />
+              <path d="M323.609 352H307.609V368H323.609V352Z" fill="currentColor" />
               <path
                 d="M316.609 617C360.24 617 395.609 581.63 395.609 538C395.609 494.37 360.24 459 316.609 459C272.979 459 237.609 494.37 237.609 538C237.609 581.63 272.979 617 316.609 617Z"
                 className="text-gray-800"

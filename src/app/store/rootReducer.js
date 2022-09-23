@@ -1,6 +1,6 @@
-import alpha from './alpha';
 import auth from 'app/auth/store';
 import { combineReducers } from '@reduxjs/toolkit';
+import alpha from './alpha';
 import fuse from './fuse';
 import i18n from './i18nSlice';
 

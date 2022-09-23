@@ -32,7 +32,7 @@ function EnvSwitch(props) {
   const history = useHistory();
   const _user = useSelector(({ alpha }) => alpha.user);
   const { user = {} } = _user || {};
-  const { current_env: currentEnv = '' } = user || {};
+  const { currentEnv = '' } = user || {};
   const dispatch = useDispatch();
 
   const switchEnvironment = (env) => {

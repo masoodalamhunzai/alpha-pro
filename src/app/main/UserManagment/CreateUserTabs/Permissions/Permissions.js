@@ -97,23 +97,25 @@ const Permissions = ({
                   <FormControlLabel
                     control={
                       <Checkbox
+                        defaultChecked={alphaProd}
                         name="alphaProd"
                         value={alphaProd}
                         onChange={handleChangePermissions}
                       />
                     }
-                    label="Alpha Publishing Prod"
+                    label="Production"
                     className="text-2xl"
                   />
                   <FormControlLabel
                     control={
                       <Checkbox
                         name="alphaDev"
+                        defaultChecked={alphaDev}
                         value={alphaDev}
                         onChange={handleChangePermissions}
                       />
                     }
-                    label="Alpha Publishing Dev"
+                    label="Development"
                   />
                 </FormGroup>
                 <div className="flex justify-between my-5">
@@ -136,6 +138,7 @@ const Permissions = ({
                       control={
                         <Checkbox
                           name="activityManager"
+                          defaultChecked={activityManager}
                           value={activityManager}
                           onChange={handleChangePermissions}
                         />
@@ -146,6 +149,7 @@ const Permissions = ({
                       control={
                         <Checkbox
                           name="bulkUpdateManager"
+                          defaultChecked={bulkUpdateManager}
                           value={bulkUpdateManager}
                           onChange={handleChangePermissions}
                         />
@@ -156,6 +160,7 @@ const Permissions = ({
                       control={
                         <Checkbox
                           name="tagManager"
+                          defaultChecked={tagManager}
                           value={tagManager}
                           onChange={handleChangePermissions}
                         />
@@ -168,6 +173,7 @@ const Permissions = ({
                       control={
                         <Checkbox
                           name="tagHierarchyManager"
+                          defaultChecked={tagHierarchyManager}
                           value={tagHierarchyManager}
                           onChange={handleChangePermissions}
                         />
@@ -178,6 +184,7 @@ const Permissions = ({
                       control={
                         <Checkbox
                           name="roleUsers"
+                          defaultChecked={roleUsers}
                           value={roleUsers}
                           onChange={handleChangePermissions}
                         />
@@ -206,6 +213,7 @@ const Permissions = ({
                       control={
                         <Checkbox
                           name="omrManager"
+                          defaultChecked={omrManager}
                           value={omrManager}
                           onChange={handleChangePermissions}
                         />
@@ -249,6 +257,7 @@ const Permissions = ({
                     control={
                       <Checkbox
                         name="accessEditProfile"
+                        defaultChecked={accessEditProfile}
                         value={accessEditProfile}
                         onChange={handleChangePermissions}
                       />
@@ -260,6 +269,7 @@ const Permissions = ({
                     control={
                       <Checkbox
                         name="roleUser"
+                        defaultChecked={roleUser}
                         value={roleUser}
                         onChange={handleChangePermissions}
                       />
@@ -270,6 +280,7 @@ const Permissions = ({
                     control={
                       <Checkbox
                         name="roleAdmin"
+                        defaultChecked={roleAdmin}
                         value={roleAdmin}
                         onChange={handleChangePermissions}
                       />
@@ -290,6 +301,7 @@ const Permissions = ({
                     control={
                       <Checkbox
                         name="managementAdmin"
+                        defaultChecked={managementAdmin}
                         value={managementAdmin}
                         onChange={handleChangePermissions}
                       />
@@ -300,6 +312,7 @@ const Permissions = ({
                     control={
                       <Checkbox
                         name="userManager"
+                        defaultChecked={userManager}
                         value={userManager}
                         onChange={handleChangePermissions}
                       />
@@ -310,6 +323,7 @@ const Permissions = ({
                     control={
                       <Checkbox
                         name="systemAdmin"
+                        defaultChecked={systemAdmin}
                         value={systemAdmin}
                         onChange={handleChangePermissions}
                       />
@@ -329,6 +343,7 @@ const Permissions = ({
                   control={
                     <Checkbox
                       name="insightAccess"
+                      defaultChecked={insightAccess}
                       value={insightAccess}
                       onChange={handleChangePermissions}
                     />
@@ -347,6 +362,7 @@ const Permissions = ({
                   control={
                     <Checkbox
                       name="authorSiteSettingManager"
+                      defaultChecked={authorSiteSettingManager}
                       value={authorSiteSettingManager}
                       onChange={handleChangePermissions}
                     />

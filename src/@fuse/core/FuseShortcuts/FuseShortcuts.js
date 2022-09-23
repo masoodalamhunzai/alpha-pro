@@ -152,7 +152,7 @@ function FuseShortcuts(props) {
             )
         )}
 
-       {/*  <Tooltip
+        {/*  <Tooltip
           title="Click to add/remove shortcut"
           placement={props.variant === 'horizontal' ? 'bottom' : 'left'}
         >

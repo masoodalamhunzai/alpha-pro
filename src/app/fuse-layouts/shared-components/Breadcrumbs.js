@@ -1,33 +1,27 @@
-import Breadcrumbs from "@mui/material/Breadcrumbs";
-import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
-import { useLocation, useHistory } from "react-router-dom";
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import Typography from '@mui/material/Typography';
+import Link from '@mui/material/Link';
+import { useLocation, useHistory } from 'react-router-dom';
 
-import Stack from "@mui/material/Stack";
+import Stack from '@mui/material/Stack';
 
 const Breadcrumb = () => {
   const location = useLocation();
   const history = useHistory();
   const pathname = location.pathname
-    .split("/")
+    .split('/')
     .filter((x) => x)
     .pop()
-    .split("-")
-    .join(" ");
-  const linkPath = location.pathname.split("/").filter((x) => x);
+    .split('-')
+    .join(' ');
+  const linkPath = location.pathname.split('/').filter((x) => x);
   const handleNavigate = (event) => {
     event.preventDefault();
-    history.push("/home");
+    history.push('/home');
   };
 
   const breadcrumbs = [
-    <Link
-      underline="hover"
-      key="2"
-      color="inherit"
-      href="/home"
-      onClick={handleNavigate}
-    >
+    <Link underline="hover" key="2" color="inherit" href="/home" onClick={handleNavigate}>
       Home
     </Link>,
     linkPath.length > 1 && (

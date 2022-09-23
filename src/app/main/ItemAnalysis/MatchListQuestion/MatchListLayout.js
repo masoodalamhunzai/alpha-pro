@@ -1,20 +1,16 @@
-import { useState, useEffect } from "react";
-import Typography from "@mui/material/Typography";
-import WYSIWYGEditor from "app/shared-components/WYSIWYGEditor";
-import Icon from "@material-ui/core/Icon";
-import Paper from "@mui/material/Paper";
-import { Controller, useForm } from "react-hook-form";
-import _ from "@lodash";
-import { TextField, Checkbox } from "@mui/material";
-import Switch from "app/shared-components/Switch";
-import { primaryBlueColor } from "app/services/Settings";
-import StimulusListDraggableItem from "./StimulusListDraggableItem";
-import PossibleResponsesDraggableItem from "./PossibleResponsesDraggableItem";
-import { useStateValue } from "app/services/state/State";
-import { useSelector } from "react-redux";
-import { EditorState, convertFromRaw } from "draft-js";
+import { useState, useEffect } from 'react';
+import Typography from '@mui/material/Typography';
+import WYSIWYGEditor from 'app/shared-components/WYSIWYGEditor';
+import Icon from '@material-ui/core/Icon';
+import Paper from '@mui/material/Paper';
+import { Controller, useForm } from 'react-hook-form';
+import Switch from 'app/shared-components/Switch';
+import { useSelector } from 'react-redux';
+import { EditorState, convertFromRaw } from 'draft-js';
+import StimulusListDraggableItem from './StimulusListDraggableItem';
+import PossibleResponsesDraggableItem from './PossibleResponsesDraggableItem';
 
-const defaultValues = { name: "", email: "", subject: "", message: "" };
+const defaultValues = { name: '', email: '', subject: '', message: '' };
 
 const propsType = [
   /*  "multipleChoices",
@@ -27,35 +23,34 @@ const propsType = [
 
 const MatchListLayout = (props) => {
   const itemQuestionsList = useSelector(({ alpha }) => alpha.item.questions);
-  //MatchList Layout Starts
+  // MatchList Layout Starts
   const [groupPossibleResponses, setGroupPossibleResponses] = useState(false);
   const [trueFalseShuffleOption, setTrueFalseShuffleOption] = useState(false);
   const [trueFalseShowDragHandle, setTrueFalseShowDragHandle] = useState(false);
-  const [trueFalseDuplicateResponse, setTrueFalseDuplicateResponse] =
-    useState(false);
+  const [trueFalseDuplicateResponse, setTrueFalseDuplicateResponse] = useState(false);
 
-  const [editorContent, setEditorContent] = useState("");
+  const [editorContent, setEditorContent] = useState('');
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
   const [multipleChoices, setMultipleChoices] = useState([
     {
       id: `item-1}`,
       position: 0,
-      title: "Test1",
+      title: 'Test1',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-2`,
       position: 1,
-      title: "Test2",
+      title: 'Test2',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-3`,
       position: 2,
-      title: "Test3",
+      title: 'Test3',
       isCorrect: false,
       isAlternate: false,
     },
@@ -64,29 +59,29 @@ const MatchListLayout = (props) => {
     {
       id: `item-1}`,
       position: 0,
-      title: "Item1",
+      title: 'Item1',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-2`,
       position: 1,
-      title: "Item2",
+      title: 'Item2',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-3`,
       position: 2,
-      title: "Item2",
+      title: 'Item2',
       isCorrect: false,
       isAlternate: false,
     },
   ]);
 
-  //MatchList Layout Ends
+  // MatchList Layout Ends
   const { control } = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues,
   });
   const [annotations, setAnnotations] = useState([]);
@@ -99,8 +94,8 @@ const MatchListLayout = (props) => {
   const onSubmit = (newAnnotation) => {
     const { geometry, data } = newAnnotation;
 
-    console.log("annotation", newAnnotation);
-    console.log("annotations", annotations);
+    console.log('annotation', newAnnotation);
+    console.log('annotations', annotations);
     setAnnotation({});
     setAnnotations(
       annotations.concat({
@@ -115,7 +110,7 @@ const MatchListLayout = (props) => {
 
   const [optionsList, setOptionsList] = useState([]);
   useEffect(() => {
-    var temp = [];
+    const temp = [];
     multipleOptions.map((item) => {
       temp.push({ value: item.position, label: item.title });
     });
@@ -135,13 +130,13 @@ const MatchListLayout = (props) => {
       label: "None",
     },
   ]; */
-  console.log("multipleOptions:", multipleOptions);
+  console.log('multipleOptions:', multipleOptions);
 
   function onNewOptionAdded(index) {
     const option = {
       id: `item-${index + 1}`,
       position: index,
-      title: "",
+      title: '',
       isCorrect: false,
       isAlternate: false,
     };
@@ -156,7 +151,7 @@ const MatchListLayout = (props) => {
     const option = {
       id: `item-${index + 1}`,
       position: index,
-      title: "",
+      title: '',
       isCorrect: false,
       isAlternate: false,
     };
@@ -173,15 +168,10 @@ const MatchListLayout = (props) => {
         itemQuestionsList &&
         itemQuestionsList.length > 0 &&
         itemQuestionsList.find((q) => q.id == props.questionId);
-      console.log("filteredQuestion in Match List ", _filteredQuestion);
+      console.log('filteredQuestion in Match List ', _filteredQuestion);
       if (_filteredQuestion) {
-        console.log(
-          "_filteredQuestion.description in Match List ",
-          _filteredQuestion.description
-        );
-        const convertedState = convertFromRaw(
-          JSON.parse(_filteredQuestion.description)
-        );
+        console.log('_filteredQuestion.description in Match List ', _filteredQuestion.description);
+        const convertedState = convertFromRaw(JSON.parse(_filteredQuestion.description));
         const _editorValue = EditorState.createWithContent(convertedState);
         setEditorState(_editorValue);
 
@@ -211,29 +201,29 @@ const MatchListLayout = (props) => {
   return (
     <Paper
       style={{
-        paddingTop: "0px",
-        paddingLeft: "0px",
-        paddingRight: "0px",
+        paddingTop: '0px',
+        paddingLeft: '0px',
+        paddingRight: '0px',
       }}
       className="border border-blue border-2 pb-28 sm:pb-28 rounded-2xl border-blue-600"
     >
       <div className="text-right">
         <Icon
           onClick={() => {
-            if (editorContent === "" || editorContent === "<p></p>\n") {
+            if (editorContent === '' || editorContent === '<p></p>\n') {
               swal({
-                title: "Error!",
-                text: "Question Description is Required!",
-                icon: "error",
-                button: "Ok!",
+                title: 'Error!',
+                text: 'Question Description is Required!',
+                icon: 'error',
+                button: 'Ok!',
               });
             }
             if (multipleChoices === [] || multipleChoices.length === 0) {
               swal({
-                title: "Error!",
-                text: "Multiple Choice Options are Required!",
-                icon: "error",
-                button: "Ok!",
+                title: 'Error!',
+                text: 'Multiple Choice Options are Required!',
+                icon: 'error',
+                button: 'Ok!',
               });
             } else {
               const itemObject =
@@ -242,7 +232,7 @@ const MatchListLayout = (props) => {
                       id: props.questionId,
                       description: editorContent,
                       options: multipleChoices,
-                      questionType: "match-list-question",
+                      questionType: 'match-list-question',
                       questionConfig: JSON.stringify({
                         multipleOption: multipleOptions,
 
@@ -256,7 +246,7 @@ const MatchListLayout = (props) => {
                   : {
                       description: editorContent,
                       options: multipleChoices,
-                      questionType: "match-list-question",
+                      questionType: 'match-list-question',
                       questionConfig: JSON.stringify({
                         multipleOption: multipleOptions,
 
@@ -267,21 +257,21 @@ const MatchListLayout = (props) => {
                       }),
                       position: props.questionIndex,
                     };
-              console.log("Json going to save", itemObject);
+              console.log('Json going to save', itemObject);
               props.onSaveQuestion(
                 props.sectionName,
                 props.tabName,
                 props.questionId,
                 props.questionIndex,
-                "match-list-question",
+                'match-list-question',
                 itemObject
               );
             }
           }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
-            padding: "2px 24px 24px 4px",
-            color: "white",
+            padding: '2px 24px 24px 4px',
+            color: 'white',
           }}
           size="small"
         >
@@ -294,8 +284,8 @@ const MatchListLayout = (props) => {
           }}
           className="p-3 bg bg-blue bg-blue-500 hover:bg-blue-700"
           style={{
-            padding: "2px 24px 24px 4px",
-            color: "white",
+            padding: '2px 24px 24px 4px',
+            color: 'white',
           }}
           size="small"
         >
@@ -313,8 +303,8 @@ const MatchListLayout = (props) => {
           }}
           className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
           style={{
-            padding: "2px 24px 24px 4px",
-            color: "white",
+            padding: '2px 24px 24px 4px',
+            color: 'white',
           }}
           size="small"
         >
@@ -328,7 +318,7 @@ const MatchListLayout = (props) => {
             <button className="border border-gray border-gray-300 bg-white hover:bg-gray-100 text-gray-800 text-white font-bold py-2 px-6 rounded-full mx-4">
               <Icon
                 style={{
-                  fontSize: "10px",
+                  fontSize: '10px',
                 }}
                 size="small"
               >
@@ -371,21 +361,19 @@ const MatchListLayout = (props) => {
               <label>Group possible responses</label>
               <Switch
                 checked={groupPossibleResponses}
-                onChange={() =>
-                  setGroupPossibleResponses(!groupPossibleResponses)
-                }
+                onChange={() => setGroupPossibleResponses(!groupPossibleResponses)}
               />
             </div>
           </div>
 
-          <div class="grid gap-4 grid-cols-2">
-            {" "}
+          <div className="grid gap-4 grid-cols-2">
+            {' '}
             <div>
               <Typography
                 variant="h6"
                 gutterBottom
                 sx={{
-                  color: "gray",
+                  color: 'gray',
                   fontWeight: 700,
                   mt: 2,
                 }}
@@ -405,7 +393,7 @@ const MatchListLayout = (props) => {
                 variant="h6"
                 gutterBottom
                 sx={{
-                  color: "gray",
+                  color: 'gray',
                   fontWeight: 700,
                   mt: 2,
                 }}
@@ -427,9 +415,7 @@ const MatchListLayout = (props) => {
               <label>Duplicate responses</label>
               <Switch
                 checked={trueFalseDuplicateResponse}
-                onChange={() =>
-                  setTrueFalseDuplicateResponse(!trueFalseDuplicateResponse)
-                }
+                onChange={() => setTrueFalseDuplicateResponse(!trueFalseDuplicateResponse)}
               />
             </div>
 
@@ -437,9 +423,7 @@ const MatchListLayout = (props) => {
               <label>Drag handle</label>
               <Switch
                 checked={trueFalseShowDragHandle}
-                onChange={() =>
-                  setTrueFalseShowDragHandle(!trueFalseShowDragHandle)
-                }
+                onChange={() => setTrueFalseShowDragHandle(!trueFalseShowDragHandle)}
               />
             </div>
 
@@ -447,9 +431,7 @@ const MatchListLayout = (props) => {
               <label>Shuffle options</label>
               <Switch
                 checked={trueFalseShuffleOption}
-                onChange={() =>
-                  setTrueFalseShuffleOption(!trueFalseShuffleOption)
-                }
+                onChange={() => setTrueFalseShuffleOption(!trueFalseShuffleOption)}
               />
             </div>
           </div>

@@ -1,51 +1,43 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react/jsx-no-bind */
-import { memo, useState, useRef } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { TablePagination, Tooltip } from "@material-ui/core";
-import {
-  DeleteSweep as DeleteIcon,
-  BorderColor as EditIcon,
-} from "@material-ui/icons";
-import { useHistory, Link } from "react-router-dom";
-import { DataGrid } from "@mui/x-data-grid";
-import { useStateValue } from "app/services/state/State";
-import {
-  dataGridPageSizes,
-  settings as s,
-  states,
-} from "app/services/Settings";
-import swal from "sweetalert";
-import StatusIcon from "app/shared-components/StatusIcon";
-import { CustomToolbar } from "../../components";
+import { memo, useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import { TablePagination, Tooltip } from '@material-ui/core';
+import { DeleteSweep as DeleteIcon, BorderColor as EditIcon } from '@material-ui/icons';
+import { useHistory, Link } from 'react-router-dom';
+import { DataGrid } from '@mui/x-data-grid';
+import { dataGridPageSizes } from 'app/services/Settings';
+import swal from 'sweetalert';
+import StatusIcon from 'app/shared-components/StatusIcon';
+import { CustomToolbar } from '../../components';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    fontSize: "1.2rem",
+    fontSize: '1.2rem',
     backgroundColor: theme.palette.background.paper,
     padding: 20,
   },
 
   icon: {
-    color: "grey",
-    cursor: "pointer",
+    color: 'grey',
+    cursor: 'pointer',
   },
   row: {
-    display: "flex",
+    display: 'flex',
     marginBottom: 10,
-    alignItems: "center",
-    justifyContent: "space-between",
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   buttonsContainer: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-evenly",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
   },
-  "& .MuiDataGrid-cell": {
-    fontSize: "16px",
+  '& .MuiDataGrid-cell': {
+    fontSize: '16px',
   },
-  "& .MuiDataGrid-root": {
-    fontSize: "16px",
+  '& .MuiDataGrid-root': {
+    fontSize: '16px',
   },
 }));
 
@@ -70,9 +62,9 @@ function TagHierarchyList({
   };
   async function onArchiveSubject(id) {
     swal({
-      title: "Are you sure?",
-      text: "Are you sure you want to archive this subject?",
-      icon: "warning",
+      title: 'Are you sure?',
+      text: 'Are you sure you want to archive this subject?',
+      icon: 'warning',
       buttons: true,
       dangerMode: true,
     })
@@ -90,7 +82,7 @@ function TagHierarchyList({
       //   });
       // })
       .then((value) => {
-        redirectTo("/tag-hierarchies");
+        redirectTo('/tag-hierarchies');
       });
   }
 
@@ -108,18 +100,18 @@ function TagHierarchyList({
   }
 
   const columns = [
-    { field: "id", headerName: "Id", flex: 1 },
-    { field: "reference", headerName: "Reference", flex: 1 },
-    { field: "createBy", headerName: "Created By", flex: 1 },
+    { field: 'id', headerName: 'Id', flex: 1 },
+    { field: 'reference', headerName: 'Reference', flex: 1 },
+    { field: 'createBy', headerName: 'Created By', flex: 1 },
     {
-      field: "status",
-      headerName: "Status",
-      headerAlign: "center",
-      align: "center",
+      field: 'status',
+      headerName: 'Status',
+      headerAlign: 'center',
+      align: 'center',
 
       renderCell: (params) => (
         <>
-          {params.row.status === "inActive" ? (
+          {params.row.status === 'inActive' ? (
             <StatusIcon isActive={params?.row?.status} />
           ) : (
             <StatusIcon isActive={params?.row?.status} />
@@ -128,9 +120,9 @@ function TagHierarchyList({
       ),
     },
     {
-      field: "action",
-      headerName: "Action",
-      description: "This column has a value getter and is not sortable.",
+      field: 'action',
+      headerName: 'Action',
+      description: 'This column has a value getter and is not sortable.',
       sortable: false,
       width: 160,
       renderCell: (params) => (
@@ -138,10 +130,10 @@ function TagHierarchyList({
           <Tooltip title="Edit">
             <Link
               to={{
-                pathname: "/edit-tag-hierarchy",
+                pathname: '/edit-tag-hierarchy',
                 state: {
                   editData: params?.row,
-                  mode: "edit-tag-hierarchy",
+                  mode: 'edit-tag-hierarchy',
                 },
               }}
             >
@@ -163,57 +155,57 @@ function TagHierarchyList({
   const rows = [
     {
       id: 1,
-      reference: "Artifical",
-      createBy: "Ranjith Pattu",
-      status: "inActive",
+      reference: 'Artifical',
+      createBy: 'Ranjith Pattu',
+      status: 'inActive',
     },
     {
       id: 2,
-      reference: "BOY",
-      createBy: "Ranjith Pattu",
-      status: "Active",
+      reference: 'BOY',
+      createBy: 'Ranjith Pattu',
+      status: 'Active',
     },
     {
       id: 3,
-      reference: "CCSS ELA STANDARD",
-      createBy: "Ranjith Pattu",
-      status: "inActive",
+      reference: 'CCSS ELA STANDARD',
+      createBy: 'Ranjith Pattu',
+      status: 'inActive',
     },
     {
       id: 4,
-      reference: "Artifical",
-      createBy: "Ranjith Pattu",
-      status: "Active",
+      reference: 'Artifical',
+      createBy: 'Ranjith Pattu',
+      status: 'Active',
     },
     {
       id: 5,
-      reference: "BOY",
-      createBy: "Ranjith Pattu",
-      status: "inActive",
+      reference: 'BOY',
+      createBy: 'Ranjith Pattu',
+      status: 'inActive',
     },
     {
       id: 6,
-      reference: "CCSS ELA STANDARD",
-      createBy: "Ranjith Pattu",
-      status: "Active",
+      reference: 'CCSS ELA STANDARD',
+      createBy: 'Ranjith Pattu',
+      status: 'Active',
     },
     {
       id: 7,
-      reference: "Artifical",
-      createBy: "Ranjith Pattu",
-      status: "inActive",
+      reference: 'Artifical',
+      createBy: 'Ranjith Pattu',
+      status: 'inActive',
     },
     {
       id: 8,
-      reference: "BOY",
-      createBy: "Ranjith Pattu",
-      status: "Active",
+      reference: 'BOY',
+      createBy: 'Ranjith Pattu',
+      status: 'Active',
     },
     {
       id: 9,
-      reference: "CCSS ELA STANDARD",
-      createBy: "Ranjith Pattu",
-      status: "inActive",
+      reference: 'CCSS ELA STANDARD',
+      createBy: 'Ranjith Pattu',
+      status: 'inActive',
     },
   ];
 
@@ -239,18 +231,18 @@ function TagHierarchyList({
         {rows ? (
           <DataGrid
             sx={{
-              "& .MuiDataGrid-columnHeaders": {
-                border: "none",
+              '& .MuiDataGrid-columnHeaders': {
+                border: 'none',
               },
-              "& .MuiDataGrid-columnHeaderTitle": {
-                fontSize: "14px",
-                fontWeight: "600",
-                color: "#189AF5",
-                border: "none",
+              '& .MuiDataGrid-columnHeaderTitle': {
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#189AF5',
+                border: 'none',
               },
-              "& .MuiDataGrid-cell": {
-                fontSize: "12px",
-                border: "none",
+              '& .MuiDataGrid-cell': {
+                fontSize: '12px',
+                border: 'none',
               },
             }}
             rows={rows}
@@ -263,7 +255,7 @@ function TagHierarchyList({
             checkboxSelection
             hideFooterRowCount
             hideFooterPagination
-            style={{ height: "70vh", border: "none", boxSizing: "unset" }}
+            style={{ height: '70vh', border: 'none', boxSizing: 'unset' }}
             hideFooterSelectedRowCount
             rowCount={rowCount /* pagination.totalItemsCount */}
             pageSize={pageSize}
@@ -272,7 +264,7 @@ function TagHierarchyList({
             pagination
           />
         ) : (
-          ""
+          ''
         )}
         <TablePagination
           page={page}
@@ -283,8 +275,8 @@ function TagHierarchyList({
           className="flex-shrink-0 border-t-1"
           rowsPerPageOptions={dataGridPageSizes}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          nextIconButtonProps={{ "aria-label": "Next Page" }}
-          backIconButtonProps={{ "aria-label": "Previous Page" }}
+          nextIconButtonProps={{ 'aria-label': 'Next Page' }}
+          backIconButtonProps={{ 'aria-label': 'Previous Page' }}
         />
       </div>
     </>

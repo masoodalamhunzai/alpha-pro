@@ -1,24 +1,23 @@
-import NavLinkAdapter from "@fuse/core/NavLinkAdapter";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import { alpha } from "@material-ui/core/styles/colorManipulator";
-import clsx from "clsx";
-import PropTypes from "prop-types";
-import { useMemo } from "react";
-import { useDispatch } from "react-redux";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
-import FuseNavItem from "../../FuseNavItem";
+import NavLinkAdapter from '@fuse/core/NavLinkAdapter';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import clsx from 'clsx';
+import PropTypes from 'prop-types';
+import { useMemo } from 'react';
+import { useDispatch } from 'react-redux';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import FuseNavItem from '../../FuseNavItem';
 
 const useStyles = makeStyles((theme) => ({
   item: (props) => ({
     height: 36,
-    width: "100%",
-    borderRadius: "6px",
-    margin: "5px 0",
+    width: '100%',
+    borderRadius: '6px',
+    margin: '5px 0',
     paddingRight: 12,
     paddingLeft: props.itemPadding > 80 ? 80 : props.itemPadding,
     fontWeight: 600,
-    letterSpacing: "0.025em",
+    letterSpacing: '0.025em',
   }),
 }));
 
@@ -26,7 +25,7 @@ function FuseNavVerticalGroup(props) {
   const dispatch = useDispatch();
 
   const theme = useTheme();
-  const mdDown = useMediaQuery(theme.breakpoints.down("md"));
+  const mdDown = useMediaQuery(theme.breakpoints.down('md'));
   const { item, nestedLevel, onItemClick } = props;
   const classes = useStyles({
     itemPadding: nestedLevel > 0 ? 28 + nestedLevel * 16 : 12,
@@ -39,24 +38,22 @@ function FuseNavVerticalGroup(props) {
           className={clsx(
             classes.item,
             `fuse-list-subheader flex items-center text-black ${
-              item.id === "accountSettings"
-                ? " block mt-20 "
-                : "block"
+              item.id === 'accountSettings'
+                ? ' block mt-20 '
+                : 'block'
                 ? item.title.length > 0
-                  ? "block"
-                  : "hidden"
-                : ""
+                  ? 'block'
+                  : 'hidden'
+                : ''
             }`,
-            !item.url && "cursor-default"
+            !item.url && 'cursor-default'
           )}
           onClick={() => onItemClick && onItemClick(item)}
-          component={item.url ? NavLinkAdapter : "li"}
+          component={item.url ? NavLinkAdapter : 'li'}
           to={item.url}
           role="button"
         >
-          <span className="fuse-list-subheader-text uppercase text-12">
-            {item.title}
-          </span>
+          <span className="fuse-list-subheader-text uppercase text-12">{item.title}</span>
         </ListSubheader>
 
         {item.children && (

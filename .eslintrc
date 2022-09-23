@@ -20,6 +20,11 @@
                 "paths": [
                     "src"
                 ]
+            },
+            "es6": {
+                "paths": [
+                    "src"
+                ]
             }
         }
     },
@@ -40,7 +45,7 @@
                 "tabWidth": 2,
                 "trailingComma": "es5",
                 "useTabs": false,
-                "endOfLine": "auto",
+                "endOfLine": "auto"
             }
         ],
         "react/jsx-filename-extension": [
@@ -53,26 +58,29 @@
             }
         ],
         "import/no-extraneous-dependencies": ["warn", {"devDependencies": true}],
-        "no-unused-vars": "off",
-        "no-console": "off",
-        "no-use-before-define": "off",
-        "no-underscore-dangle": "off",
-        "no-param-reassign": "off", // mutating redux state in redux-toolkit.
-        "import/no-unresolved": "off", // raw-loader
-        "global-require": "off", // raw-loader
-        "react/no-array-index-key": "off",
-        "react/no-unescaped-entities": "off",
-        "react/destructuring-assignment": "off",
-        "react/jsx-props-no-spreading": "off",
-        "react/state-in-constructor": "off",
-        "react/no-danger": "off",
-        "react/prop-types": "off",
-        "react/forbid-prop-types": "off",
-        "react/require-default-props": "off",
-        "react/default-props-match-prop-types": "off",
-        "react/no-unused-prop-types": "off",
-        "react/react-in-jsx-scope": "off", // after react v17
-        "react/jsx-uses-react": "off", // after react v17
-        "unused-imports/no-unused-imports": "warn"
+        "no-unused-vars": 1,
+        "no-console": 1,
+        "no-use-before-define": 1,
+        "no-underscore-dangle": 0,
+        "no-param-reassign": 0, // mutating redux state in redux-toolkit.
+        "import/no-unresolved": 2, // raw-loader
+        "global-require": 0, // raw-loader
+        "react/no-array-index-key": 0,
+        "react/no-unescaped-entities": 0,
+        "react/destructuring-assignment": 1,
+        "react/jsx-props-no-spreading": 0,
+        "react/state-in-constructor": 1,
+        "react/no-danger": 0,
+        "react/prop-types": 0,
+        "react/forbid-prop-types": 0,
+        "react/require-default-props": 0,
+        "react/default-props-match-prop-types": 0,
+        "react/no-unused-prop-types": 1,
+        "react/react-in-jsx-scope": 0, // after react v17
+        "react/jsx-uses-react": 1, // after react v17
+        "unused-imports/no-unused-imports": "warn",
+        "jsx-a11y/click-events-have-key-events": 0,
+        "jsx-a11y/label-has-for": 0,
+        "jsx-a11y/label-has-associated-control": "warn"
     }
 }

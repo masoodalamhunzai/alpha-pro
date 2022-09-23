@@ -15,10 +15,14 @@ import {
 } from "@material-ui/icons";
 import Icon from "@material-ui/core/Icon";
 import { actions } from "app/services/state/Reducer";
-import { getAllRoles } from "app/services/api/ApiManager";
+import { getAllRoles, getOrganizationList } from "app/services/api/ApiManager";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/material.css";
 import { useStateValue } from "app/services/state/State";
+import { getUserRole } from "app/services/utils/utils";
+import { useDispatch, useSelector } from "react-redux";
+import { setOrgsNameList } from "app/store/alpha/orgReducer";
+import { setRoles } from "app/store/alpha/userReducer";
 
 const useStyles = makeStyles({
   root: {
@@ -101,7 +105,12 @@ function AddUserDetailsTab({
   organzationID,
   mode,
 }) {
-  const [{ user, organization, roles }, dispatch] = useStateValue();
+  const dispatch = useDispatch();
+  const user = useSelector(({ alpha }) => alpha.user);
+  const role = getUserRole(user);
+  const organization = useSelector(({ alpha }) => alpha.org.orgsNameList);
+  const roles = useSelector(({ alpha }) => alpha.user.roles);
+  //const [{ roles }, dispatch] = useStateValue();
   const USER_ROLE_SUPER_ADMIN = "super-admin";
   const EDIT_MODE = "edit-user";
   const CREATE_NEW_MODE = "create-user";
@@ -120,19 +129,33 @@ function AddUserDetailsTab({
   const getAllUserRoles = async () => {
     const res = await getAllRoles();
     if (res && res?.status === 200 && res?.data && res?.data?.length > 0) {
-      dispatch({
+      dispatch(setRoles(res.data));
+      /* dispatch( {
         type: actions.SET_ROLES,
         payload: res.data,
-      });
+      }); */
     }
   };
+
+  const loadOrganizations = async () => {
+    const res = await getOrganizationList();
+    console.log(res);
+    if (res && Array.isArray(res)) {
+      const orgs = res.map((o) => {
+        return { id: o.id, name: o.name };
+      });
+      dispatch(setOrgsNameList(orgs));
+    }
+  };
+
   const handleRole = () => {
-    if (user && user.role && user.role === USER_ROLE_SUPER_ADMIN) {
+    if (role && role === USER_ROLE_SUPER_ADMIN) {
       setIsSuperAdmin(true);
     }
   };
   useEffect(() => {
     getAllUserRoles();
+    loadOrganizations();
   }, []);
   useEffect(() => {
     handleRole();
@@ -310,6 +333,10 @@ function AddUserDetailsTab({
                   </Select>
                 </FormControl>
               </Box>
+            </>
+          )}
+          {(isSuperAdmin ||
+            role == "client-admin") && (
               <Box className={classes.formInput}>
                 <AccountBalanceIcon className="text-gray-600 mr-8" />
                 <FormControl fullWidth>
@@ -339,8 +366,7 @@ function AddUserDetailsTab({
                   </Select>
                 </FormControl>
               </Box>
-            </>
-          )}
+            )}
         </Box>
       </Box>
     </Container>

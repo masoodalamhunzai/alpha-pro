@@ -1,55 +1,43 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react/jsx-no-bind */
-import { memo, useState, useRef } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { TablePagination, Tooltip } from "@material-ui/core";
-import {
-  DeleteSweep as DeleteIcon,
-  BorderColor as EditIcon,
-} from "@material-ui/icons";
-import { useHistory, Link } from "react-router-dom";
-import { DataGrid } from "@mui/x-data-grid";
-import { useStateValue } from "app/services/state/State";
-import {
-  dataGridPageSizes,
-  settings as s,
-  states,
-} from "app/services/Settings";
-import Icon from "@material-ui/core/Icon";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Typography from "@mui/material/Typography";
-import swal from "sweetalert";
-import StatusIcon from "app/shared-components/StatusIcon";
-import { deleteSubject } from "app/services/api/ApiManager";
-import { CustomToolbar } from "../../components";
+import { memo, useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import { TablePagination, Tooltip } from '@material-ui/core';
+import { DeleteSweep as DeleteIcon, BorderColor as EditIcon } from '@material-ui/icons';
+import { useHistory, Link } from 'react-router-dom';
+import { DataGrid } from '@mui/x-data-grid';
+import { dataGridPageSizes } from 'app/services/Settings';
+import swal from 'sweetalert';
+import StatusIcon from 'app/shared-components/StatusIcon';
+import { CustomToolbar } from '../../components';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    fontSize: "1.2rem",
+    fontSize: '1.2rem',
     backgroundColor: theme.palette.background.paper,
     padding: 20,
   },
 
   icon: {
-    color: "grey",
-    cursor: "pointer",
+    color: 'grey',
+    cursor: 'pointer',
   },
   row: {
-    display: "flex",
+    display: 'flex',
     marginBottom: 10,
-    alignItems: "center",
-    justifyContent: "space-between",
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   buttonsContainer: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-evenly",
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
   },
-  "& .MuiDataGrid-cell": {
-    fontSize: "16px",
+  '& .MuiDataGrid-cell': {
+    fontSize: '16px',
   },
-  "& .MuiDataGrid-root": {
-    fontSize: "16px",
+  '& .MuiDataGrid-root': {
+    fontSize: '16px',
   },
 }));
 
@@ -74,9 +62,9 @@ function TagTypeList({
   };
   async function onArchiveSubject(id) {
     swal({
-      title: "Are you sure?",
-      text: "Are you sure you want to archive this subject?",
-      icon: "warning",
+      title: 'Are you sure?',
+      text: 'Are you sure you want to archive this subject?',
+      icon: 'warning',
       buttons: true,
       dangerMode: true,
     })
@@ -94,7 +82,7 @@ function TagTypeList({
       //   });
       // })
       .then((value) => {
-        redirectTo("/tag-types");
+        redirectTo('/tag-types');
       });
   }
 
@@ -112,19 +100,19 @@ function TagTypeList({
   }
 
   const columns = [
-    { field: "id", headerName: "Id", flex: 1 },
-    { field: "name", headerName: "Name", flex: 1 },
-    { field: "longName", headerName: "Long Name", flex: 1 },
-    { field: "tagUsage", headerName: "Tag Usage", flex: 1 },
+    { field: 'id', headerName: 'Id', flex: 1 },
+    { field: 'name', headerName: 'Name', flex: 1 },
+    { field: 'longName', headerName: 'Long Name', flex: 1 },
+    { field: 'tagUsage', headerName: 'Tag Usage', flex: 1 },
     {
-      field: "status",
-      headerName: "Status",
-      headerAlign: "center",
-      align: "center",
+      field: 'status',
+      headerName: 'Status',
+      headerAlign: 'center',
+      align: 'center',
 
       renderCell: (params) => (
         <>
-          {params.row.status === "inActive" ? (
+          {params.row.status === 'inActive' ? (
             <StatusIcon isActive={params?.row?.status} />
           ) : (
             <StatusIcon isActive={params?.row?.status} />
@@ -133,9 +121,9 @@ function TagTypeList({
       ),
     },
     {
-      field: "action",
-      headerName: "Action",
-      description: "This column has a value getter and is not sortable.",
+      field: 'action',
+      headerName: 'Action',
+      description: 'This column has a value getter and is not sortable.',
       sortable: false,
       width: 160,
       renderCell: (params) => (
@@ -143,10 +131,10 @@ function TagTypeList({
           <Tooltip title="Edit">
             <Link
               to={{
-                pathname: "/edit-tag-type",
+                pathname: '/edit-tag-type',
                 state: {
                   editData: params?.row,
-                  mode: "edit-tag-type",
+                  mode: 'edit-tag-type',
                 },
               }}
             >
@@ -168,66 +156,66 @@ function TagTypeList({
   const rows = [
     {
       id: 1,
-      name: "Artifical",
-      longName: "Artifical",
-      tagUsage: "Activity",
-      status: "inActive",
+      name: 'Artifical',
+      longName: 'Artifical',
+      tagUsage: 'Activity',
+      status: 'inActive',
     },
     {
       id: 2,
-      name: "BOY",
-      longName: "BOY",
-      tagUsage: "Item",
-      status: "Active",
+      name: 'BOY',
+      longName: 'BOY',
+      tagUsage: 'Item',
+      status: 'Active',
     },
     {
       id: 3,
-      name: "CCSS ELA STANDARD",
-      longName: "CCSS ELA STANDARD",
-      tagUsage: "Activity",
-      status: "inActive",
+      name: 'CCSS ELA STANDARD',
+      longName: 'CCSS ELA STANDARD',
+      tagUsage: 'Activity',
+      status: 'inActive',
     },
     {
       id: 4,
-      name: "Artifical",
-      longName: "Artifical",
-      tagUsage: "Item",
-      status: "Active",
+      name: 'Artifical',
+      longName: 'Artifical',
+      tagUsage: 'Item',
+      status: 'Active',
     },
     {
       id: 5,
-      name: "BOY",
-      longName: "BOY",
-      tagUsage: "Activity",
-      status: "inActive",
+      name: 'BOY',
+      longName: 'BOY',
+      tagUsage: 'Activity',
+      status: 'inActive',
     },
     {
       id: 6,
-      name: "CCSS ELA STANDARD",
-      longName: "CCSS ELA STANDARD",
-      tagUsage: "Item",
-      status: "Active",
+      name: 'CCSS ELA STANDARD',
+      longName: 'CCSS ELA STANDARD',
+      tagUsage: 'Item',
+      status: 'Active',
     },
     {
       id: 7,
-      name: "Artifical",
-      longName: "Artifical",
-      tagUsage: "Activity",
-      status: "inActive",
+      name: 'Artifical',
+      longName: 'Artifical',
+      tagUsage: 'Activity',
+      status: 'inActive',
     },
     {
       id: 8,
-      name: "BOY",
-      longName: "BOY",
-      tagUsage: "Item",
-      status: "Active",
+      name: 'BOY',
+      longName: 'BOY',
+      tagUsage: 'Item',
+      status: 'Active',
     },
     {
       id: 9,
-      name: "CCSS ELA STANDARD",
-      longName: "CCSS ELA STANDARD",
-      tagUsage: "Activity",
-      status: "inActive",
+      name: 'CCSS ELA STANDARD',
+      longName: 'CCSS ELA STANDARD',
+      tagUsage: 'Activity',
+      status: 'inActive',
     },
   ];
 
@@ -253,18 +241,18 @@ function TagTypeList({
         {rows ? (
           <DataGrid
             sx={{
-              "& .MuiDataGrid-columnHeaders": {
-                border: "none",
+              '& .MuiDataGrid-columnHeaders': {
+                border: 'none',
               },
-              "& .MuiDataGrid-columnHeaderTitle": {
-                fontSize: "14px",
-                fontWeight: "600",
-                color: "#189AF5",
-                border: "none",
+              '& .MuiDataGrid-columnHeaderTitle': {
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#189AF5',
+                border: 'none',
               },
-              "& .MuiDataGrid-cell": {
-                fontSize: "12px",
-                border: "none",
+              '& .MuiDataGrid-cell': {
+                fontSize: '12px',
+                border: 'none',
               },
             }}
             rows={rows}
@@ -277,7 +265,7 @@ function TagTypeList({
             checkboxSelection
             hideFooterRowCount
             hideFooterPagination
-            style={{ height: "70vh", border: "none", boxSizing: "unset" }}
+            style={{ height: '70vh', border: 'none', boxSizing: 'unset' }}
             hideFooterSelectedRowCount
             rowCount={rowCount /* pagination.totalItemsCount */}
             pageSize={pageSize}
@@ -286,7 +274,7 @@ function TagTypeList({
             pagination
           />
         ) : (
-          ""
+          ''
         )}
         <TablePagination
           page={page}
@@ -297,8 +285,8 @@ function TagTypeList({
           className="flex-shrink-0 border-t-1"
           rowsPerPageOptions={dataGridPageSizes}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          nextIconButtonProps={{ "aria-label": "Next Page" }}
-          backIconButtonProps={{ "aria-label": "Previous Page" }}
+          nextIconButtonProps={{ 'aria-label': 'Next Page' }}
+          backIconButtonProps={{ 'aria-label': 'Previous Page' }}
         />
       </div>
     </>

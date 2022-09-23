@@ -1,86 +1,75 @@
-import Annotation from "react-image-annotation";
-import {
-  PointSelector,
-  RectangleSelector,
-  OvalSelector,
-} from "react-image-annotation/lib/selectors";
-//<Annotation type={PointSelector.TYPE} />;
-import { useState, useEffect } from "react";
-import Typography from "@mui/material/Typography";
-import WYSIWYGEditor from "app/shared-components/WYSIWYGEditor";
-import Icon from "@material-ui/core/Icon";
-import Paper from "@mui/material/Paper";
-import { Controller, useForm } from "react-hook-form";
-import _ from "@lodash";
-import ChoiceMatrixDraggableItem from "./ChoiceMatrixDraggableItem";
-import ChoiceMatrixDraggableOption from "./ChoiceMatrixDraggableOption";
-import { TextField, Checkbox } from "@mui/material";
-import Switch from "app/shared-components/Switch";
-import { DeleteSweep, ToggleOff, Upload } from "@mui/icons-material";
-import { primaryBlueColor } from "app/services/Settings";
-import LabelImageWithDragDropDraggableItem from "./LabelImageWithDragDropDraggableItem";
-import { useStateValue } from "app/services/state/State";
-import { useSelector } from "react-redux";
+import Annotation from 'react-image-annotation';
+import { RectangleSelector } from 'react-image-annotation/lib/selectors';
+// <Annotation type={PointSelector.TYPE} />;
+import { useState, useEffect } from 'react';
+import Typography from '@mui/material/Typography';
+import WYSIWYGEditor from 'app/shared-components/WYSIWYGEditor';
+import Icon from '@material-ui/core/Icon';
+import Paper from '@mui/material/Paper';
+import { Controller, useForm } from 'react-hook-form';
+import { TextField, Checkbox } from '@mui/material';
+import Switch from 'app/shared-components/Switch';
+import { DeleteSweep, ToggleOff, Upload } from '@mui/icons-material';
+import { primaryBlueColor } from 'app/services/Settings';
+import { useSelector } from 'react-redux';
 
-import { EditorState, convertFromRaw } from "draft-js";
+import { EditorState, convertFromRaw } from 'draft-js';
+import LabelImageWithDragDropDraggableItem from './LabelImageWithDragDropDraggableItem';
 
-const defaultValues = { name: "", email: "", subject: "", message: "" };
+const defaultValues = { name: '', email: '', subject: '', message: '' };
 
 const LabelImageWithDragDropLayout = (props) => {
   const htmlForId = Math.random();
   const { control } = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues,
   });
   const itemQuestionsList = useSelector(({ alpha }) => alpha.item.questions);
 
   // States start
   const [trueFalseShuffleOption, setTrueFalseShuffleOption] = useState(false);
-  const [trueFalsemultipleResponse, setTrueFalsemultipleResponse] =
-    useState(false);
+  const [trueFalsemultipleResponse, setTrueFalsemultipleResponse] = useState(false);
 
   const [trueFalseShowDragHandle, setTrueFalseShowDragHandle] = useState(false);
-  const [trueFalseDuplicateResponse, setTrueFalseDuplicateResponse] =
-    useState(false);
+  const [trueFalseDuplicateResponse, setTrueFalseDuplicateResponse] = useState(false);
 
-  const [trueFalseShowDashedBorder, setTrueFalseShowDashedBorder] =
-    useState(false);
+  const [trueFalseShowDashedBorder, setTrueFalseShowDashedBorder] = useState(false);
   const [trueFalseEditAriaLabel, setTrueFalseEditAriaLabel] = useState(false);
 
-  const [imageAlternativeText, setImageAlternativeText] = useState("");
-  const [textOnHover, setTextOnHover] = useState("");
-  const [imageWidth, setImageWidth] = useState("");
+  const [imageAlternativeText, setImageAlternativeText] = useState('');
+  const [textOnHover, setTextOnHover] = useState('');
+  const [imageWidth, setImageWidth] = useState('');
   const [fillColor, setFillColor] = useState(false);
 
-  const [editorContent, setEditorContent] = useState("");
+  const [editorContent, setEditorContent] = useState('');
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
   const [multipleChoices, setMultipleChoices] = useState([
     {
       id: `item-1}`,
       position: 0,
-      title: "",
+      title: '',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-2`,
       position: 1,
-      title: "",
+      title: '',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-3`,
       position: 2,
-      title: "",
+      title: '',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-4`,
       position: 3,
-      title: "",
+      title: '',
       isCorrect: false,
       isAlternate: false,
     },
@@ -89,14 +78,14 @@ const LabelImageWithDragDropLayout = (props) => {
     {
       id: `item-1}`,
       position: 0,
-      title: "True",
+      title: 'True',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-2`,
       position: 1,
-      title: "False",
+      title: 'False',
       isCorrect: false,
       isAlternate: false,
     },
@@ -113,8 +102,8 @@ const LabelImageWithDragDropLayout = (props) => {
   const onSubmit = (newAnnotation) => {
     const { geometry, data } = newAnnotation;
 
-    console.log("annotation", newAnnotation);
-    console.log("annotations", annotations);
+    console.log('annotation', newAnnotation);
+    console.log('annotations', annotations);
     setAnnotation({});
     setAnnotations(
       annotations.concat({
@@ -132,7 +121,7 @@ const LabelImageWithDragDropLayout = (props) => {
   const [optionsList, setOptionsList] = useState([]);
 
   useEffect(() => {
-    var temp = [];
+    const temp = [];
     annotations.map((ant) => {
       temp.push({ value: ant.data.id, label: ant.data.text });
     });
@@ -143,7 +132,7 @@ const LabelImageWithDragDropLayout = (props) => {
     const option = {
       id: `item-${index + 1}`,
       position: index,
-      title: "",
+      title: '',
       isCorrect: false,
       isAlternate: false,
     };
@@ -160,18 +149,13 @@ const LabelImageWithDragDropLayout = (props) => {
         itemQuestionsList &&
         itemQuestionsList.length > 0 &&
         itemQuestionsList.find((q) => q.id == props.questionId);
-      console.log(
-        "filteredQuestion in Label with iamge drag and drop ",
-        _filteredQuestion
-      );
+      console.log('filteredQuestion in Label with iamge drag and drop ', _filteredQuestion);
       if (_filteredQuestion) {
         console.log(
-          "_filteredQuestion.description in Label with iamge drag and drop ",
+          '_filteredQuestion.description in Label with iamge drag and drop ',
           _filteredQuestion.description
         );
-        const convertedState = convertFromRaw(
-          JSON.parse(_filteredQuestion.description)
-        );
+        const convertedState = convertFromRaw(JSON.parse(_filteredQuestion.description));
         const _editorValue = EditorState.createWithContent(convertedState);
         setEditorState(_editorValue);
 
@@ -213,29 +197,29 @@ const LabelImageWithDragDropLayout = (props) => {
   return (
     <Paper
       style={{
-        paddingTop: "0px",
-        paddingLeft: "0px",
-        paddingRight: "0px",
+        paddingTop: '0px',
+        paddingLeft: '0px',
+        paddingRight: '0px',
       }}
       className="border border-blue border-2 pb-28 sm:pb-28 rounded-2xl border-blue-600"
     >
       <div className="text-right">
         <Icon
           onClick={() => {
-            if (editorContent === "" || editorContent === "<p></p>\n") {
+            if (editorContent === '' || editorContent === '<p></p>\n') {
               swal({
-                title: "Error!",
-                text: "Question Description is Required!",
-                icon: "error",
-                button: "Ok!",
+                title: 'Error!',
+                text: 'Question Description is Required!',
+                icon: 'error',
+                button: 'Ok!',
               });
             }
             if (multipleChoices === [] || multipleChoices.length === 0) {
               swal({
-                title: "Error!",
-                text: "Multiple Choice Options are Required!",
-                icon: "error",
-                button: "Ok!",
+                title: 'Error!',
+                text: 'Multiple Choice Options are Required!',
+                icon: 'error',
+                button: 'Ok!',
               });
             } else {
               const itemObject =
@@ -244,14 +228,14 @@ const LabelImageWithDragDropLayout = (props) => {
                       id: props.questionId,
                       description: editorContent,
                       options: multipleChoices,
-                      questionType: "label-image-with-drag-and-drop-question",
+                      questionType: 'label-image-with-drag-and-drop-question',
                       questionConfig: JSON.stringify({
                         multipleOption: multipleOptions,
-                        imageUrl: "",
-                        annotations: annotations,
-                        imageAlternativeText: imageAlternativeText,
-                        textOnHover: textOnHover,
-                        imageWidth: imageWidth,
+                        imageUrl: '',
+                        annotations,
+                        imageAlternativeText,
+                        textOnHover,
+                        imageWidth,
                         filColor: fillColor,
                         showDashedBorder: trueFalseShowDashedBorder,
                         editAriaLabel: trueFalseEditAriaLabel,
@@ -265,14 +249,14 @@ const LabelImageWithDragDropLayout = (props) => {
                   : {
                       description: editorContent,
                       options: multipleChoices,
-                      questionType: "label-image-with-drag-and-drop-question",
+                      questionType: 'label-image-with-drag-and-drop-question',
                       questionConfig: JSON.stringify({
                         multipleOption: multipleOptions,
-                        imageUrl: "",
-                        annotations: annotations,
-                        imageAlternativeText: imageAlternativeText,
-                        textOnHover: textOnHover,
-                        imageWidth: imageWidth,
+                        imageUrl: '',
+                        annotations,
+                        imageAlternativeText,
+                        textOnHover,
+                        imageWidth,
                         filColor: fillColor,
                         showDashedBorder: trueFalseShowDashedBorder,
                         editAriaLabel: trueFalseEditAriaLabel,
@@ -283,21 +267,21 @@ const LabelImageWithDragDropLayout = (props) => {
                       }),
                       position: props.questionIndex,
                     };
-              console.log("Json going to save", itemObject);
+              console.log('Json going to save', itemObject);
               props.onSaveQuestion(
                 props.sectionName,
                 props.tabName,
                 props.questionId,
                 props.questionIndex,
-                "label-image-with-drag-and-drop-question",
+                'label-image-with-drag-and-drop-question',
                 itemObject
               );
             }
           }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
-            padding: "2px 24px 24px 4px",
-            color: "white",
+            padding: '2px 24px 24px 4px',
+            color: 'white',
           }}
           size="small"
         >
@@ -310,8 +294,8 @@ const LabelImageWithDragDropLayout = (props) => {
           }}
           className="p-3 bg bg-blue bg-blue-500 hover:bg-blue-700"
           style={{
-            padding: "2px 24px 24px 4px",
-            color: "white",
+            padding: '2px 24px 24px 4px',
+            color: 'white',
           }}
           size="small"
         >
@@ -329,8 +313,8 @@ const LabelImageWithDragDropLayout = (props) => {
           }}
           className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
           style={{
-            padding: "2px 24px 24px 4px",
-            color: "white",
+            padding: '2px 24px 24px 4px',
+            color: 'white',
           }}
           size="small"
         >
@@ -339,14 +323,12 @@ const LabelImageWithDragDropLayout = (props) => {
       </div>
       <form className="px-0 sm:px-24 ">
         <div className="mb-24 flex justify-between flex-wrap wrap">
-          <h2 className="pose-h2 font-bold tracking-tight">
-            Label Image With Drag & Drop
-          </h2>
+          <h2 className="pose-h2 font-bold tracking-tight">Label Image With Drag & Drop</h2>
           <div>
             <button className="border border-gray border-gray-300 bg-white hover:bg-gray-100 text-gray-800 text-white font-bold py-2 px-6 rounded-full mx-4">
               <Icon
                 style={{
-                  fontSize: "10px",
+                  fontSize: '10px',
                 }}
                 size="small"
               >
@@ -389,7 +371,7 @@ const LabelImageWithDragDropLayout = (props) => {
               variant="h6"
               gutterBottom
               sx={{
-                color: "gray",
+                color: 'gray',
                 fontWeight: 700,
                 mt: 2,
               }}
@@ -397,12 +379,12 @@ const LabelImageWithDragDropLayout = (props) => {
               Response Containers
             </Typography>
             <div className="flex">
-              <div style={{ width: "50%", paddingRight: "1%" }}>
+              <div style={{ width: '50%', paddingRight: '1%' }}>
                 <div>
                   <div
                     style={{
                       backgroundColor: primaryBlueColor,
-                      borderRadius: "10px 10px 0px 0px",
+                      borderRadius: '10px 10px 0px 0px',
                     }}
                     className="flex justify-around items-center py-12"
                   >
@@ -426,7 +408,7 @@ const LabelImageWithDragDropLayout = (props) => {
                           src={selectedImageUrl}
                           alt="Two pebbles anthropomorphized holding hands"
                           annotations={annotations}
-                          type={RectangleSelector.TYPE} //PointSelector,RectangleSelector,OvalSelector,
+                          type={RectangleSelector.TYPE} // PointSelector,RectangleSelector,OvalSelector,
                           value={annotation}
                           onChange={onChange}
                           onSubmit={onSubmit}
@@ -448,16 +430,16 @@ const LabelImageWithDragDropLayout = (props) => {
                   </div>
                 </div>
               </div>
-              <div style={{ width: "50%", paddingLeft: "1%" }}>
+              <div style={{ width: '50%', paddingLeft: '1%' }}>
                 <div className="">
                   <div>
                     <TextField
                       className="mx-6"
-                      style={{ width: "100%" }}
+                      style={{ width: '100%' }}
                       inputProps={{
                         style: {
-                          backgroundColor: "white",
-                          fontSize: "13px",
+                          backgroundColor: 'white',
+                          fontSize: '13px',
                         },
                       }}
                       value={imageAlternativeText}
@@ -472,11 +454,11 @@ const LabelImageWithDragDropLayout = (props) => {
                   <div className="mt-12">
                     <TextField
                       className="mx-6"
-                      style={{ width: "100%" }}
+                      style={{ width: '100%' }}
                       inputProps={{
                         style: {
-                          backgroundColor: "white",
-                          fontSize: "13px",
+                          backgroundColor: 'white',
+                          fontSize: '13px',
                         },
                       }}
                       value={textOnHover}
@@ -491,11 +473,11 @@ const LabelImageWithDragDropLayout = (props) => {
                   <div className="mt-12">
                     <TextField
                       className="mx-6"
-                      style={{ width: "100%" }}
+                      style={{ width: '100%' }}
                       inputProps={{
                         style: {
-                          backgroundColor: "white",
-                          fontSize: "13px",
+                          backgroundColor: 'white',
+                          fontSize: '13px',
                         },
                       }}
                       value={imageWidth}
@@ -510,22 +492,14 @@ const LabelImageWithDragDropLayout = (props) => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <label>Fill color</label>
-                      <Checkbox
-                        checked={fillColor}
-                        onChange={handleFillColorChange}
-                        size="large"
-                      />
+                      <Checkbox checked={fillColor} onChange={handleFillColorChange} size="large" />
                     </div>
 
                     <div className="my-4 flex justify-between items-center">
                       <label>Show Dashed Border</label>
                       <Switch
                         checked={trueFalseShowDashedBorder}
-                        onChange={() =>
-                          setTrueFalseShowDashedBorder(
-                            !trueFalseShowDashedBorder
-                          )
-                        }
+                        onChange={() => setTrueFalseShowDashedBorder(!trueFalseShowDashedBorder)}
                       />
                     </div>
                   </div>
@@ -535,9 +509,7 @@ const LabelImageWithDragDropLayout = (props) => {
                       <label>Edit ARIA Labels</label>
                       <Switch
                         checked={trueFalseEditAriaLabel}
-                        onChange={() =>
-                          setTrueFalseEditAriaLabel(!trueFalseEditAriaLabel)
-                        }
+                        onChange={() => setTrueFalseEditAriaLabel(!trueFalseEditAriaLabel)}
                       />
                     </div>
                   </div>
@@ -546,19 +518,19 @@ const LabelImageWithDragDropLayout = (props) => {
                     annotations.length > 0 &&
                     annotations.map((annt, index) => {
                       return (
-                        <div className={index == 0 ? "" : "mt-12"}>
+                        <div className={index == 0 ? '' : 'mt-12'}>
                           <TextField
                             className="mx-6"
-                            style={{ width: "100%" }}
+                            style={{ width: '100%' }}
                             inputProps={{
                               style: {
-                                backgroundColor: "white",
-                                fontSize: "13px",
+                                backgroundColor: 'white',
+                                fontSize: '13px',
                               },
                             }}
                             onChange={(e) => {
-                              var temp = annotations.slice();
-                              var tem = annt;
+                              const temp = annotations.slice();
+                              const tem = annt;
                               tem.data.text = e.target.value;
 
                               temp[index] = tem;
@@ -578,7 +550,7 @@ const LabelImageWithDragDropLayout = (props) => {
 
             <div className="mt-12">
               <label
-                style={{ padding: "6px 12px" }}
+                style={{ padding: '6px 12px' }}
                 htmlFor={htmlForId}
                 className="btn-blue-white py-4 px-6 rounded-full mx-4"
               >
@@ -588,19 +560,14 @@ const LabelImageWithDragDropLayout = (props) => {
               </label>
 
               <input
-                style={{ display: "none" }}
+                style={{ display: 'none' }}
                 type="file"
                 id={htmlForId}
                 name={htmlForId}
                 accept="image/png, image/gif, image/jpeg"
                 onChange={(e) => {
                   console.log(e.target.files);
-                  if (
-                    e &&
-                    e.target &&
-                    e.target.files &&
-                    e.target.files.length > 0
-                  ) {
+                  if (e && e.target && e.target.files && e.target.files.length > 0) {
                     setSelectedImageUrl(URL.createObjectURL(e.target.files[0]));
                     setSelectedImage(e.target.files[0]);
                     setAnnotations([]);
@@ -615,7 +582,7 @@ const LabelImageWithDragDropLayout = (props) => {
             variant="h6"
             gutterBottom
             sx={{
-              color: "gray",
+              color: 'gray',
               fontWeight: 700,
               mt: 2,
             }}
@@ -636,9 +603,7 @@ const LabelImageWithDragDropLayout = (props) => {
               <label>Duplicate Responses</label>
               <Switch
                 checked={trueFalseDuplicateResponse}
-                onChange={() =>
-                  setTrueFalseDuplicateResponse(!trueFalseDuplicateResponse)
-                }
+                onChange={() => setTrueFalseDuplicateResponse(!trueFalseDuplicateResponse)}
               />
             </div>
 
@@ -646,9 +611,7 @@ const LabelImageWithDragDropLayout = (props) => {
               <label>Show drag handle</label>
               <Switch
                 checked={trueFalseShowDragHandle}
-                onChange={() =>
-                  setTrueFalseShowDragHandle(!trueFalseShowDragHandle)
-                }
+                onChange={() => setTrueFalseShowDragHandle(!trueFalseShowDragHandle)}
               />
             </div>
 
@@ -656,9 +619,7 @@ const LabelImageWithDragDropLayout = (props) => {
               <label>Multiple Responses</label>
               <Switch
                 checked={trueFalsemultipleResponse}
-                onChange={() =>
-                  setTrueFalsemultipleResponse(!trueFalsemultipleResponse)
-                }
+                onChange={() => setTrueFalsemultipleResponse(!trueFalsemultipleResponse)}
               />
             </div>
 
@@ -666,9 +627,7 @@ const LabelImageWithDragDropLayout = (props) => {
               <label>Shuffle options</label>
               <Switch
                 checked={trueFalseShuffleOption}
-                onChange={() =>
-                  setTrueFalseShuffleOption(!trueFalseShuffleOption)
-                }
+                onChange={() => setTrueFalseShuffleOption(!trueFalseShuffleOption)}
               />
             </div>
           </div>

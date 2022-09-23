@@ -132,6 +132,10 @@ function ItemConfiguration(props) {
                         setDifficultyButtonDetails={props.setDifficultyButtonDetails}
                         scoringType={props.scoringType}
                         setScoringType={props.setScoringType}
+                        grades={props.grades}
+                        setGrades={props.setGrades}
+                        subject={props.subject}
+                        setSubject={props.setSubject}
                         contentSource={props.contentSource}
                         setContentSource={props.setContentSource}
                         contentNotes={props.contentNotes}

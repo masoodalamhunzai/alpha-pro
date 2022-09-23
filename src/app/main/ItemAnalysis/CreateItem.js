@@ -1,40 +1,39 @@
-import { useState, useEffect } from "react";
-import FusePageSimple from "@fuse/core/FusePageSimple";
-import Typography from "@mui/material/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import { useStateValue } from "app/services/state/State";
-import { actions } from "app/services/state/Reducer";
-import { useHistory, useLocation } from "react-router-dom";
-import Button from "@material-ui/core/Button";
+import { useState, useEffect } from 'react';
+import FusePageSimple from '@fuse/core/FusePageSimple';
+import Typography from '@mui/material/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+import { useStateValue } from 'app/services/state/State';
+import { useHistory, useLocation } from 'react-router-dom';
+import Button from '@material-ui/core/Button';
 import {
   saveQuestion,
   saveItem,
   getItemById,
   getQuestionByItemId,
   deleteQuestion,
-} from "app/services/api/ApiManager";
-import swal from "sweetalert";
+  getTagsList,
+} from 'app/services/api/ApiManager';
+import swal from 'sweetalert';
 // import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
-import { useForm } from "react-hook-form";
-import _ from "@lodash";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
+import { useForm } from 'react-hook-form';
+import _ from '@lodash';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { useDispatch, useSelector } from 'react-redux';
+import { setQuestions,setTagsList } from 'app/store/alpha/itemReducer';
+import Breadcrumb from '../../fuse-layouts/shared-components/Breadcrumbs';
 // import * as yup from 'yup';
 // import { yupResolver } from '@hookform/resolvers/yup/dist/yup';
-import ItemConfiguration from "./ItemConfiguration";
+import ItemConfiguration from './ItemConfiguration';
 
-import TabbedSection from "./TabbedSection";
-import SimpleSection from "./SimpleSection";
-
-import { useDispatch, useSelector } from "react-redux";
-import { setQuestions } from "app/store/alpha/itemReducer";
+import TabbedSection from './TabbedSection';
+import SimpleSection from './SimpleSection';
 
 const useStyles = makeStyles({
   layoutRoot: {},
 });
 
-const defaultValues = { name: "", email: "", subject: "", message: "" };
+const defaultValues = { name: '', email: '', subject: '', message: '' };
 /* const schema = yup.object().shape({
   name: yup.string().required('You must enter a name'),
   subject: yup.string().required('You must enter a subject'),
@@ -48,31 +47,32 @@ const CreateItem = () => {
   const location = useLocation();
   const history = useHistory();
   const pageTitle = location.pathname
-    .split("/")
+    .split('/')
     .filter((x) => x)[0]
-    .split("-")
-    .join(" ");
+    .split('-')
+    .join(' ');
   const classes = useStyles();
   const [{ user, news, defaultPageSize }] = useStateValue();
-  const { itemIdProps, mode } = location?.state ? location?.state : "";
-
-  console.log(itemIdProps, "itemIdProps");
+  const { itemIdProps, itemuuIdProps, mode } = location?.state ? location?.state : '';
 
   const [itemId, setItemId] = useState(itemIdProps);
-  const [selectedQuestionId, setSelectedQuestionId] = useState("");
+  const [itemuuId, setItemuuId] = useState(itemuuIdProps);
+  const [selectedQuestionId, setSelectedQuestionId] = useState('');
   const [count, setCount] = useState(0);
-  const [editorContent, setEditorContent] = useState("");
+  const [editorContent, setEditorContent] = useState('');
   const [multipleChoices, setMultipleChoices] = useState([]);
-  const [nameDetails, setNameDetails] = useState(itemIdProps);
-  const [descriptionDetails, setDescriptionDetails] = useState("");
-  const [statusButtonDetails, setStatusButtonDetails] = useState("");
-  const [difficultyButtonDetails, setDifficultyButtonDetails] = useState("");
-  const [scoringType, setScoringType] = useState(1);
-  const [contentSource, setContentSource] = useState("");
-  const [contentNotes, setContentNotes] = useState("");
-  const [contentAcknowledgements, setContentAcknowledgements] = useState("");
+  const [nameDetails, setNameDetails] = useState(itemuuIdProps);
+  const [descriptionDetails, setDescriptionDetails] = useState('');
+  const [statusButtonDetails, setStatusButtonDetails] = useState('draft');
+  const [difficultyButtonDetails, setDifficultyButtonDetails] = useState('easy');
+  const [scoringType, setScoringType] = useState('per question');
+  const [grades, setGrades] = useState('');
+  const [subject, setSubject] = useState('');
+  const [contentSource, setContentSource] = useState('');
+  const [contentNotes, setContentNotes] = useState('');
+  const [contentAcknowledgements, setContentAcknowledgements] = useState('');
 
-  const [selectedLayout, setSelectedLayout] = useState("1");
+  const [selectedLayout, setSelectedLayout] = useState('1');
   const [tagsList, setTagsList] = useState([]);
   const [tabsInColumn, setTabsInColumn] = useState(false);
   const [tabsInColumnOne, setTabsInColumnOne] = useState(false);
@@ -85,24 +85,21 @@ const CreateItem = () => {
 
   // Cloze With Text Layout starts
 
-  const [clozeWithTextMatchAllResponses, setClozeWithTextMatchAllResponses] =
-    useState(false);
-  const [clozeWithTextTemplateMarkup, setClozeWithTextTemplateMarkup] =
-    useState("");
-  const [clozeWithTextEditorContent, setClozeWithTextEditorContent] =
-    useState("");
+  const [clozeWithTextMatchAllResponses, setClozeWithTextMatchAllResponses] = useState(false);
+  const [clozeWithTextTemplateMarkup, setClozeWithTextTemplateMarkup] = useState('');
+  const [clozeWithTextEditorContent, setClozeWithTextEditorContent] = useState('');
   const [clozeWithTextCorrectAnswer, setClozeWithTextCorrectAnswer] = useState([
     {
       id: `item-1`,
       position: 0,
-      title: "Response 1",
+      title: 'Response 1',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-2`,
       position: 1,
-      title: "Response 2",
+      title: 'Response 2',
       isCorrect: false,
       isAlternate: false,
     },
@@ -112,19 +109,19 @@ const CreateItem = () => {
 
   // trueFalse layout starts
   const [trueFalseShuffleOption, setTrueFalseShuffleOption] = useState(false);
-  const [trueFalseEditorContent, setTrueFalseEditorContent] = useState("");
+  const [trueFalseEditorContent, setTrueFalseEditorContent] = useState('');
   const [trueFalseMultipleChoices, setTrueFalseMultipleChoices] = useState([
     {
       id: `item-1`,
       position: 0,
-      title: "True",
+      title: 'True',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-2`,
       position: 1,
-      title: "False",
+      title: 'False',
       isCorrect: false,
       isAlternate: false,
     },
@@ -133,29 +130,24 @@ const CreateItem = () => {
 
   // ClozeWithDropDown starts
 
-  const [clozeWithDropDownEditorContent, setClozeWithDropDownEditorContent] =
-    useState("");
-  const [clozeWithDropDownTemplateMarkup, setClozeWithDropDownTemplateMarkup] =
-    useState("");
-  const [
-    clozeWithDropDownMultipleChoices,
-    setClozeWithDropDownMultipleChoices,
-  ] = useState([
+  const [clozeWithDropDownEditorContent, setClozeWithDropDownEditorContent] = useState('');
+  const [clozeWithDropDownTemplateMarkup, setClozeWithDropDownTemplateMarkup] = useState('');
+  const [clozeWithDropDownMultipleChoices, setClozeWithDropDownMultipleChoices] = useState([
     {
       responses: [
         {
           id: `item-1}`,
           position: 0,
-          choice: "",
-          title: "first 1",
+          choice: '',
+          title: 'first 1',
           isCorrect: false,
           isAlternate: false,
         },
         {
           id: `item-2}`,
           position: 1,
-          choice: "",
-          title: "first 2",
+          choice: '',
+          title: 'first 2',
           isCorrect: false,
           isAlternate: false,
         },
@@ -166,16 +158,16 @@ const CreateItem = () => {
         {
           id: `item-1}`,
           position: 0,
-          choice: "",
-          title: "second 1",
+          choice: '',
+          title: 'second 1',
           isCorrect: false,
           isAlternate: false,
         },
         {
           id: `item-2}`,
           position: 1,
-          choice: "",
-          title: "second 2",
+          choice: '',
+          title: 'second 2',
           isCorrect: false,
           isAlternate: false,
         },
@@ -186,55 +178,46 @@ const CreateItem = () => {
   // ClozeWithDropDown ends
 
   // ClozeWithDragAndDrop starts
-  const [
-    clozeWithDragAndDropEditorContent,
-    setClozeWithDragAndDropEditorContent,
-  ] = useState("");
-  const [
-    clozeWithDragAndDropTemplateMarkup,
-    setClozeWithDragAndDropTemplateMarkup,
-  ] = useState("");
-  const [
-    clozeWithDragAndDropMultipleChoices,
-    setClozeWithDragAndDropMultipleChoices,
-  ] = useState([
+  const [clozeWithDragAndDropEditorContent, setClozeWithDragAndDropEditorContent] = useState('');
+  const [clozeWithDragAndDropTemplateMarkup, setClozeWithDragAndDropTemplateMarkup] = useState('');
+  const [clozeWithDragAndDropMultipleChoices, setClozeWithDragAndDropMultipleChoices] = useState([
     {
-      groupTitle: "Title 1",
+      groupTitle: 'Title 1',
       responses: [
         {
           id: `item-1}`,
           position: 0,
-          choice: "",
-          title: "first 1",
+          choice: '',
+          title: 'first 1',
           isCorrect: false,
           isAlternate: false,
         },
         {
           id: `item-2}`,
           position: 1,
-          choice: "",
-          title: "first 2",
+          choice: '',
+          title: 'first 2',
           isCorrect: false,
           isAlternate: false,
         },
       ],
     },
     {
-      groupTitle: "Title 2",
+      groupTitle: 'Title 2',
       responses: [
         {
           id: `item-1}`,
           position: 0,
-          choice: "",
-          title: "second 1",
+          choice: '',
+          title: 'second 1',
           isCorrect: false,
           isAlternate: false,
         },
         {
           id: `item-2}`,
           position: 1,
-          choice: "",
-          title: "second 2",
+          choice: '',
+          title: 'second 2',
           isCorrect: false,
           isAlternate: false,
         },
@@ -244,126 +227,110 @@ const CreateItem = () => {
   // ClozeWithDragAndDrop ends
 
   // Choice Matrix start
-  const [choiceMatricEditorContent, setChoiceMatricEditorContent] =
-    useState("");
-  const [choiceMatricMultipleChoices, setChoiceMatricMultipleChoices] =
-    useState([
-      {
-        id: `item-1}`,
-        position: 0,
-        title: "",
-        isCorrect: false,
-        isAlternate: false,
-      },
-      {
-        id: `item-2`,
-        position: 1,
-        title: "",
-        isCorrect: false,
-        isAlternate: false,
-      },
-      {
-        id: `item-3`,
-        position: 2,
-        title: "",
-        isCorrect: false,
-        isAlternate: false,
-      },
-      {
-        id: `item-4`,
-        position: 3,
-        title: "",
-        isCorrect: false,
-        isAlternate: false,
-      },
-    ]);
-  const [choiceMatricMultipleOptions, setChoiceMatricMultipleOptions] =
-    useState([
-      {
-        id: `item-1}`,
-        position: 0,
-        title: "True",
-        isCorrect: false,
-        isAlternate: false,
-      },
-      {
-        id: `item-2`,
-        position: 1,
-        title: "False",
-        isCorrect: false,
-        isAlternate: false,
-      },
-    ]);
-  // Choice Matrix end
-
-  // EssayWithRichText Layout starts
-
-  const [essayWithRichTextEditorContent, setEssayWithRichTextEditorContent] =
-    useState("");
-  const [essayWithRichTextWordLimit, setEssayWithRichTextWordLimit] =
-    useState(10000);
-  const [essayWithRichTextWordLimitType, setEssayWithRichTextWordLimitType] =
-    useState("");
-
-  // EssayWithRichText Layout ends
-
-  // Audio recorder Layout starts
-
-  const [audioRecorderEditorContent, setAudioRecorderEditorContent] =
-    useState("");
-  const [audioRecorderMaximumSecond, setAudioRecorderMaximumSecond] =
-    useState(1);
-  const [audioRecorderPlayerType, setAudioRecorderPlayerType] = useState("");
-
-  // audio recorder Layout ends
-
-  // ShortText Layout starts
-
-  const [shortTextEditorContent, setShortTextEditorContent] = useState("");
-  const [shortTextPoints, setShortTextPoints] = useState(1);
-  const [shortTextAllow, setShortTextAllow] = useState("");
-  const [shortTextValue, setShortTextValue] = useState("");
-
-  // ShortText Layout ends
-
-  // EssayWithPlainTextLayout starts
-  const [
-    essayWithPlainTextLayoutEditorContent,
-    setEssayWithPlainTextLayoutEditorContent,
-  ] = useState("");
-  const [
-    essayWithPlainTextLayoutWordLimit,
-    setEssayWithPlainTextLayoutWordLimit,
-  ] = useState(10000);
-
-  const [
-    essayWithPlainTextLayoutWordType,
-    setEssayWithPlainTextLayoutWordType,
-  ] = useState("");
-  // EssayWithPlainTextLayout ends
-
-  // OrderList Layout starts
-
-  const [orderListEditorContent, setOrderListEditorContent] = useState("");
-  const [orderListList, setOrderListList] = useState([
+  const [choiceMatricEditorContent, setChoiceMatricEditorContent] = useState('');
+  const [choiceMatricMultipleChoices, setChoiceMatricMultipleChoices] = useState([
     {
       id: `item-1}`,
       position: 0,
-      title: "Test1",
+      title: '',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-2`,
       position: 1,
-      title: "Test2",
+      title: '',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-3`,
       position: 2,
-      title: "Test3",
+      title: '',
+      isCorrect: false,
+      isAlternate: false,
+    },
+    {
+      id: `item-4`,
+      position: 3,
+      title: '',
+      isCorrect: false,
+      isAlternate: false,
+    },
+  ]);
+  const [choiceMatricMultipleOptions, setChoiceMatricMultipleOptions] = useState([
+    {
+      id: `item-1}`,
+      position: 0,
+      title: 'True',
+      isCorrect: false,
+      isAlternate: false,
+    },
+    {
+      id: `item-2`,
+      position: 1,
+      title: 'False',
+      isCorrect: false,
+      isAlternate: false,
+    },
+  ]);
+  // Choice Matrix end
+
+  // EssayWithRichText Layout starts
+
+  const [essayWithRichTextEditorContent, setEssayWithRichTextEditorContent] = useState('');
+  const [essayWithRichTextWordLimit, setEssayWithRichTextWordLimit] = useState(10000);
+  const [essayWithRichTextWordLimitType, setEssayWithRichTextWordLimitType] = useState('');
+
+  // EssayWithRichText Layout ends
+
+  // Audio recorder Layout starts
+
+  const [audioRecorderEditorContent, setAudioRecorderEditorContent] = useState('');
+  const [audioRecorderMaximumSecond, setAudioRecorderMaximumSecond] = useState(1);
+  const [audioRecorderPlayerType, setAudioRecorderPlayerType] = useState('');
+
+  // audio recorder Layout ends
+
+  // ShortText Layout starts
+
+  const [shortTextEditorContent, setShortTextEditorContent] = useState('');
+  const [shortTextPoints, setShortTextPoints] = useState(1);
+  const [shortTextAllow, setShortTextAllow] = useState('');
+  const [shortTextValue, setShortTextValue] = useState('');
+
+  // ShortText Layout ends
+
+  // EssayWithPlainTextLayout starts
+  const [essayWithPlainTextLayoutEditorContent, setEssayWithPlainTextLayoutEditorContent] =
+    useState('');
+  const [essayWithPlainTextLayoutWordLimit, setEssayWithPlainTextLayoutWordLimit] = useState(10000);
+
+  const [essayWithPlainTextLayoutWordType, setEssayWithPlainTextLayoutWordType] = useState('');
+  // EssayWithPlainTextLayout ends
+
+  // OrderList Layout starts
+
+  const [orderListEditorContent, setOrderListEditorContent] = useState('');
+  const [orderListList, setOrderListList] = useState([
+    {
+      id: `item-1}`,
+      position: 0,
+      title: 'Test1',
+      isCorrect: false,
+      isAlternate: false,
+    },
+    {
+      id: `item-2`,
+      position: 1,
+      title: 'Test2',
+      isCorrect: false,
+      isAlternate: false,
+    },
+    {
+      id: `item-3`,
+      position: 2,
+      title: 'Test3',
       isCorrect: false,
       isAlternate: false,
     },
@@ -372,26 +339,26 @@ const CreateItem = () => {
   // OrderList Layout ends
 
   // MatchList Layout Starts
-  const [matchListEditorContent, setMatchListEditorContent] = useState("");
+  const [matchListEditorContent, setMatchListEditorContent] = useState('');
   const [matchListPossibleResponses, setMatchListPossibleResponses] = useState([
     {
       id: `item-1}`,
       position: 0,
-      title: "Test1",
+      title: 'Test1',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-2`,
       position: 1,
-      title: "Test2",
+      title: 'Test2',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-3`,
       position: 2,
-      title: "Test3",
+      title: 'Test3',
       isCorrect: false,
       isAlternate: false,
     },
@@ -400,21 +367,21 @@ const CreateItem = () => {
     {
       id: `item-1}`,
       position: 0,
-      title: "Item1",
+      title: 'Item1',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-2`,
       position: 1,
-      title: "Item2",
+      title: 'Item2',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-3`,
       position: 2,
-      title: "Item2",
+      title: 'Item2',
       isCorrect: false,
       isAlternate: false,
     },
@@ -425,51 +392,49 @@ const CreateItem = () => {
   // Classification Layout starts
   const [classificationColumnCount, setClassificationColumnCount] = useState(1);
   const [classificationRowCount, setClassificationRowCount] = useState(1);
-  const [classificationEditorContent, setClassificationEditorContent] =
-    useState("");
-  const [classificationPossibleResponses, setClassificationPossibleResponses] =
-    useState([
-      {
-        id: `item-1}`,
-        position: 0,
-        title: "Test1",
-        isCorrect: false,
-        isAlternate: false,
-      },
-      {
-        id: `item-2`,
-        position: 1,
-        title: "Test2",
-        isCorrect: false,
-        isAlternate: false,
-      },
-      {
-        id: `item-3`,
-        position: 2,
-        title: "Test3",
-        isCorrect: false,
-        isAlternate: false,
-      },
-      {
-        id: `item-4`,
-        position: 3,
-        title: "Test4",
-        isCorrect: false,
-        isAlternate: false,
-      },
-    ]);
-  const [classificationColumnTitles, setClassificationColumnTitles] = useState([
+  const [classificationEditorContent, setClassificationEditorContent] = useState('');
+  const [classificationPossibleResponses, setClassificationPossibleResponses] = useState([
     {
       id: `item-1}`,
       position: 0,
-      title: "Column1",
+      title: 'Test1',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-2`,
       position: 1,
-      title: "Column2",
+      title: 'Test2',
+      isCorrect: false,
+      isAlternate: false,
+    },
+    {
+      id: `item-3`,
+      position: 2,
+      title: 'Test3',
+      isCorrect: false,
+      isAlternate: false,
+    },
+    {
+      id: `item-4`,
+      position: 3,
+      title: 'Test4',
+      isCorrect: false,
+      isAlternate: false,
+    },
+  ]);
+  const [classificationColumnTitles, setClassificationColumnTitles] = useState([
+    {
+      id: `item-1}`,
+      position: 0,
+      title: 'Column1',
+      isCorrect: false,
+      isAlternate: false,
+    },
+    {
+      id: `item-2`,
+      position: 1,
+      title: 'Column2',
       isCorrect: false,
       isAlternate: false,
     },
@@ -477,7 +442,7 @@ const CreateItem = () => {
   // Classification Layout end
 
   const { control, handleSubmit, watch, formState } = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues,
     // resolver: yupResolver(schema),
   });
@@ -499,95 +464,30 @@ const CreateItem = () => {
     itemObject
   ) => {
     try {
-      console.log("itemObject ", itemObject);
+      itemObject.itemId = itemId;
       if (questionId != null) {
-        const finalItemObject = {
-          id: questionId,
-          description: editorContent,
-          options: multipleChoices,
-          // itemId: "1eff4c49-fcb1-432e-83c8-c5a0023ee5e0",
-          questionType: questiontype, // "simple-mcqs",
-          questionConfig:
-            '{"some_key_1": "some_val_1", "some_key_2": "some_value_2"}',
-          position: 1,
-        };
-
-        console.log("editorContent in save question ", editorContent);
-        /*  if (editorContent === "" || editorContent === "<p></p>\n") {
-          swal({
-            title: "Error!",
-            text: "Question Description is Required!",
-            icon: "error",
-            button: "Ok!",
-          });
-        }
-        if (multipleChoices === [] || multipleChoices.length === 0) {
-          swal({
-            title: "Error!",
-            text: "Multiple Choice Options are Required!",
-            icon: "error",
-            button: "Ok!",
-          });
-        } else { */
         const res = await saveQuestion(itemObject, itemId);
-        console.log("onSaveQuestion res is ", res);
-        if (res && res.data && res.data.status === "success") {
+        if (res && res.data && res.data.status === 'success') {
           swal({
-            title: "Good job!",
-            text: "Question Updated Successfully!",
-            icon: "success",
-            button: "Ok!",
+            title: 'Good job!',
+            text: 'Question Updated Successfully!',
+            icon: 'success',
+            button: 'Ok!',
           }).then((value) => {
-            const _content = "";
-            const _choices = [];
-            setEditorContent(..._content);
-            setMultipleChoices([..._choices]);
-            console.log("updated successfully");
-            //  redirectTo("/all-questions");
+            console.log('updated successfully');
           });
         }
         // }
       } else {
-        const finalItemObject = {
-          description: editorContent,
-          options: multipleChoices,
-          // itemId: "1eff4c49-fcb1-432e-83c8-c5a0023ee5e0",
-          questionType: questiontype, // "simple-mcqs",
-          questionConfig:
-            '{"some_key_1": "some_val_1", "some_key_2": "some_value_2"}',
-          position: 1,
-        };
-        /*  if (editorContent === "" || editorContent === "<p></p>\n") {
-          swal({
-            title: "Error!",
-            text: "Question Description is Required!",
-            icon: "error",
-            button: "Ok!",
-          });
-        }
-        if (multipleChoices === [] || multipleChoices.length === 0) {
-          swal({
-            title: "Error!",
-            text: "Multiple Choice Options are Required!",
-            icon: "error",
-            button: "Ok!",
-          });
-        } else { */
         const res = await saveQuestion(itemObject, itemId);
-        console.log("onSaveQuestion res is ", res);
-        if (res && res.data && res.data.status === "success") {
+        if (res && res.status === 'success') {
           swal({
-            title: "Good job!",
-            text: "Question Saved Successfully!",
-            icon: "success",
-            button: "Ok!",
+            title: 'Good job!',
+            text: 'Question Saved Successfully!',
+            icon: 'success',
+            button: 'Ok!',
           }).then((value) => {
-            const _content = "";
-            const _choices = [];
-            setEditorContent(..._content);
-            setMultipleChoices([..._choices]);
-            console.log("saved successfully");
-            //  redirectTo("/all-questions");
+            console.log('saved successfully');
           });
 
           // ...here shuffles question to push new created question id in layout
@@ -598,38 +498,25 @@ const CreateItem = () => {
                 item.Tabs.forEach((tab) => {
                   if (tab.TabName === tabname) {
                     if (tab.QuestionsList && tab.QuestionsList.length > 0) {
-                      tab.QuestionsList[questionIndex].id =
-                        res.data.question.id;
-                      // tab.QuestionsList.push(question);
+                      tab.QuestionsList[questionIndex].id = res.question.id;
                     }
                   }
                 });
               } else if (item.QuestionsList && item.QuestionsList.length > 0) {
-                item.QuestionsList[questionIndex].id = res.data.question.id;
-                // item.QuestionsList.push(question);
+                item.QuestionsList[questionIndex].id = res.question.id;
               }
             }
           });
           setComponentsStructureList([...comp]);
-          console.log("compin save question ", comp);
         }
-        // }
       }
-      console.log(
-        "componentsStructureList in save question ",
-        componentsStructureList
-      );
     } catch (error) {
-      console.log("onSaveQuestion error is ", error);
       swal({
-        title: "Error!",
-        text: "Something Went Wrong,Please Contact Admin!",
-        icon: "error",
-        button: "Ok!",
+        title: 'Error!',
+        text: 'Something Went Wrong,Please Contact Admin!',
+        icon: 'error',
+        button: 'Ok!',
       });
-      // setStatus({ success: false });
-      // setErrors({ submit: error.message });
-      // setSubmitting(false);
     }
   };
 
@@ -640,64 +527,94 @@ const CreateItem = () => {
         description: descriptionDetails,
         id: itemId,
         layout: JSON.stringify(componentsStructureList),
-        status: statusButtonDetails,
+        status:statusButtonDetails,
         scoringType,
         difficultyLevel: difficultyButtonDetails,
         acknowledgement: contentAcknowledgements,
         notes: contentNotes,
         source: contentSource,
-        tags: tagsList,
+        tags:tagsList && JSON.stringify(tagsList),
+        gradeId:grades,
+        subjectId:subject,
+        layoutConfig:JSON.stringify({
+          selectedLayout,
+          tabsInColumn,
+          tabsInColumnOne,
+          tabsInColumnTwo,
+          verticalDivider,
+          scrollingForLongContent
+        }),
       };
-      if (itemId === "") {
+      if (itemId === '') {
         swal({
-          title: "Error!",
-          text: "Item Doesnt Exist!",
-          icon: "error",
-          button: "Ok!",
+          title: 'Error!',
+          text: 'Item Doesnt Exist!',
+          icon: 'error',
+          button: 'Ok!',
         });
       }
-      if (nameDetails === "") {
+      if (nameDetails === '') {
         swal({
-          title: "Error!",
-          text: "Name is Required!",
-          icon: "error",
-          button: "Ok!",
+          title: 'Error!',
+          text: 'Name is Required!',
+          icon: 'error',
+          button: 'Ok!',
         });
       }
-      if (descriptionDetails === "") {
+      if (descriptionDetails === '') {
         swal({
-          title: "Error!",
-          text: "Description is Required!",
-          icon: "error",
-          button: "Ok!",
+          title: 'Error!',
+          text: 'Description is Required!',
+          icon: 'error',
+          button: 'Ok!',
         });
-      } else {
+      } 
+      if (scoringType === '') {
+        swal({
+          title: 'Error!',
+          text: 'scoringType is Required!',
+          icon: 'error',
+          button: 'Ok!',
+        });
+      }
+      if (grades === '') {
+        swal({
+          title: 'Error!',
+          text: 'Grade is Required!',
+          icon: 'error',
+          button: 'Ok!',
+        });
+      }
+      if (subject === '') {
+        swal({
+          title: 'Error!',
+          text: 'Subject is Required!',
+          icon: 'error',
+          button: 'Ok!',
+        });
+      }else {
         const res = await saveItem(itemObject);
 
-        if (res && res.data && res.data.status === "success") {
+        if (res && res.status === 'success') {
           swal({
-            title: "Good job!",
-            text: "Item Saved Successfully!",
-            icon: "success",
-            button: "Ok!",
+            title: 'Good job!',
+            text: 'Item Saved Successfully!',
+            icon: 'success',
+            button: 'Ok!',
           }).then((value) => {
-            setEditorContent("");
+            setEditorContent('');
             setMultipleChoices([]);
-            console.log("saved successfully");
+            console.log('saved successfully');
             //  redirectTo('/all-questions');
           });
         }
       }
-      console.log(
-        "componentsStructureList in save item ",
-        componentsStructureList
-      );
     } catch (error) {
       swal({
-        title: "Error!",
-        text: "Something Went Wrong on saving item, Please Contact Admin!",
-        icon: "error",
-        button: "Ok!",
+        title: 'Error!',
+        text: 'Something Went Wrong on saving item, Please Contact Admin!',
+        icon: 'error',
+        button: 'Ok!',
       });
       // setStatus({ success: false });
       // setErrors({ submit: error.message });
@@ -711,7 +628,7 @@ const CreateItem = () => {
     const option = {
       id: `item-${index + 1}`,
       position: index,
-      title: "",
+      title: '',
       isCorrect: false,
       isAlternate: false,
     };
@@ -725,59 +642,79 @@ const CreateItem = () => {
     const comp = componentsList;
     comp.push({ component: newValue });
     setComponentsList([...comp]);
-    onNewTabAdded("A", 1);
+    onNewTabAdded('A', 1);
   };
 
   useEffect(() => {
     // getItemLayout();
-    if (itemId == null || itemId == "") {
+    if (itemId == null || itemId == '') {
       createInitialItem();
     } else {
       getItemQuestions(itemId);
       getItem(itemId);
     }
+   // getTags();
   }, []);
+  const getTags = async () => {
+    try {
+      const res = await getTagsList();
+      if (res && res.status === 200 && res.data) {
+        if (res.data.data) {
+          dispatch(setTagsList([...res.data.data]));
+        }
+      }
+    } catch (error) {
+      swal({
+        title: 'Error!',
+        text: 'Something Went Wrong in getTagsList, Please Contact Admin!',
+        icon: 'error',
+        button: 'Ok!',
+      });
+      // setStatus({ success: false });
+      // setErrors({ submit: error.message });
+      // setSubmitting(false);
+    }
+  };
 
   const createInitialItem = async () => {
     try {
       const itemObject = {
-        title: "New Item",
-        description: "New Item",
+        title: 'New Item',
+        description: 'New Item',
         organizationId:
-          user && user.organization && user.organization.id
-            ? user.organization.id
-            : "", // '37cb22ba-fdb4-478f-b0d3-35312134e7ec',
-        status: "draft",
-        scoringType: "dichotomous",
-        difficultyLevel: "easy",
+          user && user.organization && user.organization.id ? user.organization.id : '', // '37cb22ba-fdb4-478f-b0d3-35312134e7ec',
+        status: 'draft',
+        scoringType:'per question',
+        difficultyLevel: 'easy', 
         layout: JSON.stringify([
           {
-            Section: "A",
-            Layout: "12",
+            Section: 'A',
+            Layout: '12',
             isTabbed: false,
             QuestionsList: [],
           },
         ]),
       };
       const res = await saveItem(itemObject);
-      if (res && res.data && res.data.status === "success") {
-        if (res.data.item) {
-          setItemId(res.data.item.id);
-          setNameDetails(res.data.item.id);
-          setDescriptionDetails(res.data.item.description);
-          if (res.data.item.layout) {
-            setComponentsStructureList(JSON.parse(res.data.item.layout));
+      if (res && res.status === 'success') {
+        if (res.item) {
+          setItemId(res.item.id);
+          setItemuuId(res.item.itemId);
+          setNameDetails(res.item.itemId);
+          setDescriptionDetails(res.item.description);
+          if (res.item.layout) {
+            setComponentsStructureList(JSON.parse(res.item.layout));
           }
-          console.log("Basic item created successfully");
+          console.log('Basic item created successfully');
         }
       }
     } catch (error) {
-      console.log("create item error on page load ", error);
+      console.log('create item error on page load ', error);
       swal({
-        title: "Error!",
-        text: "Something Went Wrong on Creating Item, Please Contact Admin!",
-        icon: "error",
-        button: "Ok!",
+        title: 'Error!',
+        text: 'Something Went Wrong on Creating Item, Please Contact Admin!',
+        icon: 'error',
+        button: 'Ok!',
       });
       // setStatus({ success: false });
       // setErrors({ submit: error.message });
@@ -786,10 +723,10 @@ const CreateItem = () => {
   };
 
   const getItem = async (id) => {
-    console.log("getItem called ", id);
     try {
       const res = await getItemById(id);
-      console.log("getItem res on page load ", res);
+      console.log('res in getItem ',res);
+       console.log('res.data in getItem ',res.data);
       if (res && res.status === 200 && res.data) {
         if (res.data.description) {
           setDescriptionDetails(res.data.description);
@@ -813,23 +750,56 @@ const CreateItem = () => {
           setContentAcknowledgements(res.data.acknowledgement);
         }
         if (res.data.tags) {
-          setTagsList(res.data.tags);
+          setTagsList(JSON.parse(res.data.tags));
         }
         if (res.data.title) {
           // setNameDetails(res.data.title);
         }
-
+        if (res.data.gradeId) {
+          setGrades(res.data.gradeId);
+        }
+        if (res.data.subjectId) {
+          setSubject(res.data.subjectId);
+        }
         if (res.data.layout) {
           setComponentsStructureList(JSON.parse(res.data.layout));
         }
+        if (res.data.layoutConfig) {
+          let _config=JSON.parse(res.data.layoutConfig);
+          console.log('_config ',_config)
+          if(_config.selectedLayout)
+          {
+            setSelectedLayout(_config.selectedLayout);
+          }
+          if(_config.tabsInColumn)
+          {
+            setTabsInColumn(_config.tabsInColumn);
+          }
+          if(_config.tabsInColumnOne)
+          {
+            setTabsInColumnOne(_config.tabsInColumnOne);
+          }
+          if(_config.tabsInColumnTwo)
+          {
+            setTabsInColumnTwo(_config.tabsInColumnTwo);
+          }
+          if(_config.verticalDivider)
+          {
+            setVerticalDivider(_config.verticalDivider);
+          }
+          if(_config.scrollingForLongContent)
+          {
+            setScrollingForLongContent(_config.scrollingForLongContent);
+          }
+        }
       }
     } catch (error) {
-      console.log("create item error on page load ", error);
+      console.log('create item error on page load ', error);
       swal({
-        title: "Error!",
-        text: "Something Went Wrong in getting items, Please Contact Admin!",
-        icon: "error",
-        button: "Ok!",
+        title: 'Error!',
+        text: 'Something Went Wrong in getting items, Please Contact Admin!',
+        icon: 'error',
+        button: 'Ok!',
       });
       // setStatus({ success: false });
       // setErrors({ submit: error.message });
@@ -848,12 +818,12 @@ const CreateItem = () => {
         }); */
       }
     } catch (error) {
-      console.log("create item error on page load ", error);
+      console.log('create item error on page load ', error);
       swal({
-        title: "Error!",
-        text: "Something Went Wrong in getting questions, Please Contact Admin!",
-        icon: "error",
-        button: "Ok!",
+        title: 'Error!',
+        text: 'Something Went Wrong in getting questions, Please Contact Admin!',
+        icon: 'error',
+        button: 'Ok!',
       });
       // setStatus({ success: false });
       // setErrors({ submit: error.message });
@@ -862,7 +832,7 @@ const CreateItem = () => {
   };
 
   function onNewTabAdded(section, title) {
-    const tab = { TabName: title, QuestionsList: [], Layout: "12" };
+    const tab = { TabName: title, QuestionsList: [], Layout: '12' };
     const comp = componentsStructureList;
     comp.forEach((item) => {
       if (item.Section === section) {
@@ -893,27 +863,22 @@ const CreateItem = () => {
       }
     });
     setComponentsStructureList([...comp]);
-    console.log("componentsStructureList ", componentsStructureList);
-    // let tabs=comp.Tabs;
-    // choices = multipleChoices;
-    // comp.push(option);
-    // setMultipleChoices(choices);
   }
 
   function getItemLayout() {
     const section = [];
-    if (selectedLayout === "1") {
+    if (selectedLayout === '1') {
       if (tabsInColumn === true) {
         section.push({
-          Section: "A",
-          Layout: "12",
+          Section: 'A',
+          Layout: '12',
           isTabbed: true,
-          Tabs: [{ TabName: "Tab 1", QuestionsList: [], Layout: "12" }],
+          Tabs: [{ TabName: 'Tab 1', QuestionsList: [], Layout: '12' }],
         });
       } else {
         section.push({
-          Section: "A",
-          Layout: "12",
+          Section: 'A',
+          Layout: '12',
           isTabbed: false,
           QuestionsList: [],
         });
@@ -921,30 +886,30 @@ const CreateItem = () => {
     } else {
       if (tabsInColumnOne === true) {
         section.push({
-          Section: "A",
-          Layout: "6",
+          Section: 'A',
+          Layout: '6',
           isTabbed: true,
-          Tabs: [{ TabName: "Tab 1", QuestionsList: [], Layout: "12" }],
+          Tabs: [{ TabName: 'Tab 1', QuestionsList: [], Layout: '12' }],
         });
       } else {
         section.push({
-          Section: "A",
-          Layout: "6",
+          Section: 'A',
+          Layout: '6',
           isTabbed: false,
           QuestionsList: [],
         });
       }
       if (tabsInColumnTwo === true) {
         section.push({
-          Section: "B",
-          Layout: "6",
+          Section: 'B',
+          Layout: '6',
           isTabbed: true,
-          Tabs: [{ TabName: "Tab 1", QuestionsList: [], Layout: "12" }],
+          Tabs: [{ TabName: 'Tab 1', QuestionsList: [], Layout: '12' }],
         });
       } else {
         section.push({
-          Section: "B",
-          Layout: "6",
+          Section: 'B',
+          Layout: '6',
           isTabbed: false,
           QuestionsList: [],
         });
@@ -963,7 +928,6 @@ const CreateItem = () => {
 
   function handleLayoutChange() {
     const _layout = [...componentsStructureList];
-    console.log("_layout ", _layout);
     const section = [];
     // ..below logic is for extracting questions from a tab or multiple tabs or sections
     const questions = [];
@@ -981,18 +945,18 @@ const CreateItem = () => {
       }
     });
     // ..above logic is for extracting questions from a tab or multiple tabs or sections
-    if (selectedLayout === "1") {
+    if (selectedLayout === '1') {
       if (tabsInColumn === true) {
         section.push({
-          Section: "A",
-          Layout: "12",
+          Section: 'A',
+          Layout: '12',
           isTabbed: true,
-          Tabs: [{ TabName: "Tab 1", QuestionsList: questions, Layout: "12" }],
+          Tabs: [{ TabName: 'Tab 1', QuestionsList: questions, Layout: '12' }],
         });
       } else {
         section.push({
-          Section: "A",
-          Layout: "12",
+          Section: 'A',
+          Layout: '12',
           isTabbed: false,
           QuestionsList: questions,
         });
@@ -1000,30 +964,30 @@ const CreateItem = () => {
     } else {
       if (tabsInColumnOne === true) {
         section.push({
-          Section: "A",
-          Layout: "6",
+          Section: 'A',
+          Layout: '6',
           isTabbed: true,
-          Tabs: [{ TabName: "Tab 1", QuestionsList: questions, Layout: "12" }],
+          Tabs: [{ TabName: 'Tab 1', QuestionsList: questions, Layout: '12' }],
         });
       } else {
         section.push({
-          Section: "A",
-          Layout: "6",
+          Section: 'A',
+          Layout: '6',
           isTabbed: false,
           QuestionsList: questions,
         });
       }
       if (tabsInColumnTwo === true) {
         section.push({
-          Section: "B",
-          Layout: "6",
+          Section: 'B',
+          Layout: '6',
           isTabbed: true,
-          Tabs: [{ TabName: "Tab 1", QuestionsList: [], Layout: "12" }],
+          Tabs: [{ TabName: 'Tab 1', QuestionsList: [], Layout: '12' }],
         });
       } else {
         section.push({
-          Section: "B",
-          Layout: "6",
+          Section: 'B',
+          Layout: '6',
           isTabbed: false,
           QuestionsList: [],
         });
@@ -1038,41 +1002,34 @@ const CreateItem = () => {
       }
     });
     setComponentsStructureList([...comp]); */
-    console.log("this is tesing in handle layout ", componentsStructureList);
+    console.log('this is tesing in handle layout ', componentsStructureList);
   }
 
   useEffect(() => {
     handleLayoutChange();
   }, [selectedLayout, tabsInColumn, tabsInColumnOne, tabsInColumnTwo]);
 
-  const removeQuestion = async (
-    sectionname,
-    tabname,
-    questionId,
-    questionIndex
-  ) => {
+  const removeQuestion = async (sectionname, tabname, questionId, questionIndex) => {
     try {
       swal({
-        title: "Are you sure?",
-        text: "Are you sure you want to delete?",
-        icon: "warning",
+        title: 'Are you sure?',
+        text: 'Are you sure you want to delete?',
+        icon: 'warning',
         buttons: true,
         dangerMode: true,
       }).then(async (willDelete) => {
         if (willDelete) {
-          // handleArchiveOrganization(Id);
-          console.log("question id : ", questionId);
           if (questionId != null) {
             const res = await deleteQuestion(questionId);
-            console.log("onSaveQuestion res is ", res);
-            if (res && res.data && res.data.status === "success") {
+            console.log('onSaveQuestion res is ', res);
+            if (res && res.data && res.data.status === 'success') {
               swal({
-                title: "Good job!",
-                text: "Question Deleted Successfully!",
-                icon: "success",
-                button: "Ok!",
+                title: 'Good job!',
+                text: 'Question Deleted Successfully!',
+                icon: 'success',
+                button: 'Ok!',
               }).then((value) => {
-                if (itemId != null && itemId != "") {
+                if (itemId != null && itemId !== '') {
                   getItemQuestions(itemId);
                 }
               });
@@ -1080,88 +1037,55 @@ const CreateItem = () => {
               {
                 // ...here shuffles question to push new created question id in layout
                 const comp = componentsStructureList;
-                console.log("before", componentsStructureList);
                 comp.forEach((item) => {
                   if (item.Section === sectionname) {
                     if (item.isTabbed === true) {
                       item.Tabs.forEach((tab) => {
                         if (tab.TabName === tabname) {
-                          if (
-                            tab.QuestionsList &&
-                            tab.QuestionsList.length > 0
-                          ) {
+                          if (tab.QuestionsList && tab.QuestionsList.length > 0) {
                             tab.QuestionsList = tab.QuestionsList.filter(
-                              (e, i) => e.id != questionId
+                              (e, i) => e.id !== questionId
                             );
-
-                            console.log("length>0 ", questionIndex);
-                            // tab.QuestionsList[ questionIndex ].id = questionId;
-                            // tab.QuestionsList.push(question);
                           }
                         }
                       });
-                    } else if (
-                      item.QuestionsList &&
-                      item.QuestionsList.length > 0
-                    ) {
-                      item.QuestionsList = item.QuestionsList.filter(
-                        (e, i) => e.id != questionId
-                      );
-                      console.log("length<0 index", questionIndex);
-                      // item.QuestionsList[ questionIndex ].id =questionId;
-                      // item.QuestionsList.push(question);
+                    } else if (item.QuestionsList && item.QuestionsList.length > 0) {
+                      item.QuestionsList = item.QuestionsList.filter((e, i) => e.id !== questionId);
                     }
                   }
                 });
                 setComponentsStructureList([...comp]);
-                console.log("compin delete question ", comp);
               }
             }
           } else {
             // ...here shuffles question to push new created question id in layout
             const comp = componentsStructureList;
-            console.log("before", componentsStructureList);
             comp.forEach((item) => {
               if (item.Section === sectionname) {
                 if (item.isTabbed === true) {
                   item.Tabs.forEach((tab) => {
                     if (tab.TabName === tabname) {
                       if (tab.QuestionsList && tab.QuestionsList.length > 0) {
-                        tab.QuestionsList = tab.QuestionsList.filter(
-                          (e, i) => i != questionIndex
-                        );
-
-                        console.log("length>0 ", questionIndex);
-                        // tab.QuestionsList[ questionIndex ].id = questionId;
-                        // tab.QuestionsList.push(question);
+                        tab.QuestionsList = tab.QuestionsList.filter((e, i) => i !== questionIndex);
                       }
                     }
                   });
-                } else if (
-                  item.QuestionsList &&
-                  item.QuestionsList.length > 0
-                ) {
-                  item.QuestionsList = item.QuestionsList.filter(
-                    (e, i) => i != questionIndex
-                  );
-                  console.log("length<0 index", questionIndex);
-                  // item.QuestionsList[ questionIndex ].id =questionId;
-                  // item.QuestionsList.push(question);
+                } else if (item.QuestionsList && item.QuestionsList.length > 0) {
+                  item.QuestionsList = item.QuestionsList.filter((e, i) => i !== questionIndex);
                 }
               }
             });
             setComponentsStructureList([...comp]);
-            console.log("compin delete question ", comp);
           }
         }
       });
     } catch (error) {
-      console.log("onSaveQuestion error is ", error);
+      console.log('onSaveQuestion error is ', error);
       swal({
-        title: "Error!",
-        text: "Something Went Wrong,Please Contact Admin!",
-        icon: "error",
-        button: "Ok!",
+        title: 'Error!',
+        text: 'Something Went Wrong,Please Contact Admin!',
+        icon: 'error',
+        button: 'Ok!',
       });
       // setStatus({ success: false });
       // setErrors({ submit: error.message });
@@ -1174,7 +1098,7 @@ const CreateItem = () => {
   }; */
 
   const editQuestion = () => {
-    console.log("editAnItem()");
+    console.log('editAnItem()');
   };
 
   return (
@@ -1189,25 +1113,24 @@ const CreateItem = () => {
             variant="h3"
             gutterBottom
             sx={{
-              color: "#000",
+              color: '#000',
               fontWeight: 700,
               mt: 2,
-              textTransform: "capitalize",
+              textTransform: 'capitalize',
             }}
           >
             Create New Question
           </Typography>
-          <Button
+        {/*   <Button
             variant="contained"
             color="primary"
             size="small"
-            style={{ float: "right" }}
+            style={{ float: 'right' }}
             aria-label="Save Draft"
             onClick={() => onSaveQuestion()}
-            // startIcon={<AddIcon />}
           >
             Save Draft
-          </Button>
+          </Button> */}
         </div>
       }
       content={
@@ -1219,7 +1142,7 @@ const CreateItem = () => {
             <DndProvider backend={HTML5Backend}>
               <div
                 className="flex flex-col w-full max-w-4xl"
-                style={{ width: "40%", maxWidth: "380px", minWidth: "379px" }}
+                style={{ width: '40%', maxWidth: '380px', minWidth: '379px' }}
               >
                 <ItemConfiguration
                   setNameDetails={setNameDetails}
@@ -1233,6 +1156,10 @@ const CreateItem = () => {
                   setDifficultyButtonDetails={setDifficultyButtonDetails}
                   scoringType={scoringType}
                   setScoringType={setScoringType}
+                  grades={grades}
+                  setGrades={setGrades}
+                  subject={subject}
+                  setSubject={setSubject}
                   contentSource={contentSource}
                   setContentSource={setContentSource}
                   contentNotes={contentNotes}
@@ -1266,27 +1193,27 @@ const CreateItem = () => {
                       className="flex flex-col w-full max-w-4xl p-20"
                       style={{
                         width:
-                          selectedLayout == "1"
-                            ? "100%"
-                            : selectedLayout == "50%"
-                            ? "50%"
-                            : selectedLayout == "30%,70%" && index % 2 == 0
-                            ? "30%"
-                            : selectedLayout == "30%,70%" && index % 2 !== 0
-                            ? "70%"
-                            : selectedLayout == "70%,30%" && index % 2 == 0
-                            ? "70%"
-                            : selectedLayout == "70%,30%" && index % 2 !== 0
-                            ? "30%"
-                            : selectedLayout == "40%,60%" && index % 2 == 0
-                            ? "40%"
-                            : selectedLayout == "40%,60%" && index % 2 !== 0
-                            ? "60%"
-                            : selectedLayout == "60%,40%" && index % 2 == 0
-                            ? "60%"
-                            : selectedLayout == "60%,40%" && index % 2 !== 0
-                            ? "40%"
-                            : "auto",
+                          selectedLayout === '1'
+                            ? '100%'
+                            : selectedLayout === '50%'
+                            ? '50%'
+                            : selectedLayout === '30%,70%' && index % 2 === 0
+                            ? '30%'
+                            : selectedLayout === '30%,70%' && index % 2 !== 0
+                            ? '70%'
+                            : selectedLayout === '70%,30%' && index % 2 === 0
+                            ? '70%'
+                            : selectedLayout === '70%,30%' && index % 2 !== 0
+                            ? '30%'
+                            : selectedLayout === '40%,60%' && index % 2 === 0
+                            ? '40%'
+                            : selectedLayout === '40%,60%' && index % 2 !== 0
+                            ? '60%'
+                            : selectedLayout === '60%,40%' && index % 2 === 0
+                            ? '60%'
+                            : selectedLayout === '60%,40%' && index % 2 !== 0
+                            ? '40%'
+                            : 'auto',
                       }}
                     >
                       {item.isTabbed === true ? (
@@ -1295,132 +1222,60 @@ const CreateItem = () => {
                           sectionName={item.Section}
                           handleNewTab={onNewTabAdded}
                           handleQuestionDragDrop={handleQuestionDragDrop}
-                          multipleChoiceschoiceMatric={
-                            choiceMatricMultipleChoices
-                          }
-                          setMultipleChoiceschoiceMatric={
-                            setChoiceMatricMultipleChoices
-                          }
-                          multipleOptionschoiceMatric={
-                            choiceMatricMultipleOptions
-                          }
-                          setMultipleOptionschoiceMatric={
-                            setChoiceMatricMultipleOptions
-                          }
+                          multipleChoiceschoiceMatric={choiceMatricMultipleChoices}
+                          setMultipleChoiceschoiceMatric={setChoiceMatricMultipleChoices}
+                          multipleOptionschoiceMatric={choiceMatricMultipleOptions}
+                          setMultipleOptionschoiceMatric={setChoiceMatricMultipleOptions}
                           editorContentchoiceMatric={choiceMatricEditorContent}
-                          setEditorContentchoiceMatric={
-                            setChoiceMatricEditorContent
-                          }
+                          setEditorContentchoiceMatric={setChoiceMatricEditorContent}
                           multipleChoicestrueFalse={trueFalseMultipleChoices}
-                          setMultipleChoicestrueFalse={
-                            setTrueFalseMultipleChoices
-                          }
+                          setMultipleChoicestrueFalse={setTrueFalseMultipleChoices}
                           editorContenttrueFalse={trueFalseEditorContent}
                           setEditorContenttrueFalse={setTrueFalseEditorContent}
-                          trueFalseShuffleOptiontrueFalse={
-                            trueFalseShuffleOption
-                          }
-                          setTrueFalseShuffleOptiontrueFalse={
-                            setTrueFalseShuffleOption
-                          }
+                          trueFalseShuffleOptiontrueFalse={trueFalseShuffleOption}
+                          setTrueFalseShuffleOptiontrueFalse={setTrueFalseShuffleOption}
                           // ubaid
-                          clozeWithDropDownMultipleChoices={
-                            clozeWithDropDownMultipleChoices
-                          }
-                          setClozeWithDropDownMultipleChoices={
-                            setClozeWithDropDownMultipleChoices
-                          }
-                          clozeWithDropDownEditorContent={
-                            clozeWithDropDownEditorContent
-                          }
-                          setClozeWithDropDownEditorContent={
-                            setClozeWithDropDownEditorContent
-                          }
-                          clozeWithDropDownTemplateMarkup={
-                            clozeWithDropDownTemplateMarkup
-                          }
-                          setClozeWithDropDownTemplateMarkup={
-                            setClozeWithDropDownTemplateMarkup
-                          }
-                          clozeWithDragAndDropMultipleChoices={
-                            clozeWithDragAndDropMultipleChoices
-                          }
+                          clozeWithDropDownMultipleChoices={clozeWithDropDownMultipleChoices}
+                          setClozeWithDropDownMultipleChoices={setClozeWithDropDownMultipleChoices}
+                          clozeWithDropDownEditorContent={clozeWithDropDownEditorContent}
+                          setClozeWithDropDownEditorContent={setClozeWithDropDownEditorContent}
+                          clozeWithDropDownTemplateMarkup={clozeWithDropDownTemplateMarkup}
+                          setClozeWithDropDownTemplateMarkup={setClozeWithDropDownTemplateMarkup}
+                          clozeWithDragAndDropMultipleChoices={clozeWithDragAndDropMultipleChoices}
                           setClozeWithDragAndDropMultipleChoices={
                             setClozeWithDragAndDropMultipleChoices
                           }
-                          clozeWithDragAndDropEditorContent={
-                            clozeWithDragAndDropEditorContent
-                          }
+                          clozeWithDragAndDropEditorContent={clozeWithDragAndDropEditorContent}
                           setClozeWithDragAndDropEditorContent={
                             setClozeWithDragAndDropEditorContent
                           }
-                          clozeWithDragAndDropTemplateMarkup={
-                            clozeWithDragAndDropTemplateMarkup
-                          }
+                          clozeWithDragAndDropTemplateMarkup={clozeWithDragAndDropTemplateMarkup}
                           setClozeWithDragAndDropTemplateMarkup={
                             setClozeWithDragAndDropTemplateMarkup
                           }
-                          clozeWithTextEditorContent={
-                            clozeWithTextEditorContent
-                          }
-                          setClozeWithTextEditorContent={
-                            setClozeWithTextEditorContent
-                          }
-                          clozeWithTextTemplateMarkup={
-                            clozeWithTextTemplateMarkup
-                          }
-                          setClozeWithTextTemplateMarkup={
-                            setClozeWithTextTemplateMarkup
-                          }
-                          clozeWithTextMatchAllResponses={
-                            clozeWithTextMatchAllResponses
-                          }
-                          setClozeWithTextMatchAllResponses={
-                            setClozeWithTextMatchAllResponses
-                          }
-                          clozeWithTextCorrectAnswer={
-                            clozeWithTextCorrectAnswer
-                          }
-                          setClozeWithTextCorrectAnswer={
-                            setClozeWithTextCorrectAnswer
-                          }
-                          essayWithRichTextEditorContent={
-                            essayWithRichTextEditorContent
-                          }
-                          setEssayWithRichTextEditorContent={
-                            setEssayWithRichTextEditorContent
-                          }
-                          essayWithRichTextWordLimit={
-                            essayWithRichTextWordLimit
-                          }
-                          setEssayWithRichTextWordLimit={
-                            setEssayWithRichTextWordLimit
-                          }
-                          essayWithRichTextWordLimitType={
-                            essayWithRichTextWordLimitType
-                          }
-                          setEssayWithRichTextWordLimitType={
-                            setEssayWithRichTextWordLimitType
-                          }
+                          clozeWithTextEditorContent={clozeWithTextEditorContent}
+                          setClozeWithTextEditorContent={setClozeWithTextEditorContent}
+                          clozeWithTextTemplateMarkup={clozeWithTextTemplateMarkup}
+                          setClozeWithTextTemplateMarkup={setClozeWithTextTemplateMarkup}
+                          clozeWithTextMatchAllResponses={clozeWithTextMatchAllResponses}
+                          setClozeWithTextMatchAllResponses={setClozeWithTextMatchAllResponses}
+                          clozeWithTextCorrectAnswer={clozeWithTextCorrectAnswer}
+                          setClozeWithTextCorrectAnswer={setClozeWithTextCorrectAnswer}
+                          essayWithRichTextEditorContent={essayWithRichTextEditorContent}
+                          setEssayWithRichTextEditorContent={setEssayWithRichTextEditorContent}
+                          essayWithRichTextWordLimit={essayWithRichTextWordLimit}
+                          setEssayWithRichTextWordLimit={setEssayWithRichTextWordLimit}
+                          essayWithRichTextWordLimitType={essayWithRichTextWordLimitType}
+                          setEssayWithRichTextWordLimitType={setEssayWithRichTextWordLimitType}
                           removeAnItem={removeQuestion}
                           editAnItem={editQuestion}
                           saveAnItem={editQuestion}
-                          audioRecorderEditorContent={
-                            audioRecorderEditorContent
-                          }
-                          setAudioRecorderEditorContent={
-                            setAudioRecorderEditorContent
-                          }
-                          audioRecorderMaximumSecond={
-                            audioRecorderMaximumSecond
-                          }
-                          setAudioRecorderMaximumSecond={
-                            setAudioRecorderMaximumSecond
-                          }
+                          audioRecorderEditorContent={audioRecorderEditorContent}
+                          setAudioRecorderEditorContent={setAudioRecorderEditorContent}
+                          audioRecorderMaximumSecond={audioRecorderMaximumSecond}
+                          setAudioRecorderMaximumSecond={setAudioRecorderMaximumSecond}
                           audioRecorderPlayerType={audioRecorderPlayerType}
-                          setAudioRecorderPlayerType={
-                            setAudioRecorderPlayerType
-                          }
+                          setAudioRecorderPlayerType={setAudioRecorderPlayerType}
                           shortTextEditorContent={shortTextEditorContent}
                           setShortTextEditorContent={setShortTextEditorContent}
                           shortTextPoints={shortTextPoints}
@@ -1429,18 +1284,12 @@ const CreateItem = () => {
                           setShortTextAllow={setShortTextAllow}
                           shortTextValue={shortTextValue}
                           setShortTextValue={setShortTextValue}
-                          essayWithPlainTextLayoutWordLimit={
-                            essayWithPlainTextLayoutWordLimit
-                          }
+                          essayWithPlainTextLayoutWordLimit={essayWithPlainTextLayoutWordLimit}
                           setEssayWithPlainTextLayoutWordLimit={
                             setEssayWithPlainTextLayoutWordLimit
                           }
-                          essayWithPlainTextLayoutWordType={
-                            essayWithPlainTextLayoutWordType
-                          }
-                          setEssayWithPlainTextLayoutWordType={
-                            setEssayWithPlainTextLayoutWordType
-                          }
+                          essayWithPlainTextLayoutWordType={essayWithPlainTextLayoutWordType}
+                          setEssayWithPlainTextLayoutWordType={setEssayWithPlainTextLayoutWordType}
                           essayWithPlainTextLayoutEditorContent={
                             essayWithPlainTextLayoutEditorContent
                           }
@@ -1451,38 +1300,20 @@ const CreateItem = () => {
                           setOrderListList={setOrderListList}
                           orderListEditorContent={orderListEditorContent}
                           setOrderListEditorContent={setOrderListEditorContent}
-                          matchListPossibleResponses={
-                            matchListPossibleResponses
-                          }
-                          setMatchListPossibleResponses={
-                            setMatchListPossibleResponses
-                          }
+                          matchListPossibleResponses={matchListPossibleResponses}
+                          setMatchListPossibleResponses={setMatchListPossibleResponses}
                           matchListStimulusList={matchListStimulusList}
                           setMatchListStimulusList={setMatchListStimulusList}
                           matchListEditorContent={matchListEditorContent}
                           setMatchListEditorContent={setMatchListEditorContent}
-                          classificationPossibleResponses={
-                            classificationPossibleResponses
-                          }
-                          setClassificationPossibleResponses={
-                            setClassificationPossibleResponses
-                          }
-                          classificationColumnTitles={
-                            classificationColumnTitles
-                          }
-                          setClassificationColumnTitles={
-                            setClassificationColumnTitles
-                          }
-                          classificationEditorContent={
-                            classificationEditorContent
-                          }
-                          setClassificationEditorContent={
-                            setClassificationEditorContent
-                          }
+                          classificationPossibleResponses={classificationPossibleResponses}
+                          setClassificationPossibleResponses={setClassificationPossibleResponses}
+                          classificationColumnTitles={classificationColumnTitles}
+                          setClassificationColumnTitles={setClassificationColumnTitles}
+                          classificationEditorContent={classificationEditorContent}
+                          setClassificationEditorContent={setClassificationEditorContent}
                           classificationColumnCount={classificationColumnCount}
-                          setClassificationColumnCount={
-                            setClassificationColumnCount
-                          }
+                          setClassificationColumnCount={setClassificationColumnCount}
                           classificationRowCount={classificationRowCount}
                           setClassificationRowCount={setClassificationRowCount}
                           editorContent={editorContent}
@@ -1498,132 +1329,60 @@ const CreateItem = () => {
                           QuestionsList={item.QuestionsList}
                           sectionName={item.Section}
                           handleQuestionDragDrop={handleQuestionDragDrop}
-                          multipleChoiceschoiceMatric={
-                            choiceMatricMultipleChoices
-                          }
-                          setMultipleChoiceschoiceMatric={
-                            setChoiceMatricMultipleChoices
-                          }
-                          multipleOptionschoiceMatric={
-                            choiceMatricMultipleOptions
-                          }
-                          setMultipleOptionschoiceMatric={
-                            setChoiceMatricMultipleOptions
-                          }
+                          multipleChoiceschoiceMatric={choiceMatricMultipleChoices}
+                          setMultipleChoiceschoiceMatric={setChoiceMatricMultipleChoices}
+                          multipleOptionschoiceMatric={choiceMatricMultipleOptions}
+                          setMultipleOptionschoiceMatric={setChoiceMatricMultipleOptions}
                           editorContentchoiceMatric={choiceMatricEditorContent}
-                          setEditorContentchoiceMatric={
-                            setChoiceMatricEditorContent
-                          }
+                          setEditorContentchoiceMatric={setChoiceMatricEditorContent}
                           multipleChoicestrueFalse={trueFalseMultipleChoices}
-                          setMultipleChoicestrueFalse={
-                            setTrueFalseMultipleChoices
-                          }
+                          setMultipleChoicestrueFalse={setTrueFalseMultipleChoices}
                           editorContenttrueFalse={trueFalseEditorContent}
                           setEditorContenttrueFalse={setTrueFalseEditorContent}
-                          trueFalseShuffleOptiontrueFalse={
-                            trueFalseShuffleOption
-                          }
-                          setTrueFalseShuffleOptiontrueFalse={
-                            setTrueFalseShuffleOption
-                          }
+                          trueFalseShuffleOptiontrueFalse={trueFalseShuffleOption}
+                          setTrueFalseShuffleOptiontrueFalse={setTrueFalseShuffleOption}
                           // ubaid
-                          clozeWithDropDownMultipleChoices={
-                            clozeWithDropDownMultipleChoices
-                          }
-                          setClozeWithDropDownMultipleChoices={
-                            setClozeWithDropDownMultipleChoices
-                          }
-                          clozeWithDropDownEditorContent={
-                            clozeWithDropDownEditorContent
-                          }
-                          setClozeWithDropDownEditorContent={
-                            setClozeWithDropDownEditorContent
-                          }
-                          clozeWithDropDownTemplateMarkup={
-                            clozeWithDropDownTemplateMarkup
-                          }
-                          setClozeWithDropDownTemplateMarkup={
-                            setClozeWithDropDownTemplateMarkup
-                          }
-                          clozeWithDragAndDropMultipleChoices={
-                            clozeWithDragAndDropMultipleChoices
-                          }
+                          clozeWithDropDownMultipleChoices={clozeWithDropDownMultipleChoices}
+                          setClozeWithDropDownMultipleChoices={setClozeWithDropDownMultipleChoices}
+                          clozeWithDropDownEditorContent={clozeWithDropDownEditorContent}
+                          setClozeWithDropDownEditorContent={setClozeWithDropDownEditorContent}
+                          clozeWithDropDownTemplateMarkup={clozeWithDropDownTemplateMarkup}
+                          setClozeWithDropDownTemplateMarkup={setClozeWithDropDownTemplateMarkup}
+                          clozeWithDragAndDropMultipleChoices={clozeWithDragAndDropMultipleChoices}
                           setClozeWithDragAndDropMultipleChoices={
                             setClozeWithDragAndDropMultipleChoices
                           }
-                          clozeWithDragAndDropEditorContent={
-                            clozeWithDragAndDropEditorContent
-                          }
+                          clozeWithDragAndDropEditorContent={clozeWithDragAndDropEditorContent}
                           setClozeWithDragAndDropEditorContent={
                             setClozeWithDragAndDropEditorContent
                           }
-                          clozeWithDragAndDropTemplateMarkup={
-                            clozeWithDragAndDropTemplateMarkup
-                          }
+                          clozeWithDragAndDropTemplateMarkup={clozeWithDragAndDropTemplateMarkup}
                           setClozeWithDragAndDropTemplateMarkup={
                             setClozeWithDragAndDropTemplateMarkup
                           }
-                          clozeWithTextEditorContent={
-                            clozeWithTextEditorContent
-                          }
-                          setClozeWithTextEditorContent={
-                            setClozeWithTextEditorContent
-                          }
-                          clozeWithTextTemplateMarkup={
-                            clozeWithTextTemplateMarkup
-                          }
-                          setClozeWithTextTemplateMarkup={
-                            setClozeWithTextTemplateMarkup
-                          }
-                          clozeWithTextMatchAllResponses={
-                            clozeWithTextMatchAllResponses
-                          }
-                          setClozeWithTextMatchAllResponses={
-                            setClozeWithTextMatchAllResponses
-                          }
-                          clozeWithTextCorrectAnswer={
-                            clozeWithTextCorrectAnswer
-                          }
-                          setClozeWithTextCorrectAnswer={
-                            setClozeWithTextCorrectAnswer
-                          }
-                          essayWithRichTextEditorContent={
-                            essayWithRichTextEditorContent
-                          }
-                          setEssayWithRichTextEditorContent={
-                            setEssayWithRichTextEditorContent
-                          }
-                          essayWithRichTextWordLimit={
-                            essayWithRichTextWordLimit
-                          }
-                          setEssayWithRichTextWordLimit={
-                            setEssayWithRichTextWordLimit
-                          }
-                          essayWithRichTextWordLimitType={
-                            essayWithRichTextWordLimitType
-                          }
-                          setEssayWithRichTextWordLimitType={
-                            setEssayWithRichTextWordLimitType
-                          }
+                          clozeWithTextEditorContent={clozeWithTextEditorContent}
+                          setClozeWithTextEditorContent={setClozeWithTextEditorContent}
+                          clozeWithTextTemplateMarkup={clozeWithTextTemplateMarkup}
+                          setClozeWithTextTemplateMarkup={setClozeWithTextTemplateMarkup}
+                          clozeWithTextMatchAllResponses={clozeWithTextMatchAllResponses}
+                          setClozeWithTextMatchAllResponses={setClozeWithTextMatchAllResponses}
+                          clozeWithTextCorrectAnswer={clozeWithTextCorrectAnswer}
+                          setClozeWithTextCorrectAnswer={setClozeWithTextCorrectAnswer}
+                          essayWithRichTextEditorContent={essayWithRichTextEditorContent}
+                          setEssayWithRichTextEditorContent={setEssayWithRichTextEditorContent}
+                          essayWithRichTextWordLimit={essayWithRichTextWordLimit}
+                          setEssayWithRichTextWordLimit={setEssayWithRichTextWordLimit}
+                          essayWithRichTextWordLimitType={essayWithRichTextWordLimitType}
+                          setEssayWithRichTextWordLimitType={setEssayWithRichTextWordLimitType}
                           removeAnItem={removeQuestion}
                           editAnItem={editQuestion}
                           saveAnItem={editQuestion}
-                          audioRecorderEditorContent={
-                            audioRecorderEditorContent
-                          }
-                          setAudioRecorderEditorContent={
-                            setAudioRecorderEditorContent
-                          }
-                          audioRecorderMaximumSecond={
-                            audioRecorderMaximumSecond
-                          }
-                          setAudioRecorderMaximumSecond={
-                            setAudioRecorderMaximumSecond
-                          }
+                          audioRecorderEditorContent={audioRecorderEditorContent}
+                          setAudioRecorderEditorContent={setAudioRecorderEditorContent}
+                          audioRecorderMaximumSecond={audioRecorderMaximumSecond}
+                          setAudioRecorderMaximumSecond={setAudioRecorderMaximumSecond}
                           audioRecorderPlayerType={audioRecorderPlayerType}
-                          setAudioRecorderPlayerType={
-                            setAudioRecorderPlayerType
-                          }
+                          setAudioRecorderPlayerType={setAudioRecorderPlayerType}
                           shortTextEditorContent={shortTextEditorContent}
                           setShortTextEditorContent={setShortTextEditorContent}
                           shortTextPoints={shortTextPoints}
@@ -1632,18 +1391,12 @@ const CreateItem = () => {
                           setShortTextAllow={setShortTextAllow}
                           shortTextValue={shortTextValue}
                           setShortTextValue={setShortTextValue}
-                          essayWithPlainTextLayoutWordLimit={
-                            essayWithPlainTextLayoutWordLimit
-                          }
+                          essayWithPlainTextLayoutWordLimit={essayWithPlainTextLayoutWordLimit}
                           setEssayWithPlainTextLayoutWordLimit={
                             setEssayWithPlainTextLayoutWordLimit
                           }
-                          essayWithPlainTextLayoutWordType={
-                            essayWithPlainTextLayoutWordType
-                          }
-                          setEssayWithPlainTextLayoutWordType={
-                            setEssayWithPlainTextLayoutWordType
-                          }
+                          essayWithPlainTextLayoutWordType={essayWithPlainTextLayoutWordType}
+                          setEssayWithPlainTextLayoutWordType={setEssayWithPlainTextLayoutWordType}
                           essayWithPlainTextLayoutEditorContent={
                             essayWithPlainTextLayoutEditorContent
                           }
@@ -1654,38 +1407,20 @@ const CreateItem = () => {
                           setOrderListList={setOrderListList}
                           orderListEditorContent={orderListEditorContent}
                           setOrderListEditorContent={setOrderListEditorContent}
-                          matchListPossibleResponses={
-                            matchListPossibleResponses
-                          }
-                          setMatchListPossibleResponses={
-                            setMatchListPossibleResponses
-                          }
+                          matchListPossibleResponses={matchListPossibleResponses}
+                          setMatchListPossibleResponses={setMatchListPossibleResponses}
                           matchListStimulusList={matchListStimulusList}
                           setMatchListStimulusList={setMatchListStimulusList}
                           matchListEditorContent={matchListEditorContent}
                           setMatchListEditorContent={setMatchListEditorContent}
-                          classificationPossibleResponses={
-                            classificationPossibleResponses
-                          }
-                          setClassificationPossibleResponses={
-                            setClassificationPossibleResponses
-                          }
-                          classificationColumnTitles={
-                            classificationColumnTitles
-                          }
-                          setClassificationColumnTitles={
-                            setClassificationColumnTitles
-                          }
-                          classificationEditorContent={
-                            classificationEditorContent
-                          }
-                          setClassificationEditorContent={
-                            setClassificationEditorContent
-                          }
+                          classificationPossibleResponses={classificationPossibleResponses}
+                          setClassificationPossibleResponses={setClassificationPossibleResponses}
+                          classificationColumnTitles={classificationColumnTitles}
+                          setClassificationColumnTitles={setClassificationColumnTitles}
+                          classificationEditorContent={classificationEditorContent}
+                          setClassificationEditorContent={setClassificationEditorContent}
                           classificationColumnCount={classificationColumnCount}
-                          setClassificationColumnCount={
-                            setClassificationColumnCount
-                          }
+                          setClassificationColumnCount={setClassificationColumnCount}
                           classificationRowCount={classificationRowCount}
                           setClassificationRowCount={setClassificationRowCount}
                           editorContent={editorContent}

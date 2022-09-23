@@ -8,6 +8,13 @@ export const getUserRole = (user) => {
   return null;
 };
 
+export const userRoles = {
+  superAdmin: 'super-admin',
+  clientAdmin: 'client-admin',
+  author: 'author',
+  student: 'student',
+};
+
 export const getUserPermissions = (user) => {
   const { permissions = [] } = user || {};
   return permissions;

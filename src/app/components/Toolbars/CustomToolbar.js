@@ -8,8 +8,6 @@ import {
   // DataGrid,
   GridToolbarContainer,
   GridToolbarExport,
-  GridToolbar,
-  gridClasses
 } from '@mui/x-data-grid';
 
 function CustomToolbar() {
@@ -19,7 +17,7 @@ function CustomToolbar() {
         padding: 10,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'flex-end'
+        justifyContent: 'flex-end',
       }}
     >
       <GridToolbarExport color="secondary" variant="contained" />

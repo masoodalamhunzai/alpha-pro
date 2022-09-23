@@ -7,6 +7,8 @@ const itemSlice = createSlice({
     itemDetail: null,
     questions: null,
     questionDetail: null,
+    tagsList: null,
+    gradesList:null,
   },
   reducers: {
     setItems: (state, action) => {
@@ -21,9 +23,15 @@ const itemSlice = createSlice({
     setQuestionDetail: (state, action) => {
       state.questionDetail = action.payload;
     },
+    setTagsList: (state, action) => {
+      state.tagsList = action.payload;
+    },
+    setGradesList: (state, action) => {
+      state.gradesList = action.payload;
+    },
   },
 });
 
-export const { setItems, setQuestions,setItemDetail,setQuestionDetail } = itemSlice.actions;
+export const { setItems, setQuestions, setItemDetail, setQuestionDetail,setTagsList,setGradesList } = itemSlice.actions;
 
 export default itemSlice.reducer;

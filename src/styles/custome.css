@@ -88,6 +88,10 @@
   color: white;
 }
 
+.menu-icon-rotate-180 span .material-icons {
+  transform: rotate(180deg);
+}
+
 .icon-btn-gray:hover {
   color: #3287fa;
 }

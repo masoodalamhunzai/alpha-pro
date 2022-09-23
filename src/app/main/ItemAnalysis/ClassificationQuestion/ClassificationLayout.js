@@ -1,21 +1,17 @@
-import { useState, useEffect } from "react";
-import Typography from "@mui/material/Typography";
-import WYSIWYGEditor from "app/shared-components/WYSIWYGEditor";
-import Icon from "@material-ui/core/Icon";
-import Paper from "@mui/material/Paper";
-import { Controller, useForm } from "react-hook-form";
-import _ from "@lodash";
-import { TextField, Checkbox } from "@mui/material";
-import Switch from "app/shared-components/Switch";
-import { primaryBlueColor } from "app/services/Settings";
-import ClassificationPossibleResponsesDraggableItem from "./ClassificationPossibleResponsesDraggableItem";
-import ClassificationRowDraggableItem from "./ClassificationRowDraggableItem";
-import ClassificationColumnDraggableItem from "./ClassificationColumnDraggableItem";
-import { useStateValue } from "app/services/state/State";
-import { useSelector } from "react-redux";
-import { EditorState, convertFromRaw } from "draft-js";
+import { useState, useEffect } from 'react';
+import Typography from '@mui/material/Typography';
+import WYSIWYGEditor from 'app/shared-components/WYSIWYGEditor';
+import Icon from '@material-ui/core/Icon';
+import Paper from '@mui/material/Paper';
+import { Controller, useForm } from 'react-hook-form';
+import { TextField } from '@mui/material';
+import Switch from 'app/shared-components/Switch';
+import { useSelector } from 'react-redux';
+import { EditorState, convertFromRaw } from 'draft-js';
+import ClassificationPossibleResponsesDraggableItem from './ClassificationPossibleResponsesDraggableItem';
+import ClassificationColumnDraggableItem from './ClassificationColumnDraggableItem';
 
-const defaultValues = { name: "", email: "", subject: "", message: "" };
+const defaultValues = { name: '', email: '', subject: '', message: '' };
 
 const propsType = [
   /* "multipleChoices",
@@ -32,44 +28,43 @@ const propsType = [
 
 const ClassificationLayout = (props) => {
   const itemQuestionsList = useSelector(({ alpha }) => alpha.item.questions);
-  //Classification Layout starts
+  // Classification Layout starts
   const [groupPossibleResponses, setGroupPossibleResponses] = useState(false);
   const [trueFalseShuffleOption, setTrueFalseShuffleOption] = useState(false);
   const [trueFalseShowDragHandle, setTrueFalseShowDragHandle] = useState(false);
-  const [trueFalseDuplicateResponse, setTrueFalseDuplicateResponse] =
-    useState(false);
+  const [trueFalseDuplicateResponse, setTrueFalseDuplicateResponse] = useState(false);
 
   const [columnCount, setColumnCount] = useState(1);
   const [rowCount, setRowCount] = useState(1);
-  const [editorContent, setEditorContent] = useState("");
+  const [editorContent, setEditorContent] = useState('');
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
   const [multipleChoices, setMultipleChoices] = useState([
     {
       id: `item-1}`,
       position: 0,
-      title: "Test1",
+      title: 'Test1',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-2`,
       position: 1,
-      title: "Test2",
+      title: 'Test2',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-3`,
       position: 2,
-      title: "Test3",
+      title: 'Test3',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-4`,
       position: 3,
-      title: "Test4",
+      title: 'Test4',
       isCorrect: false,
       isAlternate: false,
     },
@@ -78,22 +73,22 @@ const ClassificationLayout = (props) => {
     {
       id: `item-1}`,
       position: 0,
-      title: "Column1",
+      title: 'Column1',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-2`,
       position: 1,
-      title: "Column2",
+      title: 'Column2',
       isCorrect: false,
       isAlternate: false,
     },
   ]);
-  //Classification Layout end
+  // Classification Layout end
 
   const { control } = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues,
   });
   const [annotations, setAnnotations] = useState([]);
@@ -106,8 +101,8 @@ const ClassificationLayout = (props) => {
   const onSubmit = (newAnnotation) => {
     const { geometry, data } = newAnnotation;
 
-    console.log("annotation", newAnnotation);
-    console.log("annotations", annotations);
+    console.log('annotation', newAnnotation);
+    console.log('annotations', annotations);
     setAnnotation({});
     setAnnotations(
       annotations.concat({
@@ -122,7 +117,7 @@ const ClassificationLayout = (props) => {
 
   const [optionsList, setOptionsList] = useState([]);
   useEffect(() => {
-    var temp = [];
+    const temp = [];
     multipleOptions.map((item) => {
       temp.push({ value: item.position, label: item.title });
     });
@@ -142,13 +137,13 @@ const ClassificationLayout = (props) => {
       label: "None",
     },
   ]; */
-  console.log("multipleOptions:", multipleOptions);
+  console.log('multipleOptions:', multipleOptions);
 
   function onNewOptionAdded(index) {
     const option = {
       id: `item-${index + 1}`,
       position: index,
-      title: "",
+      title: '',
       isCorrect: false,
       isAlternate: false,
     };
@@ -163,7 +158,7 @@ const ClassificationLayout = (props) => {
     const option = {
       id: `item-${index + 1}`,
       position: index,
-      title: "",
+      title: '',
       isCorrect: false,
       isAlternate: false,
     };
@@ -180,15 +175,13 @@ const ClassificationLayout = (props) => {
         itemQuestionsList &&
         itemQuestionsList.length > 0 &&
         itemQuestionsList.find((q) => q.id == props.questionId);
-      console.log("filteredQuestion in Classification ", _filteredQuestion);
+      console.log('filteredQuestion in Classification ', _filteredQuestion);
       if (_filteredQuestion) {
         console.log(
-          "_filteredQuestion.description in Classification ",
+          '_filteredQuestion.description in Classification ',
           _filteredQuestion.description
         );
-        const convertedState = convertFromRaw(
-          JSON.parse(_filteredQuestion.description)
-        );
+        const convertedState = convertFromRaw(JSON.parse(_filteredQuestion.description));
         const _editorValue = EditorState.createWithContent(convertedState);
         setEditorState(_editorValue);
 
@@ -220,29 +213,29 @@ const ClassificationLayout = (props) => {
   return (
     <Paper
       style={{
-        paddingTop: "0px",
-        paddingLeft: "0px",
-        paddingRight: "0px",
+        paddingTop: '0px',
+        paddingLeft: '0px',
+        paddingRight: '0px',
       }}
       className="border border-blue border-2 pb-28 sm:pb-28 rounded-2xl border-blue-600"
     >
       <div className="text-right">
         <Icon
           onClick={() => {
-            if (editorContent === "" || editorContent === "<p></p>\n") {
+            if (editorContent === '' || editorContent === '<p></p>\n') {
               swal({
-                title: "Error!",
-                text: "Question Description is Required!",
-                icon: "error",
-                button: "Ok!",
+                title: 'Error!',
+                text: 'Question Description is Required!',
+                icon: 'error',
+                button: 'Ok!',
               });
             }
             if (multipleChoices === [] || multipleChoices.length === 0) {
               swal({
-                title: "Error!",
-                text: "Multiple Choice Options are Required!",
-                icon: "error",
-                button: "Ok!",
+                title: 'Error!',
+                text: 'Multiple Choice Options are Required!',
+                icon: 'error',
+                button: 'Ok!',
               });
             } else {
               const itemObject =
@@ -251,11 +244,11 @@ const ClassificationLayout = (props) => {
                       id: props.questionId,
                       description: editorContent,
                       options: multipleChoices,
-                      questionType: "classification-question",
+                      questionType: 'classification-question',
                       questionConfig: JSON.stringify({
                         multipleOption: multipleOptions,
-                        columnCount: columnCount,
-                        rowCount: rowCount,
+                        columnCount,
+                        rowCount,
                         groupPossibleResponsesRadio: groupPossibleResponses,
                         showDragHandleRadio: trueFalseShowDragHandle,
                         duplicateResponse: trueFalseDuplicateResponse,
@@ -266,11 +259,11 @@ const ClassificationLayout = (props) => {
                   : {
                       description: editorContent,
                       options: multipleChoices,
-                      questionType: "classification-question",
+                      questionType: 'classification-question',
                       questionConfig: JSON.stringify({
                         multipleOption: multipleOptions,
-                        columnCount: columnCount,
-                        rowCount: rowCount,
+                        columnCount,
+                        rowCount,
                         groupPossibleResponsesRadio: groupPossibleResponses,
                         showDragHandleRadio: trueFalseShowDragHandle,
                         duplicateResponse: trueFalseDuplicateResponse,
@@ -278,21 +271,21 @@ const ClassificationLayout = (props) => {
                       }),
                       position: props.questionIndex,
                     };
-              console.log("Json going to save", itemObject);
+              console.log('Json going to save', itemObject);
               props.onSaveQuestion(
                 props.sectionName,
                 props.tabName,
                 props.questionId,
                 props.questionIndex,
-                "classification-question",
+                'classification-question',
                 itemObject
               );
             }
           }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
-            padding: "2px 24px 24px 4px",
-            color: "white",
+            padding: '2px 24px 24px 4px',
+            color: 'white',
           }}
           size="small"
         >
@@ -305,8 +298,8 @@ const ClassificationLayout = (props) => {
           }}
           className="p-3 bg bg-blue bg-blue-500 hover:bg-blue-700"
           style={{
-            padding: "2px 24px 24px 4px",
-            color: "white",
+            padding: '2px 24px 24px 4px',
+            color: 'white',
           }}
           size="small"
         >
@@ -324,8 +317,8 @@ const ClassificationLayout = (props) => {
           }}
           className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
           style={{
-            padding: "2px 24px 24px 4px",
-            color: "white",
+            padding: '2px 24px 24px 4px',
+            color: 'white',
           }}
           size="small"
         >
@@ -339,7 +332,7 @@ const ClassificationLayout = (props) => {
             <button className="border border-gray border-gray-300 bg-white hover:bg-gray-100 text-gray-800 text-white font-bold py-2 px-6 rounded-full mx-4">
               <Icon
                 style={{
-                  fontSize: "10px",
+                  fontSize: '10px',
                 }}
                 size="small"
               >
@@ -377,14 +370,14 @@ const ClassificationLayout = (props) => {
             control={control}
           />
 
-          <div class="grid gap-4 grid-cols-2">
-            {" "}
+          <div className="grid gap-4 grid-cols-2">
+            {' '}
             <div>
               <Typography
                 variant="h6"
                 gutterBottom
                 sx={{
-                  color: "gray",
+                  color: 'gray',
                   fontWeight: 700,
                   mt: 2,
                 }}
@@ -399,12 +392,12 @@ const ClassificationLayout = (props) => {
                 optionsList={optionsList}
               />
             </div>
-            <div class="flex flex-col">
+            <div className="flex flex-col">
               <Typography
                 variant="h6"
                 gutterBottom
                 sx={{
-                  color: "gray",
+                  color: 'gray',
                   fontWeight: 700,
                   mt: 2,
                 }}
@@ -414,16 +407,16 @@ const ClassificationLayout = (props) => {
               <div className="py-12">
                 <TextField
                   className="mx-6"
-                  style={{ width: "100%" }}
+                  style={{ width: '100%' }}
                   inputProps={{
                     style: {
-                      height: "5",
+                      height: '5',
                     },
                   }}
                   size="large"
                   required
                   id="outlined-required"
-                  label={"Column count"}
+                  label="Column count"
                   value={columnCount}
                   onChange={(e) => {
                     setColumnCount(e.target.value);
@@ -434,16 +427,16 @@ const ClassificationLayout = (props) => {
               <div className="py-12">
                 <TextField
                   className="mx-6"
-                  style={{ width: "100%" }}
+                  style={{ width: '100%' }}
                   inputProps={{
                     style: {
-                      height: "5",
+                      height: '5',
                     },
                   }}
                   size="large"
                   required
                   id="outlined-required"
-                  label={"Row count"}
+                  label="Row count"
                   value={rowCount}
                   onChange={(e) => {
                     setRowCount(e.target.value);
@@ -457,9 +450,7 @@ const ClassificationLayout = (props) => {
               <label>Group possible responses</label>
               <Switch
                 checked={groupPossibleResponses}
-                onChange={() =>
-                  setGroupPossibleResponses(!groupPossibleResponses)
-                }
+                onChange={() => setGroupPossibleResponses(!groupPossibleResponses)}
               />
             </div>
           </div>
@@ -469,7 +460,7 @@ const ClassificationLayout = (props) => {
               variant="h6"
               gutterBottom
               sx={{
-                color: "gray",
+                color: 'gray',
                 fontWeight: 700,
                 mt: 2,
               }}
@@ -490,9 +481,7 @@ const ClassificationLayout = (props) => {
               <label>Show drag handle</label>
               <Switch
                 checked={trueFalseShowDragHandle}
-                onChange={() =>
-                  setTrueFalseShowDragHandle(!trueFalseShowDragHandle)
-                }
+                onChange={() => setTrueFalseShowDragHandle(!trueFalseShowDragHandle)}
               />
             </div>
 
@@ -500,9 +489,7 @@ const ClassificationLayout = (props) => {
               <label>Duplicate responses</label>
               <Switch
                 checked={trueFalseDuplicateResponse}
-                onChange={() =>
-                  setTrueFalseDuplicateResponse(!trueFalseDuplicateResponse)
-                }
+                onChange={() => setTrueFalseDuplicateResponse(!trueFalseDuplicateResponse)}
               />
             </div>
 
@@ -510,9 +497,7 @@ const ClassificationLayout = (props) => {
               <label>Shuffle options</label>
               <Switch
                 checked={trueFalseShuffleOption}
-                onChange={() =>
-                  setTrueFalseShuffleOption(!trueFalseShuffleOption)
-                }
+                onChange={() => setTrueFalseShuffleOption(!trueFalseShuffleOption)}
               />
             </div>
           </div>

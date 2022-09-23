@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 // import DemoContent from "@fuse/core/DemoContent";
 import FusePageSimple from "@fuse/core/FusePageSimple";
-import Typography from "@mui/material/Typography";
-import { useLocation } from "react-router-dom";
 import { ThemeProvider, useTheme, makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -10,15 +8,13 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
-import { Add as AddIcon } from "@material-ui/icons";
 import Input from "@material-ui/core/Input";
 import Paper from "@material-ui/core/Paper";
-import { useHistory } from "react-router";
+import Header from "app/shared-components/Header";
 import { getAllSubjects } from "app/services/api/ApiManager";
-import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
-import SubjectList from "./SubjectList";
 import { useDispatch, useSelector } from "react-redux";
 import { setSubjects } from "app/store/alpha/subjectsReducer";
+import SubjectList from "./SubjectList";
 
 const useStyles = makeStyles({
   layoutRoot: {
@@ -31,8 +27,8 @@ const useStyles = makeStyles({
       borderRadius: "1.6rem",
     },
     "& .MuiInputBase-input": {
-      borderRadius: "1.6rem",
       textAlign: "start",
+      borderRadius: "1.6rem",
       backgroundColor: "#fff",
     },
     "& .MuiInputLabel-root": {
@@ -41,43 +37,31 @@ const useStyles = makeStyles({
       top: "-5px",
     },
   },
+  refreshButton: {
+    backgroundColor: "#0d870d",
+    color: "white",
+    padding: "0.5rem 2rem",
+    display: "flex",
+    justifyContent: "center",
+    marginLeft: "1rem",
+  },
 });
 const Subjects = () => {
   const dispatch = useDispatch();
-  const subjects = useSelector(({ alpha }) => alpha.subjects.subjects);
+  const subjects = useSelector(({ alpha }) => alpha?.subjects?.subjects);
   /* const [{ user, subjects, patients, defaultPageSize, organization, organizationUsers }, dispatch] =
     useStateValue(); */
-  const location = useLocation();
-  const history = useHistory();
-  const pageTitle = location.pathname
-    .split("/")
-    .filter((x) => x)
-    .pop()
-    .split("-")
-    .join(" ");
 
   const classes = useStyles();
   const theme = useTheme();
+  const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [pageSize, setPageSize] = useState(10);
 
-  const redirectTo = async (goTo) => {
-    try {
-      history.push(goTo);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleGetSubjects = async () => {
-    const res = await getAllSubjects();
-    if (res && res.status === 200 && res.data) {
-      setLoading(false);
+  const handleGetSubjects = async (page = 1, pageSize = 10) => {
+    const res = await getAllSubjects(page, pageSize);
+    if (res && res?.data) {
       dispatch(setSubjects(res.data));
-      /*  dispatch({
-        type: actions.SET_SUBJECTS,
-        payload: res.data,
-      }); */
     }
   };
   useEffect(() => {
@@ -90,31 +74,13 @@ const Subjects = () => {
         root: classes.layoutRoot,
       }}
       header={
-        <div className="p-24">
-          <Breadcrumb />
-          <Typography
-            variant="h3"
-            gutterBottom
-            sx={{
-              color: "#000",
-              fontWeight: 700,
-              mt: 2,
-              textTransform: "capitalize",
-            }}
-          >
-            {pageTitle}
-          </Typography>
-          <Button
-            variant="contained"
-            style={{ float: "right" }}
-            color="secondary"
-            aria-label="Send Message"
-            onClick={() => redirectTo("/create-subject")}
-            startIcon={<AddIcon />}
-          >
-            Create New
-          </Button>
-        </div>
+        <Header
+          redirectTo={{
+            pathname: "create-subject",
+            state: { data: "", mode: "" },
+          }}
+          buttonTitle="create new"
+        />
       }
       content={
         <div className="p-24">
@@ -136,7 +102,7 @@ const Subjects = () => {
                 </Paper>
               </ThemeProvider>
             </div>
-            <div className="flex w-1/6 mx-10 sm:min-w-0 justify-center rounded-16">
+            <div className="flex w-1/6 mx-10 sm:min-w-0 justify-center rounded-16 bg-transparent">
               <FormControl sx={{ width: "100%" }} size="small">
                 <InputLabel id="grade-status">Status</InputLabel>
                 <Select
@@ -157,6 +123,25 @@ const Subjects = () => {
                 aria-label="Send Message"
               >
                 Search
+              </Button>
+              <Button
+                variant="contained"
+                className={classes.refreshButton}
+                onClick={() => {
+                  setPage(0);
+                  handleGetSubjects(1, pageSize);
+                }}
+              >
+                <Icon
+                  color="white"
+                  style={{
+                    marginRight: "0.6rem",
+                    fontSize: "1.6rem",
+                  }}
+                >
+                  refresh
+                </Icon>{" "}
+                Refresh
               </Button>
             </div>
           </div>

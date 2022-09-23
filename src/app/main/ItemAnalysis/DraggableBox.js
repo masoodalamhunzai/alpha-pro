@@ -11,7 +11,7 @@ const style = {
 function DraggableBox(props) {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'box',
-    item: { name: props.title,component:props.component },
+    item: { name: props.title, component: props.component },
     end: (item, monitor) => {
       const dropResult = monitor.getDropResult();
       if (item && dropResult) {

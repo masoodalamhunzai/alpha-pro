@@ -6,48 +6,48 @@ import {
   NewTagHierarchy,
   EditTagHierarchy,
   EditTagType,
-} from "app/main";
+} from 'app/main';
 
 const subRoutesConfig = {
   routes: [
     {
-      path: "/user-management/create-user",
+      path: '/user-management/create-user',
       component: () => <CreateUser />,
     },
     {
-      path: "/user-management/edit-user",
+      path: '/user-management/edit-user',
       component: () => <CreateUser />,
     },
     {
-      path: "/create-grade",
+      path: '/create-grade',
       component: () => <CreateNewGrade />,
     },
     {
-      path: "/create-tag-type",
+      path: '/create-tag-type',
       component: () => <NewTagType />,
     },
     {
-      path: "/edit-tag-type",
+      path: '/edit-tag-type',
       component: () => <EditTagType />,
     },
     {
-      path: "/create-tag-hierarchy",
+      path: '/create-tag-hierarchy',
       component: () => <NewTagHierarchy />,
     },
     {
-      path: "/edit-tag-hierarchy",
+      path: '/edit-tag-hierarchy',
       component: () => <EditTagHierarchy />,
     },
     {
-      path: "/edit-grade",
+      path: '/edit-grade',
       component: () => <CreateNewGrade />,
     },
     {
-      path: "/create-subject",
+      path: '/create-subject',
       component: () => <CreateNewSubject />,
     },
     {
-      path: "/edit-subject",
+      path: '/edit-subject',
       component: () => <CreateNewSubject />,
     },
   ],

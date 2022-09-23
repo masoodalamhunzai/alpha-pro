@@ -18,12 +18,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import swal from "sweetalert";
 // import { actions } from "app/services/state/Reducer";
 import { useSnackbar } from "notistack";
-import { useStateValue } from "app/services/state/State";
-import { CustomToolbar } from "../../components";
+import { useSelector } from "react-redux";
 
-import { useDispatch, useSelector } from "react-redux";
-import { setOrgsNameList, setOrgUsers } from "app/store/alpha/orgReducer";
-import { getUserRole } from "app/services/utils/utils";
+import { CustomToolbar } from "../../components";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -92,8 +89,8 @@ function UsersList({
   const { enqueueSnackbar } = useSnackbar();
   const anchorRef = useRef(null);
   const [userId, setUserId] = useState(0);
-  const [{ user, patients, defaultPageSize, organization }, dispatch] =
-    useStateValue();
+  // const [{ user, patients, defaultPageSize, organization }, dispatch] = useStateValue();
+  const users = useSelector(({ alpha }) => alpha.org.orgUsers);
   const [usersList, setUsersList] = useState([]);
   const [pagination, setPagination] = useState([]);
   const [open, setOpen] = useState(false);
@@ -116,7 +113,7 @@ function UsersList({
     try {
       history.push(goTo);
     } catch (err) {
-      // console.log(err);
+      console.error("error", err);
     }
   };
 
@@ -155,6 +152,7 @@ function UsersList({
     { field: "firstName", headerName: "First Name", flex: 1 },
     { field: "lastName", headerName: "Last Name", flex: 1 },
     { field: "email", headerName: "Email/username", flex: 1 },
+    { field: "roles", headerName: "Role", flex: 1 },
     { field: "phonenumber", headerName: "Mobile Phone", flex: 1 },
     {
       field: "isActive",
@@ -207,11 +205,11 @@ function UsersList({
       ),
     },
   ];
-
   const rows =
-    organizationUsers &&
-    organizationUsers.data &&
-    organizationUsers.data.map((user) => {
+    users &&
+    users.data &&
+    Array.isArray(users.data) &&
+    users.data.map((user) => {
       return {
         id: user?.id,
         firstName: user?.firstName,
@@ -220,7 +218,8 @@ function UsersList({
         phoneNumber: user?.phoneNumber,
         isActive: user?.isActive,
         organizationId: user?.organizationId,
-        roles: user?.roles[0]?.name,
+        roles: user && user.roles && user.roles[0].name,
+        permissions: user && user.permissions ? user.permissions : [],
       };
     });
 
@@ -261,7 +260,6 @@ function UsersList({
               },
             }}
             rows={rows}
-            page={page}
             hideFooter
             columns={columns}
             components={{
@@ -271,15 +269,7 @@ function UsersList({
             hideFooterPagination
             style={{ height: "70vh", border: "none", boxSizing: "unset" }}
             hideFooterSelectedRowCount
-            rowCount={
-              organizationUsers && organizationUsers.total
-                ? organizationUsers.total
-                : 0 /*rowCount /* pagination.totalItemsCount */
-            }
             pageSize={pageSize}
-            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            rowsPerPageOptions={dataGridPageSizes}
-            pagination
           />
         ) : (
           ""
@@ -289,11 +279,7 @@ function UsersList({
           component="div"
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
-          count={
-            organizationUsers && organizationUsers.total
-              ? organizationUsers.total
-              : 0 /* pagination.totalItemsCount */
-          }
+          count={users && users.total ? users.total : 0}
           className="flex-shrink-0 border-t-1"
           rowsPerPageOptions={dataGridPageSizes}
           onRowsPerPageChange={handleChangeRowsPerPage}

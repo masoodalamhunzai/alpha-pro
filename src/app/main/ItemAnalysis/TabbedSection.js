@@ -1,34 +1,34 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import PropTypes from "prop-types";
-import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
-import { useStateValue } from "app/services/state/State";
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import PropTypes from 'prop-types';
+import Button from '@mui/material/Button';
+import AddIcon from '@mui/icons-material/Add';
+import { useStateValue } from 'app/services/state/State';
 
-import QuestionConfiguration from "./QuestionConfiguration";
-import DropAndAdd from "./DrapAndAdd";
-import CreateQuestion from "./CreateQuestion";
+import { useSelector } from 'react-redux';
+import QuestionConfiguration from './QuestionConfiguration';
+import DropAndAdd from './DrapAndAdd';
+import CreateQuestion from './CreateQuestion';
 
-import TrueFalseQuestionLayout from "./TrueFalseQuestionLayout";
-import LabelImageWithTextLayout from "./LabelImageWithTextLayout";
-import LabelImageWithDropDownLayout from "./LabelImageWithDropDownLayout";
-import LabelImageWithDragDropLayout from "./LabelImageWithDragDropLayout";
-import ChoiceMatrixQuestionLayout from "./ChoiceMatrixQuestionLayout";
-import EssayWithRichTextLayout from "./EssayWithRichText/EssayWithRichTextLayout";
-import AudioRecorderLayout from "./AudioRecorder/AudioRecorderLayout";
-import ShortTextLayout from "./ShortText/ShortTextLayout";
-import EssayWithPlainTextLayout from "./EssayWithPlainText/EssayWithPlainTextLayout";
-import ClassificationLayout from "./ClassificationQuestion/ClassificationLayout";
-import MatchListLayout from "./MatchListQuestion/MatchListLayout";
-import OrderListLayout from "./OrderListQuestion/OrderListLayout";
-import ClozeWithDragAndDropLayout from "./ClozeWithDragAndDrop/ClozeWithDragAndDropLayout";
-import ClozeWithDropDownLayout from "./ClozeWithDropDown/ClozeWithDropDownLayout";
-import ClozeWithTextLayout from "./ClozeWithText/ClozeWithTextLayout";
-import { useSelector } from "react-redux";
+import TrueFalseQuestionLayout from './TrueFalseQuestionLayout';
+import LabelImageWithTextLayout from './LabelImageWithTextLayout';
+import LabelImageWithDropDownLayout from './LabelImageWithDropDownLayout';
+import LabelImageWithDragDropLayout from './LabelImageWithDragDropLayout';
+import ChoiceMatrixQuestionLayout from './ChoiceMatrixQuestionLayout';
+import EssayWithRichTextLayout from './EssayWithRichText/EssayWithRichTextLayout';
+import AudioRecorderLayout from './AudioRecorder/AudioRecorderLayout';
+import ShortTextLayout from './ShortText/ShortTextLayout';
+import EssayWithPlainTextLayout from './EssayWithPlainText/EssayWithPlainTextLayout';
+import ClassificationLayout from './ClassificationQuestion/ClassificationLayout';
+import MatchListLayout from './MatchListQuestion/MatchListLayout';
+import OrderListLayout from './OrderListQuestion/OrderListLayout';
+import ClozeWithDragAndDropLayout from './ClozeWithDragAndDrop/ClozeWithDragAndDropLayout';
+import ClozeWithDropDownLayout from './ClozeWithDropDown/ClozeWithDropDownLayout';
+import ClozeWithTextLayout from './ClozeWithText/ClozeWithTextLayout';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -42,7 +42,7 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box style={{ padding: "3%" }}>
+        <Box style={{ padding: '3%' }}>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -59,13 +59,13 @@ TabPanel.propTypes = {
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
   };
 }
 
 function TabbedSection(props) {
   const [value, setValue] = useState(0);
-  const [sectionTitle, setSectionTitle] = useState("Settings");
+  const [sectionTitle, setSectionTitle] = useState('Settings');
   const [{}, dispatch] = useStateValue();
 
   const itemQuestionsList = useSelector(({ alpha }) => alpha.item.questions);
@@ -79,17 +79,17 @@ function TabbedSection(props) {
   };
   return (
     <>
-      <div className="space-y-32 flex" style={{ width: "100%" }}>
+      <div className="space-y-32 flex" style={{ width: '100%' }}>
         <Box sx={{ flexGrow: 1 }}>
           <div>
-            {sectionTitle === "Settings" ? (
+            {sectionTitle === 'Settings' ? (
               <div>
-                <Box sx={{ width: "100%", backgroundColor: "#ebebeb" }}>
+                <Box sx={{ width: '100%', backgroundColor: '#ebebeb' }}>
                   <Box
                     sx={{
                       maxWidth: { xs: 320, sm: 480 },
                       borderBottom: 1,
-                      borderColor: "divider",
+                      borderColor: 'divider',
                     }}
                   >
                     <Tabs
@@ -101,16 +101,14 @@ function TabbedSection(props) {
                       scrollButtons
                       allowScrollButtonsMobile
                       aria-label="secondary tabs example"
-                      style={{ background: "#fff" }}
+                      style={{ background: '#fff' }}
                     >
                       {props.TabsList.map((item, index) => {
                         return (
                           <>
-                            {console.log("index val ", index)}
+                            {console.log('index val ', index)}
                             <Tab
-                              onClick={(e) =>
-                                handleChange(e, index, item.TabName + index)
-                              }
+                              onClick={(e) => handleChange(e, index, item.TabName + index)}
                               label={item.TabName}
                               {...a11yProps(index)}
                             />
@@ -122,15 +120,12 @@ function TabbedSection(props) {
                         variant="contained"
                         color="primary"
                         onClick={() =>
-                          props.handleNewTab(
-                            props.sectionName,
-                            `Tab ${props.TabsList.length + 1}`
-                          )
+                          props.handleNewTab(props.sectionName, `Tab ${props.TabsList.length + 1}`)
                         }
                         style={{
-                          borderRadius: "0px",
-                          background: "#b1acac",
-                          border: "0.1px dotted lightgray",
+                          borderRadius: '0px',
+                          background: '#b1acac',
+                          border: '0.1px dotted lightgray',
                         }}
                         // component={NavLinkAdapter}
                         // to="new/edit"
@@ -148,13 +143,13 @@ function TabbedSection(props) {
                         <TabPanel
                           value={value}
                           index={index}
-                          style={{ height: "592px", overflow: "auto" }}
+                          style={{ height: '592px', overflow: 'auto' }}
                         >
                           <div>
                             {item.QuestionsList.map((ques, i) => {
                               return (
                                 <>
-                                  {ques.component === "CreateQuestion" ? (
+                                  {ques.component === 'CreateQuestion' ? (
                                     <CreateQuestion
                                       key={i}
                                       questionIndex={i}
@@ -166,14 +161,11 @@ function TabbedSection(props) {
                                       onEditQuestion={props.onEditQuestion}
                                       onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={
-                                        props.setMultipleChoices
-                                      }
+                                      setMultipleChoices={props.setMultipleChoices}
                                       editorContent={props.editorContent}
                                       setEditorContent={props.setEditorContent}
                                     />
-                                  ) : ques.component ===
-                                    "TrueFalseQuestionLayout" ? (
+                                  ) : ques.component === 'TrueFalseQuestionLayout' ? (
                                     <TrueFalseQuestionLayout
                                       key={i}
                                       questionIndex={i}
@@ -185,14 +177,10 @@ function TabbedSection(props) {
                                       onEditQuestion={props.onEditQuestion}
                                       onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={
-                                        props.setMultipleChoices
-                                      }
+                                      setMultipleChoices={props.setMultipleChoices}
                                       editorContent={props.editorContent}
                                       setEditorContent={props.setEditorContent}
-                                      trueFalseShuffleOption={
-                                        props.trueFalseShuffleOptiontrueFalse
-                                      }
+                                      trueFalseShuffleOption={props.trueFalseShuffleOptiontrueFalse}
                                       setTrueFalseShuffleOption={
                                         props.setTrueFalseShuffleOptiontrueFalse
                                       }
@@ -200,8 +188,7 @@ function TabbedSection(props) {
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
                                     />
-                                  ) : ques.component ===
-                                    "ChoiceMatrixQuestionLayout" ? (
+                                  ) : ques.component === 'ChoiceMatrixQuestionLayout' ? (
                                     <ChoiceMatrixQuestionLayout
                                       key={i}
                                       questionIndex={i}
@@ -213,23 +200,16 @@ function TabbedSection(props) {
                                       onEditQuestion={props.onEditQuestion}
                                       onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={
-                                        props.setMultipleChoices
-                                      }
-                                      multipleOptions={
-                                        props.multipleOptionschoiceMatric
-                                      }
-                                      setMultipleOptions={
-                                        props.setMultipleOptionschoiceMatric
-                                      }
+                                      setMultipleChoices={props.setMultipleChoices}
+                                      multipleOptions={props.multipleOptionschoiceMatric}
+                                      setMultipleOptions={props.setMultipleOptionschoiceMatric}
                                       editorContent={props.editorContent}
                                       setEditorContent={props.setEditorContent}
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
                                     />
-                                  ) : ques.component ===
-                                    "LabelImageWithDragDropLayout" ? (
+                                  ) : ques.component === 'LabelImageWithDragDropLayout' ? (
                                     <LabelImageWithDragDropLayout
                                       key={i}
                                       questionIndex={i}
@@ -241,23 +221,16 @@ function TabbedSection(props) {
                                       onEditQuestion={props.onEditQuestion}
                                       onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={
-                                        props.setMultipleChoices
-                                      }
-                                      multipleOptions={
-                                        props.multipleOptionschoiceMatric
-                                      }
-                                      setMultipleOptions={
-                                        props.setMultipleOptionschoiceMatric
-                                      }
+                                      setMultipleChoices={props.setMultipleChoices}
+                                      multipleOptions={props.multipleOptionschoiceMatric}
+                                      setMultipleOptions={props.setMultipleOptionschoiceMatric}
                                       editorContent={props.editorContent}
                                       setEditorContent={props.setEditorContent}
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
                                     />
-                                  ) : ques.component ===
-                                    "LabelImageWithDropDownLayout" ? (
+                                  ) : ques.component === 'LabelImageWithDropDownLayout' ? (
                                     <LabelImageWithDropDownLayout
                                       key={i}
                                       questionIndex={i}
@@ -269,23 +242,16 @@ function TabbedSection(props) {
                                       onEditQuestion={props.onEditQuestion}
                                       onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={
-                                        props.setMultipleChoices
-                                      }
-                                      multipleOptions={
-                                        props.multipleOptionschoiceMatric
-                                      }
-                                      setMultipleOptions={
-                                        props.setMultipleOptionschoiceMatric
-                                      }
+                                      setMultipleChoices={props.setMultipleChoices}
+                                      multipleOptions={props.multipleOptionschoiceMatric}
+                                      setMultipleOptions={props.setMultipleOptionschoiceMatric}
                                       editorContent={props.editorContent}
                                       setEditorContent={props.setEditorContent}
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
                                     />
-                                  ) : ques.component ===
-                                    "LabelImageWithTextLayout" ? (
+                                  ) : ques.component === 'LabelImageWithTextLayout' ? (
                                     <LabelImageWithTextLayout
                                       key={i}
                                       questionIndex={i}
@@ -297,23 +263,16 @@ function TabbedSection(props) {
                                       onEditQuestion={props.onEditQuestion}
                                       onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={
-                                        props.setMultipleChoices
-                                      }
-                                      multipleOptions={
-                                        props.multipleOptionschoiceMatric
-                                      }
-                                      setMultipleOptions={
-                                        props.setMultipleOptionschoiceMatric
-                                      }
+                                      setMultipleChoices={props.setMultipleChoices}
+                                      multipleOptions={props.multipleOptionschoiceMatric}
+                                      setMultipleOptions={props.setMultipleOptionschoiceMatric}
                                       editorContent={props.editorContent}
                                       setEditorContent={props.setEditorContent}
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
                                     />
-                                  ) : ques.component ===
-                                    "EssayWithRichTextLayout" ? (
+                                  ) : ques.component === 'EssayWithRichTextLayout' ? (
                                     <EssayWithRichTextLayout
                                       key={i}
                                       questionIndex={i}
@@ -325,29 +284,18 @@ function TabbedSection(props) {
                                       onEditQuestion={props.onEditQuestion}
                                       onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={
-                                        props.setMultipleChoices
-                                      }
+                                      setMultipleChoices={props.setMultipleChoices}
                                       editorContent={props.editorContent}
                                       setEditorContent={props.setEditorContent}
-                                      wordLimit={
-                                        props.essayWithRichTextWordLimit
-                                      }
-                                      setWordLimit={
-                                        props.setEssayWithRichTextWordLimit
-                                      }
-                                      wordLimitType={
-                                        props.essayWithRichTextWordLimitType
-                                      }
-                                      setWordLimitType={
-                                        props.setEssayWithRichTextWordLimitType
-                                      }
+                                      wordLimit={props.essayWithRichTextWordLimit}
+                                      setWordLimit={props.setEssayWithRichTextWordLimit}
+                                      wordLimitType={props.essayWithRichTextWordLimitType}
+                                      setWordLimitType={props.setEssayWithRichTextWordLimitType}
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
                                     />
-                                  ) : ques.component ===
-                                    "AudioRecorderLayout" ? (
+                                  ) : ques.component === 'AudioRecorderLayout' ? (
                                     <AudioRecorderLayout
                                       key={i}
                                       questionIndex={i}
@@ -359,26 +307,18 @@ function TabbedSection(props) {
                                       onEditQuestion={props.onEditQuestion}
                                       onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={
-                                        props.setMultipleChoices
-                                      }
+                                      setMultipleChoices={props.setMultipleChoices}
                                       editorContent={props.editorContent}
                                       setEditorContent={props.setEditorContent}
-                                      maximumSecond={
-                                        props.audioRecorderMaximumSecond
-                                      }
-                                      setMaximumSecond={
-                                        props.setAudioRecorderMaximumSecond
-                                      }
+                                      maximumSecond={props.audioRecorderMaximumSecond}
+                                      setMaximumSecond={props.setAudioRecorderMaximumSecond}
                                       playerType={props.audioRecorderPlayerType}
-                                      setPlayerType={
-                                        props.setAudioRecorderPlayerType
-                                      }
+                                      setPlayerType={props.setAudioRecorderPlayerType}
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
                                     />
-                                  ) : ques.component === "ShortTextLayout" ? (
+                                  ) : ques.component === 'ShortTextLayout' ? (
                                     <ShortTextLayout
                                       key={i}
                                       questionIndex={i}
@@ -390,9 +330,7 @@ function TabbedSection(props) {
                                       onEditQuestion={props.onEditQuestion}
                                       onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={
-                                        props.setMultipleChoices
-                                      }
+                                      setMultipleChoices={props.setMultipleChoices}
                                       editorContent={props.editorContent}
                                       setEditorContent={props.setEditorContent}
                                       points={props.shortTextPoints}
@@ -405,8 +343,7 @@ function TabbedSection(props) {
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
                                     />
-                                  ) : ques.component ===
-                                    "EssayWithPlainTextLayout" ? (
+                                  ) : ques.component === 'EssayWithPlainTextLayout' ? (
                                     <EssayWithPlainTextLayout
                                       key={i}
                                       questionIndex={i}
@@ -418,29 +355,18 @@ function TabbedSection(props) {
                                       onEditQuestion={props.onEditQuestion}
                                       onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={
-                                        props.setMultipleChoices
-                                      }
-                                      wordLimit={
-                                        props.essayWithPlainTextLayoutWordLimit
-                                      }
-                                      setWordLimit={
-                                        props.setEssayWithPlainTextLayoutWordLimit
-                                      }
-                                      wordType={
-                                        props.essayWithPlainTextLayoutWordType
-                                      }
-                                      setWordType={
-                                        props.setEssayWithPlainTextLayoutWordType
-                                      }
+                                      setMultipleChoices={props.setMultipleChoices}
+                                      wordLimit={props.essayWithPlainTextLayoutWordLimit}
+                                      setWordLimit={props.setEssayWithPlainTextLayoutWordLimit}
+                                      wordType={props.essayWithPlainTextLayoutWordType}
+                                      setWordType={props.setEssayWithPlainTextLayoutWordType}
                                       editorContent={props.editorContent}
                                       setEditorContent={props.setEditorContent}
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
                                     />
-                                  ) : ques.component ===
-                                    "ClassificationLayout" ? (
+                                  ) : ques.component === 'ClassificationLayout' ? (
                                     <ClassificationLayout
                                       key={i}
                                       questionIndex={i}
@@ -452,32 +378,20 @@ function TabbedSection(props) {
                                       onEditQuestion={props.onEditQuestion}
                                       onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={
-                                        props.setMultipleChoices
-                                      }
-                                      multipleOptions={
-                                        props.classificationColumnTitles
-                                      }
-                                      setMultipleOptions={
-                                        props.setClassificationColumnTitles
-                                      }
+                                      setMultipleChoices={props.setMultipleChoices}
+                                      multipleOptions={props.classificationColumnTitles}
+                                      setMultipleOptions={props.setClassificationColumnTitles}
                                       editorContent={props.editorContent}
                                       setEditorContent={props.setEditorContent}
-                                      columnCount={
-                                        props.classificationColumnCount
-                                      }
-                                      setColumnCount={
-                                        props.setClassificationColumnCount
-                                      }
+                                      columnCount={props.classificationColumnCount}
+                                      setColumnCount={props.setClassificationColumnCount}
                                       rowCount={props.classificationRowCount}
-                                      setRowCount={
-                                        props.setClassificationRowCount
-                                      }
+                                      setRowCount={props.setClassificationRowCount}
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
                                     />
-                                  ) : ques.component === "MatchListLayout" ? (
+                                  ) : ques.component === 'MatchListLayout' ? (
                                     <MatchListLayout
                                       key={i}
                                       questionIndex={i}
@@ -489,22 +403,16 @@ function TabbedSection(props) {
                                       onEditQuestion={props.onEditQuestion}
                                       onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={
-                                        props.setMultipleChoices
-                                      }
-                                      multipleOptions={
-                                        props.matchListStimulusList
-                                      }
-                                      setMultipleOptions={
-                                        props.setMatchListStimulusList
-                                      }
+                                      setMultipleChoices={props.setMultipleChoices}
+                                      multipleOptions={props.matchListStimulusList}
+                                      setMultipleOptions={props.setMatchListStimulusList}
                                       editorContent={props.editorContent}
                                       setEditorContent={props.setEditorContent}
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
                                     />
-                                  ) : ques.component === "OrderListLayout" ? (
+                                  ) : ques.component === 'OrderListLayout' ? (
                                     <OrderListLayout
                                       key={i}
                                       questionIndex={i}
@@ -516,17 +424,14 @@ function TabbedSection(props) {
                                       onEditQuestion={props.onEditQuestion}
                                       onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={
-                                        props.setMultipleChoices
-                                      }
+                                      setMultipleChoices={props.setMultipleChoices}
                                       editorContent={props.editorContent}
                                       setEditorContent={props.setEditorContent}
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
                                     />
-                                  ) : ques.component ===
-                                    "ClozeWithDragAndDropLayout" ? (
+                                  ) : ques.component === 'ClozeWithDragAndDropLayout' ? (
                                     <ClozeWithDragAndDropLayout
                                       key={i}
                                       questionIndex={i}
@@ -538,14 +443,10 @@ function TabbedSection(props) {
                                       onEditQuestion={props.onEditQuestion}
                                       onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={
-                                        props.setMultipleChoices
-                                      }
+                                      setMultipleChoices={props.setMultipleChoices}
                                       editorContent={props.editorContent}
                                       setEditorContent={props.setEditorContent}
-                                      templateMarkup={
-                                        props.clozeWithDragAndDropTemplateMarkup
-                                      }
+                                      templateMarkup={props.clozeWithDragAndDropTemplateMarkup}
                                       setTemplateMarkup={
                                         props.setClozeWithDragAndDropTemplateMarkup
                                       }
@@ -553,8 +454,7 @@ function TabbedSection(props) {
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
                                     />
-                                  ) : ques.component ===
-                                    "ClozeWithDropDownLayout" ? (
+                                  ) : ques.component === 'ClozeWithDropDownLayout' ? (
                                     <ClozeWithDropDownLayout
                                       key={i}
                                       questionIndex={i}
@@ -566,23 +466,16 @@ function TabbedSection(props) {
                                       onEditQuestion={props.onEditQuestion}
                                       onNewOptionAdded={props.onNewOptionAdded}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={
-                                        props.setMultipleChoices
-                                      }
+                                      setMultipleChoices={props.setMultipleChoices}
                                       editorContent={props.editorContent}
                                       setEditorContent={props.setEditorContent}
-                                      templateMarkup={
-                                        props.clozeWithDropDownTemplateMarkup
-                                      }
-                                      setTemplateMarkup={
-                                        props.setClozeWithDropDownTemplateMarkup
-                                      }
+                                      templateMarkup={props.clozeWithDropDownTemplateMarkup}
+                                      setTemplateMarkup={props.setClozeWithDropDownTemplateMarkup}
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
                                     />
-                                  ) : ques.component ===
-                                    "ClozeWithTextLayout" ? (
+                                  ) : ques.component === 'ClozeWithTextLayout' ? (
                                     <ClozeWithTextLayout
                                       key={i}
                                       questionIndex={i}
@@ -595,22 +488,12 @@ function TabbedSection(props) {
                                       onNewOptionAdded={props.onNewOptionAdded}
                                       editorContent={props.editorContent}
                                       setEditorContent={props.setEditorContent}
-                                      templateMarkup={
-                                        props.clozeWithTextTemplateMarkup
-                                      }
-                                      setTemplateMarkup={
-                                        props.setClozeWithTextTemplateMarkup
-                                      }
-                                      matchAllResponses={
-                                        props.clozeWithTextMatchAllResponses
-                                      }
-                                      setMatchAllResponses={
-                                        props.setClozeWithTextMatchAllResponses
-                                      }
+                                      templateMarkup={props.clozeWithTextTemplateMarkup}
+                                      setTemplateMarkup={props.setClozeWithTextTemplateMarkup}
+                                      matchAllResponses={props.clozeWithTextMatchAllResponses}
+                                      setMatchAllResponses={props.setClozeWithTextMatchAllResponses}
                                       multipleChoices={props.multipleChoices}
-                                      setMultipleChoices={
-                                        props.setMultipleChoices
-                                      }
+                                      setMultipleChoices={props.setMultipleChoices}
                                       removeAnItem={props.removeAnItem}
                                       editAnItem={props.editAnItem}
                                       saveAnItem={props.saveAnItem}
@@ -624,9 +507,7 @@ function TabbedSection(props) {
                             })}
                             <br />
                             <DropAndAdd
-                              handleQuestionDragDrop={
-                                props.handleQuestionDragDrop
-                              }
+                              handleQuestionDragDrop={props.handleQuestionDragDrop}
                               SectionName={props.sectionName}
                               TabName={item.TabName}
                             />
@@ -656,12 +537,10 @@ function TabbedSection(props) {
             ) : (
               <div>
                 <Box
-                  sx={{ width: "100%", backgroundColor: "#ebebeb" }}
-                  style={{ height: "700px", overflow: "auto" }}
+                  sx={{ width: '100%', backgroundColor: '#ebebeb' }}
+                  style={{ height: '700px', overflow: 'auto' }}
                 >
-                  <QuestionConfiguration
-                    handleComponentDragDrop={props.handleComponentDragDrop}
-                  />
+                  <QuestionConfiguration handleComponentDragDrop={props.handleComponentDragDrop} />
                 </Box>
               </div>
             )}

@@ -7,6 +7,7 @@ const orgSlice = createSlice({
     orgs: null,
     orgsNameList: null,
     orgUsers: null,
+    currentSelectedOrganization: null,
   },
   reducers: {
     setOrg: (state, action) => {
@@ -21,10 +22,18 @@ const orgSlice = createSlice({
     setOrgUsers: (state, action) => {
       state.orgUsers = action.payload;
     },
+    setCurrentSelectedOrganization: (state, action) => {
+      state.currentSelectedOrganization = action.payload;
+    },
   },
 });
 
-export const { setOrg, setOrgs, setOrgsNameList, setOrgUsers } =
-  orgSlice.actions;
+export const {
+  setOrg,
+  setOrgs,
+  setOrgsNameList,
+  setOrgUsers,
+  setCurrentSelectedOrganization,
+} = orgSlice.actions;
 
 export default orgSlice.reducer;

@@ -126,15 +126,19 @@ function DetailsConfiguration(props) {
   const [{ user }, dispatch] = useStateValue();
   const [gradesList, setGradesList] = useState([]);
   const getGrades = async () => {
-    const res = await getAllGrades();
-    if (res && res.status && res.status === 200 && res.data) {
-      const temp = [];
-      res.data.map((g) => {
-        temp.push({ value: g.id, label: g.title });
-      });
-      setGradesList(temp);
-    }
-    console.log('Grades are here', res);
+    getAllGrades()
+      .then((res) => {
+        if (res && res.data && Array.isArray(res.data)) {
+          const gList = res.data.map((g) => {
+            return {
+              value: g.id,
+              label: g.title,
+            };
+          });
+          setGradesList(gList);
+        }
+      })
+      .catch((err) => console.error('error', err));
   };
   useEffect(() => {
     getGrades();
@@ -203,11 +207,9 @@ function DetailsConfiguration(props) {
             }}
             select
             label="Grade"
-            // value={answer}
-            // value={props.scoringType}
+            value={props.grades}
             onChange={(e) => {
-              console.log('score type', `${e.target.value} vs${props.scoringType}`);
-              // props.setScoringType(e.target.value);
+              props.setGrades(e.target.value);
             }}
             // helperText="Correct Ans"
           >
@@ -231,10 +233,9 @@ function DetailsConfiguration(props) {
             select
             label="Subject"
             // value={answer}
-            // value={props.scoringType}
+            value={props.subject}
             onChange={(e) => {
-              console.log('score type', `${e.target.value} vs${props.scoringType}`);
-              // props.setScoringType(e.target.value);
+              props.setSubject(e.target.value);
             }}
             // helperText="Correct Ans"
           >
@@ -259,7 +260,7 @@ function DetailsConfiguration(props) {
           <div>
             <Button
               className={
-                props.statusButtonDetails == 'published' ? classes.btnSelected : classes.buttonGrey
+                props.statusButtonDetails === 'published' ? classes.btnSelected : classes.buttonGrey
               }
               onClick={() => {
                 props.setStatusButtonDetails('published');
@@ -271,7 +272,7 @@ function DetailsConfiguration(props) {
             </Button>
             <Button
               className={
-                props.statusButtonDetails == 'unpublished'
+                props.statusButtonDetails === 'unpublished'
                   ? classes.btnSelected
                   : classes.buttonGrey
               }
@@ -285,7 +286,7 @@ function DetailsConfiguration(props) {
             </Button>
             <Button
               className={
-                props.statusButtonDetails == 'archive' ? classes.btnSelected : classes.buttonGrey
+                props.statusButtonDetails === 'archive' ? classes.btnSelected : classes.buttonGrey
               }
               onClick={() => {
                 props.setStatusButtonDetails('archive');
@@ -374,7 +375,7 @@ function DetailsConfiguration(props) {
           <div>
             <Button
               className={
-                props.difficultyButtonDetails == 'easy' ? classes.btnSelected : classes.buttonGrey
+                props.difficultyButtonDetails === 'easy' ? classes.btnSelected : classes.buttonGrey
               }
               onClick={() => {
                 props.setDifficultyButtonDetails('easy');
@@ -386,7 +387,9 @@ function DetailsConfiguration(props) {
             </Button>
             <Button
               className={
-                props.difficultyButtonDetails == 'medium' ? classes.btnSelected : classes.buttonGrey
+                props.difficultyButtonDetails === 'medium'
+                  ? classes.btnSelected
+                  : classes.buttonGrey
               }
               onClick={() => {
                 props.setDifficultyButtonDetails('medium');
@@ -398,7 +401,7 @@ function DetailsConfiguration(props) {
             </Button>
             <Button
               className={
-                props.difficultyButtonDetails == 'hard' ? classes.btnSelected : classes.buttonGrey
+                props.difficultyButtonDetails === 'hard' ? classes.btnSelected : classes.buttonGrey
               }
               onClick={() => {
                 props.setDifficultyButtonDetails('hard');

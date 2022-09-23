@@ -56,6 +56,10 @@ export const selectNavigation = createSelector(
   (navigation, language, userRole) => {
     const localStorageUser = localStorage.getItem('user');
     const user = JSON.parse(localStorageUser);
+    console.log('here is user: ', user);
+    const role =
+      user && user.user && user.user.roles && user.user.roles.length > 0 && user.user.roles[0].name;
+
     function setTranslationValues(data) {
       // loop through every object in the array
       return data.map((item) => {
@@ -64,8 +68,8 @@ export const selectNavigation = createSelector(
         }
 
         if (
-          user &&
-          user.role === 'super-admin' &&
+          role &&
+          role === 'super-admin' &&
           (item.id === 'items' ||
             item.id === 'activities' ||
             item.id === 'tags' ||
@@ -74,22 +78,18 @@ export const selectNavigation = createSelector(
           return {};
         }
         if (
-          user &&
-          user.role === 'client-admin' &&
+          role &&
+          role === 'client-admin' &&
           (item.id === 'insight' || item.id === 'configuration')
         ) {
           return {};
         }
-        if (
-          user &&
-          user.role === 'author' &&
-          (item.id === 'insight' || item.id === 'configuration')
-        ) {
+        if (role && role === 'author' && (item.id === 'insight' || item.id === 'configuration')) {
           return {};
         }
         if (
-          user &&
-          user.role === 'student' &&
+          role &&
+          role === 'student' &&
           (item.id === 'items' ||
             item.id === 'activities' ||
             item.id === 'tags' ||
@@ -104,7 +104,7 @@ export const selectNavigation = createSelector(
           // .. below code is for role based menu item access restrictions
 
           const childrens = item.children.filter((childrenItem) => {
-            if (user && user.role === 'super-admin') {
+            if (role && role === 'super-admin') {
               if (childrenItem.id === 'home') {
                 return true;
               }
@@ -137,7 +137,7 @@ export const selectNavigation = createSelector(
               }
               return false;
             }
-            if (user && user.role === 'client-admin') {
+            if (role && role === 'client-admin') {
               if (
                 childrenItem.id === 'home' ||
                 childrenItem.id === 'UserManagment' ||
@@ -160,7 +160,7 @@ export const selectNavigation = createSelector(
               }
               return false;
             }
-            if (user && user.role === 'author') {
+            if (role && role === 'author') {
               if (
                 childrenItem.id === 'home' ||
                 childrenItem.id === 'allitems' ||
@@ -180,7 +180,7 @@ export const selectNavigation = createSelector(
               }
               return false;
             }
-            if (user && user.role === 'student') {
+            if (role && role === 'student') {
               if (
                 childrenItem.id === 'home' ||
                 childrenItem.id === 'myAccount' ||

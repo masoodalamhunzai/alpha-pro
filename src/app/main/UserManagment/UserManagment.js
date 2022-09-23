@@ -3,6 +3,7 @@ import { ThemeProvider, makeStyles, useTheme } from "@material-ui/core/styles";
 import {
   getOrganizationUsers,
   getOrganizations,
+  getOrganizationList,
   searchOrganizationUser,
 } from "app/services/api/ApiManager";
 import { useEffect, useState } from "react";
@@ -19,13 +20,15 @@ import MenuItem from "@mui/material/MenuItem";
 import Paper from "@material-ui/core/Paper";
 import Select from "@mui/material/Select";
 import Typography from "@mui/material/Typography";
-import { actions } from "app/services/state/Reducer";
-import { useStateValue } from "app/services/state/State";
-import UsersList from "./UsersList";
-import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
 import { useDispatch, useSelector } from "react-redux";
-import { setOrgsNameList, setOrgUsers } from "app/store/alpha/orgReducer";
-import { getUserRole } from "app/services/utils/utils";
+import {
+  setOrgsNameList,
+  setOrgUsers,
+  setCurrentSelectedOrganization,
+} from "app/store/alpha/orgReducer";
+import { getUserRole, userRoles } from "app/services/utils/utils";
+import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
+import UsersList from "./UsersList";
 
 const useStyles = makeStyles({
   layoutRoot: {
@@ -48,13 +51,19 @@ const useStyles = makeStyles({
       top: "-5px",
     },
   },
+  refreshButton: {
+    backgroundColor: "#0d870d",
+    color: "white",
+    padding: "0.5rem 4rem",
+    display: "flex",
+    justifyContent: "center",
+    marginLeft: "1rem",
+  },
 });
 const UserManagment = () => {
   const dispatch = useDispatch();
-  // const user = useSelector((state) => state.alpha.user);
   const user = useSelector(({ alpha }) => alpha.user);
   const role = getUserRole(user);
-  console.log("User is here: ", user);
   const organization = useSelector(({ alpha }) => alpha.org.orgsNameList);
   const organizationUsers = useSelector(({ alpha }) => alpha.org.orgUsers);
   const location = useLocation();
@@ -68,39 +77,41 @@ const UserManagment = () => {
 
   const classes = useStyles();
   const { _orgId } = location?.state ? location?.state : "";
+  const organizationSelected = useSelector(
+    ({ alpha }) => alpha.org.currentSelectedOrganization
+  );
 
-  const [organizationSelected, setOrganizationSelected] = useState("");
+  // const [organizationSelected, setOrganizationSelected] = useState("");
   const [count, setCount] = useState(0);
   const theme = useTheme();
   const [searchText, setSearchText] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [pageSize, setPageSize] = useState(10);
-  const [loading, setLoading] = useState(true);
-  const USER_ROLE_SUPER_ADMIN = "super-admin";
-  const USER_ROLE_CLIENT_ADMIN = "client-admin";
+  const [loading, setLoading] = useState(false);
 
   function handleSearch(event) {
     setSearchText(event.target.value);
   }
   const handleChange = (e) => {
     const orgId = e.target.value;
-    setOrganizationSelected(orgId);
+    dispatch(setCurrentSelectedOrganization(orgId));
+    //  setOrganizationSelected(orgId);
     setPage(0);
     handleGetOrganizationUsers(orgId, 1, pageSize);
   };
 
-  const handleGetOrganizationUsers = async (id, pageNo = 1, pageSize = 10) => {
-    const res = await getOrganizationUsers(id, pageNo, pageSize);
-    if (res && res.status === 200 && res.data) {
-      console.log("res is:", res.data);
-      dispatch(setOrgUsers(res.data));
+  const handleGetOrganizationUsers = async (id, pageNo = 1, items = 10) => {
+    setLoading(true);
+    const res = await getOrganizationUsers(id, pageNo, items);
+    if (res) {
+      dispatch(setOrgUsers(res));
     }
     setLoading(false);
   };
 
   const handleGetClientAdminOrgUsers = async () => {
-    if (role === USER_ROLE_CLIENT_ADMIN) {
+    if (role === userRoles.clientAdmin) {
       const id = user?.user?.organizationId;
       await handleGetOrganizationUsers(id, page, pageSize);
     }
@@ -109,7 +120,7 @@ const UserManagment = () => {
   const handleSearchOrganizationUsers = async (page = 1, pageSize = 10) => {
     let res = null;
     const userRole = role;
-    if (userRole === USER_ROLE_SUPER_ADMIN) {
+    if (userRole === userRoles.superAdmin) {
       if (searchText.trim() === "") {
         handleGetOrganizationUsers(organizationSelected, page, pageSize);
       } else {
@@ -120,7 +131,7 @@ const UserManagment = () => {
           pageSize
         );
       }
-    } else if (userRole !== USER_ROLE_SUPER_ADMIN) {
+    } else if (userRole !== userRoles.superAdmin) {
       const id = user?.user?.organizationId;
       if (searchText.trim() === "") {
         handleGetOrganizationUsers(id, page, pageSize);
@@ -128,33 +139,31 @@ const UserManagment = () => {
         res = await searchOrganizationUser(id, searchText);
       }
     }
+    console.log("org res is here: ", res);
     if (res && res.status === 200 && res.data) {
-      console.log("res is:", res.data);
       dispatch(setOrgUsers(res.data));
     }
   };
 
   const loadOrganizations = async () => {
-    const res = await getOrganizations();
+    const res = await getOrganizationList();
     console.log(res);
-    if (res && res.status === 200 && res.data) {
-      var list = [];
-      res.data.data &&
-        res.data.data.map((item) => {
-          list.push({ id: item.id, name: item.name });
-        });
-      dispatch(setOrgsNameList(list));
+    if (res && Array.isArray(res)) {
+      const orgs = res.map((o) => {
+        return { id: o.id, name: o.name };
+      });
+      dispatch(setOrgsNameList(orgs));
     }
-    setLoading(false);
   };
 
   useEffect(() => {
-    loadOrganizations();
+    if (role == "super-admin") {
+      loadOrganizations();
+      handleGetClientAdminOrgUsers();
+    } else if (role !== "super-admin" && !organizationUsers) {
+      handleGetClientAdminOrgUsers();
+    }
   }, []);
-
-  useEffect(() => {
-    handleGetClientAdminOrgUsers();
-  });
 
   const handleChangePage = async (event, newPage) => {
     handleSearchOrganizationUsers(newPage + 1, pageSize);
@@ -210,7 +219,7 @@ const UserManagment = () => {
         <div className="p-24">
           {/* start */}
           <div className="flex flex-wrap flex-1 items-center justify-between mb-10 p-8">
-            {role && role === USER_ROLE_SUPER_ADMIN && (
+            {role && role === userRoles.superAdmin && (
               <div className="flex flex-1 w-full sm:w-auto ">
                 <FormControl sx={{ width: "60%" }} size="small">
                   <InputLabel id="organization-dropdown">
@@ -269,6 +278,34 @@ const UserManagment = () => {
                 onClick={() => handleSearchOrganizationUsers(1, pageSize)}
               >
                 Search
+              </Button>
+
+              <Button
+                variant="contained"
+                className={classes.refreshButton}
+                onClick={() => {
+                  setPage(0);
+                  if (role === "super-admin") {
+                    handleGetOrganizationUsers(
+                      organizationSelected,
+                      1,
+                      pageSize
+                    );
+                  } else {
+                    handleGetClientAdminOrgUsers();
+                  }
+                }}
+              >
+                <Icon
+                  color="white"
+                  style={{
+                    marginRight: "0.6rem",
+                    fontSize: "1.6rem",
+                  }}
+                >
+                  refresh
+                </Icon>{" "}
+                Refresh
               </Button>
             </div>
           </div>

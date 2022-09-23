@@ -1,24 +1,19 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import Typography from "@mui/material/Typography";
+import Typography from '@mui/material/Typography';
 
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-} from "@material-ui/core";
+import { Accordion, AccordionDetails, AccordionSummary } from '@material-ui/core';
 import {
   ExpandMore as ExpandMoreIcon,
-  KeyboardArrowRight,
   List,
   BorderColor,
   SyncAlt,
   FlipToBack,
-} from "@material-ui/icons";
-import Icon from "@material-ui/core/Icon";
-import Input from "@material-ui/core/Input";
-import Paper from "@material-ui/core/Paper";
-import DraggableBox from "./DraggableBox";
+} from '@material-ui/icons';
+import Icon from '@material-ui/core/Icon';
+import Input from '@material-ui/core/Input';
+import Paper from '@material-ui/core/Paper';
+import DraggableBox from './DraggableBox';
 
 function QuestionConfiguration(props) {
   const [expanded, setExpanded] = useState(false);
@@ -29,7 +24,7 @@ function QuestionConfiguration(props) {
 
   return (
     <>
-      <div style={{ width: "100%" }}>
+      <div style={{ width: '100%' }}>
         <div className="px-4 py-4">
           <Paper className="flex items-center min-w-full sm:min-w-0 w-full px-12 py-4 rounded-16 shdaow">
             <Icon color="action">search</Icon>
@@ -39,26 +34,20 @@ function QuestionConfiguration(props) {
               disableUnderline
               fullWidth
               inputProps={{
-                "aria-label": "Search",
+                'aria-label': 'Search',
               }}
             />
           </Paper>
         </div>
         <div className="p-4">
-          <Accordion
-            expanded={expanded === "panel1"}
-            onChange={handleChange("panel1")}
-          >
+          <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1bh-content"
               id="panel1bh-header"
             >
               <List fontSize="small" />
-              <Typography
-                className="mx-10"
-                sx={{ marginLeft: "3%", flexShrink: 0 }}
-              >
+              <Typography className="mx-10" sx={{ marginLeft: '3%', flexShrink: 0 }}>
                 Multiple Choice
               </Typography>
             </AccordionSummary>
@@ -70,7 +59,7 @@ function QuestionConfiguration(props) {
                     component="CreateQuestion"
                     handleComponentDragDrop={props.handleComponentDragDrop}
                   />
-                 {/*  <DraggableBox
+                  {/*  <DraggableBox
                     title="Multiple Responses"
                     component="multipleResponses"
                     handleComponentDragDrop={props.handleComponentDragDrop}
@@ -80,7 +69,7 @@ function QuestionConfiguration(props) {
                     component="TrueFalseQuestionLayout"
                     handleComponentDragDrop={props.handleComponentDragDrop}
                   />
-                 {/*  <DraggableBox
+                  {/*  <DraggableBox
                     title="Block Layout"
                     component="4"
                     handleComponentDragDrop={props.handleComponentDragDrop}
@@ -109,20 +98,14 @@ function QuestionConfiguration(props) {
               </div>
             </AccordionDetails>
           </Accordion>
-          <Accordion
-            expanded={expanded === "panel2"}
-            onChange={handleChange("panel2")}
-          >
+          <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel2bh-content"
               id="panel2bh-header"
             >
               <FlipToBack fontSize="small" />
-              <Typography
-                className="mx-10"
-                sx={{ marginLeft: "3%", flexShrink: 0 }}
-              >
+              <Typography className="mx-10" sx={{ marginLeft: '3%', flexShrink: 0 }}>
                 Fill in the Blanks (Cloze)
               </Typography>
             </AccordionSummary>
@@ -148,20 +131,14 @@ function QuestionConfiguration(props) {
               </div>
             </AccordionDetails>
           </Accordion>
-          <Accordion
-            expanded={expanded === "panel3"}
-            onChange={handleChange("panel3")}
-          >
+          <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel3bh-content"
               id="panel3bh-header"
             >
               <SyncAlt fontSize="small" />
-              <Typography
-                className="mx-10"
-                sx={{ marginLeft: "3%", flexShrink: 0 }}
-              >
+              <Typography className="mx-10" sx={{ marginLeft: '3%', flexShrink: 0 }}>
                 Classify, Match & Order
               </Typography>
             </AccordionSummary>
@@ -187,20 +164,14 @@ function QuestionConfiguration(props) {
               </div>
             </AccordionDetails>
           </Accordion>
-          <Accordion
-            expanded={expanded === "panel4"}
-            onChange={handleChange("panel4")}
-          >
+          <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel4bh-content"
               id="panel4bh-header"
             >
               <BorderColor fontSize="small" />
-              <Typography
-                className="mx-10"
-                sx={{ marginLeft: "3%", flexShrink: 0 }}
-              >
+              <Typography className="mx-10" sx={{ marginLeft: '3%', flexShrink: 0 }}>
                 Written & Recorded
               </Typography>
             </AccordionSummary>

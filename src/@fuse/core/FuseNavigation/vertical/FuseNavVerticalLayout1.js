@@ -1,8 +1,8 @@
-import FuseNavItem from '../FuseNavItem';
 import List from '@material-ui/core/List';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux';
+import FuseNavItem from '../FuseNavItem';
 
 const useStyles = makeStyles((theme) => ({
   navigation: {

@@ -5,11 +5,21 @@ import WYSIWYGEditor from "app/shared-components/WYSIWYGEditor";
 import Icon from "@material-ui/core/Icon";
 import Paper from "@mui/material/Paper";
 import { Controller, useForm } from "react-hook-form";
-import _ from "@lodash";
-import TrueFalseDraggableItem from "./TrueFalseDraggableItem";
-import { useStateValue } from "app/services/state/State";
 import { useSelector } from "react-redux";
 import { EditorState, convertFromRaw } from "draft-js";
+import TrueFalseDraggableItem from "./TrueFalseDraggableItem";
+// imports for showing preview starts
+import {
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  Checkbox,
+  FormControlLabel,
+  Radio,
+} from "@mui/material";
+import draftToHtml from "draftjs-to-html";
+import { convertToRaw } from "draft-js";
+// imports for showing preview ends
 
 const useStyles = makeStyles({
   layoutRoot: {},
@@ -19,10 +29,12 @@ const defaultValues = { name: "", email: "", subject: "", message: "" };
 
 const TrueFalseQuestionLayout = (props) => {
   const itemQuestionsList = useSelector(({ alpha }) => alpha.item.questions);
-  //trueFalse layout starts
+  // trueFalse layout starts
   const [trueFalseShuffleOption, setTrueFalseShuffleOption] = useState(false);
   const [editorContent, setEditorContent] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [showAnswer, setShowAnswer] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   const [multipleChoices, setMultipleChoices] = useState([
     {
@@ -40,7 +52,7 @@ const TrueFalseQuestionLayout = (props) => {
       isAlternate: false,
     },
   ]);
-  //trueFalse layout ends
+  // trueFalse layout ends
 
   const classes = useStyles();
 
@@ -204,73 +216,166 @@ const TrueFalseQuestionLayout = (props) => {
             close
           </Icon>
         </div>
-        <form className="px-0 sm:px-24 ">
-          <div className="mb-24 flex justify-between flex-wrap wrap">
-            <h2 className="pose-h2 font-bold tracking-tight">True or false</h2>
-            <div>
-              <button className="border border-gray border-gray-300 bg-white hover:bg-gray-100 text-gray-800 text-white font-bold py-2 px-6 rounded-full mx-4">
-                <Icon
-                  style={{
-                    fontSize: "10px",
-                  }}
-                  size="small"
+        {!showPreview && (
+          <form className="px-0 sm:px-24 ">
+            <div className="mb-24 flex justify-between flex-wrap wrap">
+              <h2 className="pose-h2 font-bold tracking-tight">
+                True or false
+              </h2>
+              <div>
+                <button className="border border-gray border-gray-300 bg-white hover:bg-gray-100 text-gray-800 text-white font-bold py-2 px-6 rounded-full mx-4">
+                  <Icon
+                    style={{
+                      fontSize: "10px",
+                    }}
+                    size="small"
+                  >
+                    edit
+                  </Icon>
+                  <text className="pl-3">Undo</text>
+                </button>
+                <button className="border border-gray border-gray-300 bg-white hover:bg-gray-100 text-gray-800 text-white font-bold py-2 px-6 rounded-full mx-4">
+                  <text className="pl-3">Redo</text>
+                </button>
+                <button className="border border-gray border-gray-300 bg-white hover:bg-gray-100 text-gray-800 text-white font-bold py-2 px-6 rounded-full mx-4">
+                  <text className="pl-3">Source</text>
+                </button>
+                <button
+                  onClick={() => setShowPreview(true)}
+                  type="button"
+                  className="border border-gray border-gray-300 bg-white hover:bg-gray-100 text-gray-800 text-white font-bold py-2 px-6 rounded-full mx-4"
                 >
-                  edit
-                </Icon>
-                <text className="pl-3">Undo</text>
-              </button>
-              <button className="border border-gray border-gray-300 bg-white hover:bg-gray-100 text-gray-800 text-white font-bold py-2 px-6 rounded-full mx-4">
-                <text className="pl-3">Redo</text>
-              </button>
-              <button className="border border-gray border-gray-300 bg-white hover:bg-gray-100 text-gray-800 text-white font-bold py-2 px-6 rounded-full mx-4">
-                <text className="pl-3">Source</text>
-              </button>
-              <button className="border border-gray border-gray-300 bg-white hover:bg-gray-100 text-gray-800 text-white font-bold py-2 px-6 rounded-full mx-4">
-                <text className="pl-3">Preview</text>
-              </button>
-              <button className="border border-gray border-gray-300 bg-white hover:bg-gray-100 text-gray-800 text-white font-bold py-2 px-6 rounded-full mx-4">
-                <text className="pl-3">Help</text>
-              </button>
+                  <text className="pl-3">Preview</text>
+                </button>
+                <button className="border border-gray border-gray-300 bg-white hover:bg-gray-100 text-gray-800 text-white font-bold py-2 px-6 rounded-full mx-4">
+                  <text className="pl-3">Help</text>
+                </button>
+              </div>
+            </div>
+            <div className="space-y-32">
+              <Controller
+                className="mt-8 mb-16"
+                render={({ field }) => (
+                  <WYSIWYGEditor
+                    setEditorContent={setEditorContent}
+                    editorState={editorState}
+                    setEditorState={setEditorState}
+                    setEditorContentMain={props.setEditorContent}
+                    {...field}
+                  />
+                )}
+                name="message"
+                control={control}
+              />
+
+              <Typography
+                variant="h6"
+                gutterBottom
+                sx={{
+                  color: "gray",
+                  fontWeight: 700,
+                  mt: 2,
+                }}
+              >
+                Multiple Choice Options
+              </Typography>
+
+              <TrueFalseDraggableItem
+                onNewOptionAdded={onNewOptionAdded}
+                multipleChoices={multipleChoices}
+                setMultipleChoices={setMultipleChoices}
+                trueFalseShuffleOption={trueFalseShuffleOption}
+                setTrueFalseShuffleOption={setTrueFalseShuffleOption}
+                setMultipleChoices_Main={props.setMultipleChoices}
+              />
+            </div>
+          </form>
+        )}
+        {showPreview && (
+          <div className="px-0 sm:px-24 ">
+            <div className="mb-24 flex justify-between flex-wrap wrap">
+              <h2 className="pose-h2 font-bold tracking-tight">
+                True or false
+              </h2>
+              <div>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      value={showAnswer}
+                      onChange={(e) => setShowAnswer(e.target.checked)}
+                    />
+                  }
+                  style={{ fontSize: "14px" }}
+                  label="Show Answers"
+                />
+                <button
+                  onClick={() => setShowPreview(false)}
+                  type="button"
+                  className="border border-gray border-gray-300 bg-white hover:bg-gray-100 text-gray-800 text-white font-bold py-2 px-6 rounded-full mx-4"
+                >
+                  <Icon
+                    style={{
+                      fontSize: "10px",
+                    }}
+                    size="small"
+                  >
+                    edit
+                  </Icon>
+                  <text className="pl-3">Edit</text>
+                </button>
+              </div>
+            </div>
+            <div className="space-y-32">
+              <FormControl style={{ width: "100%" }}>
+                <FormLabel
+                  id={`radio-buttons-group-label${props.questionIndex}`}
+                >
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: draftToHtml(
+                        convertToRaw(editorState.getCurrentContent())
+                      ),
+                    }}
+                  />
+                </FormLabel>
+                <RadioGroup
+                  aria-labelledby={`radio-buttons-group-label${props.questionIndex}`}
+                  defaultValue="female"
+                  name={`radio-buttons-group${props.questionIndex}`}
+                >
+                  {console.log("array is here:", multipleChoices)}
+                  {multipleChoices &&
+                    multipleChoices.map((choice, index) => {
+                      return (
+                        <div
+                          style={{
+                            width: "100%",
+                            paddingLeft: "20px",
+                            backgroundColor:
+                              showAnswer && choice.isCorrect
+                                ? "#ccffcc"
+                                : "inherit",
+                          }}
+                        >
+                          <FormControlLabel
+                            value={
+                              choice.isCorrect
+                                ? "correct"
+                                : choice.isAlternate
+                                ? `alternative${index}`
+                                : `none${index}`
+                            }
+                            control={<Radio />}
+                            label={choice.title}
+                          />
+                        </div>
+                      );
+                    })}
+                </RadioGroup>
+              </FormControl>
             </div>
           </div>
-          <div className="space-y-32">
-            <Controller
-              className="mt-8 mb-16"
-              render={({ field }) => (
-                <WYSIWYGEditor
-                  setEditorContent={setEditorContent}
-                  editorState={editorState}
-                  setEditorState={setEditorState}
-                  setEditorContentMain={props.setEditorContent}
-                  {...field}
-                />
-              )}
-              name="message"
-              control={control}
-            />
-
-            <Typography
-              variant="h6"
-              gutterBottom
-              sx={{
-                color: "gray",
-                fontWeight: 700,
-                mt: 2,
-              }}
-            >
-              Multiple Choice Options
-            </Typography>
-
-            <TrueFalseDraggableItem
-              onNewOptionAdded={onNewOptionAdded}
-              multipleChoices={multipleChoices}
-              setMultipleChoices={setMultipleChoices}
-              trueFalseShuffleOption={trueFalseShuffleOption}
-              setTrueFalseShuffleOption={setTrueFalseShuffleOption}
-              setMultipleChoices_Main={props.setMultipleChoices}
-            />
-          </div>
-        </form>
+        )}
       </Paper>
     </>
   );

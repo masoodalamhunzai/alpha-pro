@@ -1,55 +1,44 @@
-import Annotation from "react-image-annotation";
-import {
-  PointSelector,
-  RectangleSelector,
-  OvalSelector,
-} from "react-image-annotation/lib/selectors";
-//<Annotation type={PointSelector.TYPE} />;
-import { useState, useEffect } from "react";
-import Typography from "@mui/material/Typography";
-import WYSIWYGEditor from "app/shared-components/WYSIWYGEditor";
-import Icon from "@material-ui/core/Icon";
-import Paper from "@mui/material/Paper";
-import { Controller, useForm } from "react-hook-form";
-import _ from "@lodash";
-import ChoiceMatrixDraggableItem from "./ChoiceMatrixDraggableItem";
-import ChoiceMatrixDraggableOption from "./ChoiceMatrixDraggableOption";
-import { TextField, Checkbox } from "@mui/material";
-import Switch from "app/shared-components/Switch";
-import { DeleteSweep, ToggleOff, Upload } from "@mui/icons-material";
-import { primaryBlueColor } from "app/services/Settings";
-import LabelImageWithDropDownDraggableItem from "./LabelImageWithDropDownDraggableItem";
-import { useStateValue } from "app/services/state/State";
-import { useSelector } from "react-redux";
-import { EditorState, convertFromRaw } from "draft-js";
+import Annotation from 'react-image-annotation';
+import { RectangleSelector } from 'react-image-annotation/lib/selectors';
+// <Annotation type={PointSelector.TYPE} />;
+import { useState, useEffect } from 'react';
+import Typography from '@mui/material/Typography';
+import WYSIWYGEditor from 'app/shared-components/WYSIWYGEditor';
+import Icon from '@material-ui/core/Icon';
+import Paper from '@mui/material/Paper';
+import { Controller, useForm } from 'react-hook-form';
+import { TextField, Checkbox } from '@mui/material';
+import Switch from 'app/shared-components/Switch';
+import { DeleteSweep, ToggleOff, Upload } from '@mui/icons-material';
+import { primaryBlueColor } from 'app/services/Settings';
+import { useSelector } from 'react-redux';
+import { EditorState, convertFromRaw } from 'draft-js';
+import LabelImageWithDropDownDraggableItem from './LabelImageWithDropDownDraggableItem';
 
-const defaultValues = { name: "", email: "", subject: "", message: "" };
+const defaultValues = { name: '', email: '', subject: '', message: '' };
 
 const LabelImageWithDropDownLayout = (props) => {
   const htmlForId = Math.random();
   const { control } = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues,
   });
   const itemQuestionsList = useSelector(({ alpha }) => alpha.item.questions);
 
   // States start
   const [trueFalseShuffleOption, setTrueFalseShuffleOption] = useState(false);
-  const [
-    trueFalseMatchAllPossibleResponses,
-    setTrueFalseMatchAllPossibleResponses,
-  ] = useState(false);
-
-  const [trueFalseShowDashedBorder, setTrueFalseShowDashedBorder] =
+  const [trueFalseMatchAllPossibleResponses, setTrueFalseMatchAllPossibleResponses] =
     useState(false);
+
+  const [trueFalseShowDashedBorder, setTrueFalseShowDashedBorder] = useState(false);
   const [trueFalseEditAriaLabel, setTrueFalseEditAriaLabel] = useState(false);
 
-  const [imageAlternativeText, setImageAlternativeText] = useState("");
-  const [textOnHover, setTextOnHover] = useState("");
-  const [imageWidth, setImageWidth] = useState("");
+  const [imageAlternativeText, setImageAlternativeText] = useState('');
+  const [textOnHover, setTextOnHover] = useState('');
+  const [imageWidth, setImageWidth] = useState('');
   const [fillColor, setFillColor] = useState(false);
 
-  const [editorContent, setEditorContent] = useState("");
+  const [editorContent, setEditorContent] = useState('');
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
   const [multipleChoices, setMultipleChoices] = useState([]);
@@ -65,8 +54,8 @@ const LabelImageWithDropDownLayout = (props) => {
   const onSubmit = (newAnnotation) => {
     const { geometry, data } = newAnnotation;
 
-    console.log("annotation", newAnnotation);
-    console.log("annotations", annotations);
+    console.log('annotation', newAnnotation);
+    console.log('annotations', annotations);
     setAnnotation({});
     setAnnotations(
       annotations.concat({
@@ -86,15 +75,15 @@ const LabelImageWithDropDownLayout = (props) => {
   const optionsList = [
     {
       value: 1,
-      label: "Correct",
+      label: 'Correct',
     },
     {
       value: 2,
-      label: "Alternative",
+      label: 'Alternative',
     },
     {
       value: 3,
-      label: "None",
+      label: 'None',
     },
   ];
 
@@ -119,16 +108,16 @@ const LabelImageWithDropDownLayout = (props) => {
         {
           id: `item-1}`,
           position: 0,
-          choice: "",
-          title: "first 1",
+          choice: '',
+          title: 'first 1',
           isCorrect: false,
           isAlternate: false,
         },
         {
           id: `item-2}`,
           position: 1,
-          choice: "",
-          title: "first 2",
+          choice: '',
+          title: 'first 2',
           isCorrect: false,
           isAlternate: false,
         },
@@ -147,18 +136,13 @@ const LabelImageWithDropDownLayout = (props) => {
         itemQuestionsList &&
         itemQuestionsList.length > 0 &&
         itemQuestionsList.find((q) => q.id == props.questionId);
-      console.log(
-        "filteredQuestion in Lable Image with Drop Down ",
-        _filteredQuestion
-      );
+      console.log('filteredQuestion in Lable Image with Drop Down ', _filteredQuestion);
       if (_filteredQuestion) {
         console.log(
-          "_filteredQuestion.description in Lable Image with Drop Down ",
+          '_filteredQuestion.description in Lable Image with Drop Down ',
           _filteredQuestion.description
         );
-        const convertedState = convertFromRaw(
-          JSON.parse(_filteredQuestion.description)
-        );
+        const convertedState = convertFromRaw(JSON.parse(_filteredQuestion.description));
         const _editorValue = EditorState.createWithContent(convertedState);
         setEditorState(_editorValue);
 
@@ -175,9 +159,7 @@ const LabelImageWithDropDownLayout = (props) => {
             setSelectedImageUrl(_config.selectedImageUrl);
 
             setTrueFalseShuffleOption(_config.shuffleOptionRadio);
-            setTrueFalseMatchAllPossibleResponses(
-              _config.matchAllPossibleResponsesRadio
-            );
+            setTrueFalseMatchAllPossibleResponses(_config.matchAllPossibleResponsesRadio);
             setTrueFalseShowDashedBorder(_config.showDashedBorderRadio);
             setTrueFalseEditAriaLabel(_config.editARIALabelsRadio);
             setImageAlternativeText(_config.imageAlternativeText);
@@ -197,29 +179,29 @@ const LabelImageWithDropDownLayout = (props) => {
   return (
     <Paper
       style={{
-        paddingTop: "0px",
-        paddingLeft: "0px",
-        paddingRight: "0px",
+        paddingTop: '0px',
+        paddingLeft: '0px',
+        paddingRight: '0px',
       }}
       className="border border-blue border-2 pb-28 sm:pb-28 rounded-2xl border-blue-600"
     >
       <div className="text-right">
         <Icon
           onClick={() => {
-            if (editorContent === "" || editorContent === "<p></p>\n") {
+            if (editorContent === '' || editorContent === '<p></p>\n') {
               swal({
-                title: "Error!",
-                text: "Question Description is Required!",
-                icon: "error",
-                button: "Ok!",
+                title: 'Error!',
+                text: 'Question Description is Required!',
+                icon: 'error',
+                button: 'Ok!',
               });
             }
             if (multipleChoices === [] || multipleChoices.length === 0) {
               swal({
-                title: "Error!",
-                text: "Multiple Choice Options are Required!",
-                icon: "error",
-                button: "Ok!",
+                title: 'Error!',
+                text: 'Multiple Choice Options are Required!',
+                icon: 'error',
+                button: 'Ok!',
               });
             } else {
               const itemObject =
@@ -228,38 +210,36 @@ const LabelImageWithDropDownLayout = (props) => {
                       id: props.questionId,
                       description: editorContent,
                       options: multipleChoices,
-                      questionType: "label-image-with-drop-down-question",
+                      questionType: 'label-image-with-drop-down-question',
                       questionConfig: JSON.stringify({
                         annotation: annotations,
-                        selectedImageUrl: "",
-                        fillColor: fillColor,
+                        selectedImageUrl: '',
+                        fillColor,
                         showDashedBorderRadio: trueFalseShowDashedBorder,
                         editARIALabelsRadio: trueFalseEditAriaLabel,
-                        matchAllPossibleResponsesRadio:
-                          trueFalseMatchAllPossibleResponses,
+                        matchAllPossibleResponsesRadio: trueFalseMatchAllPossibleResponses,
                         shuffleOptionRadio: trueFalseShuffleOption,
-                        imageAlternativeText: imageAlternativeText,
-                        textOnHover: textOnHover,
-                        imageWidth: imageWidth,
+                        imageAlternativeText,
+                        textOnHover,
+                        imageWidth,
                       }),
                       position: props.questionIndex,
                     }
                   : {
                       description: editorContent,
                       options: multipleChoices,
-                      questionType: "label-image-with-drop-down-question",
+                      questionType: 'label-image-with-drop-down-question',
                       questionConfig: JSON.stringify({
                         annotation: annotations,
-                        selectedImageUrl: "",
-                        fillColor: fillColor,
+                        selectedImageUrl: '',
+                        fillColor,
                         showDashedBorderRadio: trueFalseShowDashedBorder,
                         editARIALabelsRadio: trueFalseEditAriaLabel,
-                        matchAllPossibleResponsesRadio:
-                          trueFalseMatchAllPossibleResponses,
+                        matchAllPossibleResponsesRadio: trueFalseMatchAllPossibleResponses,
                         shuffleOptionRadio: trueFalseShuffleOption,
-                        imageAlternativeText: imageAlternativeText,
-                        textOnHover: textOnHover,
-                        imageWidth: imageWidth,
+                        imageAlternativeText,
+                        textOnHover,
+                        imageWidth,
                       }),
                       position: props.questionIndex,
                     };
@@ -268,15 +248,15 @@ const LabelImageWithDropDownLayout = (props) => {
                 props.tabName,
                 props.questionId,
                 props.questionIndex,
-                "label-image-with-drop-down-question",
+                'label-image-with-drop-down-question',
                 itemObject
               );
             }
           }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
-            padding: "2px 24px 24px 4px",
-            color: "white",
+            padding: '2px 24px 24px 4px',
+            color: 'white',
           }}
           size="small"
         >
@@ -289,8 +269,8 @@ const LabelImageWithDropDownLayout = (props) => {
           }}
           className="p-3 bg bg-blue bg-blue-500 hover:bg-blue-700"
           style={{
-            padding: "2px 24px 24px 4px",
-            color: "white",
+            padding: '2px 24px 24px 4px',
+            color: 'white',
           }}
           size="small"
         >
@@ -308,8 +288,8 @@ const LabelImageWithDropDownLayout = (props) => {
           }}
           className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
           style={{
-            padding: "2px 24px 24px 4px",
-            color: "white",
+            padding: '2px 24px 24px 4px',
+            color: 'white',
           }}
           size="small"
         >
@@ -318,14 +298,12 @@ const LabelImageWithDropDownLayout = (props) => {
       </div>
       <form className="px-0 sm:px-24 ">
         <div className="mb-24 flex justify-between flex-wrap wrap">
-          <h2 className="pose-h2 font-bold tracking-tight">
-            Label Image With Drop-Down
-          </h2>
+          <h2 className="pose-h2 font-bold tracking-tight">Label Image With Drop-Down</h2>
           <div>
             <button className="border border-gray border-gray-300 bg-white hover:bg-gray-100 text-gray-800 text-white font-bold py-2 px-6 rounded-full mx-4">
               <Icon
                 style={{
-                  fontSize: "10px",
+                  fontSize: '10px',
                 }}
                 size="small"
               >
@@ -368,7 +346,7 @@ const LabelImageWithDropDownLayout = (props) => {
               variant="h6"
               gutterBottom
               sx={{
-                color: "gray",
+                color: 'gray',
                 fontWeight: 700,
                 mt: 2,
               }}
@@ -376,12 +354,12 @@ const LabelImageWithDropDownLayout = (props) => {
               Response Containers
             </Typography>
             <div className="flex">
-              <div style={{ width: "50%", paddingRight: "1%" }}>
+              <div style={{ width: '50%', paddingRight: '1%' }}>
                 <div>
                   <div
                     style={{
                       backgroundColor: primaryBlueColor,
-                      borderRadius: "10px 10px 0px 0px",
+                      borderRadius: '10px 10px 0px 0px',
                     }}
                     className="flex justify-around items-center py-12"
                   >
@@ -405,7 +383,7 @@ const LabelImageWithDropDownLayout = (props) => {
                           src={selectedImageUrl}
                           alt="Two pebbles anthropomorphized holding hands"
                           annotations={annotations}
-                          type={RectangleSelector.TYPE} //PointSelector,RectangleSelector,OvalSelector,
+                          type={RectangleSelector.TYPE} // PointSelector,RectangleSelector,OvalSelector,
                           value={annotation}
                           onChange={onChange}
                           onSubmit={onSubmit}
@@ -427,16 +405,16 @@ const LabelImageWithDropDownLayout = (props) => {
                   </div>
                 </div>
               </div>
-              <div style={{ width: "50%", paddingLeft: "1%" }}>
+              <div style={{ width: '50%', paddingLeft: '1%' }}>
                 <div className="">
                   <div>
                     <TextField
                       className="mx-6"
-                      style={{ width: "100%" }}
+                      style={{ width: '100%' }}
                       inputProps={{
                         style: {
-                          backgroundColor: "white",
-                          fontSize: "13px",
+                          backgroundColor: 'white',
+                          fontSize: '13px',
                         },
                       }}
                       value={imageAlternativeText}
@@ -451,11 +429,11 @@ const LabelImageWithDropDownLayout = (props) => {
                   <div className="mt-12">
                     <TextField
                       className="mx-6"
-                      style={{ width: "100%" }}
+                      style={{ width: '100%' }}
                       inputProps={{
                         style: {
-                          backgroundColor: "white",
-                          fontSize: "13px",
+                          backgroundColor: 'white',
+                          fontSize: '13px',
                         },
                       }}
                       value={textOnHover}
@@ -470,11 +448,11 @@ const LabelImageWithDropDownLayout = (props) => {
                   <div className="mt-12">
                     <TextField
                       className="mx-6"
-                      style={{ width: "100%" }}
+                      style={{ width: '100%' }}
                       inputProps={{
                         style: {
-                          backgroundColor: "white",
-                          fontSize: "13px",
+                          backgroundColor: 'white',
+                          fontSize: '13px',
                         },
                       }}
                       value={imageWidth}
@@ -489,22 +467,14 @@ const LabelImageWithDropDownLayout = (props) => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <label>Fill color</label>
-                      <Checkbox
-                        checked={fillColor}
-                        onChange={handleFillColorChange}
-                        size="large"
-                      />
+                      <Checkbox checked={fillColor} onChange={handleFillColorChange} size="large" />
                     </div>
 
                     <div className="my-4 flex justify-between items-center">
                       <label>Show Dashed Border</label>
                       <Switch
                         checked={trueFalseShowDashedBorder}
-                        onChange={() =>
-                          setTrueFalseShowDashedBorder(
-                            !trueFalseShowDashedBorder
-                          )
-                        }
+                        onChange={() => setTrueFalseShowDashedBorder(!trueFalseShowDashedBorder)}
                       />
                     </div>
                   </div>
@@ -514,9 +484,7 @@ const LabelImageWithDropDownLayout = (props) => {
                       <label>Edit ARIA Labels</label>
                       <Switch
                         checked={trueFalseEditAriaLabel}
-                        onChange={() =>
-                          setTrueFalseEditAriaLabel(!trueFalseEditAriaLabel)
-                        }
+                        onChange={() => setTrueFalseEditAriaLabel(!trueFalseEditAriaLabel)}
                       />
                     </div>
                   </div>
@@ -525,19 +493,19 @@ const LabelImageWithDropDownLayout = (props) => {
                     annotations.length > 0 &&
                     annotations.map((annt, index) => {
                       return (
-                        <div className={index == 0 ? "" : "mt-12"}>
+                        <div className={index == 0 ? '' : 'mt-12'}>
                           <TextField
                             className="mx-6"
-                            style={{ width: "100%" }}
+                            style={{ width: '100%' }}
                             inputProps={{
                               style: {
-                                backgroundColor: "white",
-                                fontSize: "13px",
+                                backgroundColor: 'white',
+                                fontSize: '13px',
                               },
                             }}
                             onChange={(e) => {
-                              var temp = annotations.slice();
-                              var tem = annt;
+                              const temp = annotations.slice();
+                              const tem = annt;
                               tem.data.text = e.target.value;
 
                               temp[index] = tem;
@@ -557,7 +525,7 @@ const LabelImageWithDropDownLayout = (props) => {
 
             <div className="mt-12">
               <label
-                style={{ padding: "6px 12px" }}
+                style={{ padding: '6px 12px' }}
                 htmlFor={htmlForId}
                 className="btn-blue-white py-4 px-6 rounded-full mx-4"
               >
@@ -567,19 +535,14 @@ const LabelImageWithDropDownLayout = (props) => {
               </label>
 
               <input
-                style={{ display: "none" }}
+                style={{ display: 'none' }}
                 type="file"
                 id={htmlForId}
                 name={htmlForId}
                 accept="image/png, image/gif, image/jpeg"
                 onChange={(e) => {
                   console.log(e.target.files);
-                  if (
-                    e &&
-                    e.target &&
-                    e.target.files &&
-                    e.target.files.length > 0
-                  ) {
+                  if (e && e.target && e.target.files && e.target.files.length > 0) {
                     setSelectedImageUrl(URL.createObjectURL(e.target.files[0]));
                     setSelectedImage(e.target.files[0]);
                     setAnnotations([]);
@@ -596,9 +559,9 @@ const LabelImageWithDropDownLayout = (props) => {
                 return (
                   <div
                     style={{
-                      padding: "20px",
-                      backgroundColor: "white", //"#e9f3ff",
-                      borderRadius: "10px",
+                      padding: '20px',
+                      backgroundColor: 'white', // "#e9f3ff",
+                      borderRadius: '10px',
                     }}
                   >
                     <h3>Responses {index + 1}</h3>
@@ -685,9 +648,7 @@ const LabelImageWithDropDownLayout = (props) => {
               <Switch
                 checked={trueFalseMatchAllPossibleResponses}
                 onChange={() =>
-                  setTrueFalseMatchAllPossibleResponses(
-                    !trueFalseMatchAllPossibleResponses
-                  )
+                  setTrueFalseMatchAllPossibleResponses(!trueFalseMatchAllPossibleResponses)
                 }
               />
             </div>
@@ -696,9 +657,7 @@ const LabelImageWithDropDownLayout = (props) => {
               <label>Shuffle option</label>
               <Switch
                 checked={trueFalseShuffleOption}
-                onChange={() =>
-                  setTrueFalseShuffleOption(!trueFalseShuffleOption)
-                }
+                onChange={() => setTrueFalseShuffleOption(!trueFalseShuffleOption)}
               />
             </div>
           </div>

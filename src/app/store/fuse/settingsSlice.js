@@ -70,6 +70,14 @@ export const selectFuseThemeById = (id) =>
     generateMuiTheme(themes, id, direction)
   );
 
+export const selectMainThemeDark = createSelector([getThemes, getDirection], (themes, direction) =>
+  generateMuiTheme(themes, 'mainThemeDark', direction)
+);
+
+export const selectMainThemeLight = createSelector([getThemes, getDirection], (themes, direction) =>
+  generateMuiTheme(themes, 'mainThemeLight', direction)
+);
+
 export const selectContrastMainTheme = (bgColor) => {
   function isDark(color) {
     return getContrastRatio(color, '#ffffff') >= 3;
@@ -80,15 +88,6 @@ export const selectContrastMainTheme = (bgColor) => {
 export const selectMainTheme = createSelector(
   [getThemes, getDirection, getMainThemeId],
   (themes, direction, id) => generateMuiTheme(themes, id, direction)
-);
-
-export const selectMainThemeDark = createSelector(
-  [getThemes, getDirection],
-  (themes, direction, id) => generateMuiTheme(themes, 'mainThemeDark', direction)
-);
-export const selectMainThemeLight = createSelector(
-  [getThemes, getDirection],
-  (themes, direction, id) => generateMuiTheme(themes, 'mainThemeLight', direction)
 );
 
 export const selectNavbarTheme = createSelector(
@@ -149,9 +148,11 @@ const settingsSlice = createSlice({
         themes,
       };
     },
+    // eslint-disable-next-line no-unused-vars
     setInitialSettings: (state, action) => {
       return _.merge({}, initialState);
     },
+    // eslint-disable-next-line no-unused-vars
     resetSettings: (state, action) => {
       const themes = {
         ...state.themes,

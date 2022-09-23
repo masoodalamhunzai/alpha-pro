@@ -1,24 +1,34 @@
-import { useState } from "react";
+
+import { useEffect, useState } from 'react';
 import FusePageSimple from "@fuse/core/FusePageSimple";
 import Typography from "@mui/material/Typography";
 import { makeStyles, ThemeProvider, useTheme } from "@material-ui/core/styles";
 import { useStateValue } from "app/services/state/State";
-import { actions } from "app/services/state/Reducer";
 import { useLocation } from "react-router-dom";
-import { searchItem, getItems } from "app/services/api/ApiManager";
+import { searchItem, getItems,getAllGrades,getTagsList,getTagsByTagList } from "app/services/api/ApiManager";
 import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
 import Input from "@material-ui/core/Input";
 import Paper from "@material-ui/core/Paper";
 import { useHistory } from "react-router";
 import { Add as AddIcon } from "@material-ui/icons";
+import { useDispatch,useSelector } from "react-redux";
+import { setItems,setGradesList,setTagsList } from "app/store/alpha/itemReducer";
 import Breadcrumb from "../../fuse-layouts/shared-components/Breadcrumbs";
 import ItemsList from "./ItemsList";
-import { useDispatch, useSelector } from "react-redux";
-import { setItems } from "app/store/alpha/itemReducer";
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
 
 const useStyles = makeStyles({
   layoutRoot: {},
+  refreshButton: {
+    backgroundColor: "#0d870d",
+    color: "white",
+    padding: "0.5rem 4rem",
+    display: "flex",
+    justifyContent: "center",
+    marginLeft: "1rem",
+  },
 });
 
 const Items = () => {
@@ -35,8 +45,21 @@ const Items = () => {
   const [count, setCount] = useState(0);
   const theme = useTheme();
   const [searchText, setSearchText] = useState("");
-  const [searchName, setSearchName] = useState("");
+  const [searchName, setSearchName] = useState('');
   const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const gradesList = useSelector(({ alpha }) => alpha.item.gradesList);
+  const tagsList = useSelector(({ alpha }) => alpha.item.tagsList);
+  const [scoringType, setScoringType] = useState('');
+  const [grades, setGrades] = useState('');
+  const [tags,setTags]=useState('');
+
+  const refreshItems = async () => {
+    const res = await getItems(1, pageSize);
+    if (res && res.status === 200 && res.data) {
+      dispatch(setItems(res.data));
+    }
+  };
 
   function handleSearch(event) {
     setSearchText(event.target.value);
@@ -47,138 +70,58 @@ const Items = () => {
   }
 
   const searchItemByText = async (text) => {
-    console.log("");
+
     // ..below is search item call
     let res = null;
-    if (text) {
-      res = await searchItem(text);
+    if (text!='' || grades!='' || tags!='' ) {
+      res = await searchItem(text,grades,tags);
     } else {
       res = await getItems();
     }
-    console.log("searchItem are here: ", res);
     if (res && res.status === 200 && res.data) {
       dispatch(setItems(res.data));
-      /* dispatch({
-        type: actions.SET_ITEMS,
-        payload: res.data,
-      }); */
     }
   };
 
-  /* const setNews = async () => {
-    dispatch({
-      type: actions.SET_NEWS,
-      payload: { header: "new header text", des: "new description text" },
-    });
-  }; */
   const redirectTo = async (goTo) => {
     try {
       history.push(goTo);
-    } catch (err) {
-      // console.log(err);
-    }
+    } catch (err) {}
   };
-
-  const columns = [
-    { field: "id", headerName: "ID", width: 70 },
-    { field: "name", headerName: "Name", width: 70 },
-    { field: "contactperson", headerName: "Contact Person", width: 130 },
-    { field: "email", headerName: "Email", width: 130 },
-    {
-      field: "phonenumber",
-      headerName: "Phone Number",
-      width: 90,
-    },
-    {
-      field: "address",
-      headerName: "Address",
-      description: "",
-      sortable: false,
-      width: 160,
-    },
-  ];
-
-  const rows = [
-    {
-      id: 1,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "123123",
-      address: "test address",
-    },
-    {
-      id: 2,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "123123",
-      address: "test address",
-    },
-    {
-      id: 3,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "123123",
-      address: "test address",
-    },
-    {
-      id: 4,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "123123",
-      address: "test address",
-    },
-    {
-      id: 5,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "123123",
-      address: "test address",
-    },
-    {
-      id: 6,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "123123",
-      address: "test address",
-    },
-    {
-      id: 7,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "123123",
-      address: "test address",
-    },
-    {
-      id: 8,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "123123",
-      address: "test address",
-    },
-    {
-      id: 9,
-      name: "Snow",
-      contactperson: "Jon",
-      email: "35@gmail.com",
-      phonenumber: "123123",
-      address: "test address",
-    },
-  ];
-
-  /* useEffect(() => {
-    setCount(1);
-  }, []);
+  const getGrades = async () => {
+    getAllGrades()
+      .then((res) => {
+        if (res && res.data && Array.isArray(res.data)) {
+          const gList = res.data.map((g) => {
+            return {
+              id: g.id,
+              title: g.title,
+            };
+          });
+          dispatch(setGradesList(gList));
+        }
+      })
+      .catch((err) => console.error('error', err));
+  };
+  const getTags = async () => {
+    getTagsByTagList(4)
+      .then((res) => {
+        if (res && res.data && res.data.data && Array.isArray(res.data.data)) {
+          const tagList = res.data.data.map((g) => {
+            return {
+              id: g.id,
+              title: g.title,
+            };
+          });
+          dispatch(setTagsList(tagList));
+        }
+      })
+      .catch((err) => console.error('error', err));
+  };
   useEffect(() => {
-    setNews();
-  }, [count]); */
+    getGrades();
+    getTags();
+  }, []);
 
   return (
     <FusePageSimple
@@ -238,20 +181,68 @@ const Items = () => {
                     }}
                   />
                 </Paper>
-                {/*   <Paper className="flex items-center min-w-full sm:min-w-0 w-full max-w-512 px-12 py-4 mx-12 rounded-16 shdaow">
-                  <Icon color="action">search</Icon>
-                  <Input
-                    placeholder="Search for Tag"
-                    className="flex flex-1 px-8"
-                    disableUnderline
-                    fullWidth
-                    value={searchText}
-                    onChange={handleSearch}
-                    inputProps={{
-                      "aria-label": "Search",
-                    }}
-                  />
-                </Paper> */}
+                   <Paper className="flex items-center min-w-full sm:min-w-0 w-full max-w-512 px-12 py-4 mx-12 rounded-16 shdaow">
+                 {/*  <Icon color="action">search</Icon>    */}              
+                     <TextField
+            style={{ backgroundColor: 'white', width: '100%', marginTop: '3%' }}
+            id="outlined-select-currency"
+            size="small"
+            inputProps={{
+              style: {
+                backgroundColor: 'white',
+                fontSize: '13px',
+              },
+            }}
+            select
+            label="Grade"
+            value={grades}
+            onChange={(e) => {
+              setGrades(e.target.value);
+            }}
+            
+          >
+            <MenuItem key={0} value={''}>
+                {"Select Grade"}
+              </MenuItem>
+            {gradesList && Array.isArray(gradesList) && gradesList.map((option) => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.title}
+              </MenuItem>
+            ))}
+          </TextField> 
+                </Paper>  
+
+                <Paper className="flex items-center min-w-full sm:min-w-0 w-full max-w-512 px-12 py-4 mx-12 rounded-16 shdaow">
+                 {/*  <Icon color="action">search</Icon>      */}            
+                     <TextField
+            style={{ backgroundColor: 'white', width: '100%', marginTop: '3%' }}
+            id="outlined-select-currency"
+            size="small"
+            inputProps={{
+              style: {
+                backgroundColor: 'white',
+                fontSize: '13px',
+              },
+            }}
+            select
+            label="Tags"
+            value={tags}
+            onChange={(e) => {
+              setTags(e.target.value);
+            }}
+            
+          >
+             <MenuItem key={0} value={''}>
+                {"Select Tags"}
+              </MenuItem>
+            {tagsList && Array.isArray(tagsList) && tagsList.map((option) => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.title}
+              </MenuItem>
+            ))}
+          </TextField> 
+                </Paper> 
+
               </ThemeProvider>
             </div>
             <div className="flex items-center justify-end -mx-4 mt-24 md:mt-0">
@@ -265,12 +256,37 @@ const Items = () => {
               >
                 Search
               </Button>
+
+              <Button
+                variant="contained"
+                className={classes.refreshButton}
+                onClick={() => {
+                  setPage(0);
+                  refreshItems();
+                }}
+              >
+                <Icon
+                  color="white"
+                  style={{
+                    marginRight: "0.6rem",
+                    fontSize: "1.6rem",
+                  }}
+                >
+                  refresh
+                </Icon>{" "}
+                Refresh
+              </Button>
             </div>
           </div>
 
           {/* end */}
 
-          <ItemsList page={page} setPage={setPage} />
+          <ItemsList
+            page={page}
+            setPage={setPage}
+            pageSize={pageSize}
+            setPageSize={setPageSize}
+          />
         </div>
       }
     />

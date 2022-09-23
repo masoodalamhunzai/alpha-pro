@@ -1,20 +1,15 @@
-import { useState, useEffect } from "react";
-import Typography from "@mui/material/Typography";
-import WYSIWYGEditor from "app/shared-components/WYSIWYGEditor";
-import Icon from "@material-ui/core/Icon";
-import Paper from "@mui/material/Paper";
-import { Controller, useForm } from "react-hook-form";
-import _ from "@lodash";
-import { TextField, Checkbox } from "@mui/material";
-import Switch from "app/shared-components/Switch";
-import { primaryBlueColor } from "app/services/Settings";
-import StimulusListDraggableItem from "./StimulusListDraggableItem";
-import ListDraggableItem from "./ListDraggableItem";
-import { useStateValue } from "app/services/state/State";
-import { useSelector } from "react-redux";
-import { EditorState, convertFromRaw } from "draft-js";
+import { useState, useEffect } from 'react';
+import Typography from '@mui/material/Typography';
+import WYSIWYGEditor from 'app/shared-components/WYSIWYGEditor';
+import Icon from '@material-ui/core/Icon';
+import Paper from '@mui/material/Paper';
+import { Controller, useForm } from 'react-hook-form';
+import Switch from 'app/shared-components/Switch';
+import { useSelector } from 'react-redux';
+import { EditorState, convertFromRaw } from 'draft-js';
+import ListDraggableItem from './ListDraggableItem';
 
-const defaultValues = { name: "", email: "", subject: "", message: "" };
+const defaultValues = { name: '', email: '', subject: '', message: '' };
 
 const propsType = [
   /* "multipleChoices",
@@ -25,47 +20,47 @@ const propsType = [
 
 const OrderListLayout = (props) => {
   const itemQuestionsList = useSelector(({ alpha }) => alpha.item.questions);
-  //OrderList Layout starts
+  // OrderList Layout starts
   const [trueFalseShuffleOption, setTrueFalseShuffleOption] = useState(false);
   const [trueFalseShowDragHandle, setTrueFalseShowDragHandle] = useState(false);
 
-  const [editorContent, setEditorContent] = useState("");
+  const [editorContent, setEditorContent] = useState('');
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
   const [multipleChoices, setMultipleChoices] = useState([
     {
       id: `item-1}`,
       position: 0,
-      title: "Test1",
+      title: 'Test1',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-2`,
       position: 1,
-      title: "Test2",
+      title: 'Test2',
       isCorrect: false,
       isAlternate: false,
     },
     {
       id: `item-3`,
       position: 2,
-      title: "Test3",
+      title: 'Test3',
       isCorrect: false,
       isAlternate: false,
     },
   ]);
 
-  //OrderList Layout ends
+  // OrderList Layout ends
 
   const { control } = useForm({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues,
   });
 
   const [optionsList, setOptionsList] = useState([]);
   useEffect(() => {
-    var temp = [];
+    const temp = [];
     multipleChoices.map((item, index) => {
       temp.push({ value: item.position, label: index + 1 });
     });
@@ -85,13 +80,13 @@ const OrderListLayout = (props) => {
       label: "None",
     },
   ]; */
-  console.log("multipleChoices:", multipleChoices);
+  console.log('multipleChoices:', multipleChoices);
 
   function onNewOptionAdded(index) {
     const option = {
       id: `item-${index + 1}`,
       position: index,
-      title: "",
+      title: '',
       isCorrect: false,
       isAlternate: false,
     };
@@ -106,7 +101,7 @@ const OrderListLayout = (props) => {
     const option = {
       id: `item-${index + 1}`,
       position: index,
-      title: "",
+      title: '',
       isCorrect: false,
       isAlternate: false,
     };
@@ -123,15 +118,10 @@ const OrderListLayout = (props) => {
         itemQuestionsList &&
         itemQuestionsList.length > 0 &&
         itemQuestionsList.find((q) => q.id == props.questionId);
-      console.log("filteredQuestion in order list ", _filteredQuestion);
+      console.log('filteredQuestion in order list ', _filteredQuestion);
       if (_filteredQuestion) {
-        console.log(
-          "_filteredQuestion.description in order list ",
-          _filteredQuestion.description
-        );
-        const convertedState = convertFromRaw(
-          JSON.parse(_filteredQuestion.description)
-        );
+        console.log('_filteredQuestion.description in order list ', _filteredQuestion.description);
+        const convertedState = convertFromRaw(JSON.parse(_filteredQuestion.description));
         const _editorValue = EditorState.createWithContent(convertedState);
         setEditorState(_editorValue);
 
@@ -158,29 +148,29 @@ const OrderListLayout = (props) => {
   return (
     <Paper
       style={{
-        paddingTop: "0px",
-        paddingLeft: "0px",
-        paddingRight: "0px",
+        paddingTop: '0px',
+        paddingLeft: '0px',
+        paddingRight: '0px',
       }}
       className="border border-blue border-2 pb-28 sm:pb-28 rounded-2xl border-blue-600"
     >
       <div className="text-right">
         <Icon
           onClick={() => {
-            if (editorContent === "" || editorContent === "<p></p>\n") {
+            if (editorContent === '' || editorContent === '<p></p>\n') {
               swal({
-                title: "Error!",
-                text: "Question Description is Required!",
-                icon: "error",
-                button: "Ok!",
+                title: 'Error!',
+                text: 'Question Description is Required!',
+                icon: 'error',
+                button: 'Ok!',
               });
             }
             if (multipleChoices === [] || multipleChoices.length === 0) {
               swal({
-                title: "Error!",
-                text: "Multiple Choice Options are Required!",
-                icon: "error",
-                button: "Ok!",
+                title: 'Error!',
+                text: 'Multiple Choice Options are Required!',
+                icon: 'error',
+                button: 'Ok!',
               });
             } else {
               const itemObject =
@@ -189,7 +179,7 @@ const OrderListLayout = (props) => {
                       id: props.questionId,
                       description: editorContent,
                       options: multipleChoices,
-                      questionType: "order-list-question",
+                      questionType: 'order-list-question',
                       questionConfig: JSON.stringify({
                         showDragHandleRadio: trueFalseShowDragHandle,
                         shuffleOptionRadio: trueFalseShuffleOption,
@@ -199,28 +189,28 @@ const OrderListLayout = (props) => {
                   : {
                       description: editorContent,
                       options: multipleChoices,
-                      questionType: "order-list-question",
+                      questionType: 'order-list-question',
                       questionConfig: JSON.stringify({
                         showDragHandleRadio: trueFalseShowDragHandle,
                         shuffleOptionRadio: trueFalseShuffleOption,
                       }),
                       position: props.questionIndex,
                     };
-              console.log("Json going to save", itemObject);
+              console.log('Json going to save', itemObject);
               props.onSaveQuestion(
                 props.sectionName,
                 props.tabName,
                 props.questionId,
                 props.questionIndex,
-                "order-list-question",
+                'order-list-question',
                 itemObject
               );
             }
           }}
           className="p-3 bg bg-green bg-green-500 hover:bg-green-700"
           style={{
-            padding: "2px 24px 24px 4px",
-            color: "white",
+            padding: '2px 24px 24px 4px',
+            color: 'white',
           }}
           size="small"
         >
@@ -233,8 +223,8 @@ const OrderListLayout = (props) => {
           }}
           className="p-3 bg bg-blue bg-blue-500 hover:bg-blue-700"
           style={{
-            padding: "2px 24px 24px 4px",
-            color: "white",
+            padding: '2px 24px 24px 4px',
+            color: 'white',
           }}
           size="small"
         >
@@ -252,8 +242,8 @@ const OrderListLayout = (props) => {
           }}
           className="p-3 bg bg-red bg-red-500 hover:bg-red-700"
           style={{
-            padding: "2px 24px 24px 4px",
-            color: "white",
+            padding: '2px 24px 24px 4px',
+            color: 'white',
           }}
           size="small"
         >
@@ -267,7 +257,7 @@ const OrderListLayout = (props) => {
             <button className="border border-gray border-gray-300 bg-white hover:bg-gray-100 text-gray-800 text-white font-bold py-2 px-6 rounded-full mx-4">
               <Icon
                 style={{
-                  fontSize: "10px",
+                  fontSize: '10px',
                 }}
                 size="small"
               >
@@ -310,7 +300,7 @@ const OrderListLayout = (props) => {
               variant="h6"
               gutterBottom
               sx={{
-                color: "gray",
+                color: 'gray',
                 fontWeight: 700,
                 mt: 2,
               }}
@@ -331,9 +321,7 @@ const OrderListLayout = (props) => {
               <label>Show drag handle</label>
               <Switch
                 checked={trueFalseShowDragHandle}
-                onChange={() =>
-                  setTrueFalseShowDragHandle(!trueFalseShowDragHandle)
-                }
+                onChange={() => setTrueFalseShowDragHandle(!trueFalseShowDragHandle)}
               />
             </div>
 
@@ -341,9 +329,7 @@ const OrderListLayout = (props) => {
               <label>Shuffle options</label>
               <Switch
                 checked={trueFalseShuffleOption}
-                onChange={() =>
-                  setTrueFalseShuffleOption(!trueFalseShuffleOption)
-                }
+                onChange={() => setTrueFalseShuffleOption(!trueFalseShuffleOption)}
               />
             </div>
           </div>
